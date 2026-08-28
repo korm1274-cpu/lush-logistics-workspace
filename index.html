@@ -455,24 +455,28 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
 }
 
 
-/* V18 — manual manufacture-date input */
-.lot-date-cell input[type=text],
-.lot-date-cell .lot-date-input{
+/* V19 SAFE — typing-first quantity/date inputs */
+.inventory-grid input[type=number]{
+  appearance:textfield!important;
+  -moz-appearance:textfield!important;
+}
+.inventory-grid input[type=number]::-webkit-outer-spin-button,
+.inventory-grid input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance:none!important;
+  margin:0!important;
+}
+.inventory-grid [data-lot-date]{
   width:92px!important;
   min-width:92px!important;
   height:28px!important;
   padding:0 6px!important;
-  font-size:11px!important;
-  font-weight:750!important;
-  background:#fff!important;
   border:1px solid #d5dde1!important;
   border-radius:6px!important;
+  background:#fff!important;
   color:#1f2a30!important;
   text-align:center!important;
-}
-.lot-date-cell .lot-date-input::placeholder{
-  color:#9aa5ab;
-  font-weight:600;
+  font-size:11px!important;
+  font-weight:750!important;
 }
 
 </style>
@@ -664,7 +668,7 @@ function snapshotGroups(snap){const fromProducts=(snap.products||[]).map(p=>p.gr
 function moveInventoryGroup(group,dir){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap||!group)return;const groups=snapshotGroups(snap);const i=groups.indexOf(group),j=i+dir;if(i<0||j<0||j>=groups.length)return;[groups[i],groups[j]]=[groups[j],groups[i]];snap.groups=groups;markInventoryDirty();renderInventoryOwner()}
 function moveInventoryProduct(pi,dir){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const p=snap.products[pi];if(!p)return;const group=p.group||"";const peers=snap.products.map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===group);const pos=peers.findIndex(o=>o.i===pi),next=peers[pos+dir];if(pos<0||!next)return;const j=next.i;[snap.products[pi],snap.products[j]]=[snap.products[j],snap.products[pi]];markInventoryDirty();renderInventoryOwner()}
 function reorderInventoryProduct(fromPi,toPi){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap||fromPi===toPi)return;const from=snap.products[fromPi],to=snap.products[toPi];if(!from||!to)return;if((from.group||"")!==(to.group||"")){toastMsg("다른 관리그룹으로 이동하려면 관리그룹을 먼저 변경해주세요.");return}const [item]=snap.products.splice(fromPi,1);let insert=toPi;if(fromPi<toPi)insert--;snap.products.splice(insert,0,item);markInventoryDirty();renderInventoryOwner()}
-function renderInventoryOwner(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const cf=inventoryCategory.value||"";const groups=snapshotGroups(snap);inventoryCategory.innerHTML='<option value="">전체 관리그룹</option>'+groups.map(c=>`<option value="${esc(c)}" ${c===cf?"selected":""}>${esc(c)}</option>`).join("");if(snap.sourceFile){const t=new Date(snap.sourceFile.uploadedAt);const tm=Number.isNaN(t.getTime())?"":t.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false});inventorySourceFile.classList.add("uploaded");inventorySourceFile.innerHTML=`업로드 완료${tm?` · <b>${tm}</b>`:""}`}else{inventorySourceFile.classList.remove("uploaded");inventorySourceFile.textContent="미업로드";}let html="",shown=0;const ungrouped=(snap.products||[]).filter(p=>!p.group);const ordered=[...groups,...(ungrouped.length?["미분류"]:[])];for(const group of ordered){const ps=(snap.products||[]).filter(p=>(group==="미분류"?!p.group:p.group===group)).filter(p=>(!cf||p.group===cf));if(!ps.length)continue;const groupKey=group==="미분류"?"":group;const gi=groups.indexOf(group);html+=`<tr class="cat-row" ${group!=="미분류"?`draggable="true" data-group-row="${esc(groupKey)}"`:""}><td colspan="10"><div class="cat-summary">${group!=="미분류"?'<span class="drag-handle" title="드래그하여 관리그룹 이동">⋮⋮</span>':'<span style="width:22px"></span>'}<input class="group-name-input" data-group-name="${esc(groupKey)}" value="${esc(group)}" ${group==="미분류"?'placeholder="관리그룹명"':''}><small>${ps.length} SKU</small><button class="mini-remove" data-del-group="${esc(groupKey)}"></button></div></td></tr>`;for(const p of ps){shown++;const actual=productActual(p),diff=actual-invNum(p.system),pi=(snap.products||[]).indexOf(p);const lots=p.lots||[];const first=lots[0]||{date:"",qty:""};const peers=(snap.products||[]).map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===(p.group||""));const peerPos=peers.findIndex(o=>o.i===pi);html+=`<tr draggable="true" data-product-row="${pi}"><td><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span></td><td><input data-product-code data-p="${pi}" value="${esc(p.id)}" placeholder="제품코드 입력"></td><td class="product-name">${esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>'}</td><td class="source-category">${esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>'}</td><td><select class="group-select" data-product-group data-p="${pi}">${['',...groups].map(g=>`<option value="${esc(g)}" ${g===p.group?'selected':''}>${g?esc(g):'미분류'}</option>`).join('')}</select></td><td class="num">${fmtNum(p.system)}</td><td class="num"><b>${fmtNum(actual)}</b></td><td class="num ${diffClass(diff)} ${diff!==0?"gap-cell":""}">${diff>0?"+":""}${fmtNum(diff)}</td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="0" value="${esc(first.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><span class="lot-action-placeholder" aria-hidden="true"></span></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty??""}"></td></tr>`;for(let li=1;li<lots.length;li++){const l=lots[li];html+=`<tr class="lot-row"><td></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td><td></td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="${li}" value="${esc(l.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><button class="lot-inline-remove" data-del-lot="${pi}:${li}" title="해당 LOT 삭제" aria-label="해당 LOT 삭제">−</button></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty??""}"></td></tr>`}}}
+function renderInventoryOwner(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const cf=inventoryCategory.value||"";const groups=snapshotGroups(snap);inventoryCategory.innerHTML='<option value="">전체 관리그룹</option>'+groups.map(c=>`<option value="${esc(c)}" ${c===cf?"selected":""}>${esc(c)}</option>`).join("");if(snap.sourceFile){const t=new Date(snap.sourceFile.uploadedAt);const tm=Number.isNaN(t.getTime())?"":t.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false});inventorySourceFile.classList.add("uploaded");inventorySourceFile.innerHTML=`업로드 완료${tm?` · <b>${tm}</b>`:""}`}else{inventorySourceFile.classList.remove("uploaded");inventorySourceFile.textContent="미업로드";}let html="",shown=0;const ungrouped=(snap.products||[]).filter(p=>!p.group);const ordered=[...groups,...(ungrouped.length?["미분류"]:[])];for(const group of ordered){const ps=(snap.products||[]).filter(p=>(group==="미분류"?!p.group:p.group===group)).filter(p=>(!cf||p.group===cf));if(!ps.length)continue;const groupKey=group==="미분류"?"":group;const gi=groups.indexOf(group);html+=`<tr class="cat-row" ${group!=="미분류"?`draggable="true" data-group-row="${esc(groupKey)}"`:""}><td colspan="10"><div class="cat-summary">${group!=="미분류"?'<span class="drag-handle" title="드래그하여 관리그룹 이동">⋮⋮</span>':'<span style="width:22px"></span>'}<input class="group-name-input" data-group-name="${esc(groupKey)}" value="${esc(group)}" ${group==="미분류"?'placeholder="관리그룹명"':''}><small>${ps.length} SKU</small><button class="mini-remove" data-del-group="${esc(groupKey)}"></button></div></td></tr>`;for(const p of ps){shown++;const actual=productActual(p),diff=actual-invNum(p.system),pi=(snap.products||[]).indexOf(p);const lots=p.lots||[];const first=lots[0]||{date:"",qty:""};const peers=(snap.products||[]).map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===(p.group||""));const peerPos=peers.findIndex(o=>o.i===pi);html+=`<tr draggable="true" data-product-row="${pi}"><td><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span></td><td><input data-product-code data-p="${pi}" value="${esc(p.id)}" placeholder="제품코드 입력"></td><td class="product-name">${esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>'}</td><td class="source-category">${esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>'}</td><td><select class="group-select" data-product-group data-p="${pi}">${['',...groups].map(g=>`<option value="${esc(g)}" ${g===p.group?'selected':''}>${g?esc(g):'미분류'}</option>`).join('')}</select></td><td class="num">${fmtNum(p.system)}</td><td class="num"><b>${fmtNum(actual)}</b></td><td class="num ${diffClass(diff)} ${diff!==0?"gap-cell":""}">${diff>0?"+":""}${fmtNum(diff)}</td><td><div class="lot-date-cell"><input type="text" inputmode="numeric" placeholder="MM/DD" autocomplete="off" data-lot-date data-p="${pi}" data-l="0" value="${esc(first.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><span class="lot-action-placeholder" aria-hidden="true"></span></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty??""}"></td></tr>`;for(let li=1;li<lots.length;li++){const l=lots[li];html+=`<tr class="lot-row"><td></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td><td></td><td><div class="lot-date-cell"><input type="text" inputmode="numeric" placeholder="MM/DD" autocomplete="off" data-lot-date data-p="${pi}" data-l="${li}" value="${esc(l.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><button class="lot-inline-remove" data-del-lot="${pi}:${li}" title="해당 LOT 삭제" aria-label="해당 LOT 삭제">−</button></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty??""}"></td></tr>`}}}
 inventoryBody.innerHTML=html||'<tr><td colspan="10"><div class="inventory-empty">관리 중인 재고가 없습니다.</div></td></tr>';const all=snap.products||[],act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricProducts.textContent=all.length.toLocaleString("ko-KR");invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);inventoryRowInfo.textContent=`${shown} SKU · ${groups.length} 관리그룹`;bindInventoryInputs()}
 function bindInventoryInputs(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);document.querySelectorAll("[data-product-code]").forEach(x=>{const apply=()=>{const p=snap.products[+x.dataset.p],code=x.value.trim();p.id=code;const found=lookupInventoryProduct(code);if(found){p.name=found.name||"";p.sourceCategory=found.category||"";p.category=p.sourceCategory;p.system=invNum(found.system);if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner();toastMsg("현재 기준일 업로드 파일에서 제품 정보를 불러왔습니다.")}else{p.name="";p.sourceCategory="";p.category="";p.system=0;markInventoryDirty();if(code)toastMsg("현재 기준일 업로드 파일에서 제품코드를 찾지 못했습니다.");renderInventoryOwner()}};x.onchange=apply;x.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();apply()}}});document.querySelectorAll("[data-product-group]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];p.group=x.value;if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner()});document.querySelectorAll("[data-group-name]").forEach(x=>x.onchange=()=>{const old=x.dataset.groupName||"",name=x.value.trim();if(!name){x.value=old||"미분류";return}for(const p of (snap.products||[]))if((p.group||"")===old)p.group=name;const gi=(snap.groups||[]).indexOf(old);if(gi>=0)snap.groups[gi]=name;else if(!snap.groups.includes(name))snap.groups.push(name);snap.groups=[...new Set(snap.groups.filter(Boolean))];markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹명을 변경했습니다.")});document.querySelectorAll("[data-del-group]").forEach(b=>b.onclick=()=>{const g=b.dataset.delGroup||"";if(!g){toastMsg("미분류 그룹은 삭제할 수 없습니다.");return}if(!confirm(`${g} 관리그룹을 삭제할까요? 제품은 미분류로 이동합니다.`))return;for(const p of (snap.products||[]))if(p.group===g)p.group="";snap.groups=(snap.groups||[]).filter(x=>x!==g);markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹을 삭제했습니다.")});document.querySelectorAll("[data-lot-date]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].date=x.value;markInventoryDirty()});document.querySelectorAll("[data-lot-qty]").forEach(x=>x.oninput=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].qty=invNum(x.value);markInventoryDirty();renderInventoryMetricsOnly()});document.querySelectorAll("[data-add-lot]").forEach(b=>b.onclick=()=>{const pi=+b.dataset.addLot,p=snap.products[pi];p.lots.push({date:"",qty:0});const li=p.lots.length-1;markInventoryDirty();renderInventoryOwner();setTimeout(()=>document.querySelector(`[data-lot-date][data-p="${pi}"][data-l="${li}"]`)?.focus(),0)});document.querySelectorAll("[data-del-lot]").forEach(b=>b.onclick=()=>{const [pi,li]=b.dataset.delLot.split(":").map(Number);snap.products[pi].lots.splice(li,1);markInventoryDirty();renderInventoryOwner();toastMsg("Lot 행을 삭제했습니다.")});let dragGroup=null;document.querySelectorAll("[data-group-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,button")){e.preventDefault();return}dragGroup=tr.dataset.groupRow;tr.classList.add("group-dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("group-dragging");document.querySelectorAll(".group-drop-target").forEach(x=>x.classList.remove("group-drop-target"));dragGroup=null};tr.ondragover=e=>{if(!dragGroup)return;e.preventDefault();tr.classList.add("group-drop-target")};tr.ondragleave=()=>tr.classList.remove("group-drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("group-drop-target");const to=tr.dataset.groupRow;if(!dragGroup||dragGroup===to)return;const groups=snapshotGroups(snap);const fromI=groups.indexOf(dragGroup),toI=groups.indexOf(to);if(fromI<0||toI<0)return;const [moved]=groups.splice(fromI,1);groups.splice(toI,0,moved);snap.groups=groups;markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹 순서를 변경했습니다.")}});let dragPi=null;document.querySelectorAll("[data-product-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,select,button")){e.preventDefault();return}dragPi=+tr.dataset.productRow;tr.classList.add("dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("dragging");document.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));dragPi=null};tr.ondragover=e=>{if(dragPi===null)return;e.preventDefault();tr.classList.add("drop-target")};tr.ondragleave=()=>tr.classList.remove("drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("drop-target");const toPi=+tr.dataset.productRow;if(dragPi!==null)reorderInventoryProduct(dragPi,toPi)}})}
 function renderInventoryMetricsOnly(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const all=snap.products||[],act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);document.querySelectorAll("[data-product-code]").forEach(x=>{const p=all[+x.dataset.p];if(!p)return;const tr=x.closest("tr"),nums=tr.querySelectorAll("td.num");if(nums[1])nums[1].innerHTML=`<b>${fmtNum(productActual(p))}</b>`;if(nums[2]){const d=productDiff(p);nums[2].className=`num ${diffClass(d)} ${d!==0?"gap-cell":""}`;nums[2].textContent=(d>0?"+":"")+fmtNum(d)}})}
@@ -707,317 +711,163 @@ const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){r
   <button type="button" id="inventoryRowDelete" class="danger">행 삭제</button>
 </div>
 
+
 <script>
 (function(){
   const menu=document.getElementById("inventoryContextMenu");
   if(!menu) return;
+
+  let targetPi=null;
   let targetRow=null;
+  const undoStack=[];
+  const MAX_UNDO=20;
+
+  const clone=x=>JSON.parse(JSON.stringify(x));
+  const pushUndo=a=>{undoStack.push(a);if(undoStack.length>MAX_UNDO)undoStack.shift()};
 
   function hideMenu(){
     menu.classList.remove("show");
+    targetPi=null;
     targetRow=null;
   }
 
-  function makeEditableCell(cls, type, placeholder){
-    const td=document.createElement("td");
-    if(cls) td.className=cls;
-    const input=document.createElement("input");
-    input.type=type||"text";
-    if(type==="number"){
-      input.inputMode="numeric";
-      input.step="1";
-    }
-    input.placeholder=placeholder||"";
-    input.style.width="100%";
-    input.style.boxSizing="border-box";
-    td.appendChild(input);
-    return td;
+  function currentSnap(){
+    return ownerSnapshot(currentInventoryOwner,currentInventoryDate);
   }
 
-  function makeManualRow(){
-    const tr=document.createElement("tr");
-    tr.className="manual-inventory-row";
-    tr.dataset.manualRow="1";
-
-    tr.appendChild(makeEditableCell("", "text", ""));
-    tr.appendChild(makeEditableCell("", "text", "제품코드"));
-    tr.appendChild(makeEditableCell("", "text", "제품명"));
-    tr.appendChild(makeEditableCell("", "text", "카테고리"));
-
-    // Hidden management/group compatibility cell so existing column indices remain intact.
-    const hidden=document.createElement("td");
-    hidden.style.display="none";
-    tr.appendChild(hidden);
-
-    tr.appendChild(makeEditableCell("num", "number", "0"));
-    tr.appendChild(makeEditableCell("num", "number", "0"));
-
-    const diff=document.createElement("td");
-    diff.className="num";
-    diff.textContent="0";
-    tr.appendChild(diff);
-
-    tr.appendChild(makeEditableCell("", "date", ""));
-    tr.appendChild(makeEditableCell("num", "number", "0"));
-
-    // Calculate difference from current stock vs physical count.
-    const nums=tr.querySelectorAll('input[type="number"]');
-    if(nums.length>=2){
-      const update=()=>{
-        const a=Number(nums[0].value||0);
-        const b=Number(nums[1].value||0);
-        const gap=b-a;
-        diff.textContent=gap.toLocaleString("ko-KR");
-        diff.classList.toggle("gap-cell", gap!==0);
-      };
-      nums[0].addEventListener("input",update);
-      nums[1].addEventListener("input",update);
-    }
-    return tr;
-  }
-
-  function insertManual(where){
-    if(!targetRow) return;
-    const row=makeManualRow();
-    if(where==="above"){
-      targetRow.parentNode.insertBefore(row,targetRow);
-    }else{
-      targetRow.parentNode.insertBefore(row,targetRow.nextSibling);
-    }
-    hideMenu();
-    const first=row.querySelector('input[placeholder="제품코드"]');
-    if(first) first.focus();
+  function focusProduct(pi){
+    setTimeout(()=>document.querySelector(`[data-product-code][data-p="${pi}"]`)?.focus(),0);
   }
 
   document.addEventListener("contextmenu",function(e){
-    const row=e.target.closest(".inventory-grid tbody tr");
-    if(!row || row.classList.contains("cat-row")) return;
+    const row=e.target.closest(".inventory-grid tbody tr[data-product-row]");
+    if(!row) return;
     e.preventDefault();
+    targetPi=Number(row.dataset.productRow);
     targetRow=row;
     menu.style.left=Math.min(e.clientX,window.innerWidth-184)+"px";
     menu.style.top=Math.min(e.clientY,window.innerHeight-126)+"px";
     menu.classList.add("show");
   });
 
-  document.getElementById("inventoryRowAddBelow").addEventListener("click",()=>insertManual("below"));
-  document.getElementById("inventoryRowAddAbove").addEventListener("click",()=>insertManual("above"));
-  document.getElementById("inventoryRowDelete").addEventListener("click",function(){
-    if(!targetRow) return;
-    if(confirm("선택한 행을 삭제할까요?")){
-      targetRow.remove();
-    }
+  function addRow(offset){
+    const snap=currentSnap();
+    if(!snap || targetPi===null) return;
+    const insertAt=Math.max(0,Math.min(snap.products.length,targetPi+offset));
+    const item={id:"",name:"",sourceCategory:"",category:"",group:"",system:0,lots:[{date:"",qty:0}]};
+    snap.products.splice(insertAt,0,item);
+    pushUndo({type:"add",index:insertAt});
+    markInventoryDirty();
+    renderInventoryOwner();
     hideMenu();
-  });
+    focusProduct(insertAt);
+  }
 
-  document.addEventListener("click",function(e){
-    if(!menu.contains(e.target)) hideMenu();
-  });
+  document.getElementById("inventoryRowAddAbove").onclick=()=>addRow(0);
+  document.getElementById("inventoryRowAddBelow").onclick=()=>addRow(1);
+
+  document.getElementById("inventoryRowDelete").onclick=function(){
+    const snap=currentSnap();
+    if(!snap || targetPi===null) return;
+    if(!confirm("선택한 행을 삭제할까요?")) return;
+    const removed=clone(snap.products[targetPi]);
+    const index=targetPi;
+    snap.products.splice(index,1);
+    pushUndo({type:"delete",index,item:removed});
+    markInventoryDirty();
+    renderInventoryOwner();
+    hideMenu();
+  };
+
+  document.addEventListener("click",e=>{if(!menu.contains(e.target))hideMenu()});
   window.addEventListener("scroll",hideMenu,true);
   window.addEventListener("resize",hideMenu);
-})();
-</script>
 
-
-<script>
-(function(){
-  // -----------------------------
-  // Limited table undo (row add/delete only)
-  // -----------------------------
-  const undoStack = [];
-  const MAX_UNDO = 20;
-
-  function pushUndo(action){
-    undoStack.push(action);
-    if(undoStack.length > MAX_UNDO) undoStack.shift();
+  function isInputTarget(el){
+    return !!el.closest('input,textarea,[contenteditable="true"]');
   }
 
-  function isTypingTarget(el){
-    return !!el.closest('input, textarea, [contenteditable="true"]');
-  }
-
-  function serializeRow(row){
-    return {
-      html: row.outerHTML,
-      parent: row.parentElement,
-      nextSibling: row.nextElementSibling
-    };
-  }
-
-  function restoreSerializedRow(data){
-    if(!data || !data.parent) return null;
-    const wrap=document.createElement('tbody');
-    wrap.innerHTML=data.html.trim();
-    const row=wrap.firstElementChild;
-    if(!row) return null;
-    if(data.nextSibling && data.nextSibling.parentElement===data.parent){
-      data.parent.insertBefore(row,data.nextSibling);
-    }else{
-      data.parent.appendChild(row);
-    }
-    return row;
-  }
-
-  // Existing context-menu hooks from V16/V17 are captured in capture phase,
-  // then we infer add/delete by DOM mutation and record only local operations.
-  let beforeContextRows = null;
-  let contextTarget = null;
-
-  document.addEventListener('contextmenu', function(e){
-    const row=e.target.closest('.inventory-grid tbody tr');
-    if(!row || row.classList.contains('cat-row')) return;
-    contextTarget=row;
-    const tbody=row.parentElement;
-    beforeContextRows = tbody ? Array.from(tbody.children) : null;
-  }, true);
-
-  document.addEventListener('click', function(e){
-    const btn=e.target.closest('#inventoryRowAddBelow,#inventoryRowAddAbove,#inventoryRowDelete');
-    if(!btn || !contextTarget) return;
-
-    const actionId=btn.id;
-    const targetSnapshot = actionId==='inventoryRowDelete' ? serializeRow(contextTarget) : null;
-    const tbody=contextTarget.parentElement;
-    const beforeSet = tbody ? new Set(Array.from(tbody.children)) : new Set();
-
-    // Let existing handler execute first, then inspect result.
-    setTimeout(function(){
-      if(actionId==='inventoryRowDelete'){
-        if(!document.body.contains(contextTarget)){
-          pushUndo({type:'delete', data:targetSnapshot});
-        }
-      }else if(tbody){
-        const afterRows=Array.from(tbody.children);
-        const added=afterRows.find(r=>!beforeSet.has(r));
-        if(added){
-          pushUndo({type:'add', row:added});
-        }
-      }
-      contextTarget=null;
-      beforeContextRows=null;
-    },0);
-  }, true);
-
-  document.addEventListener('keydown', function(e){
-    if(!(e.ctrlKey || e.metaKey) || e.key.toLowerCase()!=='z') return;
-
-    // Keep native Ctrl+Z while user is typing in an input.
-    if(isTypingTarget(e.target)) return;
-
+  document.addEventListener("keydown",function(e){
+    if(!(e.ctrlKey||e.metaKey) || e.key.toLowerCase()!=="z") return;
+    if(isInputTarget(e.target)) return; // native input undo remains intact
     const action=undoStack.pop();
     if(!action) return;
 
+    const snap=currentSnap();
+    if(!snap) return;
     e.preventDefault();
 
-    if(action.type==='add'){
-      if(action.row && document.body.contains(action.row)){
-        action.row.remove();
+    if(action.type==="add"){
+      if(action.index>=0 && action.index<snap.products.length){
+        snap.products.splice(action.index,1);
       }
-    }else if(action.type==='delete'){
-      restoreSerializedRow(action.data);
+    }else if(action.type==="delete"){
+      snap.products.splice(Math.min(action.index,snap.products.length),0,clone(action.item));
     }
+    markInventoryDirty();
+    renderInventoryOwner();
+    toastMsg("직전 행 작업을 되돌렸습니다.");
   });
 
-  // Clear undo history when changing inventory date/snapshot.
-  ['inventoryBaseDate','inventorySavedDateSelect'].forEach(id=>{
+  ["newInventoryDateValue","inventorySavedDateSelect","inventoryDate"].forEach(id=>{
     const el=document.getElementById(id);
-    if(el){
-      el.addEventListener('change',()=>{ undoStack.length=0; });
-    }
+    if(el)el.addEventListener("change",()=>{undoStack.length=0});
   });
 
-  // -----------------------------
-  // Manufacture date parser
-  // 06/05 -> 2026-06-05
-  // 11/22 on 2026-08-29 -> 2025-11-22
-  // Rule: entered MM/DD must never resolve to a future date.
-  // -----------------------------
-  function pad2(n){ return String(n).padStart(2,'0'); }
+  function pad2(n){return String(n).padStart(2,"0")}
+  function normalizeDate(raw){
+    raw=String(raw||"").trim().replace(/[.\-\s]/g,"/");
+    if(!raw)return "";
 
-  function normalizeManufactureDate(raw, today){
-    if(!raw) return '';
-    raw=String(raw).trim().replace(/[.\-\s]/g,'/');
-
-    // Already full YYYY/MM/DD or YYYY-MM-DD
     let m=raw.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
     if(m){
-      const y=Number(m[1]), mo=Number(m[2]), d=Number(m[3]);
-      const dt=new Date(y,mo-1,d);
-      if(dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return '';
+      const y=+m[1],mo=+m[2],d=+m[3],dt=new Date(y,mo-1,d);
+      if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;
       return `${y}-${pad2(mo)}-${pad2(d)}`;
     }
 
-    // MM/DD only
     m=raw.match(/^(\d{1,2})\/(\d{1,2})$/);
-    if(!m) return '';
-
-    const mo=Number(m[1]), d=Number(m[2]);
+    if(!m)return null;
+    const today=new Date();
+    const mo=+m[1],d=+m[2];
     let y=today.getFullYear();
     let dt=new Date(y,mo-1,d);
+    if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;
 
-    // Invalid date
-    if(dt.getFullYear()!==y || dt.getMonth()!==mo-1 || dt.getDate()!==d) return '';
-
-    // Manufacture dates are always today or earlier.
-    // If current-year MM/DD would be future, use previous year.
     const todayOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-    if(dt > todayOnly){
-      y -= 1;
-      dt=new Date(y,mo-1,d);
-    }
+    if(dt>todayOnly)y--;
     return `${y}-${pad2(mo)}-${pad2(d)}`;
   }
 
-  function applyManufactureDateInput(input){
-    if(!input) return;
-    const raw=input.value.trim();
-    if(!raw) return;
-
-    const normalized=normalizeManufactureDate(raw,new Date());
-    if(normalized){
-      input.value=normalized;
-      input.dispatchEvent(new Event('input',{bubbles:true}));
-      input.dispatchEvent(new Event('change',{bubbles:true}));
-    }else{
-      input.setCustomValidity('MM/DD 또는 YYYY-MM-DD 형식으로 입력해주세요.');
+  function commitManufactureDate(input){
+    const normalized=normalizeDate(input.value);
+    if(normalized===null){
+      input.setCustomValidity("MM/DD 또는 YYYY-MM-DD 형식으로 입력해주세요.");
       input.reportValidity();
-      setTimeout(()=>input.setCustomValidity(''),1200);
+      setTimeout(()=>input.setCustomValidity(""),1200);
+      return;
+    }
+    if(!normalized)return;
+    input.value=normalized;
+    const snap=currentSnap();
+    const pi=Number(input.dataset.p),li=Number(input.dataset.l);
+    if(snap?.products?.[pi]?.lots?.[li]){
+      snap.products[pi].lots[li].date=normalized;
+      markInventoryDirty();
     }
   }
 
-  function upgradeLotDateInput(input){
-    if(!input || input.dataset.manualDateReady==='1') return;
-    input.dataset.manualDateReady='1';
+  document.addEventListener("blur",function(e){
+    if(e.target.matches("[data-lot-date]"))commitManufactureDate(e.target);
+  },true);
 
-    // Convert browser date picker to text input where possible.
-    try{ input.type='text'; }catch(e){}
-    input.inputMode='numeric';
-    input.placeholder='MM/DD';
-    input.autocomplete='off';
-    input.title='예: 06/05 → 2026-06-05';
-
-    input.addEventListener('blur',()=>applyManufactureDateInput(input));
-    input.addEventListener('keydown',function(e){
-      if(e.key==='Enter'){
-        applyManufactureDateInput(input);
-        input.blur();
-      }
-    });
-  }
-
-  function scanLotDateInputs(root=document){
-    root.querySelectorAll('.lot-date-cell input, input.lot-date-input').forEach(upgradeLotDateInput);
-  }
-
-  scanLotDateInputs();
-
-  const obs=new MutationObserver(mutations=>{
-    for(const m of mutations){
-      for(const node of m.addedNodes){
-        if(node.nodeType===1) scanLotDateInputs(node);
-      }
+  document.addEventListener("keydown",function(e){
+    if(e.target.matches("[data-lot-date]") && e.key==="Enter"){
+      e.preventDefault();
+      commitManufactureDate(e.target);
+      e.target.blur();
     }
   });
-  obs.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 
