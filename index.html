@@ -39,7 +39,7 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
 @media(max-width:1180px){.sidebar{width:226px}.main{margin-left:226px;width:calc(100% - 226px)}.summary-grid{grid-template-columns:1fr 1fr}.dashboard-grid,.admin-grid,.analysis-grid{grid-template-columns:1fr}.flow-list{grid-template-columns:1fr 1fr}}
 
 /* V4 inventory workbook replacement */
-.inventory-shell{display:flex;flex-direction:column;gap:12px}.inventory-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.inventory-head h2{margin:3px 0 4px;font-size:18px;letter-spacing:-.03em}.inventory-head p{margin:0;color:#78848e;font-size:10px;line-height:1.6}.inventory-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.inventory-filterbar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:160px 1fr 170px auto;gap:8px;align-items:center}.inventory-filterbar input,.inventory-filterbar select{height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 10px;font-size:11px;color:#31404c;outline:0}.inventory-filterbar input:focus,.inventory-filterbar select:focus{border-color:#8ca0b0;box-shadow:0 0 0 3px #edf2f5}.inventory-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.inventory-metric{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px}.inventory-metric span{font-size:9px;color:#7d8993;font-weight:800;letter-spacing:.05em}.inventory-metric b{display:block;font-size:20px;margin-top:7px;letter-spacing:-.03em}.inventory-metric small{font-size:9px;color:#98a1a8}.inventory-grid-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}.inventory-grid-wrap{overflow:auto;max-height:650px}.inventory-grid{width:100%;border-collapse:separate;border-spacing:0;min-width:1000px;font-size:10px}.inventory-grid th{position:sticky;top:0;z-index:5;height:37px;background:#f5f7f9;color:#66727c;border-bottom:1px solid #dde3e8;border-right:1px solid #e8ecef;padding:0 9px}.inventory-grid td{height:35px;border-bottom:1px solid #edf0f2;border-right:1px solid #eef1f3;padding:0 9px;background:#fff}.inventory-grid .cat-row td{height:34px;background:#eef2f5;color:#344654;font-weight:800;border-bottom:1px solid #dfe5e9}.inventory-grid .lot-row td{background:#fbfcfd;color:#6f7c86}.inventory-grid .lot-row td:first-child{padding-left:28px}.inventory-grid .product-name{font-weight:700;color:#253541}.inventory-grid input{width:100%;height:29px;border:0;background:transparent;outline:0;font-size:10px;color:#253541}.inventory-grid input:focus{background:#eef4f8;box-shadow:inset 0 0 0 1px #8aa2b4}.num{text-align:right!important;font-variant-numeric:tabular-nums}.diff-zero{color:#657681}.diff-plus{color:#336d59;font-weight:800}.diff-minus{color:#a65555;font-weight:800}.inventory-grid td.gap-cell{background:#fff4f2!important;box-shadow:inset 3px 0 0 #d98b80;color:#9b4d46!important;font-weight:900}.inventory-grid tr:hover td.gap-cell{background:#ffefec!important}.source-category{color:#7d8993;background:#fafbfc!important}.inventory-date-control{display:flex;align-items:center;gap:7px}.inventory-date-control label{font-size:9px;font-weight:800;color:#65747f}.inventory-date-control input{height:35px;border:1px solid var(--line);border-radius:8px;padding:0 9px;color:#31404c;background:#fff}.lot-add{border:0;background:transparent;color:#54728a;font-size:9px;font-weight:800;padding:4px 0}.lot-delete{border:0;background:transparent;color:#ac6666;font-size:10px;padding:4px}.product-delete{border:0;background:transparent;color:#a95a5a;font-size:9px;font-weight:800;padding:4px 0}.row-delete{border:0;background:transparent;color:#a95a5a;font-size:9px;font-weight:800;padding:4px 6px;border-radius:6px}.row-delete:hover,.product-delete:hover,.lot-delete:hover{background:#fbeeee}.drag-handle{display:inline-flex;align-items:center;justify-content:center;width:22px;height:24px;color:#9aa7b0;cursor:grab;user-select:none;font-size:15px;letter-spacing:-2px}.drag-handle:hover{color:#566b7a}.drag-handle:active{cursor:grabbing}.inventory-grid tr.dragging td{opacity:.42;background:#eef4f7!important}.inventory-grid tr.drop-target td{box-shadow:inset 0 2px 0 #7e95a6}.inventory-grid tr.group-dragging td{opacity:.5}.inventory-grid tr.group-drop-target td{box-shadow:inset 0 3px 0 #7e95a6}.auto-save-state{display:inline-flex;align-items:center;gap:6px;color:#5e7869;font-size:9px;font-weight:800}.auto-save-state:before{content:"";width:6px;height:6px;border-radius:50%;background:#6fa989}.inventory-note{padding:10px 13px;border-top:1px solid #edf0f2;background:#fbfcfd;color:#7a8791;font-size:9px;display:flex;justify-content:space-between;gap:10px}.inventory-empty{padding:50px;text-align:center;color:#8b969f;font-size:11px}.inventory-total-owner{display:inline-flex;padding:4px 7px;border-radius:20px;background:#eef2f5;color:#516474;font-size:9px;font-weight:800}.month-stock-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:5px 0}.month-stock-chip{display:inline-flex;align-items:center;gap:6px;min-width:72px;padding:5px 8px;border:1px solid #dfe6eb;border-radius:8px;background:#f8fafb;color:#435461;white-space:nowrap}.month-stock-chip b{font-size:9px;color:#657581}.month-stock-chip strong{font-size:10px;color:#253541;font-variant-numeric:tabular-nums}.month-stock-empty{color:#9aa4ac;font-size:9px}.inventory-status{display:inline-flex;padding:4px 7px;border-radius:20px;font-size:9px;font-weight:800;background:#eef3f0;color:#416c59}.inventory-status.gap{background:#fbeeee;color:#a44e4e}.cat-summary{display:flex;gap:7px;align-items:center}.cat-summary small{color:#89959e;font-weight:500}.owner-template-note{border:1px dashed #cfd8df;border-radius:10px;padding:12px;background:#fafcfd;color:#6c7a85;font-size:10px;line-height:1.6}
+.inventory-shell{display:flex;flex-direction:column;gap:12px}.inventory-head{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 18px;display:flex;align-items:flex-start;justify-content:space-between;gap:14px}.inventory-head h2{margin:3px 0 4px;font-size:18px;letter-spacing:-.03em}.inventory-head p{margin:0;color:#78848e;font-size:10px;line-height:1.6}.inventory-actions{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}.inventory-filterbar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;grid-template-columns:160px 1fr 170px auto;gap:8px;align-items:center}.inventory-filterbar input,.inventory-filterbar select{height:36px;border:1px solid var(--line);border-radius:9px;background:#fff;padding:0 10px;font-size:11px;color:#31404c;outline:0}.inventory-filterbar input:focus,.inventory-filterbar select:focus{border-color:#8ca0b0;box-shadow:0 0 0 3px #edf2f5}.inventory-metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.inventory-metric{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px}.inventory-metric span{font-size:9px;color:#7d8993;font-weight:800;letter-spacing:.05em}.inventory-metric b{display:block;font-size:20px;margin-top:7px;letter-spacing:-.03em}.inventory-metric small{font-size:9px;color:#98a1a8}.inventory-grid-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden}.inventory-grid-wrap{overflow:auto;max-height:650px}.inventory-grid{width:100%;border-collapse:separate;border-spacing:0;min-width:1000px;font-size:10px}.inventory-grid th{position:sticky;top:0;z-index:5;height:37px;background:#f5f7f9;color:#66727c;border-bottom:1px solid #dde3e8;border-right:1px solid #e8ecef;padding:0 9px}.inventory-grid td{height:35px;border-bottom:1px solid #edf0f2;border-right:1px solid #eef1f3;padding:0 9px;background:#fff}.inventory-grid .inventory-grid .lot-row td{background:#fbfcfd;color:#6f7c86}.inventory-grid .lot-row td:first-child{padding-left:28px}.inventory-grid .product-name{font-weight:700;color:#253541}.inventory-grid input{width:100%;height:29px;border:0;background:transparent;outline:0;font-size:10px;color:#253541}.inventory-grid input:focus{background:#eef4f8;box-shadow:inset 0 0 0 1px #8aa2b4}.num{text-align:right!important;font-variant-numeric:tabular-nums}.diff-zero{color:#657681}.diff-plus{color:#336d59;font-weight:800}.diff-minus{color:#a65555;font-weight:800}.inventory-grid td.gap-cell{background:#fff4f2!important;box-shadow:inset 3px 0 0 #d98b80;color:#9b4d46!important;font-weight:900}.inventory-grid tr:hover td.gap-cell{background:#ffefec!important}.source-category{color:#7d8993;background:#fafbfc!important}.inventory-date-control{display:flex;align-items:center;gap:7px}.inventory-date-control label{font-size:9px;font-weight:800;color:#65747f}.inventory-date-control input{height:35px;border:1px solid var(--line);border-radius:8px;padding:0 9px;color:#31404c;background:#fff}.lot-add{border:0;background:transparent;color:#54728a;font-size:9px;font-weight:800;padding:4px 0}.lot-delete{border:0;background:transparent;color:#ac6666;font-size:10px;padding:4px}.product-delete{border:0;background:transparent;color:#a95a5a;font-size:9px;font-weight:800;padding:4px 0}.row-delete{border:0;background:transparent;color:#a95a5a;font-size:9px;font-weight:800;padding:4px 6px;border-radius:6px}.row-delete:hover,.product-delete:hover,.lot-delete:hover{background:#fbeeee}.drag-handle{display:inline-flex;align-items:center;justify-content:center;width:22px;height:24px;color:#9aa7b0;cursor:grab;user-select:none;font-size:15px;letter-spacing:-2px}.drag-handle:hover{color:#566b7a}.drag-handle:active{cursor:grabbing}.inventory-grid tr.dragging td{opacity:.42;background:#eef4f7!important}.inventory-grid tr.drop-target td{box-shadow:inset 0 2px 0 #7e95a6}.inventory-grid tr.group-dragging td{opacity:.5}.inventory-grid tr.group-drop-target td{box-shadow:inset 0 3px 0 #7e95a6}.auto-save-state{display:inline-flex;align-items:center;gap:6px;color:#5e7869;font-size:9px;font-weight:800}.auto-save-state:before{content:"";width:6px;height:6px;border-radius:50%;background:#6fa989}.inventory-note{padding:10px 13px;border-top:1px solid #edf0f2;background:#fbfcfd;color:#7a8791;font-size:9px;display:flex;justify-content:space-between;gap:10px}.inventory-empty{padding:50px;text-align:center;color:#8b969f;font-size:11px}.inventory-total-owner{display:inline-flex;padding:4px 7px;border-radius:20px;background:#eef2f5;color:#516474;font-size:9px;font-weight:800}.month-stock-wrap{display:flex;flex-wrap:wrap;gap:6px;padding:5px 0}.month-stock-chip{display:inline-flex;align-items:center;gap:6px;min-width:72px;padding:5px 8px;border:1px solid #dfe6eb;border-radius:8px;background:#f8fafb;color:#435461;white-space:nowrap}.month-stock-chip b{font-size:9px;color:#657581}.month-stock-chip strong{font-size:10px;color:#253541;font-variant-numeric:tabular-nums}.month-stock-empty{color:#9aa4ac;font-size:9px}.inventory-status{display:inline-flex;padding:4px 7px;border-radius:20px;font-size:9px;font-weight:800;background:#eef3f0;color:#416c59}.inventory-status.gap{background:#fbeeee;color:#a44e4e}.owner-template-note{border:1px dashed #cfd8df;border-radius:10px;padding:12px;background:#fafcfd;color:#6c7a85;font-size:10px;line-height:1.6}
 .inventory-commandbar{background:#fff;border:1px solid var(--line);border-radius:12px;padding:11px 12px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.inventory-command-left,.inventory-command-right{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.btn.add{background:#edf4f8;border-color:#cddce7;color:#315a7d}.btn.add:hover{background:#e4eef5}.btn.remove{background:#fff2f2;border-color:#efd2d2;color:#a74c4c}.btn.remove:hover{background:#fbe8e8}.btn.upload{background:#f5f2fa;border-color:#ded5ec;color:#66547e}.source-file{display:inline-flex;align-items:center;gap:6px;height:30px;padding:0 9px;border:1px solid #e1e6ea;border-radius:8px;background:#fafbfc;font-size:9px;color:#74818b;white-space:nowrap}.source-file:before{content:"";width:6px;height:6px;border-radius:50%;background:#aab4bb}.source-file.uploaded{background:#f1f6f3;border-color:#d7e5dc;color:#557064}.source-file.uploaded:before{background:#6f9d82}.source-file b{color:#344654;font-weight:800}.group-name-input{height:28px!important;max-width:220px!important;border:1px solid transparent!important;border-radius:7px!important;background:transparent!important;font-weight:800!important;color:#344654!important;padding:0 7px!important}.group-name-input:hover,.group-name-input:focus{border-color:#cbd6de!important;background:#fff!important}.group-select{height:29px;width:128px;border:1px solid #e1e6eb;border-radius:7px;background:#fff;padding:0 7px;font-size:9px;color:#425360}.manage-actions{display:flex;align-items:center;gap:5px}.mini-add,.mini-remove{border-radius:7px;padding:5px 7px;font-size:9px;font-weight:800;border:1px solid}.mini-add{background:#edf4f8;border-color:#d0dee8;color:#315a7d}.mini-remove{background:#fff2f2;border-color:#efd4d4;color:#a75555}.mini-add:hover{background:#e3eef5}.mini-remove:hover{background:#fbe7e7}.lot-date-cell{display:flex;align-items:center;gap:4px;min-width:165px}.lot-date-cell input[type=date]{min-width:0;flex:1}.lot-actions{display:inline-flex;align-items:center;gap:3px;flex:0 0 53px;width:53px}.lot-action-placeholder{width:25px;height:25px;flex:0 0 25px;visibility:hidden;pointer-events:none}.lot-inline-add,.lot-inline-remove{width:25px;height:25px;flex:0 0 25px;padding:0;border:1px solid;border-radius:7px;font-size:15px;font-weight:800;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}.lot-inline-add{background:#edf4f8;border-color:#d0dee8;color:#315a7d}.lot-inline-add:hover{background:#e3eef5}.lot-inline-add:focus,.lot-inline-remove:focus{outline:0;box-shadow:0 0 0 3px #e5eef4}.lot-inline-remove{background:#fff2f2;border-color:#efd4d4;color:#a75555}.lot-inline-remove:hover{background:#fbe7e7}.inventory-filterbar.compact{grid-template-columns:170px 180px 1fr}.inventory-source-hint{font-size:9px;color:#7d8993;text-align:right}.inventory-metrics.three{grid-template-columns:repeat(3,1fr)}
 @media(max-width:900px){.inventory-filterbar{grid-template-columns:1fr 1fr}.inventory-filterbar.compact{grid-template-columns:1fr}.inventory-metrics{grid-template-columns:1fr 1fr}.inventory-metrics.three{grid-template-columns:1fr}.inventory-head{flex-direction:column}.inventory-actions{justify-content:flex-start}.inventory-commandbar{align-items:flex-start}.inventory-source-hint{text-align:left}}
 
@@ -70,7 +70,7 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   height:32px;
   padding:0 7px;
 }
-.inventory-grid .cat-row td{height:31px}
+.inventory-grid 
 .inventory-grid .lot-row td{height:30px}
 .inventory-grid .source-category{
   color:#7b8790;
@@ -641,7 +641,7 @@ table td.num,
     background:#fff!important;
     color:#111!important;
   }
-  #inventoryOwnerView .cat-row td{background:#f1f3f4!important}
+  #inventoryOwnerView 
   #inventoryOwnerView input,
   #inventoryOwnerView select{
     border:0!important;
@@ -652,6 +652,59 @@ table td.num,
   }
   #inventoryOwnerView .inventory-blank-row td{border-left:1px solid #cfd6da!important;border-right:1px solid #cfd6da!important}
   #inventoryOwnerView .inventory-note{font-size:8pt!important}
+}
+
+
+/* V29 — modern UI, precise inventory alignment, resize handles, table-only print */
+:root{--modern-bg:#f6f7f8;--modern-panel:#fff;--modern-line:#e7e9ec;--modern-text:#182026;--modern-muted:#707b84;--modern-soft:#f1f3f4}
+body{background:var(--modern-bg)!important;color:var(--modern-text)!important;letter-spacing:-.01em}
+.card,.panel,.inventory-shell,.sheet,.admin-card,.upload-card{box-shadow:none!important;border-color:var(--modern-line)!important}
+.btn,button{box-shadow:none!important}
+.inventory-grid{background:#fff!important;border-collapse:separate!important;border-spacing:0!important}
+.inventory-grid th{position:relative!important;background:#f7f8f9!important;color:#4c5963!important;font-weight:800!important;border-bottom:1px solid #dfe3e6!important}
+.inventory-grid td{border-bottom:1px solid #eef0f2!important;background:#fff!important}
+.inventory-grid tbody tr:hover td{background:#fafbfb!important}
+.inventory-grid th:nth-child(1),.inventory-grid td:nth-child(1),
+.inventory-grid th:nth-child(2),.inventory-grid td:nth-child(2),
+.inventory-grid th:nth-child(8),.inventory-grid td:nth-child(8){text-align:center!important}
+.inventory-grid th:nth-child(3),.inventory-grid td:nth-child(3),
+.inventory-grid th:nth-child(4),.inventory-grid td:nth-child(4){text-align:left!important}
+.inventory-grid th:nth-child(5),.inventory-grid td:nth-child(5),
+.inventory-grid th:nth-child(6),.inventory-grid td:nth-child(6),
+.inventory-grid th:nth-child(7),.inventory-grid td:nth-child(7),
+.inventory-grid th:nth-child(9),.inventory-grid td:nth-child(9){text-align:right!important}
+.inventory-grid td input{text-align:inherit!important}
+.order-cell{display:flex!important;align-items:center!important;justify-content:center!important;gap:6px!important;min-height:38px!important}
+.row-number{font-variant-numeric:tabular-nums;color:#66727b;font-size:11px;min-width:18px;text-align:center}
+.drag-handle{margin:0!important}
+.inventory-grid .diff-pos,.inventory-grid .diff-neg,.inventory-grid .gap-cell{background:transparent!important}
+.inventory-grid .diff-pos{color:#9b5c16!important;font-weight:800!important}
+.inventory-grid .diff-neg{color:#9a4d55!important;font-weight:800!important}
+.inventory-number-input{font-variant-numeric:tabular-nums!important}
+.col-resizer{position:absolute;top:0;right:-4px;width:8px;height:100%;cursor:col-resize;z-index:5;touch-action:none}
+.col-resizer::after{content:"";position:absolute;right:3px;top:24%;height:52%;width:1px;background:transparent}
+.col-resizer:hover::after,.resizing-col .col-resizer::after{background:#aeb7bd}
+.resizing-col{cursor:col-resize!important;user-select:none!important}
+.inventory-context-menu{width:260px!important;padding:7px!important;border:1px solid #dfe3e6!important;border-radius:12px!important;box-shadow:0 12px 32px rgba(25,35,42,.12)!important}
+.inventory-context-menu .context-menu-title{padding:7px 9px 5px;font-size:10px;font-weight:800;color:#8a949b;text-transform:none}
+.inventory-context-menu button{display:flex!important;flex-direction:column!important;align-items:flex-start!important;gap:2px!important;padding:9px 10px!important;border-radius:8px!important;text-align:left!important}
+.inventory-context-menu button b{font-size:12px}.inventory-context-menu button small{font-size:9px;color:#89939a;font-weight:500}
+.inventory-context-menu button:hover{background:#f4f5f6!important}
+.inventory-context-menu button.danger b{color:#a94f55}
+.manual-row td{background:#fcfcfc!important}
+
+@media print{
+  @page{size:A4 landscape;margin:8mm}
+  body *{visibility:hidden!important}
+  #inventoryOwnerView .inventory-grid-wrap,
+  #inventoryOwnerView .inventory-grid,
+  #inventoryOwnerView .inventory-grid *{visibility:visible!important}
+  #inventoryOwnerView .inventory-grid-wrap{position:absolute!important;left:0!important;top:0!important;width:100%!important;overflow:visible!important;border:0!important}
+  #inventoryOwnerView .inventory-grid{width:100%!important;min-width:0!important;table-layout:auto!important;font-size:8.5pt!important;border-collapse:collapse!important}
+  #inventoryOwnerView .inventory-grid th,#inventoryOwnerView .inventory-grid td{border:1px solid #cfd4d8!important;padding:3px 4px!important;color:#111!important;background:#fff!important}
+  #inventoryOwnerView .inventory-grid input{border:0!important;background:transparent!important;box-shadow:none!important;padding:0!important;color:#111!important}
+  #inventoryOwnerView .lot-actions,.col-resizer,.drag-handle{display:none!important}
+  .order-cell{display:block!important;text-align:center!important;min-height:0!important}
 }
 
 </style>
@@ -784,8 +837,10 @@ function normalizeInventoryDb(){
       if(Object.prototype.hasOwnProperty.call(snap,"groups")){delete snap.groups;changed=true}
       for(const p of (snap.products||[])){
         if(p&&p.rowType==="blank"){
-          if(Object.prototype.hasOwnProperty.call(p,"group")){delete p.group;changed=true}
-          continue;
+          p.rowType="manual";
+          p.id=p.id||"";p.name=p.name||"";p.sourceCategory="";p.category=p.category||"";p.system=invNum(p.system);p.lots=(p.lots&&p.lots.length)?p.lots:[{date:"",qty:0}];
+          if(Object.prototype.hasOwnProperty.call(p,"group"))delete p.group;
+          changed=true;
         }
         if(p){
           p.sourceCategory=p.sourceCategory??p.category??"";
@@ -877,9 +932,8 @@ function reorderInventoryProduct(fromPi,toPi){
   markInventoryDirty();
   renderInventoryOwner();
 }
-function isBlankInventoryRow(p){return !!p&&p.rowType==="blank"}
-function inventoryProductRows(snap){return (snap?.products||[]).filter(p=>!isBlankInventoryRow(p))}
-function categoryCount(products,category){return products.filter(p=>!isBlankInventoryRow(p)&&(p.sourceCategory||p.category||"미분류")===category).length}
+function isBlankInventoryRow(p){return !!p&&p.rowType==="manual"}
+function inventoryProductRows(snap){return (snap?.products||[]).filter(Boolean)}
 function renderInventoryOwner(){
   const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);
   if(!snap)return;
@@ -895,162 +949,118 @@ function renderInventoryOwner(){
   }
 
   const rows=snap.products||[];
-  const products=inventoryProductRows(snap);
-  let html="";
-  let lastCategory=null;
-
+  let tableHtml="";
   rows.forEach((p,pi)=>{
-    if(isBlankInventoryRow(p)){
-      html+=`<tr class="inventory-blank-row" data-inventory-row="${pi}" data-blank-row="${pi}"><td colspan="9"><div class="inventory-blank-space"></div></td></tr>`;
-      return;
-    }
-
-    const category=p.sourceCategory||p.category||"미분류";
-    if(category!==lastCategory){
-      html+=`<tr class="cat-row"><td colspan="9"><div class="cat-summary"><span style="width:22px"></span><b>${esc(category)}</b><small>${categoryCount(products,category)} SKU</small></div></td></tr>`;
-      lastCategory=category;
-    }
-
+    if(!p)return;
+    const manual=isBlankInventoryRow(p);
     const actual=productActual(p);
     const diff=actual-invNum(p.system);
     const lots=(p.lots&&p.lots.length?p.lots:[{date:"",qty:""}]);
     const first=lots[0]||{date:"",qty:""};
+    const codeCell=`<input data-product-code data-p="${pi}" value="${esc(p.id||"")}" placeholder="제품코드${manual?"":" 입력"}">`;
+    const nameCell=manual?`<input data-manual-name data-p="${pi}" value="${esc(p.name||"")}" placeholder="제품명">`:(esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>');
+    const categoryCell=manual?`<input data-manual-category data-p="${pi}" value="${esc(p.category||"")}" placeholder="카테고리">`:(esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>');
+    const systemCell=manual?`<input class="num inventory-number-input" type="text" inputmode="numeric" data-manual-system data-p="${pi}" value="${p.system?fmtNum(p.system):""}" placeholder="0">`:fmtNum(p.system);
 
-    html+=`<tr draggable="true" data-inventory-row="${pi}" data-product-row="${pi}">
-      <td><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span></td>
-      <td><input data-product-code data-p="${pi}" value="${esc(p.id||"")}" placeholder="제품코드 입력"></td>
-      <td class="product-name">${esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>'}</td>
-      <td class="source-category">${esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>'}</td>
-      <td class="num">${fmtNum(p.system)}</td>
+    tableHtml+=`<tr draggable="true" data-inventory-row="${pi}" data-product-row="${pi}" class="${manual?"manual-row":""}">
+      <td class="order-cell"><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span><span class="row-number">${pi+1}</span></td>
+      <td>${codeCell}</td>
+      <td class="product-name">${nameCell}</td>
+      <td class="source-category">${categoryCell}</td>
+      <td class="num">${systemCell}</td>
       <td class="num"><b>${fmtNum(actual)}</b></td>
-      <td class="num ${diffClass(diff)} ${diff!==0?"gap-cell":""}">${diff>0?"+":""}${fmtNum(diff)}</td>
+      <td class="num ${diffClass(diff)}">${diff>0?"+":""}${fmtNum(diff)}</td>
       <td><div class="lot-date-cell"><input type="text" inputmode="numeric" placeholder="MM/DD" autocomplete="off" data-lot-date data-p="${pi}" data-l="0" value="${esc(first.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가">＋</button><span class="lot-action-placeholder"></span></span></div></td>
-      <td><input class="num" type="number" inputmode="numeric" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty??""}"></td>
+      <td><input class="num inventory-number-input" type="text" inputmode="numeric" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty!==""&&first.qty!=null?fmtNum(first.qty):""}" placeholder="0"></td>
     </tr>`;
 
     for(let li=1;li<lots.length;li++){
       const l=lots[li];
-      html+=`<tr class="lot-row">
-        <td></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td>
+      tableHtml+=`<tr class="lot-row">
+        <td class="order-cell"></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td>
         <td><div class="lot-date-cell"><input type="text" inputmode="numeric" placeholder="MM/DD" autocomplete="off" data-lot-date data-p="${pi}" data-l="${li}" value="${esc(l.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가">＋</button><button class="lot-inline-remove" data-del-lot="${pi}:${li}" title="해당 LOT 삭제">−</button></span></div></td>
-        <td><input class="num" type="number" inputmode="numeric" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty??""}"></td>
+        <td><input class="num inventory-number-input" type="text" inputmode="numeric" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty!==""&&l.qty!=null?fmtNum(l.qty):""}" placeholder="0"></td>
       </tr>`;
     }
   });
 
-  inventoryBody.innerHTML=html||'<tr><td colspan="9"><div class="inventory-empty">등록된 제품이 없습니다. 빈 영역에서 마우스 오른쪽 버튼을 눌러 행 또는 제품을 추가할 수 있습니다.</div></td></tr>';
-  invMetricProducts.textContent=fmtNum(products.length);
-  inventoryRowInfo.textContent=`${fmtNum(products.length)} SKU`;
+  inventoryBody.innerHTML=tableHtml||'<tr><td colspan="9"><div class="inventory-empty">등록된 제품이 없습니다. 표 영역에서 마우스 오른쪽 버튼을 눌러 행을 추가할 수 있습니다.</div></td></tr>';
+  invMetricProducts.textContent=fmtNum(rows.length);
+  inventoryRowInfo.textContent=`${fmtNum(rows.length)} SKU`;
   renderInventoryMetricsOnly();
   bindInventoryInputs();
   renderInventoryHistory();
+  applyInventoryColumnWidths();
+}
+function parseInventoryNumber(v){return invNum(String(v??"").replace(/,/g,""))}
+function formatInventoryNumberInput(el){
+  if(!el)return;
+  const raw=String(el.value||"").replace(/,/g,"").trim();
+  el.value=raw===""?"":fmtNum(parseInventoryNumber(raw));
+  syncCompletedField(el);
 }
 function bindInventoryInputs(){
-  const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);
-  if(!snap)return;
+  const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;
+  const commitText=e=>{if(e.key==="Enter"){e.preventDefault();e.currentTarget.blur()}};
 
-  document.querySelectorAll("[data-product-code]").forEach(x=>{
-    const apply=()=>{
-      const p=snap.products[+x.dataset.p],code=x.value.trim();
-      p.id=code;
-      const found=lookupInventoryProduct(code);
-      if(found){
-        p.name=found.name||"";
-        p.sourceCategory=found.category||"";
-        p.category=p.sourceCategory;
-        p.system=invNum(found.system);
-        markInventoryDirty();
-        renderInventoryOwner();
-        toastMsg("현재 기준일 업로드 파일에서 제품 정보를 불러왔습니다.");
-      }else{
-        p.name="";
-        p.sourceCategory="";
-        p.category="";
-        p.system=0;
-        markInventoryDirty();
-        if(code)toastMsg("현재 기준일 업로드 파일에서 제품코드를 찾지 못했습니다.");
-        renderInventoryOwner();
-      }
+  inventoryBody.querySelectorAll("[data-product-code]").forEach(x=>{
+    x.addEventListener("keydown",commitText);
+    x.onchange=()=>{
+      const p=snap.products[+x.dataset.p];if(!p)return;
+      p.id=x.value.trim();
+      const m=snap.sourceMaster?.[p.id];
+      if(m&&!isBlankInventoryRow(p)){p.name=m.name;p.sourceCategory=m.category;p.category=m.category;p.system=m.system}
+      markInventoryDirty();renderInventoryOwner();
     };
-    x.onchange=apply;
-    x.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();apply()}};
   });
 
-  document.querySelectorAll("[data-lot-date]").forEach(x=>{
+  inventoryBody.querySelectorAll("[data-manual-name]").forEach(x=>{
+    x.addEventListener("keydown",commitText);
+    x.onchange=()=>{const p=snap.products[+x.dataset.p];if(!p)return;p.name=x.value.trim();markInventoryDirty();syncCompletedField(x)};
+  });
+  inventoryBody.querySelectorAll("[data-manual-category]").forEach(x=>{
+    x.addEventListener("keydown",commitText);
+    x.onchange=()=>{const p=snap.products[+x.dataset.p];if(!p)return;p.category=x.value.trim();p.sourceCategory="";markInventoryDirty();syncCompletedField(x)};
+  });
+  inventoryBody.querySelectorAll("[data-manual-system]").forEach(x=>{
+    x.addEventListener("focus",()=>{x.value=String(x.value||"").replace(/,/g,"")});
+    x.addEventListener("keydown",commitText);
+    x.onblur=()=>{const p=snap.products[+x.dataset.p];if(!p)return;p.system=parseInventoryNumber(x.value);formatInventoryNumberInput(x);markInventoryDirty();renderInventoryMetricsOnly()};
+  });
+
+  inventoryBody.querySelectorAll("[data-lot-date]").forEach(x=>{
+    x.addEventListener("keydown",commitText);
     x.onblur=()=>{
-      const p=snap.products[+x.dataset.p];
+      const p=snap.products[+x.dataset.p];if(!p)return;
       const li=+x.dataset.l;
-      while(p.lots.length<=li)p.lots.push({date:"",qty:0});
       const normalized=normalizeManufactureDate(x.value);
-      if(normalized===null){
-        x.setCustomValidity("MM/DD 또는 YYYY-MM-DD 형식으로 입력해주세요.");
-        x.reportValidity();
-        setTimeout(()=>x.setCustomValidity(""),1200);
-        return;
-      }
-      if(normalized){
-        x.value=normalized;
-        p.lots[li].date=normalized;
-        markInventoryDirty();
-      }
-    };
-    x.onkeydown=e=>{
-      if(e.key==="Enter"){
-        e.preventDefault();
-        x.blur();
-      }
+      if(normalized===null){x.setCustomValidity("MM/DD 또는 YYYY-MM-DD 형식으로 입력해주세요.");x.reportValidity();x.setCustomValidity("");return}
+      p.lots[li].date=normalized;x.value=normalized;markInventoryDirty();syncCompletedField(x);
     };
   });
 
-  document.querySelectorAll("[data-lot-qty]").forEach(x=>x.oninput=()=>{
-    const p=snap.products[+x.dataset.p],li=+x.dataset.l;
-    while(p.lots.length<=li)p.lots.push({date:"",qty:0});
-    p.lots[li].qty=invNum(x.value);
-    markInventoryDirty();
-    renderInventoryMetricsOnly();
+  inventoryBody.querySelectorAll("[data-lot-qty]").forEach(x=>{
+    x.addEventListener("focus",()=>{x.value=String(x.value||"").replace(/,/g,"")});
+    x.addEventListener("keydown",commitText);
+    x.onblur=()=>{
+      const p=snap.products[+x.dataset.p];if(!p)return;
+      p.lots[+x.dataset.l].qty=parseInventoryNumber(x.value);
+      formatInventoryNumberInput(x);markInventoryDirty();renderInventoryMetricsOnly();
+    };
   });
 
-  document.querySelectorAll("[data-add-lot]").forEach(b=>b.onclick=()=>{
-    const pi=+b.dataset.addLot,p=snap.products[pi];
-    p.lots.push({date:"",qty:0});
-    const li=p.lots.length-1;
-    markInventoryDirty();
-    renderInventoryOwner();
-    setTimeout(()=>document.querySelector(`[data-lot-date][data-p="${pi}"][data-l="${li}"]`)?.focus(),0);
-  });
+  inventoryBody.querySelectorAll("[data-add-lot]").forEach(b=>b.onclick=()=>{const p=snap.products[+b.dataset.addLot];if(!p)return;p.lots.push({date:"",qty:0});markInventoryDirty();renderInventoryOwner()});
+  inventoryBody.querySelectorAll("[data-del-lot]").forEach(b=>b.onclick=()=>{const [pi,li]=b.dataset.delLot.split(":").map(Number);const p=snap.products[pi];if(!p)return;p.lots.splice(li,1);markInventoryDirty();renderInventoryOwner()});
 
-  document.querySelectorAll("[data-del-lot]").forEach(b=>b.onclick=()=>{
-    const [pi,li]=b.dataset.delLot.split(":").map(Number);
-    snap.products[pi].lots.splice(li,1);
-    markInventoryDirty();
-    renderInventoryOwner();
-    toastMsg("Lot 행을 삭제했습니다.");
-  });
-
-  let dragPi=null;
-  document.querySelectorAll("[data-product-row]").forEach(tr=>{
-    tr.ondragstart=e=>{
-      if(e.target.closest("input,button")){e.preventDefault();return}
-      dragPi=+tr.dataset.productRow;
-      tr.classList.add("dragging");
-      e.dataTransfer.effectAllowed="move";
-    };
-    tr.ondragend=()=>{
-      tr.classList.remove("dragging");
-      document.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));
-      dragPi=null;
-    };
-    tr.ondragover=e=>{if(dragPi===null)return;e.preventDefault();tr.classList.add("drop-target")};
-    tr.ondragleave=()=>tr.classList.remove("drop-target");
-    tr.ondrop=e=>{
-      e.preventDefault();
-      tr.classList.remove("drop-target");
-      const toPi=+tr.dataset.productRow;
-      if(dragPi!==null)reorderInventoryProduct(dragPi,toPi);
-    };
+  let dragIndex=null;
+  inventoryBody.querySelectorAll("tr[data-product-row]").forEach(tr=>{
+    tr.addEventListener("dragstart",()=>{dragIndex=+tr.dataset.productRow;tr.classList.add("dragging")});
+    tr.addEventListener("dragend",()=>{dragIndex=null;tr.classList.remove("dragging")});
+    tr.addEventListener("dragover",e=>e.preventDefault());
+    tr.addEventListener("drop",e=>{e.preventDefault();const to=+tr.dataset.productRow;if(dragIndex===null||dragIndex===to)return;reorderInventoryProduct(dragIndex,to)});
   });
 }
-function renderInventoryMetricsOnly(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const all=inventoryProductRows(snap),act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);document.querySelectorAll("[data-product-code]").forEach(x=>{const p=(snap.products||[])[+x.dataset.p];if(!p||isBlankInventoryRow(p))return;const tr=x.closest("tr"),nums=tr.querySelectorAll("td.num");if(nums[1])nums[1].innerHTML=`<b>${fmtNum(productActual(p))}</b>`;if(nums[2]){const d=productDiff(p);nums[2].className=`num ${diffClass(d)} ${d!==0?"gap-cell":""}`;nums[2].textContent=(d>0?"+":"")+fmtNum(d)}})}
+function renderInventoryMetricsOnly(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const all=(snap.products||[]),act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);document.querySelectorAll("[data-product-code]").forEach(x=>{const p=(snap.products||[])[+x.dataset.p];if(!p)return;const tr=x.closest("tr"),nums=tr.querySelectorAll("td.num");if(nums[1])nums[1].innerHTML=`<b>${fmtNum(productActual(p))}</b>`;if(nums[2]){const d=productDiff(p);nums[2].className=`num ${diffClass(d)} ${d!==0?"gap-cell":""}`;nums[2].textContent=(d>0?"+":"")+fmtNum(d)}})}
 inventoryDate.onchange=()=>{currentInventoryDate=inventoryDate.value;renderInventoryDates();renderInventoryOwner()};
 
 function renderInventoryHistory(){
@@ -1110,7 +1120,6 @@ function inventoryCsvRows(owner,date){
   const snap=ownerSnapshot(owner,date);
   const rows=[["담당자","기준일","카테고리","제품코드","제품명","현재고","실사","차이","제조일","수량"]];
   for(const p of (snap?.products||[])){
-    if(isBlankInventoryRow(p))continue;
     const act=productActual(p),diff=act-invNum(p.system);
     if((p.lots||[]).length){
       p.lots.forEach((l,i)=>rows.push([
@@ -1127,7 +1136,7 @@ exportInventoryCsv.onclick=()=>{const rows=inventoryCsvRows(currentInventoryOwne
 const printInventoryBtn=document.getElementById("printInventory");
 if(printInventoryBtn)printInventoryBtn.onclick=()=>window.print();
 function openInventoryTotal(label,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));inventoryTotalView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;renderInventoryTotalFilters();renderInventoryTotal()}
-function totalRows(){const rows=[];for(const [owner,o] of Object.entries(inventoryDb.owners||{})){const date=ensureTodaySnapshot(owner);const snap=o.snapshots?.[date];for(const p of (snap?.products||[])){if(isBlankInventoryRow(p))continue;const actual=productActual(p),months={};for(const l of (p.lots||[])){if(!l.date)continue;const month=String(l.date).slice(0,7);if(/^\d{4}-\d{2}$/.test(month))months[month]=(months[month]||0)+invNum(l.qty)}rows.push({owner,date,category:p.sourceCategory||p.category||"",id:p.id,name:p.name,system:invNum(p.system),actual,diff:actual-invNum(p.system),months})}}return rows}
+function totalRows(){const rows=[];for(const [owner,o] of Object.entries(inventoryDb.owners||{})){const date=ensureTodaySnapshot(owner);const snap=o.snapshots?.[date];for(const p of (snap?.products||[])){const actual=productActual(p),months={};for(const l of (p.lots||[])){if(!l.date)continue;const month=String(l.date).slice(0,7);if(/^\d{4}-\d{2}$/.test(month))months[month]=(months[month]||0)+invNum(l.qty)}rows.push({owner,date,category:p.sourceCategory||p.category||"",id:p.id,name:p.name,system:invNum(p.system),actual,diff:actual-invNum(p.system),months})}}return rows}
 function renderInventoryTotalFilters(){const owners=Object.keys(inventoryDb.owners||{});const cats=[...new Set(totalRows().map(r=>r.category).filter(Boolean))].sort();const prevOwner=totalInventoryOwner.value||"",prevCat=totalInventoryCategory.value||"";totalInventoryOwner.innerHTML='<option value="">전체 담당자</option>'+owners.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join("");totalInventoryCategory.innerHTML='<option value="">전체 제품군</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");if(owners.includes(prevOwner))totalInventoryOwner.value=prevOwner;if(cats.includes(prevCat))totalInventoryCategory.value=prevCat}
 function monthlyQtyText(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?entries.map(([m,q])=>`${m.slice(5)}월 ${fmtNum(q)}개`).join(" · "):"-"}
 function monthlyQtyHtml(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?`<div class="month-stock-wrap">${entries.map(([m,q])=>`<span class="month-stock-chip"><b>${esc(m.slice(5))}월</b><strong>${fmtNum(q)}개</strong></span>`).join("")}</div>`:`<span class="month-stock-empty">-</span>`}
@@ -1150,13 +1159,11 @@ const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){r
 </script>
 
 <div id="inventoryContextMenu" class="inventory-context-menu">
-  <button type="button" id="inventoryBlankAddAbove">＋ 빈 행 위에 추가</button>
-  <button type="button" id="inventoryBlankAddBelow">＋ 빈 행 아래에 추가</button>
+  <div class="context-menu-title">행 추가 방식</div>
+  <button type="button" id="inventoryAddManual"><b>＋ 직접 입력 행 추가</b><small>모든 항목을 직접 입력</small></button>
+  <button type="button" id="inventoryAddProduct"><b>＋ 제품코드로 제품 추가</b><small>코드 입력 후 제품정보 자동 조회</small></button>
   <div class="sep"></div>
-  <button type="button" id="inventoryProductAddAbove">＋ 제품 위에 추가</button>
-  <button type="button" id="inventoryProductAddBelow">＋ 제품 아래에 추가</button>
-  <div class="sep"></div>
-  <button type="button" id="inventoryRowDelete" class="danger">행 삭제</button>
+  <button type="button" id="inventoryRowDelete" class="danger"><b>행 삭제</b><small>선택한 행 삭제</small></button>
 </div>
 
 <script>
@@ -1167,106 +1174,38 @@ function clearInventoryUndo(){inventoryUndoStack.length=0}
 function cloneInventoryValue(v){return JSON.parse(JSON.stringify(v))}
 
 function normalizeManufactureDate(raw){
-  raw=String(raw||"").trim().replace(/[.\-\s]/g,"/");
-  if(!raw)return "";
-  const pad=n=>String(n).padStart(2,"0");
-  let m=raw.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
-  if(m){
-    const y=+m[1],mo=+m[2],d=+m[3],dt=new Date(y,mo-1,d);
-    if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;
-    return `${y}-${pad(mo)}-${pad(d)}`;
-  }
-  m=raw.match(/^(\d{1,2})\/(\d{1,2})$/);
-  if(!m)return null;
-  const today=new Date();
-  const mo=+m[1],d=+m[2];
-  let y=today.getFullYear();
-  let dt=new Date(y,mo-1,d);
+  raw=String(raw||"").trim().replace(/[.\-\s]/g,"/");if(!raw)return "";
+  const pad=n=>String(n).padStart(2,"0");let m=raw.match(/^(\d{4})\/(\d{1,2})\/(\d{1,2})$/);
+  if(m){const y=+m[1],mo=+m[2],d=+m[3],dt=new Date(y,mo-1,d);if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;return `${y}-${pad(mo)}-${pad(d)}`}
+  m=raw.match(/^(\d{1,2})\/(\d{1,2})$/);if(!m)return null;
+  const today=new Date(),mo=+m[1],d=+m[2];let y=today.getFullYear(),dt=new Date(y,mo-1,d);
   if(dt.getFullYear()!==y||dt.getMonth()!==mo-1||dt.getDate()!==d)return null;
-  const todayOnly=new Date(today.getFullYear(),today.getMonth(),today.getDate());
-  if(dt>todayOnly)y--;
+  if(dt>new Date(today.getFullYear(),today.getMonth(),today.getDate()))y--;
   return `${y}-${pad(mo)}-${pad(d)}`;
 }
 
 (function(){
-  const body=document.getElementById("inventoryBody");
-  const menu=document.getElementById("inventoryContextMenu");
-  const blankAbove=document.getElementById("inventoryBlankAddAbove");
-  const blankBelow=document.getElementById("inventoryBlankAddBelow");
-  const productAbove=document.getElementById("inventoryProductAddAbove");
-  const productBelow=document.getElementById("inventoryProductAddBelow");
-  const del=document.getElementById("inventoryRowDelete");
-  if(!body||!menu||!blankAbove||!blankBelow||!productAbove||!productBelow||!del)return;
-
+  const body=document.getElementById("inventoryBody"),menu=document.getElementById("inventoryContextMenu");
+  const addManual=document.getElementById("inventoryAddManual"),addProduct=document.getElementById("inventoryAddProduct"),del=document.getElementById("inventoryRowDelete");
+  if(!body||!menu||!addManual||!addProduct||!del)return;
   let targetIndex=null;
-  function hideMenu(){menu.classList.remove("show");targetIndex=null}
-  function currentSnap(){return ownerSnapshot(currentInventoryOwner,currentInventoryDate)}
-  function insertAt(index,item,focusProduct){
-    const snap=currentSnap();
-    if(!snap)return;
-    const safe=Math.max(0,Math.min(index,snap.products.length));
-    snap.products.splice(safe,0,item);
-    pushInventoryUndo({type:"add",index:safe});
-    markInventoryDirty();
-    renderInventoryOwner();
-    hideMenu();
-    if(focusProduct)setTimeout(()=>document.querySelector(`[data-product-code][data-p="${safe}"]`)?.focus(),0);
-  }
-  function blankRow(){return {rowType:"blank"}}
-  function productRow(){return {id:"",name:"",sourceCategory:"",category:"",system:0,lots:[{date:"",qty:0}]}}
-
-  body.addEventListener("contextmenu",e=>{
-    const row=e.target.closest("#inventoryBody tr[data-inventory-row]");
-    e.preventDefault();
-    targetIndex=row?Number(row.dataset.inventoryRow):null;
-    const snap=currentSnap();
-    const base=targetIndex===null?(snap?.products?.length||0):targetIndex;
-    menu.dataset.base=String(base);
-    menu.style.left=Math.min(e.clientX,window.innerWidth-230)+"px";
-    menu.style.top=Math.min(e.clientY,window.innerHeight-245)+"px";
-    del.style.display=targetIndex===null?"none":"";
-    menu.classList.add("show");
-  });
-
-  const baseIndex=()=>Number(menu.dataset.base||0);
-  blankAbove.onclick=()=>insertAt(baseIndex(),blankRow(),false);
-  blankBelow.onclick=()=>insertAt(targetIndex===null?baseIndex():baseIndex()+1,blankRow(),false);
-  productAbove.onclick=()=>insertAt(baseIndex(),productRow(),true);
-  productBelow.onclick=()=>insertAt(targetIndex===null?baseIndex():baseIndex()+1,productRow(),true);
-  del.onclick=()=>{
-    if(targetIndex===null)return;
-    if(!confirm("선택한 행을 삭제할까요?"))return;
-    const snap=currentSnap();
-    if(!snap)return;
-    const index=targetIndex;
-    const removed=cloneInventoryValue(snap.products[index]);
-    snap.products.splice(index,1);
-    pushInventoryUndo({type:"delete",index,item:removed});
-    markInventoryDirty();
-    renderInventoryOwner();
-    hideMenu();
+  const snap=()=>ownerSnapshot(currentInventoryOwner,currentInventoryDate);
+  const hide=()=>{menu.classList.remove("show");targetIndex=null};
+  const insert=(item,focusSelector)=>{
+    const s=snap();if(!s)return;const index=targetIndex===null?s.products.length:Math.min(targetIndex+1,s.products.length);
+    s.products.splice(index,0,item);pushInventoryUndo({type:"add",index});markInventoryDirty();renderInventoryOwner();hide();
+    if(focusSelector)setTimeout(()=>document.querySelector(`${focusSelector}[data-p="${index}"]`)?.focus(),0);
   };
-
-  document.addEventListener("click",e=>{if(!menu.contains(e.target))hideMenu()});
-  window.addEventListener("scroll",hideMenu,true);
-  window.addEventListener("resize",hideMenu);
-
-  document.addEventListener("keydown",e=>{
-    if(!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=="z")return;
-    if(e.target.closest("input,textarea,[contenteditable=true]"))return;
-    const a=inventoryUndoStack[inventoryUndoStack.length-1];
-    if(!a)return;
-    if(a.owner!==currentInventoryOwner||a.date!==currentInventoryDate){clearInventoryUndo();return}
-    inventoryUndoStack.pop();
-    const snap=currentSnap();
-    if(!snap)return;
-    e.preventDefault();
-    if(a.type==="add")snap.products.splice(a.index,1);
-    if(a.type==="delete")snap.products.splice(Math.min(a.index,snap.products.length),0,cloneInventoryValue(a.item));
-    markInventoryDirty();
-    renderInventoryOwner();
-    toastMsg("직전 행 작업을 되돌렸습니다.");
+  body.addEventListener("contextmenu",e=>{
+    const row=e.target.closest("tr[data-inventory-row]");e.preventDefault();targetIndex=row?Number(row.dataset.inventoryRow):null;
+    menu.style.left=Math.min(e.clientX,window.innerWidth-270)+"px";menu.style.top=Math.min(e.clientY,window.innerHeight-220)+"px";
+    del.style.display=targetIndex===null?"none":"";menu.classList.add("show");
   });
+  addManual.onclick=()=>insert({rowType:"manual",id:"",name:"",sourceCategory:"",category:"",system:0,lots:[{date:"",qty:0}]},'[data-product-code]');
+  addProduct.onclick=()=>insert({id:"",name:"",sourceCategory:"",category:"",system:0,lots:[{date:"",qty:0}]},'[data-product-code]');
+  del.onclick=()=>{if(targetIndex===null)return;if(!confirm("선택한 행을 삭제할까요?"))return;const s=snap();if(!s)return;const index=targetIndex,removed=cloneInventoryValue(s.products[index]);s.products.splice(index,1);pushInventoryUndo({type:"delete",index,item:removed});markInventoryDirty();renderInventoryOwner();hide()};
+  document.addEventListener("click",e=>{if(!menu.contains(e.target))hide()});window.addEventListener("scroll",hide,true);window.addEventListener("resize",hide);
+  document.addEventListener("keydown",e=>{if(!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=="z"||e.target.closest("input,textarea,[contenteditable=true]"))return;const a=inventoryUndoStack.at(-1);if(!a)return;if(a.owner!==currentInventoryOwner||a.date!==currentInventoryDate){clearInventoryUndo();return}inventoryUndoStack.pop();const s=snap();if(!s)return;e.preventDefault();if(a.type==="add")s.products.splice(a.index,1);if(a.type==="delete")s.products.splice(Math.min(a.index,s.products.length),0,cloneInventoryValue(a.item));markInventoryDirty();renderInventoryOwner();toastMsg("직전 행 작업을 되돌렸습니다.")});
 })();
 </script>
 <script>
@@ -1313,6 +1252,25 @@ function normalizeManufactureDate(raw){
   });
   observer.observe(document.body,{childList:true,subtree:true});
 })();
+</script>
+
+
+<script>
+const INVENTORY_COL_WIDTH_KEY="lush_inventory_column_widths_v1";
+const INVENTORY_COL_DEFAULTS=[64,118,210,140,92,92,92,118,130];
+function inventoryColumnWidths(){try{const x=JSON.parse(localStorage.getItem(INVENTORY_COL_WIDTH_KEY)||"null");return Array.isArray(x)&&x.length===9?x:INVENTORY_COL_DEFAULTS.slice()}catch{return INVENTORY_COL_DEFAULTS.slice()}}
+function applyInventoryColumnWidths(){
+  const table=document.querySelector("#inventoryOwnerView .inventory-grid");if(!table)return;
+  const widths=inventoryColumnWidths();table.style.tableLayout="fixed";
+  [...table.querySelectorAll("thead th")].forEach((th,i)=>{if(widths[i])th.style.width=widths[i]+"px"});
+}
+function initInventoryColumnResize(){
+  const table=document.querySelector("#inventoryOwnerView .inventory-grid");if(!table||table.dataset.resizable==="1")return;table.dataset.resizable="1";
+  const heads=[...table.querySelectorAll("thead th")];
+  heads.forEach((th,i)=>{const h=document.createElement("span");h.className="col-resizer";h.title="드래그하여 열 너비 조절";th.appendChild(h);h.addEventListener("pointerdown",e=>{e.preventDefault();h.setPointerCapture(e.pointerId);const startX=e.clientX,startW=th.getBoundingClientRect().width;document.body.classList.add("resizing-col");const move=ev=>{const widths=inventoryColumnWidths();widths[i]=Math.max(58,Math.round(startW+ev.clientX-startX));localStorage.setItem(INVENTORY_COL_WIDTH_KEY,JSON.stringify(widths));applyInventoryColumnWidths()};const up=()=>{h.removeEventListener("pointermove",move);h.removeEventListener("pointerup",up);h.removeEventListener("pointercancel",up);document.body.classList.remove("resizing-col")};h.addEventListener("pointermove",move);h.addEventListener("pointerup",up);h.addEventListener("pointercancel",up)})});
+  applyInventoryColumnWidths();
+}
+setTimeout(initInventoryColumnResize,0);
 </script>
 
 </body>
