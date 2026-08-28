@@ -120,16 +120,16 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   text-align:right;
   padding-right:12px;
 }
-.inventory-grid td:nth-child(5),
 .inventory-grid td:nth-child(6),
 .inventory-grid td:nth-child(7),
-.inventory-grid td:nth-child(9){
+.inventory-grid td:nth-child(8),
+.inventory-grid td:nth-child(10){
   background:#fbfcfd;
 }
-.inventory-grid tr:hover td:nth-child(5),
 .inventory-grid tr:hover td:nth-child(6),
 .inventory-grid tr:hover td:nth-child(7),
-.inventory-grid tr:hover td:nth-child(9){
+.inventory-grid tr:hover td:nth-child(8),
+.inventory-grid tr:hover td:nth-child(10){
   background:#f5f7f8;
 }
 .inventory-grid td.gap-cell{
@@ -242,98 +242,102 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
 }
 
 
-/* V14 readability-first inventory layout */
-.inventory-panel,
-.inventory-card,
-.inventory-content{
-  font-size:13px;
-}
+/* V15 FIXED — readability-first, core logic preserved */
 .inventory-grid{
-  min-width:1120px;
+  min-width:1180px!important;
   font-size:12px!important;
-  line-height:1.35;
+  line-height:1.35!important;
 }
 .inventory-grid th{
   height:42px!important;
-  padding:0 10px!important;
+  padding:0 9px!important;
   font-size:11.5px!important;
   font-weight:800!important;
   color:#34424b!important;
-  background:#f6f8f9!important;
+  background:#f5f7f8!important;
   border-bottom:1px solid #dfe5e8!important;
+  white-space:nowrap!important;
 }
 .inventory-grid td{
   height:40px!important;
-  padding:5px 10px!important;
+  padding:5px 9px!important;
   font-size:12px!important;
   color:#2f3a40!important;
   background:#fff!important;
   border-bottom:1px solid #edf0f2!important;
 }
-.inventory-grid .cat-row td{
-  height:36px!important;
-  padding:5px 10px!important;
-  background:#f8fafb!important;
-  color:#45535c!important;
-  font-size:11.5px!important;
-  font-weight:800!important;
+
+/* Hide management-group column visually while retaining DOM/data integrity */
+.inventory-grid th:nth-child(5),
+.inventory-grid td:nth-child(5){
+  display:none!important;
 }
-.inventory-grid .lot-row td{
-  height:36px!important;
-  background:#fff!important;
+
+/* Product column: readable but not excessively wide */
+.inventory-grid th:nth-child(3){width:230px!important;min-width:230px!important}
+.inventory-grid td:nth-child(3){
+  width:230px!important;
+  max-width:230px!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
 }
-.inventory-grid td.num{
-  font-size:13px!important;
-  font-weight:800!important;
-  color:#172229!important;
-  font-variant-numeric:tabular-nums;
-  text-align:right;
-  padding-right:14px!important;
-  background:#fff!important;
-}
-.inventory-grid input,
-.inventory-grid select{
-  font-size:12px!important;
-  color:#1f2a30!important;
-  background:#fff!important;
-  border:1px solid #d9e0e4!important;
-}
-.inventory-grid input:focus,
-.inventory-grid select:focus{
-  background:#fff!important;
-  border-color:#9aa7ae!important;
-  box-shadow:0 0 0 2px rgba(120,135,145,.10)!important;
-  outline:none!important;
-}
-.inventory-grid input[type=number]{
-  height:30px!important;
-  min-width:74px;
-  text-align:right;
-  font-weight:800;
-  background:#fff!important;
-}
-.inventory-grid td.gap-cell{
-  background:#fff4f1!important;
-  box-shadow:inset 4px 0 0 #d77d72!important;
-  color:#8f4038!important;
+
+/* Category */
+.inventory-grid th:nth-child(4){width:115px!important}
+
+/* Quantity-first layout */
+.inventory-grid th:nth-child(6),
+.inventory-grid th:nth-child(7),
+.inventory-grid th:nth-child(8),
+.inventory-grid th:nth-child(10){
+  width:115px!important;
+  text-align:right!important;
   font-weight:900!important;
 }
-.inventory-grid tr:hover td{
-  background:#fafbfc!important;
+.inventory-grid td:nth-child(6),
+.inventory-grid td:nth-child(7),
+.inventory-grid td:nth-child(8),
+.inventory-grid td:nth-child(10){
+  width:115px!important;
+  text-align:right!important;
+  font-size:13px!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums!important;
+  color:#182229!important;
+  background:#fff!important;
 }
-.inventory-grid tr:hover td.gap-cell{
-  background:#ffebe7!important;
+
+/* Input cells: white, high contrast */
+.inventory-grid input[type=number]{
+  width:88px!important;
+  min-width:88px!important;
+  height:30px!important;
+  background:#fff!important;
+  color:#182229!important;
+  border:1px solid #d5dde1!important;
+  border-radius:6px!important;
+  text-align:right!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  padding:0 8px!important;
 }
-.inventory-grid td:nth-child(3){
-  max-width:230px!important;
-  overflow:hidden;
-  text-overflow:ellipsis;
-  white-space:nowrap;
+.inventory-grid input[type=number]:focus{
+  outline:none!important;
+  border-color:#929fa6!important;
+  box-shadow:0 0 0 2px rgba(100,115,125,.10)!important;
 }
-.inventory-grid td:nth-child(3):hover{
-  overflow:visible;
-  white-space:normal;
+
+/* Difference only gets emphasis when non-zero */
+.inventory-grid td.gap-cell{
+  background:#fff2ef!important;
+  box-shadow:inset 4px 0 0 #d97d71!important;
+  color:#913f36!important;
+  font-weight:900!important;
 }
+
+/* Manufacture date kept compact */
+.inventory-grid th:nth-child(9){width:112px!important}
 .lot-date-cell{
   min-width:106px!important;
   gap:3px!important;
@@ -346,6 +350,8 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   font-size:10px!important;
   background:#fff!important;
 }
+
+/* LOT buttons compact */
 .lot-actions{
   flex:0 0 48px!important;
   width:48px!important;
@@ -356,19 +362,21 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   height:23px!important;
   flex-basis:23px!important;
 }
-.inventory-toolbar,
-.inventory-topbar{
-  gap:10px!important;
+
+/* Category grouping rows */
+.inventory-grid .cat-row td{
+  height:36px!important;
+  background:#f8fafb!important;
+  font-weight:800!important;
+  color:#45535c!important;
 }
-.saved-date-select,
-#inventoryBaseDate{
-  height:34px!important;
-  font-size:11px!important;
+
+/* Hover stays subtle */
+.inventory-grid tr:hover td{
+  background:#fafbfc!important;
 }
-.date-state,
-.source-file{
-  height:34px!important;
-  font-size:11px!important;
+.inventory-grid tr:hover td.gap-cell{
+  background:#ffeae6!important;
 }
 
 </style>
@@ -428,15 +436,15 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
 
     <section id="inventoryOwnerView" class="view">
       <div class="inventory-shell">
-        <div class="inventory-head"><div><div class="eyebrow">INVENTORY WORKBOOK</div><h2 id="inventoryOwnerTitle">담당자 재고파일</h2><p>기준일별 업로드 파일을 기준으로 제품코드에 맞는 제품명·카테고리·현재고를 불러옵니다. 이전 기준일의 저장값은 변경되지 않으며, 실사/Lot/카테고리 수정은 즉시 자동 저장됩니다.</p></div><div class="inventory-actions"><button class="btn" id="exportInventoryCsv">CSV 내보내기</button><span class="auto-save-state" id="inventoryAutoSave">자동 저장</span></div></div>
-        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><button class="btn add" id="addInventoryProduct">＋ 제품 추가</button><button class="btn add" id="addInventoryGroup">＋ 카테고리</button></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
-        <select id="inventoryDate" hidden></select><button id="newInventoryDate" hidden></button>
+        <div class="inventory-head"><div><div class="eyebrow">INVENTORY WORKBOOK</div><h2 id="inventoryOwnerTitle">담당자 재고파일</h2><p>기준일별 업로드 파일을 기준으로 제품코드에 맞는 제품명·제품군·현재고를 불러옵니다. 이전 기준일의 저장값은 변경되지 않으며, 실사/Lot/관리그룹 수정은 즉시 자동 저장됩니다.</p></div><div class="inventory-actions"><button class="btn" id="exportInventoryCsv">CSV 내보내기</button><span class="auto-save-state" id="inventoryAutoSave">자동 저장</span></div></div>
+        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><button class="btn add" id="addInventoryProduct">＋ 제품 추가</button><button class="btn add" id="addInventoryGroup">＋ 관리그룹</button></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
+        <div class="inventory-filterbar compact clean-filter" style="display:none"><select id="inventoryCategory"><option value="">전체 관리그룹</option></select></div><select id="inventoryDate" hidden></select><button id="newInventoryDate" hidden></button>
         <div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="invMetricProducts">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="invMetricActual">0</b><small>실사 재고</small></div><div class="inventory-metric"><span>GAP</span><b id="invMetricGap">0</b><small>차이 합계</small></div></div>
-        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:54px">순서</th><th style="width:108px">제품코드</th><th style="width:230px;min-width:230px">제품명</th><th style="width:120px">카테고리</th><th class="num qty-head" style="width:122px">현재고</th><th class="num qty-head" style="width:122px">실사</th><th class="num qty-head" style="width:108px">차이</th><th style="width:116px">제조일</th><th class="num qty-head" style="width:112px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
+        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:50px">순서</th><th style="width:96px">제품코드</th><th style="width:190px;min-width:190px">제품명</th><th style="width:90px">제품군</th><th style="width:118px">관리그룹</th><th class="num qty-head" style="width:110px">현재고</th><th class="num qty-head" style="width:110px">실사</th><th class="num qty-head" style="width:98px">차이</th><th style="width:118px">제조일</th><th class="num qty-head" style="width:105px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
       </div>
     </section>
 
-    <section id="inventoryTotalView" class="view"><div class="inventory-shell"><div class="inventory-head"><div><div class="eyebrow">MASTER INVENTORY</div><h2>총 재고파일</h2><p>오늘 날짜 기준 담당자별 재고를 취합하고 제조일별 실사 수량을 월 단위로 보여줍니다.</p></div><div class="inventory-actions"><span class="inventory-asof">재고 기준 <b id="totalInventoryAsOf">-</b></span><button class="btn" id="exportTotalCsv">CSV 내보내기</button></div></div><div class="inventory-filterbar total-filter"><select id="totalInventoryOwner"><option value="">전체 담당자</option></select><select id="totalInventoryCategory"><option value="">전체 카테고리</option></select><input class="total-search" id="totalInventorySearch" placeholder="제품코드 또는 제품명 검색"><span class="inventory-asof" id="totalInventoryDateHint">오늘 기준</span></div><div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="totalMetricSku">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="totalMetricActual">0</b><small>실사 수량</small></div><div class="inventory-metric"><span>GAP</span><b id="totalMetricGap">0</b><small>차이 합계</small></div></div><div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:110px">담당자</th><th style="width:115px">제품코드</th><th style="min-width:240px">제품명</th><th style="width:145px">카테고리</th><th class="num" style="width:95px">현재고</th><th class="num" style="width:95px">실사</th><th class="num" style="width:85px">차이</th><th style="min-width:260px">제조월별 재고</th></tr></thead><tbody id="inventoryTotalBody"></tbody></table></div><div class="inventory-note"><span id="totalInventoryFootDate">오늘 기준 재고 취합</span><span>제조월별 재고 = 제조일별 실사 수량을 월 단위로 합산</span></div></div></div></section>
+    <section id="inventoryTotalView" class="view"><div class="inventory-shell"><div class="inventory-head"><div><div class="eyebrow">MASTER INVENTORY</div><h2>총 재고파일</h2><p>오늘 날짜 기준 담당자별 재고를 취합하고 제조일별 실사 수량을 월 단위로 보여줍니다.</p></div><div class="inventory-actions"><span class="inventory-asof">재고 기준 <b id="totalInventoryAsOf">-</b></span><button class="btn" id="exportTotalCsv">CSV 내보내기</button></div></div><div class="inventory-filterbar total-filter"><select id="totalInventoryOwner"><option value="">전체 담당자</option></select><select id="totalInventoryCategory"><option value="">전체 제품군</option></select><input class="total-search" id="totalInventorySearch" placeholder="제품코드 또는 제품명 검색"><span class="inventory-asof" id="totalInventoryDateHint">오늘 기준</span></div><div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="totalMetricSku">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="totalMetricActual">0</b><small>실사 수량</small></div><div class="inventory-metric"><span>GAP</span><b id="totalMetricGap">0</b><small>차이 합계</small></div></div><div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:110px">담당자</th><th style="width:115px">제품코드</th><th style="min-width:240px">제품명</th><th style="width:145px">제품군</th><th class="num" style="width:95px">현재고</th><th class="num" style="width:95px">실사</th><th class="num" style="width:85px">차이</th><th style="min-width:260px">제조월별 재고</th></tr></thead><tbody id="inventoryTotalBody"></tbody></table></div><div class="inventory-note"><span id="totalInventoryFootDate">오늘 기준 재고 취합</span><span>제조월별 재고 = 제조일별 실사 수량을 월 단위로 합산</span></div></div></div></section>
     <section id="sheetView" class="view"><div class="toolbar"><div class="crumb" id="crumb"></div><div class="tools"><button class="btn add" id="addRow">＋ 행 추가</button><button class="btn" id="exportCsv">CSV 내보내기</button><span class="auto-save-state">자동 저장</span></div></div><div class="sheet-card"><div class="sheet-title"><div><h2 id="sheetTitle"></h2><p id="sheetSubtitle">웹 자체 시트</p></div><span class="badge" id="saveBadge">AUTO SAVE</span></div><div class="table-wrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div><div class="sheet-footer"><span id="rowCount"></span><span id="saveState">자동 저장됨</span></div></div></section>
 
     <section id="inventoryAnalysis" class="view"><div class="analysis-grid"><div class="analysis-box"><div class="eyebrow">INVENTORY GAP</div><div class="big-number">18 SKU</div><div class="muted" style="font-size:10px">전일 대비 확인이 필요한 제품 수</div></div><div class="analysis-box"><div class="eyebrow">ABSOLUTE GAP</div><div class="big-number">247 EA</div><div class="muted" style="font-size:10px">재고 차이 수량 합계</div></div></div><div class="panel mt14"><div class="panel-head"><div><small>DAILY COMPARISON</small><h3>재고 차이 우선 확인 목록</h3></div></div><table class="compare-table"><thead><tr><th>PLU</th><th>제품명</th><th>전일</th><th>금일</th><th>차이</th><th>상태</th></tr></thead><tbody><tr><td>101894</td><td>Sleepy Body Lotion</td><td>336</td><td>329</td><td>-7</td><td><span class="badge danger">확인 필요</span></td></tr><tr><td>100871</td><td>Karma Soap</td><td>160</td><td>151</td><td>-9</td><td><span class="badge danger">확인 필요</span></td></tr></tbody></table></div></section>
@@ -560,27 +568,27 @@ function lookupInventoryProduct(code){return currentInventoryMaster()[String(cod
 function snapshotGroups(snap){const fromProducts=(snap.products||[]).map(p=>p.group).filter(Boolean);return [...new Set([...(snap.groups||[]),...fromProducts])].filter(Boolean)}
 function moveInventoryGroup(group,dir){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap||!group)return;const groups=snapshotGroups(snap);const i=groups.indexOf(group),j=i+dir;if(i<0||j<0||j>=groups.length)return;[groups[i],groups[j]]=[groups[j],groups[i]];snap.groups=groups;markInventoryDirty();renderInventoryOwner()}
 function moveInventoryProduct(pi,dir){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const p=snap.products[pi];if(!p)return;const group=p.group||"";const peers=snap.products.map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===group);const pos=peers.findIndex(o=>o.i===pi),next=peers[pos+dir];if(pos<0||!next)return;const j=next.i;[snap.products[pi],snap.products[j]]=[snap.products[j],snap.products[pi]];markInventoryDirty();renderInventoryOwner()}
-function reorderInventoryProduct(fromPi,toPi){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap||fromPi===toPi)return;const from=snap.products[fromPi],to=snap.products[toPi];if(!from||!to)return;if((from.group||"")!==(to.group||"")){toastMsg("다른 카테고리으로 이동하려면 카테고리을 먼저 변경해주세요.");return}const [item]=snap.products.splice(fromPi,1);let insert=toPi;if(fromPi<toPi)insert--;snap.products.splice(insert,0,item);markInventoryDirty();renderInventoryOwner()}
-function renderInventoryOwner(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const cf=inventoryCategory.value||"";const groups=snapshotGroups(snap);inventoryCategory.innerHTML='<option value="">전체 카테고리</option>'+groups.map(c=>`<option value="${esc(c)}" ${c===cf?"selected":""}>${esc(c)}</option>`).join("");if(snap.sourceFile){const t=new Date(snap.sourceFile.uploadedAt);const tm=Number.isNaN(t.getTime())?"":t.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false});inventorySourceFile.classList.add("uploaded");inventorySourceFile.innerHTML=`업로드 완료${tm?` · <b>${tm}</b>`:""}`}else{inventorySourceFile.classList.remove("uploaded");inventorySourceFile.textContent="미업로드";}let html="",shown=0;const ungrouped=(snap.products||[]).filter(p=>!p.group);const ordered=[...groups,...(ungrouped.length?["미분류"]:[])];for(const group of ordered){const ps=(snap.products||[]).filter(p=>(group==="미분류"?!p.group:p.group===group)).filter(p=>(!cf||p.group===cf));if(!ps.length)continue;const groupKey=group==="미분류"?"":group;const gi=groups.indexOf(group);html+=`<tr class="cat-row" ${group!=="미분류"?`draggable="true" data-group-row="${esc(groupKey)}"`:""}><td colspan="10"><div class="cat-summary">${group!=="미분류"?'<span class="drag-handle" title="드래그하여 카테고리 이동">⋮⋮</span>':'<span style="width:22px"></span>'}<input class="group-name-input" data-group-name="${esc(groupKey)}" value="${esc(group)}" ${group==="미분류"?'placeholder="카테고리명"':''}><small>${ps.length} SKU</small><button class="mini-remove" data-del-group="${esc(groupKey)}">− 그룹</button></div></td></tr>`;for(const p of ps){shown++;const actual=productActual(p),diff=actual-invNum(p.system),pi=(snap.products||[]).indexOf(p);const lots=p.lots||[];const first=lots[0]||{date:"",qty:""};const peers=(snap.products||[]).map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===(p.group||""));const peerPos=peers.findIndex(o=>o.i===pi);html+=`<tr draggable="true" data-product-row="${pi}"><td><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span></td><td><input data-product-code data-p="${pi}" value="${esc(p.id)}" placeholder="제품코드 입력"></td><td class="product-name">${esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>'}</td><td class="source-category">${esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>'}</td><td class="num">${fmtNum(p.system)}</td><td class="num"><b>${fmtNum(actual)}</b></td><td class="num ${diffClass(diff)} ${diff!==0?"gap-cell":""}">${diff>0?"+":""}${fmtNum(diff)}</td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="0" value="${esc(first.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><span class="lot-action-placeholder" aria-hidden="true"></span></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty??""}"></td></tr>`;for(let li=1;li<lots.length;li++){const l=lots[li];html+=`<tr class="lot-row"><td></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td><td></td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="${li}" value="${esc(l.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><button class="lot-inline-remove" data-del-lot="${pi}:${li}" title="해당 LOT 삭제" aria-label="해당 LOT 삭제">−</button></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty??""}"></td></tr>`}}}
-inventoryBody.innerHTML=html||'<tr><td colspan="10"><div class="inventory-empty">관리 중인 재고가 없습니다.</div></td></tr>';const all=snap.products||[],act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricProducts.textContent=all.length.toLocaleString("ko-KR");invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);inventoryRowInfo.textContent=`${shown} SKU · ${groups.length} 카테고리`;bindInventoryInputs()}
-function bindInventoryInputs(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);document.querySelectorAll("[data-product-code]").forEach(x=>{const apply=()=>{const p=snap.products[+x.dataset.p],code=x.value.trim();p.id=code;const found=lookupInventoryProduct(code);if(found){p.name=found.name||"";p.sourceCategory=found.category||"";p.category=p.sourceCategory;p.system=invNum(found.system);if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner();toastMsg("현재 기준일 업로드 파일에서 제품 정보를 불러왔습니다.")}else{p.name="";p.sourceCategory="";p.category="";p.system=0;markInventoryDirty();if(code)toastMsg("현재 기준일 업로드 파일에서 제품코드를 찾지 못했습니다.");renderInventoryOwner()}};x.onchange=apply;x.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();apply()}}});document.querySelectorAll("[data-product-group]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];p.group=x.value;if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner()});document.querySelectorAll("[data-group-name]").forEach(x=>x.onchange=()=>{const old=x.dataset.groupName||"",name=x.value.trim();if(!name){x.value=old||"미분류";return}for(const p of (snap.products||[]))if((p.group||"")===old)p.group=name;const gi=(snap.groups||[]).indexOf(old);if(gi>=0)snap.groups[gi]=name;else if(!snap.groups.includes(name))snap.groups.push(name);snap.groups=[...new Set(snap.groups.filter(Boolean))];markInventoryDirty();renderInventoryOwner();toastMsg("카테고리명을 변경했습니다.")});document.querySelectorAll("[data-del-group]").forEach(b=>b.onclick=()=>{const g=b.dataset.delGroup||"";if(!g){toastMsg("미분류 그룹은 삭제할 수 없습니다.");return}if(!confirm(`${g} 카테고리을 삭제할까요? 제품은 미분류로 이동합니다.`))return;for(const p of (snap.products||[]))if(p.group===g)p.group="";snap.groups=(snap.groups||[]).filter(x=>x!==g);markInventoryDirty();renderInventoryOwner();toastMsg("카테고리을 삭제했습니다.")});document.querySelectorAll("[data-lot-date]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].date=x.value;markInventoryDirty()});document.querySelectorAll("[data-lot-qty]").forEach(x=>x.oninput=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].qty=invNum(x.value);markInventoryDirty();renderInventoryMetricsOnly()});document.querySelectorAll("[data-add-lot]").forEach(b=>b.onclick=()=>{const pi=+b.dataset.addLot,p=snap.products[pi];p.lots.push({date:"",qty:0});const li=p.lots.length-1;markInventoryDirty();renderInventoryOwner();setTimeout(()=>document.querySelector(`[data-lot-date][data-p="${pi}"][data-l="${li}"]`)?.focus(),0)});document.querySelectorAll("[data-del-lot]").forEach(b=>b.onclick=()=>{const [pi,li]=b.dataset.delLot.split(":").map(Number);snap.products[pi].lots.splice(li,1);markInventoryDirty();renderInventoryOwner();toastMsg("Lot 행을 삭제했습니다.")});let dragGroup=null;document.querySelectorAll("[data-group-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,button")){e.preventDefault();return}dragGroup=tr.dataset.groupRow;tr.classList.add("group-dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("group-dragging");document.querySelectorAll(".group-drop-target").forEach(x=>x.classList.remove("group-drop-target"));dragGroup=null};tr.ondragover=e=>{if(!dragGroup)return;e.preventDefault();tr.classList.add("group-drop-target")};tr.ondragleave=()=>tr.classList.remove("group-drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("group-drop-target");const to=tr.dataset.groupRow;if(!dragGroup||dragGroup===to)return;const groups=snapshotGroups(snap);const fromI=groups.indexOf(dragGroup),toI=groups.indexOf(to);if(fromI<0||toI<0)return;const [moved]=groups.splice(fromI,1);groups.splice(toI,0,moved);snap.groups=groups;markInventoryDirty();renderInventoryOwner();toastMsg("카테고리 순서를 변경했습니다.")}});let dragPi=null;document.querySelectorAll("[data-product-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,select,button")){e.preventDefault();return}dragPi=+tr.dataset.productRow;tr.classList.add("dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("dragging");document.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));dragPi=null};tr.ondragover=e=>{if(dragPi===null)return;e.preventDefault();tr.classList.add("drop-target")};tr.ondragleave=()=>tr.classList.remove("drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("drop-target");const toPi=+tr.dataset.productRow;if(dragPi!==null)reorderInventoryProduct(dragPi,toPi)}})}
+function reorderInventoryProduct(fromPi,toPi){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap||fromPi===toPi)return;const from=snap.products[fromPi],to=snap.products[toPi];if(!from||!to)return;if((from.group||"")!==(to.group||"")){toastMsg("다른 관리그룹으로 이동하려면 관리그룹을 먼저 변경해주세요.");return}const [item]=snap.products.splice(fromPi,1);let insert=toPi;if(fromPi<toPi)insert--;snap.products.splice(insert,0,item);markInventoryDirty();renderInventoryOwner()}
+function renderInventoryOwner(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;const cf=inventoryCategory.value||"";const groups=snapshotGroups(snap);inventoryCategory.innerHTML='<option value="">전체 관리그룹</option>'+groups.map(c=>`<option value="${esc(c)}" ${c===cf?"selected":""}>${esc(c)}</option>`).join("");if(snap.sourceFile){const t=new Date(snap.sourceFile.uploadedAt);const tm=Number.isNaN(t.getTime())?"":t.toLocaleTimeString("ko-KR",{hour:"2-digit",minute:"2-digit",hour12:false});inventorySourceFile.classList.add("uploaded");inventorySourceFile.innerHTML=`업로드 완료${tm?` · <b>${tm}</b>`:""}`}else{inventorySourceFile.classList.remove("uploaded");inventorySourceFile.textContent="미업로드";}let html="",shown=0;const ungrouped=(snap.products||[]).filter(p=>!p.group);const ordered=[...groups,...(ungrouped.length?["미분류"]:[])];for(const group of ordered){const ps=(snap.products||[]).filter(p=>(group==="미분류"?!p.group:p.group===group)).filter(p=>(!cf||p.group===cf));if(!ps.length)continue;const groupKey=group==="미분류"?"":group;const gi=groups.indexOf(group);html+=`<tr class="cat-row" ${group!=="미분류"?`draggable="true" data-group-row="${esc(groupKey)}"`:""}><td colspan="10"><div class="cat-summary">${group!=="미분류"?'<span class="drag-handle" title="드래그하여 관리그룹 이동">⋮⋮</span>':'<span style="width:22px"></span>'}<input class="group-name-input" data-group-name="${esc(groupKey)}" value="${esc(group)}" ${group==="미분류"?'placeholder="관리그룹명"':''}><small>${ps.length} SKU</small><button class="mini-remove" data-del-group="${esc(groupKey)}">− 그룹</button></div></td></tr>`;for(const p of ps){shown++;const actual=productActual(p),diff=actual-invNum(p.system),pi=(snap.products||[]).indexOf(p);const lots=p.lots||[];const first=lots[0]||{date:"",qty:""};const peers=(snap.products||[]).map((x,i)=>({x,i})).filter(o=>(o.x.group||"")===(p.group||""));const peerPos=peers.findIndex(o=>o.i===pi);html+=`<tr draggable="true" data-product-row="${pi}"><td><span class="drag-handle" title="드래그하여 행 이동">⋮⋮</span></td><td><input data-product-code data-p="${pi}" value="${esc(p.id)}" placeholder="제품코드 입력"></td><td class="product-name">${esc(p.name)||'<span class="muted">코드 입력 시 자동조회</span>'}</td><td class="source-category">${esc(p.sourceCategory||p.category)||'<span class="muted">파일 기준</span>'}</td><td><select class="group-select" data-product-group data-p="${pi}">${['',...groups].map(g=>`<option value="${esc(g)}" ${g===p.group?'selected':''}>${g?esc(g):'미분류'}</option>`).join('')}</select></td><td class="num">${fmtNum(p.system)}</td><td class="num"><b>${fmtNum(actual)}</b></td><td class="num ${diffClass(diff)} ${diff!==0?"gap-cell":""}">${diff>0?"+":""}${fmtNum(diff)}</td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="0" value="${esc(first.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><span class="lot-action-placeholder" aria-hidden="true"></span></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="0" value="${first.qty??""}"></td></tr>`;for(let li=1;li<lots.length;li++){const l=lots[li];html+=`<tr class="lot-row"><td></td><td>↳</td><td>제조일별 재고</td><td></td><td></td><td></td><td></td><td></td><td><div class="lot-date-cell"><input type="date" data-lot-date data-p="${pi}" data-l="${li}" value="${esc(l.date||"")}"><span class="lot-actions"><button class="lot-inline-add" data-add-lot="${pi}" title="동일 제품 LOT 추가" aria-label="동일 제품 LOT 추가">＋</button><button class="lot-inline-remove" data-del-lot="${pi}:${li}" title="해당 LOT 삭제" aria-label="해당 LOT 삭제">−</button></span></div></td><td><input class="num" type="number" data-lot-qty data-p="${pi}" data-l="${li}" value="${l.qty??""}"></td></tr>`}}}
+inventoryBody.innerHTML=html||'<tr><td colspan="10"><div class="inventory-empty">관리 중인 재고가 없습니다.</div></td></tr>';const all=snap.products||[],act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricProducts.textContent=all.length.toLocaleString("ko-KR");invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);inventoryRowInfo.textContent=`${shown} SKU · ${groups.length} 관리그룹`;bindInventoryInputs()}
+function bindInventoryInputs(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);document.querySelectorAll("[data-product-code]").forEach(x=>{const apply=()=>{const p=snap.products[+x.dataset.p],code=x.value.trim();p.id=code;const found=lookupInventoryProduct(code);if(found){p.name=found.name||"";p.sourceCategory=found.category||"";p.category=p.sourceCategory;p.system=invNum(found.system);if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner();toastMsg("현재 기준일 업로드 파일에서 제품 정보를 불러왔습니다.")}else{p.name="";p.sourceCategory="";p.category="";p.system=0;markInventoryDirty();if(code)toastMsg("현재 기준일 업로드 파일에서 제품코드를 찾지 못했습니다.");renderInventoryOwner()}};x.onchange=apply;x.onkeydown=e=>{if(e.key==="Enter"){e.preventDefault();apply()}}});document.querySelectorAll("[data-product-group]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];p.group=x.value;if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);markInventoryDirty();renderInventoryOwner()});document.querySelectorAll("[data-group-name]").forEach(x=>x.onchange=()=>{const old=x.dataset.groupName||"",name=x.value.trim();if(!name){x.value=old||"미분류";return}for(const p of (snap.products||[]))if((p.group||"")===old)p.group=name;const gi=(snap.groups||[]).indexOf(old);if(gi>=0)snap.groups[gi]=name;else if(!snap.groups.includes(name))snap.groups.push(name);snap.groups=[...new Set(snap.groups.filter(Boolean))];markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹명을 변경했습니다.")});document.querySelectorAll("[data-del-group]").forEach(b=>b.onclick=()=>{const g=b.dataset.delGroup||"";if(!g){toastMsg("미분류 그룹은 삭제할 수 없습니다.");return}if(!confirm(`${g} 관리그룹을 삭제할까요? 제품은 미분류로 이동합니다.`))return;for(const p of (snap.products||[]))if(p.group===g)p.group="";snap.groups=(snap.groups||[]).filter(x=>x!==g);markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹을 삭제했습니다.")});document.querySelectorAll("[data-lot-date]").forEach(x=>x.onchange=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].date=x.value;markInventoryDirty()});document.querySelectorAll("[data-lot-qty]").forEach(x=>x.oninput=()=>{const p=snap.products[+x.dataset.p];while(p.lots.length<=+x.dataset.l)p.lots.push({date:"",qty:0});p.lots[+x.dataset.l].qty=invNum(x.value);markInventoryDirty();renderInventoryMetricsOnly()});document.querySelectorAll("[data-add-lot]").forEach(b=>b.onclick=()=>{const pi=+b.dataset.addLot,p=snap.products[pi];p.lots.push({date:"",qty:0});const li=p.lots.length-1;markInventoryDirty();renderInventoryOwner();setTimeout(()=>document.querySelector(`[data-lot-date][data-p="${pi}"][data-l="${li}"]`)?.focus(),0)});document.querySelectorAll("[data-del-lot]").forEach(b=>b.onclick=()=>{const [pi,li]=b.dataset.delLot.split(":").map(Number);snap.products[pi].lots.splice(li,1);markInventoryDirty();renderInventoryOwner();toastMsg("Lot 행을 삭제했습니다.")});let dragGroup=null;document.querySelectorAll("[data-group-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,button")){e.preventDefault();return}dragGroup=tr.dataset.groupRow;tr.classList.add("group-dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("group-dragging");document.querySelectorAll(".group-drop-target").forEach(x=>x.classList.remove("group-drop-target"));dragGroup=null};tr.ondragover=e=>{if(!dragGroup)return;e.preventDefault();tr.classList.add("group-drop-target")};tr.ondragleave=()=>tr.classList.remove("group-drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("group-drop-target");const to=tr.dataset.groupRow;if(!dragGroup||dragGroup===to)return;const groups=snapshotGroups(snap);const fromI=groups.indexOf(dragGroup),toI=groups.indexOf(to);if(fromI<0||toI<0)return;const [moved]=groups.splice(fromI,1);groups.splice(toI,0,moved);snap.groups=groups;markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹 순서를 변경했습니다.")}});let dragPi=null;document.querySelectorAll("[data-product-row]").forEach(tr=>{tr.ondragstart=e=>{if(e.target.closest("input,select,button")){e.preventDefault();return}dragPi=+tr.dataset.productRow;tr.classList.add("dragging");e.dataTransfer.effectAllowed="move"};tr.ondragend=()=>{tr.classList.remove("dragging");document.querySelectorAll(".drop-target").forEach(x=>x.classList.remove("drop-target"));dragPi=null};tr.ondragover=e=>{if(dragPi===null)return;e.preventDefault();tr.classList.add("drop-target")};tr.ondragleave=()=>tr.classList.remove("drop-target");tr.ondrop=e=>{e.preventDefault();tr.classList.remove("drop-target");const toPi=+tr.dataset.productRow;if(dragPi!==null)reorderInventoryProduct(dragPi,toPi)}})}
 function renderInventoryMetricsOnly(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const all=snap.products||[],act=all.reduce((s,p)=>s+productActual(p),0),gap=all.reduce((s,p)=>s+productDiff(p),0);invMetricActual.textContent=fmtNum(act);invMetricGap.textContent=(gap>0?"+":"")+fmtNum(gap);invMetricGap.className=diffClass(gap);document.querySelectorAll("[data-product-code]").forEach(x=>{const p=all[+x.dataset.p];if(!p)return;const tr=x.closest("tr"),nums=tr.querySelectorAll("td.num");if(nums[1])nums[1].innerHTML=`<b>${fmtNum(productActual(p))}</b>`;if(nums[2]){const d=productDiff(p);nums[2].className=`num ${diffClass(d)} ${d!==0?"gap-cell":""}`;nums[2].textContent=(d>0?"+":"")+fmtNum(d)}})}
 inventoryDate.onchange=()=>{currentInventoryDate=inventoryDate.value;renderInventoryDates();renderInventoryOwner()};inventoryCategory.onchange=renderInventoryOwner;
 function switchInventoryDate(d){if(!d)return;const o=ensureOwner(currentInventoryOwner);if(!o.snapshots[d]){const latest=latestOwnerDate(currentInventoryOwner);const base=ownerSnapshot(currentInventoryOwner,latest)||{groups:[],products:[],sourceMaster:{},sourceFile:null};o.snapshots[d]=JSON.parse(JSON.stringify(base));o.snapshots[d].sourceFile=null;markInventoryDirty();toastMsg(`${d.replaceAll("-",".")} 기준 재고를 생성했습니다.`)}currentInventoryDate=d;renderInventoryDates();renderInventoryOwner()}
 newInventoryDateValue.onchange=()=>switchInventoryDate(newInventoryDateValue.value);newInventoryDate.onclick=()=>switchInventoryDate(newInventoryDateValue.value);
 addInventoryProduct.onclick=()=>{const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);snap.products.push({id:"",name:"",sourceCategory:"",category:"",group:"",system:0,lots:[{date:"",qty:0}]});markInventoryDirty();inventoryCategory.value="";renderInventoryOwner();setTimeout(()=>{const inputs=document.querySelectorAll("[data-product-code]");inputs[inputs.length-1]?.focus()},0);toastMsg("제품코드를 입력해주세요.")};
-addInventoryGroup.onclick=()=>{const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const name=prompt("추가할 카테고리명을 입력해주세요.");if(!name||!name.trim())return;const g=name.trim();if(!snap.groups)snap.groups=[];if(snap.groups.includes(g)){toastMsg("이미 존재하는 카테고리입니다.");return}snap.groups.push(g);markInventoryDirty();renderInventoryOwner();toastMsg("카테고리을 추가했습니다.")};
+addInventoryGroup.onclick=()=>{const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);const name=prompt("추가할 관리그룹명을 입력해주세요.");if(!name||!name.trim())return;const g=name.trim();if(!snap.groups)snap.groups=[];if(snap.groups.includes(g)){toastMsg("이미 존재하는 관리그룹입니다.");return}snap.groups.push(g);markInventoryDirty();renderInventoryOwner();toastMsg("관리그룹을 추가했습니다.")};
 uploadOwnerInventory.onclick=()=>ownerInventoryFile.click();
-ownerInventoryFile.onchange=async()=>{const f=ownerInventoryFile.files?.[0];if(!f)return;try{const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});if(!rows.length)throw new Error("empty");const headers=rows[0].map(x=>String(x||"").trim());const findCol=(names)=>headers.findIndex(h=>names.includes(h));const ciCode=findCol(["제품코드","상품코드","PLU","코드"]),ciGroup=findCol(["카테고리","카테고리","상품군"]),ciName=findCol(["제품명","상품명"]),ciStock=findCol(["현재고","전산","전산재고","재고"]);if(ciCode<0||ciName<0||ciStock<0){toastMsg("파일에서 제품코드·제품명·현재고 열을 찾지 못했습니다.");ownerInventoryFile.value="";return}const master={};for(const r of rows.slice(1)){const code=String(r[ciCode]??"").trim();if(!code)continue;master[code]={id:code,name:String(r[ciName]??"").trim(),category:ciGroup>=0?String(r[ciGroup]??"").trim():"",system:invNum(r[ciStock])}}const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);snap.sourceMaster=master;snap.sourceFile={name:f.name,uploadedAt:new Date().toISOString(),rows:Object.keys(master).length};let matched=0;for(const p of (snap.products||[])){const m=master[p.id];if(!m)continue;p.name=m.name;p.sourceCategory=m.category;p.category=m.category;p.system=m.system;if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);matched++}markInventoryDirty();renderInventoryOwner();toastMsg(`${currentInventoryDate.replaceAll("-",".")} 기준 파일 ${Object.keys(master).length.toLocaleString("ko-KR")} SKU를 읽었습니다. 관리 중 ${matched} SKU를 갱신했습니다.`)}catch(e){console.error(e);toastMsg("Excel 파일을 읽는 중 오류가 발생했습니다.")}finally{ownerInventoryFile.value=""}};
-function inventoryCsvRows(owner,date){const snap=ownerSnapshot(owner,date);const rows=[["담당자","기준일","카테고리","카테고리","제품코드","제품명","현재고","실사","차이","제조일","수량"]];for(const p of (snap?.products||[])){const act=productActual(p),diff=act-invNum(p.system);if((p.lots||[]).length){p.lots.forEach((l,i)=>rows.push([owner,date,p.group,p.sourceCategory||p.category,i?"":p.id,i?"":p.name,i?"":p.system,i?"":act,i?"":diff,l.date,l.qty]))}else rows.push([owner,date,p.group,p.sourceCategory||p.category,p.id,p.name,p.system,act,diff,"",""])}return rows}
+ownerInventoryFile.onchange=async()=>{const f=ownerInventoryFile.files?.[0];if(!f)return;try{const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});if(!rows.length)throw new Error("empty");const headers=rows[0].map(x=>String(x||"").trim());const findCol=(names)=>headers.findIndex(h=>names.includes(h));const ciCode=findCol(["제품코드","상품코드","PLU","코드"]),ciGroup=findCol(["제품군","카테고리","상품군"]),ciName=findCol(["제품명","상품명"]),ciStock=findCol(["현재고","전산","전산재고","재고"]);if(ciCode<0||ciName<0||ciStock<0){toastMsg("파일에서 제품코드·제품명·현재고 열을 찾지 못했습니다.");ownerInventoryFile.value="";return}const master={};for(const r of rows.slice(1)){const code=String(r[ciCode]??"").trim();if(!code)continue;master[code]={id:code,name:String(r[ciName]??"").trim(),category:ciGroup>=0?String(r[ciGroup]??"").trim():"",system:invNum(r[ciStock])}}const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);snap.sourceMaster=master;snap.sourceFile={name:f.name,uploadedAt:new Date().toISOString(),rows:Object.keys(master).length};let matched=0;for(const p of (snap.products||[])){const m=master[p.id];if(!m)continue;p.name=m.name;p.sourceCategory=m.category;p.category=m.category;p.system=m.system;if(p.group&&!snap.groups.includes(p.group))snap.groups.push(p.group);matched++}markInventoryDirty();renderInventoryOwner();toastMsg(`${currentInventoryDate.replaceAll("-",".")} 기준 파일 ${Object.keys(master).length.toLocaleString("ko-KR")} SKU를 읽었습니다. 관리 중 ${matched} SKU를 갱신했습니다.`)}catch(e){console.error(e);toastMsg("Excel 파일을 읽는 중 오류가 발생했습니다.")}finally{ownerInventoryFile.value=""}};
+function inventoryCsvRows(owner,date){const snap=ownerSnapshot(owner,date);const rows=[["담당자","기준일","관리그룹","제품군","제품코드","제품명","현재고","실사","차이","제조일","수량"]];for(const p of (snap?.products||[])){const act=productActual(p),diff=act-invNum(p.system);if((p.lots||[]).length){p.lots.forEach((l,i)=>rows.push([owner,date,p.group,p.sourceCategory||p.category,i?"":p.id,i?"":p.name,i?"":p.system,i?"":act,i?"":diff,l.date,l.qty]))}else rows.push([owner,date,p.group,p.sourceCategory||p.category,p.id,p.name,p.system,act,diff,"",""])}return rows}
 exportInventoryCsv.onclick=()=>{const rows=inventoryCsvRows(currentInventoryOwner,currentInventoryDate);const csv=rows.map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(`${currentInventoryOwner}_${currentInventoryDate}.csv`,new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
 function openInventoryTotal(label,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));inventoryTotalView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;renderInventoryTotalFilters();renderInventoryTotal()}
 function totalRows(){const rows=[];for(const [owner,o] of Object.entries(inventoryDb.owners||{})){const date=ensureTodaySnapshot(owner);const snap=o.snapshots?.[date];for(const p of (snap?.products||[])){const actual=productActual(p),months={};for(const l of (p.lots||[])){if(!l.date)continue;const month=String(l.date).slice(0,7);if(/^\d{4}-\d{2}$/.test(month))months[month]=(months[month]||0)+invNum(l.qty)}rows.push({owner,date,category:p.sourceCategory||p.category||p.group||"",group:p.group||"",id:p.id,name:p.name,system:invNum(p.system),actual,diff:actual-invNum(p.system),months})}}return rows}
-function renderInventoryTotalFilters(){const owners=Object.keys(inventoryDb.owners||{});const cats=[...new Set(totalRows().map(r=>r.category).filter(Boolean))].sort();const prevOwner=totalInventoryOwner.value||"",prevCat=totalInventoryCategory.value||"";totalInventoryOwner.innerHTML='<option value="">전체 담당자</option>'+owners.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join("");totalInventoryCategory.innerHTML='<option value="">전체 카테고리</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");if(owners.includes(prevOwner))totalInventoryOwner.value=prevOwner;if(cats.includes(prevCat))totalInventoryCategory.value=prevCat}
+function renderInventoryTotalFilters(){const owners=Object.keys(inventoryDb.owners||{});const cats=[...new Set(totalRows().map(r=>r.category).filter(Boolean))].sort();const prevOwner=totalInventoryOwner.value||"",prevCat=totalInventoryCategory.value||"";totalInventoryOwner.innerHTML='<option value="">전체 담당자</option>'+owners.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join("");totalInventoryCategory.innerHTML='<option value="">전체 제품군</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");if(owners.includes(prevOwner))totalInventoryOwner.value=prevOwner;if(cats.includes(prevCat))totalInventoryCategory.value=prevCat}
 function monthlyQtyText(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?entries.map(([m,q])=>`${m.slice(5)}월 ${fmtNum(q)}개`).join(" · "):"-"}
 function monthlyQtyHtml(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?`<div class="month-stock-wrap">${entries.map(([m,q])=>`<span class="month-stock-chip"><b>${esc(m.slice(5))}월</b><strong>${fmtNum(q)}개</strong></span>`).join("")}</div>`:`<span class="month-stock-empty">-</span>`}
 function renderInventoryTotal(){const of=totalInventoryOwner.value||"",cf=totalInventoryCategory.value||"",q=(totalInventorySearch?.value||"").trim().toLowerCase();const rows=totalRows().filter(r=>(!of||r.owner===of)&&(!cf||r.category===cf)&&(!q||String(r.id||"").toLowerCase().includes(q)||String(r.name||"").toLowerCase().includes(q)));inventoryTotalBody.innerHTML=rows.length?rows.map(r=>`<tr><td><span class="inventory-total-owner">${esc(r.owner)}</span></td><td>${esc(r.id)}</td><td class="product-name">${esc(r.name)}</td><td>${esc(r.category)}</td><td class="num">${fmtNum(r.system)}</td><td class="num">${fmtNum(r.actual)}</td><td class="num ${diffClass(r.diff)} ${r.diff!==0?"gap-cell":""}">${r.diff>0?"+":""}${fmtNum(r.diff)}</td><td>${monthlyQtyHtml(r.months)}</td></tr>`).join(""):'<tr><td colspan="8"><div class="inventory-empty">취합할 재고가 없습니다.</div></td></tr>';const sku=new Set(rows.map(r=>r.id)).size,actual=rows.reduce((a,r)=>a+invNum(r.actual),0),gap=rows.reduce((a,r)=>a+Math.abs(invNum(r.diff)),0);totalMetricSku.textContent=fmtNum(sku);totalMetricActual.textContent=fmtNum(actual);totalMetricGap.textContent=fmtNum(gap);const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();const today=localToday();const label=dates.length===1?dates[0]:(dates.length>1?`${dates[0]} ~ ${dates[dates.length-1]}`:today);totalInventoryAsOf.textContent=label;totalInventoryDateHint.textContent=dates.length>1?"담당자별 기준일 상이":`${label} 기준`;totalInventoryFootDate.textContent=`현재 표시 재고 기준: ${label}`}
-totalInventoryOwner.onchange=renderInventoryTotal;totalInventoryCategory.onchange=renderInventoryTotal;totalInventorySearch.oninput=renderInventoryTotal;exportTotalCsv.onclick=()=>{const rows=[["담당자","기준일","카테고리","제품코드","제품명","현재고","실사","차이","제조월별 재고"],...totalRows().map(r=>[r.owner,r.date,r.category,r.id,r.name,r.system,r.actual,r.diff,monthlyQtyText(r.months)])];const csv=rows.map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download("총재고파일.csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
+totalInventoryOwner.onchange=renderInventoryTotal;totalInventoryCategory.onchange=renderInventoryTotal;totalInventorySearch.oninput=renderInventoryTotal;exportTotalCsv.onclick=()=>{const rows=[["담당자","기준일","제품군","제품코드","제품명","현재고","실사","차이","제조월별 재고"],...totalRows().map(r=>[r.owner,r.date,r.category,r.id,r.name,r.system,r.actual,r.diff,monthlyQtyText(r.months)])];const csv=rows.map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download("총재고파일.csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
 function renderHistory(){const hist=JSON.parse(localStorage.getItem(HIST_KEY)||"[]");uploadHistory.innerHTML=hist.length?hist.map(x=>`<div class="history-row"><span>${x.time}</span><b>${esc(x.name)}</b><span>${x.type}</span><span>${x.rows} rows</span></div>`).join(""):`<div class="muted" style="font-size:10px">아직 업로드 이력이 없습니다.</div>`}
 document.querySelectorAll(".dataFile").forEach(inp=>inp.onchange=async()=>{const f=inp.files[0];if(!f)return;try{const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});const hist=JSON.parse(localStorage.getItem(HIST_KEY)||"[]");hist.unshift({time:new Date().toLocaleString("ko-KR"),name:f.name,type:inp.dataset.type,rows:Math.max(rows.length-1,0)});localStorage.setItem(HIST_KEY,JSON.stringify(hist.slice(0,20)));renderHistory();toastMsg(`${inp.dataset.type} 파일을 읽었습니다.`)}catch(e){toastMsg("Excel 파일을 읽는 중 오류가 발생했습니다.")}});
 function renderAdmin(){renderUsers();renderMenusTable();renderPermissions();newMenuGroup.innerHTML=GROUPS.filter(g=>!["dashboard","admin"].includes(g.id)).map(g=>`<option value="${g.id}">${g.label}</option>`).join("")}
