@@ -388,6 +388,195 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   box-shadow:0 0 0 2px rgba(100,115,125,.10)!important;
 }
 
+
+/* V24 — completed quantity must display as plain text */
+.inventory-grid td:nth-child(9) input[type=number][data-lot-qty].field-complete:not(:focus){
+  border:0!important;
+  border-color:transparent!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  outline:none!important;
+  appearance:textfield!important;
+  -moz-appearance:textfield!important;
+  padding-right:10px!important;
+}
+.inventory-grid td:nth-child(9) input[type=number][data-lot-qty].field-complete:not(:focus)::-webkit-outer-spin-button,
+.inventory-grid td:nth-child(9) input[type=number][data-lot-qty].field-complete:not(:focus)::-webkit-inner-spin-button{
+  -webkit-appearance:none!important;
+  margin:0!important;
+}
+
+
+/* V25 — scalable inventory history navigation */
+.inventory-history-controls{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.inventory-history-label{
+  font-size:9px;
+  font-weight:800;
+  color:#65747f;
+  white-space:nowrap;
+  margin-left:3px;
+}
+.saved-date-select.history-month{
+  width:122px;
+}
+.saved-date-select.history-day{
+  width:112px;
+}
+.saved-date-select:disabled{
+  color:#a0a9af;
+  background:#f5f7f8;
+  cursor:not-allowed;
+}
+@media(max-width:700px){
+  .inventory-history-controls{
+    width:100%;
+  }
+}
+
+
+/* V26 — global alignment system */
+body,
+button,
+input,
+select,
+textarea{
+  text-align:left;
+}
+
+/* Main titles / section titles */
+.topbar h1,
+.hero-copy,
+.panel-head,
+.sheet-title,
+.inventory-head,
+.admin-card,
+.upload-card,
+.analysis-box{
+  text-align:left;
+}
+
+/* Cards: keep labels and values on one consistent left axis */
+.summary-card,
+.flow-item,
+.kpi,
+.inventory-metric{
+  text-align:left;
+}
+
+/* Flex rows: vertically center their contents */
+.topbar,
+.top-actions,
+.summary-top,
+.panel-head,
+.toolbar,
+.tools,
+.inventory-commandbar,
+.inventory-command-left,
+.inventory-command-right,
+.inventory-date-control,
+.inventory-history-controls,
+.inventory-actions,
+.task-row,
+.issue-row,
+.progress-row{
+  align-items:center;
+}
+
+/* Tables: header labels centered, text cells left, numeric cells right */
+table th{
+  text-align:center!important;
+  vertical-align:middle!important;
+}
+table td{
+  text-align:left;
+  vertical-align:middle!important;
+}
+table th.num,
+table td.num,
+.inventory-grid th.qty-head,
+.inventory-grid td.num{
+  text-align:right!important;
+}
+
+/* Inventory specific text columns */
+.inventory-grid th:nth-child(1),
+.inventory-grid td:nth-child(1){
+  text-align:center!important;
+}
+.inventory-grid th:nth-child(2),
+.inventory-grid td:nth-child(2),
+.inventory-grid th:nth-child(3),
+.inventory-grid td:nth-child(3),
+.inventory-grid th:nth-child(4),
+.inventory-grid td:nth-child(4){
+  text-align:left!important;
+}
+.inventory-grid th:nth-child(5),
+.inventory-grid td:nth-child(5),
+.inventory-grid th:nth-child(6),
+.inventory-grid td:nth-child(6),
+.inventory-grid th:nth-child(7),
+.inventory-grid td:nth-child(7),
+.inventory-grid th:nth-child(9),
+.inventory-grid td:nth-child(9){
+  text-align:right!important;
+}
+.inventory-grid th:nth-child(8),
+.inventory-grid td:nth-child(8){
+  text-align:center!important;
+}
+
+/* Inputs inherit the alignment of the data type */
+.inventory-grid input[data-product-code]{
+  text-align:left!important;
+}
+.inventory-grid input[data-lot-date]{
+  text-align:center!important;
+}
+.inventory-grid input[data-lot-qty]{
+  text-align:right!important;
+}
+
+/* Filters / select controls */
+.inventory-filterbar input,
+.inventory-filterbar select,
+.saved-date-select,
+.role-preview,
+.field input,
+.field select{
+  vertical-align:middle;
+}
+
+/* Navigation labels stay on a clean left axis */
+.nav-root,
+.nav-item,
+.nav-folder-btn{
+  text-align:left;
+}
+
+/* Footer / helper text */
+.inventory-note,
+.sheet-footer{
+  align-items:center;
+}
+
+/* Keep compact status chips centered internally */
+.badge,
+.status-chip,
+.inventory-status,
+.inventory-total-owner,
+.auto-save-state,
+.inventory-asof,
+.source-file{
+  text-align:center;
+  align-items:center;
+}
+
 </style>
 </head>
 <body>
@@ -446,9 +635,13 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
     <section id="inventoryOwnerView" class="view">
       <div class="inventory-shell">
         <div class="inventory-head"><div><div class="eyebrow">INVENTORY WORKBOOK</div><h2 id="inventoryOwnerTitle">담당자 재고파일</h2><p>기준일별 업로드 파일을 기준으로 제품코드에 맞는 제품명·제품군·현재고를 불러옵니다. 이전 기준일의 저장값은 변경되지 않으며, 실사와 제조일별 수량 수정은 즉시 자동 저장됩니다.</p></div><div class="inventory-actions"><button class="btn" id="exportInventoryCsv">CSV 내보내기</button><span class="auto-save-state" id="inventoryAutoSave">자동 저장</span></div></div>
-        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><select id="inventoryHistoryDate" class="saved-date-select" title="과거 재고 조회"><option value="">과거 재고 조회</option></select></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
+        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><div class="inventory-history-controls" title="과거 재고 조회">
+  <span class="inventory-history-label">과거 재고 조회</span>
+  <select id="inventoryHistoryMonth" class="saved-date-select history-month"><option value="">월 선택</option></select>
+  <select id="inventoryHistoryDate" class="saved-date-select history-day" disabled><option value="">기준일 선택</option></select>
+</div></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
         <select id="inventoryDate" hidden></select><button id="newInventoryDate" hidden></button>
-        <div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="invMetricProducts">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="invMetricActual">0</b><small>실사 재고</small></div><div class="inventory-metric"><span>GAP</span><b id="invMetricGap">0</b><small>차이 합계</small></div></div>
+        <div class="inventory-metrics three"><div class="inventory-metric"><span>관리 SKU</span><b id="invMetricProducts">0</b><small>관리 제품 수</small></div><div class="inventory-metric"><span>실사 합계 수량</span><b id="invMetricActual">0</b><small>실사 수량 합계</small></div><div class="inventory-metric"><span>차이 수량</span><b id="invMetricGap">0</b><small>실사 - 현재고</small></div></div>
         <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:46px">순서</th><th style="width:100px">제품코드</th><th style="width:215px;min-width:215px">제품명</th><th style="width:110px">카테고리</th><th class="num qty-head" style="width:88px">현재고</th><th class="num qty-head" style="width:92px">실사</th><th class="num qty-head" style="width:88px">차이</th><th style="width:96px">제조일</th><th class="num qty-head lot-qty-head" style="width:142px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
       </div>
     </section>
@@ -759,21 +952,53 @@ function renderInventoryMetricsOnly(){const snap=ownerSnapshot(currentInventoryO
 inventoryDate.onchange=()=>{currentInventoryDate=inventoryDate.value;renderInventoryDates();renderInventoryOwner()};
 
 function renderInventoryHistory(){
-  const sel=document.getElementById("inventoryHistoryDate");
-  if(!sel)return;
-  const o=ensureOwner(currentInventoryOwner);
-  const dates=Object.keys(o.snapshots||{}).sort().reverse();
-  sel.innerHTML='<option value="">과거 재고 조회</option>'+dates.map(d=>`<option value="${d}">${d}</option>`).join("");
-  sel.value="";
+  const monthEl=document.getElementById("inventoryHistoryMonth");
+  const dateEl=document.getElementById("inventoryHistoryDate");
+  if(!monthEl||!dateEl)return;
+
+  const dates=Object.keys(ensureOwner(currentInventoryOwner).snapshots||{}).sort().reverse();
+  const months=[...new Set(dates.map(d=>d.slice(0,7)))];
+
+  const previousMonth=monthEl.value;
+  monthEl.innerHTML='<option value="">월 선택</option>'+months.map(m=>{
+    const [y,mo]=m.split("-");
+    return `<option value="${m}">${y}년 ${Number(mo)}월</option>`;
+  }).join("");
+
+  if(months.includes(previousMonth)) monthEl.value=previousMonth;
+
+  const selectedMonth=monthEl.value;
+  const monthDates=selectedMonth ? dates.filter(d=>d.startsWith(selectedMonth+"-")) : [];
+
+  dateEl.innerHTML='<option value="">기준일 선택</option>'+monthDates.map(d=>{
+    const [,mo,day]=d.split("-");
+    return `<option value="${d}">${mo}/${day}</option>`;
+  }).join("");
+  dateEl.disabled=!selectedMonth;
+  dateEl.value=monthDates.includes(currentInventoryDate) ? currentInventoryDate : "";
 }
 
 function switchInventoryDate(d){if(!d)return;const o=ensureOwner(currentInventoryOwner);if(!o.snapshots[d]){const latest=latestOwnerDate(currentInventoryOwner);const base=ownerSnapshot(currentInventoryOwner,latest)||{groups:[],products:[],sourceMaster:{},sourceFile:null};o.snapshots[d]=JSON.parse(JSON.stringify(base));o.snapshots[d].sourceFile=null;markInventoryDirty();toastMsg(`${d.replaceAll("-",".")} 기준 재고를 생성했습니다.`)}currentInventoryDate=d;renderInventoryDates();renderInventoryOwner()}
 newInventoryDateValue.onchange=()=>{clearInventoryUndo();switchInventoryDate(newInventoryDateValue.value)};
 newInventoryDate.onclick=()=>switchInventoryDate(newInventoryDateValue.value);
-inventoryHistoryDate.onchange=()=>{
-  if(!inventoryHistoryDate.value)return;
+const inventoryHistoryMonth=document.getElementById("inventoryHistoryMonth");
+const inventoryHistoryDateEl=document.getElementById("inventoryHistoryDate");
+
+inventoryHistoryMonth.onchange=()=>{
+  const dates=Object.keys(ensureOwner(currentInventoryOwner).snapshots||{}).sort().reverse();
+  const month=inventoryHistoryMonth.value;
+  const monthDates=month ? dates.filter(d=>d.startsWith(month+"-")) : [];
+  inventoryHistoryDateEl.innerHTML='<option value="">기준일 선택</option>'+monthDates.map(d=>{
+    const [,mo,day]=d.split("-");
+    return `<option value="${d}">${mo}/${day}</option>`;
+  }).join("");
+  inventoryHistoryDateEl.disabled=!month;
+};
+
+inventoryHistoryDateEl.onchange=()=>{
+  if(!inventoryHistoryDateEl.value)return;
   clearInventoryUndo();
-  currentInventoryDate=inventoryHistoryDate.value;
+  currentInventoryDate=inventoryHistoryDateEl.value;
   renderInventoryDates();
   renderInventoryOwner();
 };
