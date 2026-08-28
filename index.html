@@ -106,6 +106,106 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   border-color:#d8e6dd;
 }
 
+
+/* V10 quantity-first inventory layout */
+.inventory-grid{min-width:1125px}
+.inventory-grid th.qty-head{
+  font-weight:800;
+  letter-spacing:-.2px;
+}
+.inventory-grid td.num{
+  font-size:11px;
+  font-weight:750;
+  font-variant-numeric:tabular-nums;
+  text-align:right;
+  padding-right:12px;
+}
+.inventory-grid td:nth-child(6),
+.inventory-grid td:nth-child(7),
+.inventory-grid td:nth-child(8),
+.inventory-grid td:nth-child(10){
+  background:#fbfcfd;
+}
+.inventory-grid tr:hover td:nth-child(6),
+.inventory-grid tr:hover td:nth-child(7),
+.inventory-grid tr:hover td:nth-child(8),
+.inventory-grid tr:hover td:nth-child(10){
+  background:#f5f7f8;
+}
+.inventory-grid td.gap-cell{
+  background:#fff0ed!important;
+}
+.inventory-grid td:nth-child(3){
+  max-width:205px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.inventory-grid td:nth-child(3):hover{
+  overflow:visible;
+  white-space:normal;
+  position:relative;
+  z-index:2;
+}
+
+
+/* V11 compact manufacture-date column */
+.inventory-grid{min-width:1075px}
+.lot-date-cell{
+  min-width:132px;
+  gap:4px;
+}
+.lot-date-cell input[type=date]{
+  width:104px;
+  min-width:104px;
+  height:26px;
+  padding:0 4px;
+  font-size:10px;
+}
+.lot-actions{
+  flex:0 0 52px;
+  width:52px;
+}
+.lot-inline-add,.lot-inline-remove,.lot-action-placeholder{
+  width:24px;
+  height:24px;
+  flex-basis:24px;
+}
+
+
+/* V12 base-date history visibility */
+.date-state{
+  display:inline-flex;
+  align-items:center;
+  height:30px;
+  padding:0 9px;
+  border-radius:7px;
+  font-size:10px;
+  font-weight:800;
+  white-space:nowrap;
+  border:1px solid #e3e8eb;
+  background:#f8fafb;
+  color:#6d7880;
+}
+.date-state.is-saved{
+  background:#eef7f1;
+  border-color:#d4e7da;
+  color:#3f6e50;
+}
+.date-state.is-new{
+  background:#fff8e9;
+  border-color:#eadfbd;
+  color:#806b32;
+}
+.date-state::before{
+  content:"";
+  width:6px;
+  height:6px;
+  margin-right:6px;
+  border-radius:50%;
+  background:currentColor;
+}
+
 </style>
 </head>
 <body>
@@ -167,7 +267,7 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
         <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><button class="btn add" id="addInventoryProduct">＋ 제품 추가</button><button class="btn add" id="addInventoryGroup">＋ 관리그룹</button></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
         <div class="inventory-filterbar compact clean-filter"><select id="inventoryCategory"><option value="">전체 관리그룹</option></select></div><select id="inventoryDate" hidden></select><button id="newInventoryDate" hidden></button>
         <div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="invMetricProducts">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="invMetricActual">0</b><small>실사 재고</small></div><div class="inventory-metric"><span>GAP</span><b id="invMetricGap">0</b><small>차이 합계</small></div></div>
-        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:58px">순서</th><th style="width:108px">제품코드</th><th style="min-width:270px">제품명</th><th style="width:110px">제품군</th><th style="width:145px">관리그룹</th><th class="num" style="width:82px">현재고</th><th class="num" style="width:82px">실사</th><th class="num" style="width:76px">차이</th><th style="width:205px">제조일</th><th class="num" style="width:82px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
+        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:50px">순서</th><th style="width:96px">제품코드</th><th style="width:190px;min-width:190px">제품명</th><th style="width:90px">제품군</th><th style="width:118px">관리그룹</th><th class="num qty-head" style="width:110px">현재고</th><th class="num qty-head" style="width:110px">실사</th><th class="num qty-head" style="width:98px">차이</th><th style="width:145px">제조일</th><th class="num qty-head" style="width:105px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
       </div>
     </section>
 
