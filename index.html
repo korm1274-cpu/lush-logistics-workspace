@@ -379,6 +379,77 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
   background:#ffeae6!important;
 }
 
+
+/* V16 — plain quantity typing, saved-date visibility, row context menu */
+.inventory-grid input[type=number]{
+  appearance:textfield!important;
+  -moz-appearance:textfield!important;
+  background:#fff!important;
+}
+.inventory-grid input[type=number]::-webkit-outer-spin-button,
+.inventory-grid input[type=number]::-webkit-inner-spin-button{
+  -webkit-appearance:none!important;
+  margin:0!important;
+}
+
+/* Management/group UI completely hidden visually */
+#inventoryCategory,
+.inventory-filterbar.compact.clean-filter,
+.inventory-grid th:nth-child(5),
+.inventory-grid td:nth-child(5){
+  display:none!important;
+}
+
+/* Saved inventory dates are a primary navigation control */
+.saved-date-select{
+  width:190px!important;
+  height:34px!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  border:1px solid #cfd8dd!important;
+  background:#fff!important;
+}
+.date-state{
+  min-width:92px;
+  justify-content:center;
+}
+
+/* Right-click inventory row menu */
+.inventory-context-menu{
+  position:fixed;
+  z-index:99999;
+  width:174px;
+  padding:6px;
+  border:1px solid #dce3e7;
+  border-radius:9px;
+  background:#fff;
+  box-shadow:0 10px 30px rgba(30,45,55,.16);
+  display:none;
+}
+.inventory-context-menu.show{display:block}
+.inventory-context-menu button{
+  display:flex;
+  align-items:center;
+  width:100%;
+  height:34px;
+  padding:0 10px;
+  border:0;
+  border-radius:6px;
+  background:#fff;
+  color:#334149;
+  font-size:11px;
+  font-weight:750;
+  text-align:left;
+  cursor:pointer;
+}
+.inventory-context-menu button:hover{background:#f4f7f8}
+.inventory-context-menu button.danger{color:#a44840}
+.inventory-context-menu .sep{
+  height:1px;
+  margin:4px 2px;
+  background:#edf0f2;
+}
+
 </style>
 </head>
 <body>
@@ -604,5 +675,124 @@ homeBrand.onclick=()=>showView("dashboard","Dashboard",document.querySelector('[
 
 const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 </script>
+
+<div id="inventoryContextMenu" class="inventory-context-menu" role="menu">
+  <button type="button" id="inventoryRowAddBelow">＋ 아래에 행 추가</button>
+  <button type="button" id="inventoryRowAddAbove">＋ 위에 행 추가</button>
+  <div class="sep"></div>
+  <button type="button" id="inventoryRowDelete" class="danger">행 삭제</button>
+</div>
+
+
+<script>
+(function(){
+  const menu=document.getElementById("inventoryContextMenu");
+  if(!menu) return;
+  let targetRow=null;
+
+  function hideMenu(){
+    menu.classList.remove("show");
+    targetRow=null;
+  }
+
+  function makeEditableCell(cls, type, placeholder){
+    const td=document.createElement("td");
+    if(cls) td.className=cls;
+    const input=document.createElement("input");
+    input.type=type||"text";
+    if(type==="number"){
+      input.inputMode="numeric";
+      input.step="1";
+    }
+    input.placeholder=placeholder||"";
+    input.style.width="100%";
+    input.style.boxSizing="border-box";
+    td.appendChild(input);
+    return td;
+  }
+
+  function makeManualRow(){
+    const tr=document.createElement("tr");
+    tr.className="manual-inventory-row";
+    tr.dataset.manualRow="1";
+
+    tr.appendChild(makeEditableCell("", "text", ""));
+    tr.appendChild(makeEditableCell("", "text", "제품코드"));
+    tr.appendChild(makeEditableCell("", "text", "제품명"));
+    tr.appendChild(makeEditableCell("", "text", "카테고리"));
+
+    // Hidden management/group compatibility cell so existing column indices remain intact.
+    const hidden=document.createElement("td");
+    hidden.style.display="none";
+    tr.appendChild(hidden);
+
+    tr.appendChild(makeEditableCell("num", "number", "0"));
+    tr.appendChild(makeEditableCell("num", "number", "0"));
+
+    const diff=document.createElement("td");
+    diff.className="num";
+    diff.textContent="0";
+    tr.appendChild(diff);
+
+    tr.appendChild(makeEditableCell("", "date", ""));
+    tr.appendChild(makeEditableCell("num", "number", "0"));
+
+    // Calculate difference from current stock vs physical count.
+    const nums=tr.querySelectorAll('input[type="number"]');
+    if(nums.length>=2){
+      const update=()=>{
+        const a=Number(nums[0].value||0);
+        const b=Number(nums[1].value||0);
+        const gap=b-a;
+        diff.textContent=gap.toLocaleString("ko-KR");
+        diff.classList.toggle("gap-cell", gap!==0);
+      };
+      nums[0].addEventListener("input",update);
+      nums[1].addEventListener("input",update);
+    }
+    return tr;
+  }
+
+  function insertManual(where){
+    if(!targetRow) return;
+    const row=makeManualRow();
+    if(where==="above"){
+      targetRow.parentNode.insertBefore(row,targetRow);
+    }else{
+      targetRow.parentNode.insertBefore(row,targetRow.nextSibling);
+    }
+    hideMenu();
+    const first=row.querySelector('input[placeholder="제품코드"]');
+    if(first) first.focus();
+  }
+
+  document.addEventListener("contextmenu",function(e){
+    const row=e.target.closest(".inventory-grid tbody tr");
+    if(!row || row.classList.contains("cat-row")) return;
+    e.preventDefault();
+    targetRow=row;
+    menu.style.left=Math.min(e.clientX,window.innerWidth-184)+"px";
+    menu.style.top=Math.min(e.clientY,window.innerHeight-126)+"px";
+    menu.classList.add("show");
+  });
+
+  document.getElementById("inventoryRowAddBelow").addEventListener("click",()=>insertManual("below"));
+  document.getElementById("inventoryRowAddAbove").addEventListener("click",()=>insertManual("above"));
+  document.getElementById("inventoryRowDelete").addEventListener("click",function(){
+    if(!targetRow) return;
+    if(confirm("선택한 행을 삭제할까요?")){
+      targetRow.remove();
+    }
+    hideMenu();
+  });
+
+  document.addEventListener("click",function(e){
+    if(!menu.contains(e.target)) hideMenu();
+  });
+  window.addEventListener("scroll",hideMenu,true);
+  window.addEventListener("resize",hideMenu);
+})();
+</script>
+
 </body>
 </html>
