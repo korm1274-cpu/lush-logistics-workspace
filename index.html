@@ -1,1 +1,545 @@
-LUSH Logistics Workspace
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>LUSH Logistics Workspace</title>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<style>@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+/* V2 light logistics UI */
+body{background:#f7f9f8;font-family:"Pretendard","Noto Sans KR",Arial,sans-serif;font-size:14px}
+.sidebar{width:272px;background:#ffffff;color:#24332e;border-right:1px solid #e3e9e6;box-shadow:6px 0 24px rgba(29,60,50,.04)}
+.main{margin-left:272px;width:calc(100% - 272px);padding:0 32px 42px}
+.brand{cursor:pointer;border-radius:12px;margin-bottom:2px;transition:.18s}.brand:hover{background:#f0f7f4}
+.logo{background:#173c32;color:#fff;border:0;border-radius:10px}
+.brand b{color:#17352d}.brand small{color:#8b9994}
+.status{background:#eff8f4;border-color:#d9eee5;color:#275c4b}.status small{color:#79958b}
+.nav-root{color:#53635d;font-size:13px}.nav-root:hover,.nav-group.open>.nav-root{background:#edf6f2;color:#174c3d}
+.nav-root em{color:#9aaba5}.nav-children{border-left:1px solid #e6ece9;margin-left:17px;padding-left:10px}
+.file-head{color:#9aa7a2;font-size:10px}.nav-item{color:#667670;font-size:11px;padding:9px 10px}
+.nav-item:hover,.nav-item.active{background:#e7f4ef;color:#176349}.nav-item.active{font-weight:800}
+.side-bottom{border-top-color:#e3e9e6}.side-bottom b{color:#263c34;font-size:12px}.side-bottom small{color:#8d9a95}
+.topbar{height:94px}h1{font-size:27px;letter-spacing:-.04em}.eyebrow{font-size:10px}
+.hero-grid{grid-template-columns:1.65fr 1fr}
+.hero{position:relative;overflow:hidden;background:#eaf4f0;color:#183c31;min-height:235px;padding:30px;border:1px solid #dceae4}
+.hero:after{content:"";position:absolute;right:0;top:0;width:47%;height:100%;background:linear-gradient(90deg,#eaf4f0 0%,rgba(234,244,240,.25) 35%,rgba(234,244,240,.02) 100%),url("https://images.unsplash.com/photo-1749244768351-2726dc23d26c?auto=format&fit=crop&fm=jpg&q=75&w=1600") center/cover no-repeat}
+.hero>*{position:relative;z-index:2}.hero small{color:#16815e;font-size:9px}.hero h2{font-size:28px;line-height:1.28;letter-spacing:-.045em;max-width:560px}.hero p{font-size:12px;color:#647a72;max-width:530px}
+.hero-flow{max-width:610px}.hero-flow div{background:rgba(255,255,255,.82);border:1px solid #dce9e4;backdrop-filter:blur(3px)}
+.hero-flow span{font-size:9px;color:#758780}.hero-flow b{color:#183c31;font-size:18px}
+.panel,.kpi,.upload-card,.analysis-box,.setting-card,.sheet-card{box-shadow:0 8px 24px rgba(33,65,55,.035)}
+.panel-head h3,.upload-card h3,.setting-card h3{font-size:15px}.panel-head small{font-size:8px}
+.quick-row{padding:11px}.quick-icon{background:#eaf6f1}.quick-row b{font-size:11px}.quick-row span,.quick-row em{font-size:9px}
+.kpi{padding:18px}.kpi span{font-size:10px}.kpi b{font-size:26px}.kpi small{font-size:9px}
+.progress-row,.issue-row{font-size:10px}.btn{font-size:10px;padding:10px 12px}
+.crumb{font-size:10px}.sheet-title h2{font-size:16px}.sheet-title p,.sheet-footer{font-size:9px}
+table{font-size:10px}th{font-size:9px}input.cell{font-size:10px}
+.upload-card p,.filebox,.history-row,.setting-row{font-size:10px}
+.lucide{width:16px;height:16px;stroke-width:1.8;vertical-align:-3px;margin-right:1px}
+.brand-home-note{font-size:9px;color:#9aa7a2;margin-left:auto}
+.admin-form{display:grid;grid-template-columns:140px 1fr auto;gap:8px;margin-top:10px}
+.admin-form select,.admin-form input{border:1px solid #dce5e1;border-radius:8px;background:#fff;padding:10px;font-size:10px;outline:none}
+.custom-menu-list{margin-top:12px;border-top:1px solid #edf1ef}
+.custom-menu-row{display:grid;grid-template-columns:110px 1fr auto;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid #edf1ef;font-size:10px}
+.custom-menu-row b{color:#2d5146}.remove-menu{border:1px solid #ead8d8;background:#fff7f7;color:#a84b4b;border-radius:7px;padding:6px 8px;font-size:9px}
+.setting-row button{border:0;background:transparent}
+@media(max-width:1100px){.sidebar{width:235px}.main{margin-left:235px;width:calc(100% - 235px)}}
+
+</style>
+<style>
+:root{
+  --bg:#f3f6f4; --panel:#fff; --ink:#17211e; --muted:#7e8b86; --line:#dde5e1;
+  --deep:#17362e; --deep2:#23493f; --green:#1e9b70; --green2:#dff5ed;
+  --amber:#c77c2e; --red:#c85454; --soft:#eef3f1;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);font-family:Arial,"Noto Sans KR",sans-serif;color:var(--ink)}
+button,input,select{font:inherit}
+button{cursor:pointer}
+.app{display:flex;min-height:100vh}
+.sidebar{
+  width:280px;background:var(--deep);color:#fff;position:fixed;left:0;top:0;bottom:0;
+  padding:18px 14px;overflow:auto;display:flex;flex-direction:column
+}
+.brand{display:flex;gap:10px;align-items:center;padding:4px 8px 18px}
+.logo{width:40px;height:40px;border:1px solid #5c7d73;display:grid;place-items:center;font-size:21px;font-weight:900}
+.brand b{letter-spacing:.14em;font-size:16px}
+.brand small{display:block;color:#88a39a;font-size:8px;margin-top:3px;letter-spacing:.12em}
+.status{margin:0 4px 14px;padding:10px 12px;border-radius:10px;background:#214139;border:1px solid #345b50;font-size:10px}
+.status i{display:inline-block;width:7px;height:7px;background:#35d39b;border-radius:50%;margin-right:7px}
+.status small{display:block;color:#91aaa2;margin:4px 0 0 15px}
+.nav-group{margin:3px 0}
+.nav-root{width:100%;border:0;background:transparent;color:#bed0ca;padding:10px 10px;text-align:left;border-radius:8px;display:flex;align-items:center;justify-content:space-between;font-size:12px;font-weight:800}
+.nav-root:hover,.nav-group.open>.nav-root{background:#284c42;color:#fff}
+.nav-root span:first-child{display:flex;gap:9px;align-items:center}
+.nav-root em{font-style:normal;font-size:10px;color:#7fa095}
+.nav-children{display:none;padding:4px 0 7px 18px}
+.nav-group.open>.nav-children{display:block}
+.file-head{font-size:9px;color:#8eaaa2;padding:7px 8px;font-weight:800;letter-spacing:.06em}
+.nav-item{width:100%;border:0;background:transparent;color:#a8bbb5;text-align:left;border-radius:7px;padding:8px 9px;font-size:9px}
+.nav-item:hover,.nav-item.active{background:#31584e;color:#fff}
+.nav-item.folder{font-weight:800;color:#c6d5d0}
+.nav-sub{padding-left:14px}
+.side-bottom{margin-top:auto;border-top:1px solid #35584e;padding:14px 7px 0;display:flex;gap:9px;align-items:center}
+.avatar{width:34px;height:34px;border-radius:8px;background:#e0f8ef;color:#174036;display:grid;place-items:center;font-weight:900}
+.side-bottom b{font-size:11px}.side-bottom small{display:block;color:#8ea69f;font-size:8px}
+.main{margin-left:280px;width:calc(100% - 280px);padding:0 28px 38px}
+.topbar{height:86px;display:flex;align-items:center;justify-content:space-between}
+.eyebrow{font-size:9px;letter-spacing:.13em;color:#87948f;font-weight:800}
+h1{font-size:24px;margin:5px 0 0}
+.top-actions{display:flex;gap:8px}
+.btn{border:1px solid var(--line);background:#fff;border-radius:8px;padding:9px 11px;font-size:9px;font-weight:800;color:#34413d}
+.btn.primary{background:var(--green);border-color:var(--green);color:#fff}
+.btn.ghost{background:#f7f9f8}
+.view{display:none}.view.active{display:block}
+.hero-grid{display:grid;grid-template-columns:2fr 1fr;gap:15px}
+.hero{background:linear-gradient(120deg,#18382f,#2d584c);border-radius:14px;color:#fff;padding:25px;min-height:190px}
+.hero small{font-size:8px;color:#69deb9;letter-spacing:.14em;font-weight:900}
+.hero h2{font-size:25px;margin:14px 0 8px}.hero p{font-size:10px;color:#bfd2cb;max-width:620px;line-height:1.7}
+.hero-flow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}
+.hero-flow div{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.09);padding:10px;border-radius:8px}
+.hero-flow span{font-size:8px;color:#abc2ba}.hero-flow b{display:block;font-size:16px;margin-top:5px}
+.panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:13px}
+.panel-head small{font-size:7px;color:#93a09b;letter-spacing:.12em}.panel-head h3{font-size:14px;margin:3px 0 0}
+.quick{display:flex;flex-direction:column;gap:8px}
+.quick-row{display:grid;grid-template-columns:36px 1fr 60px;gap:8px;align-items:center;border:1px solid #edf1ef;border-radius:9px;padding:9px}
+.quick-icon{width:36px;height:36px;border-radius:8px;background:#eef5f2;display:grid;place-items:center;font-weight:900;color:#275045}
+.quick-row b{font-size:10px}.quick-row span{display:block;font-size:8px;color:#87938f;margin-top:3px}.quick-row em{font-style:normal;font-size:8px;color:#188660;text-align:right}
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:15px}
+.kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:15px}
+.kpi span{font-size:9px;color:#6f7c77;font-weight:700}.kpi b{display:block;font-size:24px;margin:13px 0 4px}.kpi small{font-size:8px;color:#8c9893}
+.section-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:15px;margin-top:15px}
+.progress-row{display:grid;grid-template-columns:70px 1fr 42px;gap:9px;align-items:center;margin:10px 0;font-size:9px}
+.progress{height:7px;background:#edf2f0;border-radius:20px;overflow:hidden}.progress i{display:block;height:100%;background:var(--green)}
+.issue-row{display:grid;grid-template-columns:1fr 70px 65px;gap:7px;border-bottom:1px solid #eff2f1;padding:9px 0;font-size:9px}.issue-row:last-child{border:0}
+.badge{display:inline-block;padding:5px 7px;border-radius:20px;font-size:8px;font-weight:800;background:var(--green2);color:#147856}
+.badge.warn{background:#fff0dc;color:#a76a29}.badge.danger{background:#fdeaea;color:#ab4545}
+.toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.crumb{font-size:9px;color:#7e8a86}.crumb b{color:#1c4338}
+.tools{display:flex;gap:7px;flex-wrap:wrap}
+.sheet-card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.sheet-title{background:#203f36;color:#fff;padding:14px 16px;display:flex;justify-content:space-between;align-items:center}
+.sheet-title h2{font-size:14px;margin:0}.sheet-title p{font-size:8px;color:#abc0b9;margin:4px 0 0}
+.table-wrap{overflow:auto;max-height:610px}
+table{border-collapse:separate;border-spacing:0;width:100%;min-width:1000px;font-size:9px}
+th,td{border-right:1px solid #f0f3f2;border-bottom:1px solid #edf1ef;height:39px;padding:0 8px;white-space:nowrap;text-align:left}
+th{position:sticky;top:0;background:#f7f9f8;color:#68756f;font-size:8px;z-index:2}
+th.rownum,td.rownum{width:38px;text-align:center;background:#f5f7f6;color:#91a09a}
+input.cell{width:100%;height:100%;border:0;outline:0;background:transparent;font-size:9px}
+input.cell:focus{background:#eff9f5;box-shadow:inset 0 0 0 2px #25a47b}
+.sheet-footer{padding:10px 13px;display:flex;justify-content:space-between;font-size:8px;color:#7a8782}
+.upload-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.upload-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px}
+.upload-card .icon{width:42px;height:42px;border-radius:10px;background:#edf6f2;display:grid;place-items:center;color:#1a7c5e;font-weight:900}
+.upload-card h3{font-size:14px;margin:14px 0 6px}.upload-card p{font-size:9px;color:#7d8985;line-height:1.6}
+.filebox{margin-top:13px;border:1px dashed #b9c8c3;border-radius:9px;padding:13px;background:#fafcfb;font-size:9px}
+.filebox input{display:block;margin-top:8px;width:100%;font-size:9px}
+.history{margin-top:15px}
+.history-row{display:grid;grid-template-columns:120px 1fr 80px 90px;gap:8px;padding:10px 0;border-bottom:1px solid #edf1ef;font-size:9px}
+.analysis-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.analysis-box{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.big-number{font-size:30px;font-weight:900;margin:13px 0 4px}
+.compare-table{width:100%;min-width:0}.compare-table th,.compare-table td{height:34px}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.setting-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px}
+.setting-card h3{font-size:14px;margin:0 0 12px}.setting-row{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #eef1f0;padding:9px 0;font-size:9px}.setting-row:last-child{border:0}
+.switch{width:34px;height:19px;border-radius:30px;background:#d7dfdc;position:relative}.switch.on{background:#2aa47c}.switch:after{content:"";position:absolute;width:15px;height:15px;border-radius:50%;background:#fff;top:2px;left:2px}.switch.on:after{left:17px}
+.toast{position:fixed;right:24px;bottom:24px;background:#173a31;color:#fff;padding:12px 15px;border-radius:9px;font-size:9px;opacity:0;transform:translateY(8px);transition:.2s;z-index:99}.toast.show{opacity:1;transform:translateY(0)}
+.muted{color:#84918c}.mt15{margin-top:15px}
+@media(max-width:1100px){.sidebar{width:235px}.main{margin-left:235px;width:calc(100% - 235px)}.hero-grid,.section-grid,.analysis-grid,.settings-grid{grid-template-columns:1fr}.kpis,.upload-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand" id="homeBrand" title="대시보드로 이동"><div class="logo">L</div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div><span class="brand-home-note">HOME</span></div>
+  <div class="status"><i></i><b>Prototype Online</b><small>초기 모델 · Local Storage</small></div>
+
+  <div class="nav-group open">
+    <button class="nav-root"><span><i data-lucide="layout-dashboard"></i> Dashboard</span><em>—</em></button>
+    <div class="nav-children"><button class="nav-item active" data-view="dashboard">메인 대시보드</button></div>
+  </div>
+
+  <div class="nav-group open" id="inventoryGroup"><button class="nav-root"><span><i data-lucide="package-search"></i> 재고</span><em>⌄</em></button>
+    <div class="nav-children">
+      <div class="file-head">재고파일</div>
+      <div class="nav-sub" id="inventoryNav"></div>
+      <button class="nav-item" data-view="inventoryAnalysis">재고 차이 분석</button>
+    </div>
+  </div>
+
+  <div class="nav-group" id="inboundGroup"><button class="nav-root"><span><i data-lucide="package-plus"></i> 입고</span><em>›</em></button>
+    <div class="nav-children">
+      <div class="file-head">입고파일</div>
+      <button class="nav-item" data-sheetcat="inbound" data-sheet="일일 입고관리">일일 입고관리</button>
+      <button class="nav-item" data-sheetcat="inbound" data-sheet="월별 입고현황">월별 입고현황</button>
+      <button class="nav-item" data-view="inboundAnalysis">입고 분석</button>
+    </div>
+  </div>
+
+  <div class="nav-group" id="outboundGroup"><button class="nav-root"><span><i data-lucide="truck"></i> 출고</span><em>›</em></button>
+    <div class="nav-children">
+      <div class="file-head">출고파일</div>
+      <button class="nav-item" data-sheetcat="outbound" data-sheet="일일 출고관리">일일 출고관리</button>
+      <button class="nav-item" data-sheetcat="outbound" data-sheet="FS / 시즌 출고">FS / 시즌 출고</button>
+      <button class="nav-item" data-sheetcat="outbound" data-sheet="오픈 / 리뉴얼">오픈 / 리뉴얼</button>
+      <button class="nav-item" data-view="outboundAnalysis">출고 분석</button>
+    </div>
+  </div>
+
+  <div class="nav-group" id="scheduleGroup"><button class="nav-root"><span><i data-lucide="calendar-days"></i> 일정</span><em>›</em></button>
+    <div class="nav-children">
+      <div class="file-head">일정파일</div>
+      <button class="nav-item" data-sheetcat="schedule" data-sheet="통합 일정">통합 일정</button>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <button class="nav-root"><span><i data-lucide="triangle-alert"></i> 이슈</span><em>›</em></button>
+    <div class="nav-children">
+      <div class="file-head">이슈파일</div>
+      <button class="nav-item" data-sheetcat="issues" data-sheet="오출고">오출고</button>
+      <button class="nav-item" data-sheetcat="issues" data-sheet="파손">파손</button>
+    </div>
+  </div>
+
+  <div class="nav-group" id="attendanceGroup"><button class="nav-root"><span><i data-lucide="clipboard-clock"></i> 근태</span><em>›</em></button>
+    <div class="nav-children">
+      <div class="file-head">근태파일</div>
+      <button class="nav-item" data-sheetcat="attendance" data-sheet="팀 근태">팀 근태</button>
+    </div>
+  </div>
+
+  <div class="nav-group">
+    <button class="nav-root"><span><i data-lucide="file-up"></i> 데이터 업로드</span><em>›</em></button>
+    <div class="nav-children"><button class="nav-item" data-view="upload">Excel / CSV 업로드</button></div>
+  </div>
+
+  <div class="nav-group">
+    <button class="nav-root"><span><i data-lucide="settings-2"></i> Admin</span><em>›</em></button>
+    <div class="nav-children"><button class="nav-item" data-view="settings">메뉴 / 대시보드 설정</button></div>
+  </div>
+
+  <div class="side-bottom"><div class="avatar">T</div><div><b>Time</b><small>Workspace Owner</small></div></div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">Dashboard</h1></div>
+    <div class="top-actions">
+      <button class="btn ghost" id="exportBackup">전체 백업</button>
+      <button class="btn ghost" id="importBackup">백업 불러오기</button>
+      <input type="file" id="backupInput" accept=".json" hidden>
+    </div>
+  </div>
+
+  <section id="dashboard" class="view active">
+    <div class="hero-grid">
+      <div class="hero">
+        <small>LOGISTICS WORKSPACE</small>
+        <h2>오늘 물류 흐름을 한눈에 확인하세요.</h2>
+        <p>매일 업로드하는 Excel 데이터를 기준으로 재고 차이, 입고·출고 현황, 담당자별 재고 진행률과 주요 이슈를 한 화면에서 관리하는 초기 모델입니다.</p>
+        <div class="hero-flow">
+          <div><span>재고 시트</span><b id="dashInvFiles">0</b></div>
+          <div><span>오늘 입고</span><b id="dashInbound">18,420</b></div>
+          <div><span>오늘 출고</span><b id="dashOutbound">31,860</b></div>
+          <div><span>미확인 이슈</span><b>7</b></div>
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><small>DAILY CHECK</small><h3>재고 입력 진행률</h3></div><span class="badge">82%</span></div>
+        <div class="quick">
+          <div class="quick-row"><div class="quick-icon">T</div><div><b>TIME</b><span>오늘 재고 확인</span></div><em>완료</em></div>
+          <div class="quick-row"><div class="quick-icon">S</div><div><b>SAND</b><span>오늘 재고 확인</span></div><em>완료</em></div>
+          <div class="quick-row"><div class="quick-icon">B</div><div><b>BUS</b><span>오늘 재고 확인</span></div><em>진행중</em></div>
+          <div class="quick-row"><div class="quick-icon">F</div><div><b>FURZE</b><span>오늘 재고 확인</span></div><em>미완료</em></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="kpis">
+      <div class="kpi"><span>총 재고 SKU</span><b>1,520</b><small>오늘 기준</small></div>
+      <div class="kpi"><span>재고 차이 SKU</span><b>18</b><small>전일 대비 확인 필요</small></div>
+      <div class="kpi"><span>입고 생산성</span><b>719</b><small>EA / 인·시간</small></div>
+      <div class="kpi"><span>출고 생산성</span><b>1,062</b><small>EA / 인·시간</small></div>
+    </div>
+
+    <div class="section-grid">
+      <div class="panel">
+        <div class="panel-head"><div><small>OWNER STATUS</small><h3>담당자별 재고 확인</h3></div></div>
+        <div class="progress-row"><b>TIME</b><div class="progress"><i style="width:100%"></i></div><span>100%</span></div>
+        <div class="progress-row"><b>SAND</b><div class="progress"><i style="width:92%"></i></div><span>92%</span></div>
+        <div class="progress-row"><b>BUS</b><div class="progress"><i style="width:74%"></i></div><span>74%</span></div>
+        <div class="progress-row"><b>FURZE</b><div class="progress"><i style="width:61%"></i></div><span>61%</span></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div><small>ISSUE CHECK</small><h3>오늘 확인 필요</h3></div></div>
+        <div class="issue-row"><span>재고 차이 5EA 초과</span><span class="badge danger">8 SKU</span><span>확인 필요</span></div>
+        <div class="issue-row"><span>당일 입고 미반영</span><span class="badge warn">4 SKU</span><span>확인 필요</span></div>
+        <div class="issue-row"><span>출고 대비 재고 불일치</span><span class="badge danger">3 SKU</span><span>확인 필요</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="sheetView" class="view">
+    <div class="toolbar">
+      <div class="crumb" id="crumb"></div>
+      <div class="tools">
+        <button class="btn" id="addRow">+ 행 추가</button>
+        <button class="btn" id="exportCsv">CSV 내보내기</button>
+        <button class="btn primary" id="saveSheet">저장</button>
+      </div>
+    </div>
+    <div class="sheet-card">
+      <div class="sheet-title"><div><h2 id="sheetTitle"></h2><p id="sheetSubtitle">웹 자체 시트</p></div><span class="badge" id="saveBadge">LOCAL SAVE</span></div>
+      <div class="table-wrap"><table><thead id="thead"></thead><tbody id="tbody"></tbody></table></div>
+      <div class="sheet-footer"><span id="rowCount"></span><span id="saveState">저장됨</span></div>
+    </div>
+  </section>
+
+  <section id="inventoryAnalysis" class="view">
+    <div class="analysis-grid">
+      <div class="analysis-box"><div class="eyebrow">INVENTORY GAP</div><div class="big-number">18 SKU</div><div class="muted" style="font-size:9px">전일 대비 확인이 필요한 제품 수</div></div>
+      <div class="analysis-box"><div class="eyebrow">ABSOLUTE GAP</div><div class="big-number">247 EA</div><div class="muted" style="font-size:9px">재고 차이 수량 합계</div></div>
+    </div>
+    <div class="panel mt15">
+      <div class="panel-head"><div><small>DAILY COMPARISON</small><h3>재고 차이 우선 확인 목록</h3></div></div>
+      <table class="compare-table"><thead><tr><th>PLU</th><th>제품명</th><th>전일</th><th>금일</th><th>차이</th><th>상태</th></tr></thead>
+      <tbody><tr><td>101894</td><td>Sleepy Body Lotion</td><td>336</td><td>329</td><td>-7</td><td><span class="badge danger">확인 필요</span></td></tr>
+      <tr><td>100871</td><td>Karma Soap</td><td>160</td><td>151</td><td>-9</td><td><span class="badge danger">확인 필요</span></td></tr>
+      <tr><td>103102</td><td>Intergalactic</td><td>214</td><td>209</td><td>-5</td><td><span class="badge warn">확인</span></td></tr></tbody></table>
+    </div>
+  </section>
+
+  <section id="inboundAnalysis" class="view">
+    <div class="kpis">
+      <div class="kpi"><span>금일 입고</span><b>18,420</b><small>EA</small></div>
+      <div class="kpi"><span>입고 SKU</span><b>128</b><small>SKU</small></div>
+      <div class="kpi"><span>투입 인원</span><b>8</b><small>명</small></div>
+      <div class="kpi"><span>생산성</span><b>719</b><small>EA / 인·시간</small></div>
+    </div>
+  </section>
+
+  <section id="outboundAnalysis" class="view">
+    <div class="kpis">
+      <div class="kpi"><span>금일 출고</span><b>31,860</b><small>EA</small></div>
+      <div class="kpi"><span>출고 SKU</span><b>224</b><small>SKU</small></div>
+      <div class="kpi"><span>투입 인원</span><b>10</b><small>명</small></div>
+      <div class="kpi"><span>생산성</span><b>1,062</b><small>EA / 인·시간</small></div>
+    </div>
+  </section>
+
+  <section id="upload" class="view">
+    <div class="upload-grid">
+      <div class="upload-card"><div class="icon">▤</div><h3>재고 Excel</h3><p>매일 재고 파일을 업로드하면 전일 데이터와 비교하여 차이 여부를 확인하는 흐름입니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div>
+      <div class="upload-card"><div class="icon">↓</div><h3>입고 Excel</h3><p>일자, SKU, 수량 등의 입고 데이터를 읽어 입고 현황과 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div>
+      <div class="upload-card"><div class="icon">↑</div><h3>출고 Excel</h3><p>일자, 매장, SKU, 출고수량 등의 데이터를 읽어 출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div>
+    </div>
+    <div class="panel history">
+      <div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div>
+      <div id="uploadHistory"></div>
+    </div>
+  </section>
+
+  <section id="settings" class="view">
+    <div class="settings-grid">
+      <div class="setting-card">
+        <h3>메뉴 표시 설정</h3>
+        <div class="setting-row"><span>재고 메뉴</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>입고 메뉴</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>출고 메뉴</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>일정 메뉴</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>근태 메뉴</span><div class="switch on"></div></div>
+      </div>
+      <div class="setting-card">
+        <h3>대시보드 표시 설정</h3>
+        <div class="setting-row"><span>재고 입력 진행률</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>오늘 입고</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>오늘 출고</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>재고 차이</span><div class="switch on"></div></div>
+        <div class="setting-row"><span>이슈 현황</span><div class="switch on"></div></div>
+      </div>
+    </div>
+    <div class="panel mt15">
+      <div class="panel-head"><div><small>MENU BUILDER</small><h3>메뉴 추가 / 제외</h3></div><span class="badge">ADMIN</span></div>
+      <div style="font-size:10px;color:#71807a;line-height:1.6">원하는 대분류에 새 메뉴를 추가할 수 있습니다. 추가한 메뉴는 왼쪽 메뉴에 즉시 표시되며 브라우저에 저장됩니다.</div>
+      <div class="admin-form">
+        <select id="menuCategory">
+          <option value="재고">재고</option><option value="입고">입고</option><option value="출고">출고</option>
+          <option value="일정">일정</option><option value="이슈">이슈</option><option value="근태">근태</option>
+        </select>
+        <input id="menuName" placeholder="예: 시즌 재고 / 반품 관리 / 3PL 재고">
+        <button class="btn primary" id="addCustomMenu">+ 메뉴 추가</button>
+      </div>
+      <div class="custom-menu-list" id="customMenuList"></div>
+    </div>
+
+    <div class="panel mt15">
+      <div class="panel-head"><div><small>INITIAL MODEL</small><h3>현재 구조</h3></div></div>
+      <div style="font-size:9px;line-height:1.8;color:#61706a">
+        메뉴 추가·삭제, 대시보드 카드 편집, 시트 추가 기능은 정식 버전에서 관리자 설정 데이터로 분리하는 구조를 권장합니다.
+        현재 초기 모델은 브라우저 저장 기반이며, Supabase 연결 전 기능과 화면 흐름을 검토하는 용도입니다.
+      </div>
+    </div>
+  </section>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const KEY="lush-logistics-initial-v1";
+const HIST="lush-logistics-upload-history";
+const DEFAULT={
+ inventory:{
+  "총 재고파일":{cols:["담당","PLU","제품명","카테고리","08/27","08/28","차이","상태","비고"],rows:[
+   ["TIME","101894","Sleepy Body Lotion","BODY","336","329","-7","확인 필요",""],
+   ["TIME","103102","Intergalactic","BATH","214","209","-5","확인",""],
+   ["SAND","100871","Karma Soap","SOAP","160","151","-9","확인 필요",""],
+   ["BUS","108812","Dirty Springwash","SHOWER","396","388","-8","확인 필요",""]
+  ]},
+  "TIME":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["101894","Sleepy Body Lotion","BODY","336","329","-7",""],["103102","Intergalactic","BATH","214","209","-5",""]]},
+  "SAND":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["100871","Karma Soap","SOAP","160","151","-9",""],["106234","Honey I Washed The Kids","SOAP","289","281","-8",""]]},
+  "BUS":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["108812","Dirty Springwash","SHOWER","396","388","-8",""]]},
+  "FURZE":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["110232","The Comforter","BUBBLE","239","233","-6",""]]},
+  "NEW":{cols:["PLU","제품명","구분","전일재고","금일재고","차이","비고"],rows:[["120021","Sample Shampoo Bar","샴푸바","124","122","-2",""]]},
+  "HANAMI":{cols:["PLU","제품명","구분","전일재고","금일재고","차이","비고"],rows:[["120031","Sample Bubble Bar","BUBBLE/BATH","210","204","-6",""]]},
+  "FY'27 Winter FS":{cols:["PLU","제품명","구분","배정수량","현재고","차이","비고"],rows:[["130001","Winter Gift A","FS","120","118","-2",""]]}
+ },
+ inbound:{
+  "일일 입고관리":{cols:["일자","차수","제품수량","SKU","투입인원","소요시간","생산성","비고"],rows:[["2026-08-28","102차","18420","128","8","3.2","719",""]]},
+  "월별 입고현황":{cols:["월","입고수량","입고차수","평균 투입인원","평균 생산성","비고"],rows:[["2026-08","18420","1","8","719",""]]}
+ },
+ outbound:{
+  "일일 출고관리":{cols:["일자","구분","출고수량","SKU","투입인원","소요시간","생산성","비고"],rows:[["2026-08-28","매장","31860","224","10","3.0","1062",""]]},
+  "FS / 시즌 출고":{cols:["일자","프로젝트","매장수","수량","상태","비고"],rows:[["2026-08-28","Winter FS","32","12140","진행",""]]},
+  "오픈 / 리뉴얼":{cols:["일자","매장","유형","출고수량","담당자","상태","비고"],rows:[]}
+ },
+ schedule:{
+  "통합 일정":{cols:["일자","구분","업무명","담당자","시작","종료","상태","비고"],rows:[["2026-08-28","입고","102차 입고","TIME","09:00","12:00","완료",""],["2026-08-29","출고","Winter FS","SAND","10:00","16:00","예정",""]]}
+ },
+ issues:{
+  "오출고":{cols:["일자","매장","제품","수량","금액","담당자","처리상태","비고"],rows:[["2026-08-28","강남역","Sample A","2","32000","TIME","확인중",""]]},
+  "파손":{cols:["일자","제품","입고차수","파손수량","원인","담당자","처리상태","비고"],rows:[["2026-08-28","Sample B","102차","4","운송","BUS","확인중",""]]}
+ },
+ attendance:{
+  "팀 근태":{cols:["일자","담당자","근무형태","출근","퇴근","초과/부족","비고"],rows:[["2026-08-28","TIME","정상","09:00","18:00","0:00",""]]}
+ }
+};
+let db=JSON.parse(localStorage.getItem(KEY)||"null")||structuredClone(DEFAULT);
+let current=null,dirty=false;
+
+function saveDb(){localStorage.setItem(KEY,JSON.stringify(db));dirty=false;if(saveState)saveState.textContent="저장됨";if(saveBadge)saveBadge.textContent="LOCAL SAVE"}
+function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1800)}
+function setActive(el){document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active")}
+function showView(id,title,el){
+ document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+ document.getElementById(id).classList.add("active");
+ pageTitle.textContent=title; setActive(el); current=null;
+ if(id==="upload")renderHistory();
+}
+document.querySelectorAll(".nav-root").forEach(b=>b.onclick=()=>{
+ let g=b.parentElement;if(g.querySelector('[data-view="dashboard"]'))return;
+ g.classList.toggle("open");b.querySelector("em").textContent=g.classList.contains("open")?"⌄":"›";
+});
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>showView(b.dataset.view,b.textContent.trim(),b));
+document.querySelectorAll("[data-sheet]").forEach(b=>b.onclick=()=>openSheet(b.dataset.sheetcat,b.dataset.sheet,b));
+
+function buildInventoryNav(){
+ inventoryNav.innerHTML="";
+ Object.keys(db.inventory).forEach(name=>{
+  const b=document.createElement("button");b.className="nav-item";b.textContent=name;b.dataset.sheetcat="inventory";b.dataset.sheet=name;
+  b.onclick=()=>openSheet("inventory",name,b);inventoryNav.appendChild(b);
+ });
+ dashInvFiles.textContent=Object.keys(db.inventory).length;
+}
+function openSheet(cat,name,el){
+ current={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");
+ pageTitle.textContent=name; setActive(el);
+ crumb.innerHTML=`${cat==="inventory"?"재고":cat==="inbound"?"입고":cat==="outbound"?"출고":cat==="schedule"?"일정":cat==="issues"?"이슈":"근태"} &nbsp;›&nbsp; <b>${name}</b>`;
+ sheetTitle.textContent=name;sheetSubtitle.textContent="웹 자체 시트 · 직접 입력/수정";
+ renderSheet();
+}
+function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll('"',"&quot;").replaceAll("<","&lt;")}
+function renderSheet(){
+ const s=db[current.cat][current.name];
+ thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${c}</th>`).join("")+"</tr>";
+ tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class=cell data-r=${ri} data-c=${ci} value="${esc(r[ci])}"></td>`).join("")+"</tr>").join("");
+ document.querySelectorAll("input.cell").forEach(i=>i.oninput=()=>{db[current.cat][current.name].rows[+i.dataset.r][+i.dataset.c]=i.value;dirty=true;saveState.textContent="저장 전 변경사항 있음";saveBadge.textContent="UNSAVED"});
+ rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;
+}
+addRow.onclick=()=>{if(!current)return;let s=db[current.cat][current.name];s.rows.push(Array(s.cols.length).fill(""));dirty=true;renderSheet()}
+saveSheet.onclick=()=>{saveDb();toastMsg("현재 시트가 저장되었습니다.")}
+exportCsv.onclick=()=>{if(!current)return;let s=db[current.cat][current.name];let csv=[s.cols,...s.rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(current.name+".csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))}
+function download(name,blob){let a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+
+exportBackup.onclick=()=>download("LUSH_Logistics_Workspace_Backup.json",new Blob([JSON.stringify(db,null,2)],{type:"application/json"}));
+importBackup.onclick=()=>backupInput.click();
+backupInput.onchange=async()=>{let f=backupInput.files[0];if(!f)return;try{db=JSON.parse(await f.text());saveDb();buildInventoryNav();showView("dashboard","Dashboard",document.querySelector('[data-view="dashboard"]'));toastMsg("백업 데이터를 불러왔습니다.")}catch(e){toastMsg("백업 파일 형식을 확인해주세요.")}}
+
+function renderHistory(){
+ const hist=JSON.parse(localStorage.getItem(HIST)||"[]");
+ uploadHistory.innerHTML=hist.length?hist.map(x=>`<div class=history-row><span>${x.time}</span><b>${x.name}</b><span>${x.type}</span><span>${x.rows} rows</span></div>`).join(""):`<div class="muted" style="font-size:9px">아직 업로드 이력이 없습니다.</div>`;
+}
+document.querySelectorAll(".dataFile").forEach(inp=>inp.onchange=async()=>{
+ const f=inp.files[0];if(!f)return;
+ try{
+  const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];
+  const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});
+  const hist=JSON.parse(localStorage.getItem(HIST)||"[]");
+  hist.unshift({time:new Date().toLocaleString("ko-KR"),name:f.name,type:inp.dataset.type,rows:Math.max(rows.length-1,0)});
+  localStorage.setItem(HIST,JSON.stringify(hist.slice(0,20)));renderHistory();toastMsg(`${inp.dataset.type} 파일을 읽었습니다. ${Math.max(rows.length-1,0)}행`);
+ }catch(e){toastMsg("Excel 파일을 읽는 중 오류가 발생했습니다.")}
+});
+document.querySelectorAll(".switch").forEach(s=>s.onclick=()=>s.classList.toggle("on"));
+window.addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+buildInventoryNav();renderHistory();
+
+const CUSTOM_KEY="lush-logistics-custom-menus-v2";
+const VIS_KEY="lush-logistics-menu-visibility-v2";
+const catMap={재고:"inventoryGroup",입고:"inboundGroup",출고:"outboundGroup",일정:"scheduleGroup",근태:"attendanceGroup"};
+function goHome(){
+  showView("dashboard","Dashboard",document.querySelector('[data-view="dashboard"]'));
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+homeBrand.onclick=goHome;
+
+function getCustomMenus(){return JSON.parse(localStorage.getItem(CUSTOM_KEY)||"[]")}
+function saveCustomMenus(v){localStorage.setItem(CUSTOM_KEY,JSON.stringify(v))}
+function renderCustomMenus(){
+  const list=getCustomMenus();
+  customMenuList.innerHTML=list.length?list.map((m,i)=>`<div class="custom-menu-row"><b>${m.category}</b><span>${m.name}</span><button class="remove-menu" data-i="${i}">제외</button></div>`).join(""):`<div style="padding:12px 0;font-size:10px;color:#94a19c">추가한 사용자 메뉴가 없습니다.</div>`;
+  document.querySelectorAll(".remove-menu").forEach(b=>b.onclick=()=>{let x=getCustomMenus();x.splice(+b.dataset.i,1);saveCustomMenus(x);renderCustomMenus();renderCustomNav();toastMsg("메뉴에서 제외했습니다.")});
+}
+function renderCustomNav(){
+  document.querySelectorAll(".custom-nav-item").forEach(x=>x.remove());
+  getCustomMenus().forEach((m,i)=>{
+    const group=document.getElementById(catMap[m.category]); if(!group)return;
+    const holder=group.querySelector(".nav-children"); const b=document.createElement("button");
+    b.className="nav-item custom-nav-item";b.textContent=m.name;
+    b.onclick=()=>{pageTitle.textContent=m.name;toastMsg(`${m.name} 메뉴는 초기 모델용 빈 메뉴입니다.`)};
+    holder.appendChild(b);
+  });
+}
+addCustomMenu.onclick=()=>{
+  const name=menuName.value.trim(); if(!name){toastMsg("메뉴 이름을 입력해주세요.");return}
+  const list=getCustomMenus();list.push({category:menuCategory.value,name});saveCustomMenus(list);menuName.value="";
+  renderCustomMenus();renderCustomNav();toastMsg("새 메뉴를 추가했습니다.");
+};
+function initVisibility(){
+  const vis=JSON.parse(localStorage.getItem(VIS_KEY)||"{}");
+  const rows=[...document.querySelectorAll("#settings .setting-card:first-child .setting-row")];
+  rows.forEach(r=>{
+    const label=r.querySelector("span")?.textContent.replace(" 메뉴",""); const sw=r.querySelector(".switch"); if(!catMap[label]||!sw)return;
+    if(vis[label]===false)sw.classList.remove("on");
+    document.getElementById(catMap[label]).style.display=vis[label]===false?"none":"block";
+    sw.onclick=()=>{sw.classList.toggle("on");vis[label]=sw.classList.contains("on");localStorage.setItem(VIS_KEY,JSON.stringify(vis));document.getElementById(catMap[label]).style.display=vis[label]?"block":"none";toastMsg(`${label} 메뉴 표시 설정을 변경했습니다.`)};
+  });
+}
+renderCustomMenus();renderCustomNav();initVisibility();
+if(window.lucide)lucide.createIcons();
+
+</script>
+</body>
+</html>
