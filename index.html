@@ -277,6 +277,117 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
 .inventory-context-menu button.danger{color:#a44840}
 .inventory-context-menu .sep{height:1px;margin:4px 2px;background:#edf0f2}
 
+
+/* V21 — quantity-first compact inventory columns */
+.inventory-grid{
+  min-width:1015px!important;
+}
+.inventory-grid th:nth-child(5),
+.inventory-grid td:nth-child(5){
+  width:88px!important;
+  min-width:88px!important;
+}
+.inventory-grid th:nth-child(6),
+.inventory-grid td:nth-child(6){
+  width:92px!important;
+  min-width:92px!important;
+}
+.inventory-grid th:nth-child(7),
+.inventory-grid td:nth-child(7){
+  width:88px!important;
+  min-width:88px!important;
+}
+.inventory-grid th:nth-child(8),
+.inventory-grid td:nth-child(8){
+  width:96px!important;
+  min-width:96px!important;
+}
+.inventory-grid th:nth-child(9),
+.inventory-grid td:nth-child(9){
+  width:142px!important;
+  min-width:142px!important;
+}
+.inventory-grid th.lot-qty-head{
+  font-size:13px!important;
+  font-weight:900!important;
+  color:#172229!important;
+}
+.inventory-grid td:nth-child(9){
+  padding-left:10px!important;
+  padding-right:10px!important;
+}
+.inventory-grid td:nth-child(9) input[type=number]{
+  width:112px!important;
+  min-width:112px!important;
+  height:32px!important;
+  padding:0 10px!important;
+  font-size:15px!important;
+  font-weight:900!important;
+  line-height:32px!important;
+  color:#111b20!important;
+  text-align:right!important;
+  background:#fff!important;
+  border:1px solid #cfd8dd!important;
+}
+.inventory-grid td:nth-child(9) input[type=number]:focus{
+  border-color:#87959d!important;
+  box-shadow:0 0 0 2px rgba(100,115,125,.11)!important;
+}
+.inventory-grid td:nth-child(5),
+.inventory-grid td:nth-child(6),
+.inventory-grid td:nth-child(7){
+  padding-left:6px!important;
+  padding-right:8px!important;
+  font-size:12px!important;
+}
+.inventory-grid [data-lot-date]{
+  width:76px!important;
+  min-width:76px!important;
+  padding:0 3px!important;
+  font-size:10px!important;
+}
+.lot-date-cell{
+  min-width:88px!important;
+}
+
+
+/* V22 — completed inputs look like plain text */
+.inventory-grid input[data-product-code],
+.inventory-grid input[data-lot-date],
+.inventory-grid input[data-lot-qty]{
+  transition:border-color .12s ease, background .12s ease;
+}
+
+/* Once a field has a value and is not being edited, remove the textbox appearance */
+.inventory-grid input.field-complete:not(:focus){
+  border-color:transparent!important;
+  box-shadow:none!important;
+  background:transparent!important;
+  outline:none!important;
+}
+
+/* Quantity stays large and readable after completion */
+.inventory-grid input[data-lot-qty].field-complete:not(:focus){
+  font-size:15px!important;
+  font-weight:900!important;
+  color:#111b20!important;
+  cursor:text;
+}
+
+/* Manufacture date / product code become clean text */
+.inventory-grid input[data-lot-date].field-complete:not(:focus),
+.inventory-grid input[data-product-code].field-complete:not(:focus){
+  color:#27343b!important;
+  cursor:text;
+}
+
+/* Clicking the value brings the editing box back */
+.inventory-grid input.field-complete:focus{
+  background:#fff!important;
+  border:1px solid #aeb9bf!important;
+  box-shadow:0 0 0 2px rgba(100,115,125,.10)!important;
+}
+
 </style>
 </head>
 <body>
@@ -335,10 +446,10 @@ button,input,select,textarea{font:inherit} button{cursor:pointer}
     <section id="inventoryOwnerView" class="view">
       <div class="inventory-shell">
         <div class="inventory-head"><div><div class="eyebrow">INVENTORY WORKBOOK</div><h2 id="inventoryOwnerTitle">담당자 재고파일</h2><p>기준일별 업로드 파일을 기준으로 제품코드에 맞는 제품명·제품군·현재고를 불러옵니다. 이전 기준일의 저장값은 변경되지 않으며, 실사와 제조일별 수량 수정은 즉시 자동 저장됩니다.</p></div><div class="inventory-actions"><button class="btn" id="exportInventoryCsv">CSV 내보내기</button><span class="auto-save-state" id="inventoryAutoSave">자동 저장</span></div></div>
-        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><select id="inventoryHistoryDate" class="saved-date-select" title="과거 재고 조회"><option value="">과거 재고 조회</option></select><button class="btn add" id="addInventoryProduct">＋ 제품 추가</button></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
+        <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><select id="inventoryHistoryDate" class="saved-date-select" title="과거 재고 조회"><option value="">과거 재고 조회</option></select></div><div class="inventory-command-right"><span class="source-file" id="inventorySourceFile">미업로드</span><input type="file" id="ownerInventoryFile" accept=".xlsx,.xls,.csv" hidden><button class="btn upload" id="uploadOwnerInventory">파일 업로드</button></div></div>
         <select id="inventoryDate" hidden></select><button id="newInventoryDate" hidden></button>
         <div class="inventory-metrics three"><div class="inventory-metric"><span>MANAGED SKU</span><b id="invMetricProducts">0</b><small>관리 SKU</small></div><div class="inventory-metric"><span>COUNTED STOCK</span><b id="invMetricActual">0</b><small>실사 재고</small></div><div class="inventory-metric"><span>GAP</span><b id="invMetricGap">0</b><small>차이 합계</small></div></div>
-        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:50px">순서</th><th style="width:105px">제품코드</th><th style="width:220px;min-width:220px">제품명</th><th style="width:115px">카테고리</th><th class="num qty-head" style="width:120px">현재고</th><th class="num qty-head" style="width:120px">실사</th><th class="num qty-head" style="width:105px">차이</th><th style="width:112px">제조일</th><th class="num qty-head" style="width:115px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
+        <div class="inventory-grid-card"><div class="inventory-grid-wrap"><table class="inventory-grid"><thead><tr><th style="width:46px">순서</th><th style="width:100px">제품코드</th><th style="width:215px;min-width:215px">제품명</th><th style="width:110px">카테고리</th><th class="num qty-head" style="width:88px">현재고</th><th class="num qty-head" style="width:92px">실사</th><th class="num qty-head" style="width:88px">차이</th><th style="width:96px">제조일</th><th class="num qty-head lot-qty-head" style="width:142px">수량</th></tr></thead><tbody id="inventoryBody"></tbody></table></div><div class="inventory-note"><span id="inventoryRowInfo">0 SKU</span><span>실사 = 제조일별 수량 합계 · 차이 = 실사 - 현재고</span></div></div>
       </div>
     </section>
 
@@ -807,6 +918,100 @@ function normalizeManufactureDate(raw){
     renderInventoryOwner();
     toastMsg("직전 행 작업을 되돌렸습니다.");
   });
+})();
+</script>
+
+
+<script>
+(function(){
+  const body=document.getElementById("inventoryBody");
+  const menu=document.getElementById("inventoryContextMenu");
+  if(!body||!menu)return;
+
+  body.addEventListener("contextmenu",function(e){
+    if(e.target.closest("tr[data-product-row]"))return;
+
+    const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);
+    if(!snap)return;
+
+    e.preventDefault();
+    menu.style.left=Math.min(e.clientX,window.innerWidth-185)+"px";
+    menu.style.top=Math.min(e.clientY,window.innerHeight-130)+"px";
+    menu.classList.add("show");
+
+    const above=document.getElementById("inventoryRowAddAbove");
+    const below=document.getElementById("inventoryRowAddBelow");
+    const del=document.getElementById("inventoryRowDelete");
+
+    // For an empty/blank table area, both add actions append a new product.
+    const addBlank=()=>{
+      const index=snap.products.length;
+      const item={id:"",name:"",sourceCategory:"",category:"",group:"",system:0,lots:[{date:"",qty:0}]};
+      snap.products.splice(index,0,item);
+      if(typeof pushInventoryUndo==="function")pushInventoryUndo({type:"add",index});
+      markInventoryDirty();
+      renderInventoryOwner();
+      menu.classList.remove("show");
+      setTimeout(()=>document.querySelector(`[data-product-code][data-p="${index}"]`)?.focus(),0);
+    };
+
+    above.onclick=addBlank;
+    below.onclick=addBlank;
+    del.style.display="none";
+
+    const restore=()=>{
+      del.style.display="";
+      document.removeEventListener("click",restore,true);
+    };
+    document.addEventListener("click",restore,true);
+  });
+})();
+</script>
+
+
+<script>
+(function(){
+  function syncCompletedField(input){
+    if(!input)return;
+    const hasValue=String(input.value??"").trim()!=="";
+    input.classList.toggle("field-complete",hasValue);
+  }
+
+  function scanCompletedFields(root=document){
+    root.querySelectorAll(
+      '.inventory-grid input[data-product-code], .inventory-grid input[data-lot-date], .inventory-grid input[data-lot-qty]'
+    ).forEach(syncCompletedField);
+  }
+
+  scanCompletedFields();
+
+  document.addEventListener("input",function(e){
+    if(e.target.matches(
+      '.inventory-grid input[data-product-code], .inventory-grid input[data-lot-date], .inventory-grid input[data-lot-qty]'
+    )){
+      syncCompletedField(e.target);
+    }
+  },true);
+
+  document.addEventListener("blur",function(e){
+    if(e.target.matches(
+      '.inventory-grid input[data-product-code], .inventory-grid input[data-lot-date], .inventory-grid input[data-lot-qty]'
+    )){
+      syncCompletedField(e.target);
+    }
+  },true);
+
+  const observer=new MutationObserver(mutations=>{
+    for(const mutation of mutations){
+      for(const node of mutation.addedNodes){
+        if(node.nodeType===1){
+          if(node.matches?.('.inventory-grid input'))syncCompletedField(node);
+          scanCompletedFields(node);
+        }
+      }
+    }
+  });
+  observer.observe(document.body,{childList:true,subtree:true});
 })();
 </script>
 
