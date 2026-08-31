@@ -1002,6 +1002,27 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 @media(max-width:1100px){.request-manager-grid{grid-template-columns:1fr}.request-filter-row{grid-template-columns:1fr 1fr}.request-filter-row input{grid-column:1/-1}}
 @media(max-width:700px){.request-manager-top{flex-direction:column}.request-form-fields{grid-template-columns:1fr}.request-form-fields .full{grid-column:auto}.request-manager-list-head,.request-manager-row{grid-template-columns:1fr 1fr .8fr}.request-manager-list-head span:nth-child(1),.request-manager-row span:nth-child(1),.request-manager-list-head span:nth-child(4),.request-manager-row span:nth-child(4){display:none}}
 
+
+/* V35 — make the new outbound request menu obvious */
+.nav-item[data-menu-id="out-request"]{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  font-weight:800;
+}
+.nav-new-badge{
+  flex:0 0 auto;
+  padding:2px 5px;
+  border-radius:999px;
+  background:rgba(255,255,255,.13);
+  border:1px solid rgba(255,255,255,.12);
+  color:#dfeceb;
+  font-size:7px;
+  font-weight:900;
+  letter-spacing:.04em;
+}
+
 </style>
 </head>
 <body>
@@ -1284,6 +1305,27 @@ function normalizeMenus(){
     cleaned.push(m);
   }
   if(!totalSeen){const base=structuredClone(DEFAULT_MENUS.find(m=>m.id==="inv-total"));const firstInv=cleaned.findIndex(m=>m.group==="inventory");cleaned.splice(firstInv<0?1:firstInv,0,base)}
+
+  /* V35: 이전 버전 localStorage 메뉴에도 새 기본 메뉴를 자동 추가 */
+  for(const def of DEFAULT_MENUS){
+    if(!cleaned.some(m=>m.id===def.id)){
+      const copy=structuredClone(def);
+      const sameGroupLast=cleaned.reduce((last,m,i)=>m.group===copy.group?i:last,-1);
+      if(sameGroupLast>=0) cleaned.splice(sameGroupLast+1,0,copy);
+      else cleaned.push(copy);
+    }
+  }
+
+  /* 출고 요청 관리는 출고 그룹의 첫 번째 메뉴로 고정 */
+  const reqIndex=cleaned.findIndex(m=>m.id==="out-request");
+  if(reqIndex>=0){
+    const req=cleaned.splice(reqIndex,1)[0];
+    req.group="outbound"; req.label="출고 요청 관리"; req.kind="requestManager";
+    req.visible=true; req.roles=["admin","leader","editor"];
+    const firstOutbound=cleaned.findIndex(m=>m.group==="outbound");
+    cleaned.splice(firstOutbound<0?cleaned.length:firstOutbound,0,req);
+  }
+
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));
 }
@@ -1294,7 +1336,7 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+(gi<2?"open":"");box.innerHTML=`<button class="nav-root"><span><i data-lucide="${g.icon}"></i>${g.label}</span><em>${gi<2?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.textContent=m.label;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.innerHTML=`<button class="nav-root"><span><i data-lucide="${g.icon}"></i>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.textContent=m.label;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
