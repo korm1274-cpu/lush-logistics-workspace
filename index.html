@@ -1244,9 +1244,7 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 
 
 /* V46 access-control prototype */
-.auth-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f5f8fa,#eaf0f3);padding:24px}
-.auth-card{width:min(430px,100%);background:#fff;border:1px solid #dfe6ea;border-radius:18px;padding:28px;box-shadow:0 18px 60px rgba(30,45,55,.12)}
-.auth-brand{font-size:12px;font-weight:900;letter-spacing:.12em;color:#647b8a}.auth-card h2{margin:8px 0 7px;font-size:24px;letter-spacing:-.04em}.auth-card p{margin:0 0 20px;color:#7b8790;font-size:11px;line-height:1.6}.auth-field{margin-bottom:11px}.auth-field label{display:block;font-size:10px;font-weight:800;color:#596a75;margin-bottom:5px}.auth-field input{width:100%;height:42px;border:1px solid #dbe3e8;border-radius:10px;padding:0 12px;font-size:12px;outline:0}.auth-field input:focus{border-color:#7891a2;box-shadow:0 0 0 3px #edf3f6}.auth-login{width:100%;height:43px;border:0;border-radius:10px;background:#344b5a;color:#fff;font-weight:800;cursor:pointer}.auth-error{min-height:18px;margin-top:9px;color:#a24f4f;font-size:10px}.auth-note{margin-top:15px;padding:10px 11px;background:#f7f9fa;border:1px solid #e7ecef;border-radius:9px;color:#7a858c;font-size:9px;line-height:1.55}.auth-demo{margin-top:10px;font-size:9px;color:#98a1a7}.app-locked{display:none!important}
+
 .readonly-banner{display:none;background:#fff7ea;border:1px solid #f0dfc0;color:#8b642f;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:700;margin-bottom:10px}.readonly-mode .readonly-banner{display:block}
 </style>
 
@@ -1273,24 +1271,12 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 @media(max-width:600px){.schedule-calendar-panel{border-radius:12px}.schedule-calendar-toolbar{padding:10px}.schedule-calendar-tabs{width:100%}.schedule-calendar-tab{flex:1;min-height:44px}.google-calendar-frame-wrap{height:560px;overflow:hidden}.google-calendar-frame{min-width:100%;max-width:100%}.schedule-editor-top{align-items:flex-start;flex-direction:column}.schedule-editor-top .btn{width:100%;min-height:44px}}
 
 </style>
+<style id="v47-prototype-style">
+.v47-prototype-badge{display:inline-flex;align-items:center;padding:5px 9px;border-radius:999px;background:#eef3f6;color:#536976;font-size:10px;font-weight:800;letter-spacing:.02em;margin-left:8px}
+</style>
+<script>window.LUSH_V47_PROTOTYPE=true;</script>
 </head>
 <body>
-<div id="authGate" class="auth-gate">
-  <div class="auth-card">
-    <div class="auth-brand">LUSH LOGISTICS WORKSPACE</div>
-    <h2>물류 워크스테이션</h2>
-    <p>로그인 후 권한이 부여된 메뉴와 데이터만 접근할 수 있습니다.</p>
-    <form id="authForm">
-      <div class="auth-field"><label>회사 이메일</label><input id="authEmail" type="email" autocomplete="username" placeholder="name@lush.co.kr" required></div>
-      <div class="auth-field"><label>비밀번호</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="비밀번호" required></div>
-      <button class="auth-login" type="submit">로그인</button>
-      <div id="authError" class="auth-error"></div>
-    </form>
-    <div class="auth-note"><b>현재 버전 안내</b><br>실제 도메인 보안·계정 인증이 연결되기 전의 실행 가능한 프로토타입입니다. 실제 배포에서는 회사 계정 인증과 서버 DB 권한을 연결해야 합니다.</div>
-    <div class="auth-demo">테스트 계정: admin@lush.co.kr / 1234</div>
-  </div>
-</div>
-
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo">L</div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
@@ -1305,7 +1291,7 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
       <div class="mobile-title-wrap"><button class="btn sidebar-toggle mobile-menu-btn" id="mobileMenuBtn" title="메뉴 열기">☰</button><div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">Dashboard</h1></div></div>
       <div class="top-actions">
         <select id="rolePreview" class="role-preview" title="권한 미리보기"><option value="admin">권한 미리보기: 관리자</option><option value="leader">권한 미리보기: 팀 리더</option><option value="editor">권한 미리보기: 팀원</option><option value="restricted">권한 미리보기: 제한 열람</option></select>
-        <button class="btn" id="logoutBtn" type="button">로그아웃</button><button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
+        <button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
       </div>
     </div>
 
@@ -1568,9 +1554,9 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 
     <section id="settings" class="view">
       <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button></div>
-      <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다. 실제 배포에서는 비밀번호를 이 HTML에 저장하지 않고 인증 서비스에서 관리합니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
+      <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>프로토타입에서 사용자별 기본 역할을 설정합니다. 실제 계정 인증은 후속 단계에서 연결합니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>프로토타입 사용자 관리 화면입니다. 실제 배포 시 회사 계정 인증과 연결합니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
       <div id="admin-menus" class="admin-section"><div class="admin-grid"><div class="admin-card"><h3>메뉴 구성</h3><p>메뉴명 수정, 표시/숨김, 신규 메뉴 추가를 Admin에서 직접 관리합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>그룹</th><th>메뉴명</th><th>유형</th><th>표시</th><th>관리</th></tr></thead><tbody id="menuRows"></tbody></table></div></div><div class="admin-card"><h3>새 메뉴 추가</h3><p>별도 코드 수정 없이 기본 메뉴를 추가할 수 있는 구조입니다.</p><div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div><div class="hint" style="margin-top:13px">Dashboard와 Admin은 운영 안전을 위해 삭제할 수 없고, 나머지 사용자 추가 메뉴는 자유롭게 삭제할 수 있습니다.</div></div></div></div>
-      <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
+      <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 권한을 UI로 시뮬레이션합니다. 실제 배포 시 서버 DB 권한(RLS)으로 연결합니다.</div></div></div>
     </section>
   </main>
 </div><div class="toast" id="toast"></div>
@@ -1634,10 +1620,10 @@ function normalizeInventoryDb(){
 normalizeInventoryDb();
 
 const DEFAULT_USERS=[
- {name:"Time",email:"admin@lush.co.kr",role:"admin",active:true,password:"1234",owner:null},
- {name:"Leader",email:"leader@lush.co.kr",role:"leader",active:true,password:"1234",owner:"SAND"},
- {name:"Team Member",email:"member@lush.co.kr",role:"editor",active:true,password:"1234",owner:"TIME (SOILD)"},
- {name:"Restricted",email:"viewer@lush.co.kr",role:"restricted",active:true,password:"1234",owner:null}
+ {name:"Time",email:"admin@lush.co.kr",role:"admin",active:true,owner:null},
+ {name:"Leader",email:"leader@lush.co.kr",role:"leader",active:true,owner:"SAND"},
+ {name:"Team Member",email:"member@lush.co.kr",role:"editor",active:true,owner:"TIME (SOILD)"},
+ {name:"Restricted",email:"viewer@lush.co.kr",role:"restricted",active:true,owner:null}
 ];
 const DEFAULT_DATA={
  inventory:{"총 재고파일":{cols:["담당","PLU","제품명","카테고리","08/27","08/28","차이","상태","비고"],rows:[["TIME","101894","Sleepy Body Lotion","BODY","336","329","-7","확인 필요",""],["SAND","100871","Karma Soap","SOAP","160","151","-9","확인 필요",""]] },"TIME":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["101894","Sleepy Body Lotion","BODY","336","329","-7",""]] },"SAND":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["100871","Karma Soap","SOAP","160","151","-9",""]] }},
@@ -1702,15 +1688,12 @@ function normalizeMenus(){
 normalizeMenus();
 let users=JSON.parse(localStorage.getItem(USER_KEY)||"null")||structuredClone(DEFAULT_USERS);
 // 기존 V44 사용자 데이터와의 호환: 기존 계정은 비밀번호/담당영역을 보정합니다.
-const DEMO_ACCOUNT_MAP={"time@company.com":{"email":"admin@lush.co.kr","password":"1234","role":"admin","owner":null},"leader@company.com":{"email":"leader@lush.co.kr","password":"1234","role":"leader","owner":"SAND"},"member@company.com":{"email":"member@lush.co.kr","password":"1234","role":"editor","owner":"TIME (SOILD)"},"viewer@company.com":{"email":"viewer@lush.co.kr","password":"1234","role":"restricted","owner":null}};
-users=users.map(u=>{const m=DEMO_ACCOUNT_MAP[String(u.email||"").toLowerCase()];return {...u,...(m||{}),password:u.password||m?.password||"1234",owner:Object.prototype.hasOwnProperty.call(u,"owner")?u.owner:(m?.owner??null)}});
 localStorage.setItem(USER_KEY,JSON.stringify(users));
 let currentRole="admin",currentSheet=null,dirty=false;
-let currentUser=null;
-const AUTH_KEY="lush-logistics-auth-v1";
-function getSession(){try{return JSON.parse(sessionStorage.getItem(AUTH_KEY)||"null")}catch(e){return null}}
-function isAuthenticated(){return !!getSession()}
-function canEditInventory(){return !!currentUser && (currentRole==="admin" || currentRole==="leader" || currentRole==="editor") && (!currentUser.owner || currentInventoryOwner===currentUser.owner)}
+// V47 프로토타입: 실제 로그인/인증은 후속 단계에서 연결합니다.
+let currentUser={name:"Prototype Admin",email:"prototype@lush.co.kr",role:"admin",active:true,owner:null};
+function isAuthenticated(){return true}
+function canEditInventory(){return (currentRole==="admin" || currentRole==="leader" || currentRole==="editor") && (!currentUser.owner || currentInventoryOwner===currentUser.owner)}
 function isTodayDate(d){return d===todayKey()}
 function isPastDate(d){return /^\d{4}-\d{2}-\d{2}$/.test(d) && d<todayKey()}
 function isFutureDate(d){return /^\d{4}-\d{2}-\d{2}$/.test(d) && d>todayKey()}
@@ -1720,10 +1703,10 @@ function updateInventoryEditability(){document.body.classList.toggle("readonly-m
 function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} function saveUsers(){localStorage.setItem(USER_KEY,JSON.stringify(users))} function saveDb(){localStorage.setItem(DATA_KEY,JSON.stringify(db));dirty=false;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
-function canAccess(m){return isAuthenticated() && (currentRole==="admin"||m.roles.includes(currentRole))}
+function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
 function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.innerHTML=`<button class="nav-root"><span><i data-lucide="${g.icon}"></i>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.textContent=m.label;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
-function activateMenu(m,el){if(!isAuthenticated()){toastMsg("로그인이 필요합니다.");return}if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
+function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 addRow.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];s.rows.push(Array(s.cols.length).fill(""));saveDb();renderSheet();toastMsg("새 행을 추가했습니다.")};exportCsv.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];const csv=[s.cols,...s.rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(currentSheet.name+".csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
@@ -2009,7 +1992,7 @@ document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.query
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","Dashboard",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","Dashboard",document.querySelector('[data-menu-id="dashboard-main"]'));
 
-const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();if(document.getElementById("logoutBtn"))document.getElementById("logoutBtn").onclick=()=>window.logoutWorkspace();
+const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 </script>
 
 <div id="inventoryContextMenu" class="inventory-context-menu">
@@ -2310,32 +2293,5 @@ setTimeout(initInventoryColumnResize,0);
 })();
 </script>
 
-<script>
-(()=>{
- const gate=document.getElementById("authGate"),form=document.getElementById("authForm"),err=document.getElementById("authError"),email=document.getElementById("authEmail"),pw=document.getElementById("authPassword");
- function applySession(){
-   const sess=getSession();
-   if(!sess){gate.style.display="flex";return false}
-   currentUser=users.find(u=>u.email===sess.email&&u.active)!==undefined?users.find(u=>u.email===sess.email&&u.active):null;
-   if(!currentUser){sessionStorage.removeItem(AUTH_KEY);gate.style.display="flex";return false}
-   currentRole=currentUser.role;
-   gate.style.display="none";
-   if(typeof profileRole!=="undefined")profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentUser.name}`;
-   if(typeof renderNav==="function")renderNav();
-   if(typeof updateInventoryEditability==="function")updateInventoryEditability();
-   return true;
- }
- form.addEventListener("submit",e=>{
-   e.preventDefault();
-   const u=users.find(x=>x.email.toLowerCase()===email.value.trim().toLowerCase()&&x.active);
-   if(!u||u.password!==pw.value){err.textContent="이메일 또는 비밀번호가 올바르지 않습니다.";return}
-   currentUser=u;currentRole=u.role;sessionStorage.setItem(AUTH_KEY,JSON.stringify({email:u.email,loginAt:new Date().toISOString()}));err.textContent="";applySession();
-   if(typeof showView==="function")showView("dashboard","Dashboard",null);
-   toastMsg("로그인되었습니다.");
- });
- window.logoutWorkspace=()=>{sessionStorage.removeItem(AUTH_KEY);currentUser=null;gate.style.display="flex";email.value="";pw.value="";err.textContent=""};
- window.addEventListener("load",()=>{setTimeout(applySession,0)});
-})();
-</script>
 </body>
 </html>
