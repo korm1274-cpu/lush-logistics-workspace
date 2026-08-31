@@ -1439,7 +1439,7 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
           </div>
         </div>
         <div class="calendar-sync-bar">
-          <span id="calendarSyncStatus">Google 수입 일정을 불러오는 중입니다.</span>
+          <span id="calendarSyncStatus">수입 일정을 불러오는 중입니다.</span>
           <small>연차 일정은 내부 등록 데이터와 자동 연동됩니다.</small>
         </div>
         <div class="master-calendar-scroll">
@@ -2111,7 +2111,7 @@ setTimeout(initInventoryColumnResize,0);
 <script>
 (()=>{
   const KEY='lush_schedule_events_v1',TEAM_SIZE=14;
-  const IMPORT_API='https://script.google.com/a/macros/lush.co.kr/s/AKfycbw4ZD7eut8s_OlPOU2sD5muS8D8Wp3KXD8D4HKkIAP0TgR5DMywfuIezz0H4janU4vT/exec';
+  const IMPORT_API='/api/calendar';
   const types={annual:'연차',half_am:'오전반차',half_pm:'오후반차',field:'외근'};
   const absenceTypes=new Set(Object.keys(types)),fullAbsence=new Set(['annual','field']);
   let calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
@@ -2144,7 +2144,7 @@ setTimeout(initInventoryColumnResize,0);
   }
 
   async function loadImportSchedule(force=false){
-    if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='Google 수입 일정을 불러오는 중입니다.';
+    if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='수입 일정을 불러오는 중입니다.';
     if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 불러오는 중';
     try{
       const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default'});
