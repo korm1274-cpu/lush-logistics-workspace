@@ -1141,13 +1141,9 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 .dashboard-attendance-row .kind.half_am,.dashboard-attendance-row .kind.half_pm{background:#f0ebf6;color:#68488f}
 .dashboard-attendance-row .kind.field{background:#e7f2f1;color:#246d68}
 .dashboard-schedule-empty{padding:18px 8px;text-align:center;font-size:8px;color:#9aa2a7}
-.dashboard-google-agenda{height:215px;background:#fff;overflow:hidden}
-.dashboard-google-agenda iframe{width:100%;height:100%;border:0;display:block}
-
 @media(max-width:1050px){
   .dashboard-unified-schedule{grid-template-columns:1fr}
-  .dashboard-google-agenda{height:240px}
-}
+  }
 @media(max-width:700px){
   .schedule-board-card-head{align-items:flex-start;flex-direction:column}
   .attendance-board-nav{width:100%;justify-content:space-between}
@@ -1172,7 +1168,7 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 .dashboard-integrated-lane.attendance{border-top:3px solid #3f6fa8}.dashboard-integrated-lane.import{border-top:3px solid #ef6c00}.dashboard-integrated-lane.holiday{border-top:3px solid #8a9499}
 .integrated-lane-head{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 9px;border-bottom:1px solid #eef1f2;background:#fbfcfc}
 .integrated-lane-head b{font-size:9px;color:#303b40}.integrated-lane-head span{font-size:7px;color:#8a9499}
-.dashboard-google-agenda{height:250px;background:#fff;overflow:hidden}.dashboard-google-agenda iframe{width:100%;height:100%;border:0;display:block}
+
 .dashboard-attendance-list{padding:6px 8px;max-height:250px;overflow:auto}
 .dashboard-attendance-day{padding:5px 0;border-bottom:1px solid #f0f2f3}.dashboard-attendance-day:last-child{border-bottom:0}
 .dashboard-attendance-day-head{display:flex;justify-content:space-between;gap:8px;margin-bottom:4px}.dashboard-attendance-day-head b{font-size:8px;color:#546168}.dashboard-attendance-day-head span{font-size:7px;color:#9aa2a7}
@@ -1204,7 +1200,6 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 .unified-google-agenda.holiday{background:#fbfbfb}
 @media(max-width:1100px){
   .dashboard-integrated-board{grid-template-columns:1fr}
-  .dashboard-google-agenda{height:230px}
   .unified-three-lane{grid-template-columns:1fr}
   .unified-lane{border-right:0;border-bottom:1px solid #edf0f1}.unified-lane:last-child{border-bottom:0}
   .unified-google-agenda{height:420px}
@@ -1214,6 +1209,37 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
   .unified-week-top{flex-direction:column}
   .unified-week-nav{width:100%}.unified-week-nav .btn{flex:1}
   .dashboard-integrated-board{grid-template-columns:1fr}
+}
+
+
+/* V43 true unified monthly calendar */
+.master-calendar-card{background:#fff;border:1px solid #e5e9eb;border-radius:15px;overflow:hidden}
+.master-calendar-toolbar{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:13px 14px;border-bottom:1px solid #edf0f1;background:#fbfcfc}
+.master-calendar-month-nav{display:flex;align-items:center;gap:7px}.master-calendar-month-nav strong{min-width:108px;text-align:center;font-size:14px;color:#2f3a40}
+.master-calendar-legend{display:flex;align-items:center;gap:11px;flex-wrap:wrap}.master-calendar-legend span{display:flex;align-items:center;gap:4px;font-size:8px;color:#66747a;font-weight:700}
+.legend-dot{width:8px;height:8px;border-radius:50%;display:inline-block}.legend-dot.annual{background:#3f6fa8}.legend-dot.half{background:#7b5aa6}.legend-dot.field{background:#2e7d78}.legend-dot.import{background:#ef6c00}.legend-dot.holiday{background:#8a9499}
+.calendar-sync-bar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 14px;background:#f8faf9;border-bottom:1px solid #edf0f1;font-size:8px;color:#68757a}.calendar-sync-bar small{font-size:7px;color:#9aa2a7}
+.master-calendar-scroll{overflow:auto}.master-calendar-weekhead,.master-calendar-grid{min-width:900px;display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.master-calendar-weekhead{background:#f7f9f9;border-bottom:1px solid #e7ebed}.master-calendar-weekhead span{padding:8px;text-align:center;font-size:8px;font-weight:800;color:#748087;border-right:1px solid #edf0f1}.master-calendar-weekhead span:last-child{border-right:0}
+.master-calendar-day{min-height:128px;padding:6px;border-right:1px solid #edf0f1;border-bottom:1px solid #edf0f1;background:#fff;overflow:hidden}.master-calendar-day:nth-child(7n){border-right:0}.master-calendar-day.outside{background:#fafbfb}.master-calendar-day.today{box-shadow:inset 0 0 0 2px #607d71}
+.master-day-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}.master-day-num{font-size:9px;font-weight:900;color:#46545a}.outside .master-day-num{color:#b4bbbf}.master-day-head small{font-size:6px;color:#a0a8ad}
+.master-day-events{display:grid;gap:3px}.master-event{display:flex;align-items:center;gap:5px;width:100%;min-width:0;border:0;border-radius:5px;padding:4px 5px;font-size:7px;text-align:left;line-height:1.25}
+button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-size:6px;font-weight:900}.master-event .event-title{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-weight:800}
+.master-event.annual{background:#e9f0f8;color:#315f95}.master-event.half_am,.master-event.half_pm{background:#f0ebf6;color:#68488f}.master-event.field{background:#e7f2f1;color:#246d68}.master-event.import{background:#fff0e4;color:#a94d00}.master-event.holiday{background:#eef0f1;color:#667278}
+.master-event.import .event-type{color:#c35a00}.master-event.holiday .event-type{color:#707c82}
+.master-more{font-size:6px;color:#899399;padding:2px 4px}
+
+.dashboard-weekly-wrap{display:grid;gap:7px;margin-top:8px}
+.dashboard-weekly-summary{border:1px solid #e7ebed;border-radius:10px;background:#fff;padding:8px}
+.weekly-summary-title{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:7px}.weekly-summary-title b{font-size:10px;color:#303b40}.weekly-summary-title span{display:block;margin-top:2px;font-size:7px;color:#8b9499}.weekly-summary-title small{font-size:7px;color:#9aa2a7}
+.weekly-summary-chips{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}.weekly-chip{border:1px solid #edf0f1;border-radius:7px;padding:6px 7px;background:#fbfcfc}.weekly-chip span{display:block;font-size:7px;color:#8b9499}.weekly-chip b{display:block;margin-top:2px;font-size:9px}.weekly-chip.attendance{border-left:3px solid #3f6fa8}.weekly-chip.import{border-left:3px solid #ef6c00}.weekly-chip.holiday{border-left:3px solid #8a9499}
+.dashboard-unified-agenda{border:1px solid #e7ebed;border-radius:10px;background:#fff;padding:6px 8px;max-height:265px;overflow:auto}
+.dash-agenda-day{display:grid;grid-template-columns:58px 1fr;gap:7px;padding:6px 0;border-bottom:1px solid #f0f2f3}.dash-agenda-day:last-child{border-bottom:0}.dash-agenda-date b{display:block;font-size:8px;color:#4f5d63}.dash-agenda-date span{font-size:6px;color:#9aa2a7}
+.dash-agenda-events{display:grid;gap:3px}.dash-agenda-event{display:grid;grid-template-columns:35px 1fr;gap:5px;align-items:center;border-radius:5px;padding:4px 6px;font-size:7px}.dash-agenda-event b{font-size:6px}.dash-agenda-event span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:700}
+.dash-agenda-event.annual{background:#e9f0f8;color:#315f95}.dash-agenda-event.half_am,.dash-agenda-event.half_pm{background:#f0ebf6;color:#68488f}.dash-agenda-event.field{background:#e7f2f1;color:#246d68}.dash-agenda-event.import{background:#fff0e4;color:#a94d00}.dash-agenda-event.holiday{background:#eef0f1;color:#667278}
+.dashboard-schedule-empty{padding:20px 8px;text-align:center;font-size:8px;color:#98a1a6}
+@media(max-width:700px){
+ .master-calendar-toolbar,.calendar-sync-bar{align-items:flex-start;flex-direction:column}.master-calendar-legend{gap:8px}.master-calendar-day{min-height:112px}.weekly-summary-chips{grid-template-columns:1fr 1fr 1fr}.dash-agenda-day{grid-template-columns:50px 1fr}
 }
 
 </style>
@@ -1329,37 +1355,17 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
           <div class="dashboard-weekly-wrap">
             <div class="dashboard-weekly-summary">
               <div class="weekly-summary-title">
-                <div><b>이번 주 일정 요약</b><span id="dashboardWeekRange"></span></div>
-                <small>통합 일정 기준</small>
+                <div><b>이번 주 통합 일정</b><span id="dashboardWeekRange"></span></div>
+                <small id="dashboardCalendarSync">수입 일정 불러오는 중</small>
               </div>
               <div class="weekly-summary-chips">
-                <div class="weekly-chip annual"><span>연차</span><b id="weekAnnualCount">0건</b></div>
-                <div class="weekly-chip half"><span>반차</span><b id="weekHalfCount">0건</b></div>
-                <div class="weekly-chip field"><span>외근</span><b id="weekFieldCount">0건</b></div>
-                <div class="weekly-chip import"><span>수입 일정</span><b>Google</b></div>
-                <div class="weekly-chip holiday"><span>휴일 일정</span><b>Google</b></div>
+                <div class="weekly-chip attendance"><span>연차 일정</span><b id="weekAttendanceCount">0건</b></div>
+                <div class="weekly-chip import"><span>수입 일정</span><b id="weekImportCount">0건</b></div>
+                <div class="weekly-chip holiday"><span>휴일 일정</span><b id="weekHolidayCount">0건</b></div>
               </div>
             </div>
-
-            <div class="dashboard-integrated-board">
-              <div class="dashboard-integrated-lane attendance">
-                <div class="integrated-lane-head"><b>연차 일정</b><span>연차 · 반차 · 외근</span></div>
-                <div id="dashboardAttendanceList" class="dashboard-attendance-list">
-                  <div class="dashboard-schedule-empty">이번 주 등록된 근태 일정이 없습니다.</div>
-                </div>
-              </div>
-              <div class="dashboard-integrated-lane import">
-                <div class="integrated-lane-head"><b>수입 일정</b><span>Google Calendar</span></div>
-                <div class="dashboard-google-agenda">
-                  <iframe title="대시보드 수입 일정" src="https://calendar.google.com/calendar/embed?height=260&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00" frameborder="0" scrolling="no"></iframe>
-                </div>
-              </div>
-              <div class="dashboard-integrated-lane holiday">
-                <div class="integrated-lane-head"><b>휴일 일정</b><span>대한민국 공휴일</span></div>
-                <div class="dashboard-google-agenda">
-                  <iframe title="대시보드 휴일 일정" src="https://calendar.google.com/calendar/embed?height=260&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
-                </div>
-              </div>
+            <div class="dashboard-unified-agenda" id="dashboardUnifiedAgenda">
+              <div class="dashboard-schedule-empty">이번 주 일정을 불러오는 중입니다.</div>
             </div>
           </div>
           <div class="dash-section staffing-card">
@@ -1407,71 +1413,45 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
       <div>
         <div class="eyebrow">TEAM SCHEDULE</div>
         <h2>통합 일정</h2>
-        <p>이번 주 연차 일정, 수입 일정, 휴일 일정을 한 화면에서 함께 확인합니다.</p>
+        <p>연차 일정 · 수입 일정 · 휴일 일정을 하나의 월간 달력에서 확인합니다.</p>
       </div>
       <div class="schedule-head-actions">
+        <button class="btn" id="refreshImportScheduleBtn" type="button">↻ 수입 일정 새로고침</button>
         <button class="btn add" id="newScheduleBtn" type="button">＋ 연차 일정 등록</button>
       </div>
     </div>
 
     <div id="scheduleBoardPanel">
-      <div class="unified-week-card">
-        <div class="unified-week-top">
-          <div>
-            <div class="eyebrow">WEEKLY OPERATIONS</div>
-            <h3>이번 주 통합 일정</h3>
-            <p id="scheduleWeekRange"></p>
+      <div class="master-calendar-card">
+        <div class="master-calendar-toolbar">
+          <div class="master-calendar-month-nav">
+            <button class="btn" id="calendarPrevMonth" type="button">‹</button>
+            <strong id="calendarMonthLabel"></strong>
+            <button class="btn" id="calendarNextMonth" type="button">›</button>
+            <button class="btn" id="calendarTodayBtn" type="button">오늘</button>
           </div>
-          <div class="unified-week-nav">
-            <button class="btn" id="schedulePrevWeek" type="button">‹ 이전 주</button>
-            <button class="btn" id="scheduleThisWeek" type="button">이번 주</button>
-            <button class="btn" id="scheduleNextWeek" type="button">다음 주 ›</button>
+          <div class="master-calendar-legend">
+            <span><i class="legend-dot annual"></i>연차</span>
+            <span><i class="legend-dot half"></i>반차</span>
+            <span><i class="legend-dot field"></i>외근</span>
+            <span><i class="legend-dot import"></i>수입</span>
+            <span><i class="legend-dot holiday"></i>휴일</span>
           </div>
         </div>
-
-        <div class="unified-summary-chips">
-          <div class="unified-chip annual"><span>연차</span><b id="scheduleWeekAnnual">0건</b></div>
-          <div class="unified-chip half"><span>반차</span><b id="scheduleWeekHalf">0건</b></div>
-          <div class="unified-chip field"><span>외근</span><b id="scheduleWeekField">0건</b></div>
-          <div class="unified-chip import"><span>수입 일정</span><b>Google Calendar</b></div>
-          <div class="unified-chip holiday"><span>휴일 일정</span><b>대한민국 공휴일</b></div>
+        <div class="calendar-sync-bar">
+          <span id="calendarSyncStatus">Google 수입 일정을 불러오는 중입니다.</span>
+          <small>연차 일정은 내부 등록 데이터와 자동 연동됩니다.</small>
         </div>
-
-        <div class="unified-three-lane">
-          <section class="unified-lane attendance">
-            <div class="unified-lane-head">
-              <div><span class="lane-tag attendance">연차</span><b>연차 일정</b></div>
-              <small>클릭 시 수정·삭제</small>
-            </div>
-            <div class="weekly-attendance-days" id="weeklyAttendanceDays"></div>
-          </section>
-
-          <section class="unified-lane import">
-            <div class="unified-lane-head">
-              <div><span class="lane-tag import">수입</span><b>수입 일정</b></div>
-              <small>Google Calendar</small>
-            </div>
-            <div class="unified-google-agenda">
-              <iframe title="수입 일정 Google Calendar" src="https://calendar.google.com/calendar/embed?height=520&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=1&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00" frameborder="0" scrolling="no"></iframe>
-            </div>
-          </section>
-
-          <section class="unified-lane holiday">
-            <div class="unified-lane-head">
-              <div><span class="lane-tag holiday">휴일</span><b>휴일 일정</b></div>
-              <small>대한민국 공휴일</small>
-            </div>
-            <div class="unified-google-agenda holiday">
-              <iframe title="대한민국 휴일 Google Calendar" src="https://calendar.google.com/calendar/embed?height=520&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=1&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
-            </div>
-          </section>
+        <div class="master-calendar-scroll">
+          <div class="master-calendar-weekhead"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+          <div class="master-calendar-grid" id="masterCalendarGrid"></div>
         </div>
       </div>
     </div>
 
     <div class="schedule-editor-panel" id="scheduleEditorPanel" hidden>
       <div class="schedule-editor-top">
-        <div><h3 id="scheduleFormTitle">연차 일정 등록</h3><p>등록한 일정은 통합 일정과 메인 대시보드 운영 인원에 즉시 반영됩니다.</p></div>
+        <div><h3 id="scheduleFormTitle">연차 일정 등록</h3><p>등록한 일정은 통합 달력과 메인 대시보드 운영 인원에 즉시 반영됩니다.</p></div>
         <button class="btn" id="backToCalendarBtn" type="button">← 통합 일정으로 돌아가기</button>
       </div>
       <div class="schedule-form-card compact-attendance-form">
@@ -2131,9 +2111,11 @@ setTimeout(initInventoryColumnResize,0);
 <script>
 (()=>{
   const KEY='lush_schedule_events_v1',TEAM_SIZE=14;
+  const IMPORT_API='https://script.google.com/a/macros/lush.co.kr/s/AKfycbw4ZD7eut8s_OlPOU2sD5muS8D8Wp3KXD8D4HKkIAP0TgR5DMywfuIezz0H4janU4vT/exec';
   const types={annual:'연차',half_am:'오전반차',half_pm:'오후반차',field:'외근'};
   const absenceTypes=new Set(Object.keys(types)),fullAbsence=new Set(['annual','field']);
-  let weekOffset=0;
+  let calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
+  let importEvents=[],importLoadError='';
   const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
   const dateKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
   const todayKey=()=>dateKey(new Date());
@@ -2142,11 +2124,45 @@ setTimeout(initInventoryColumnResize,0);
   const dows=['일','월','화','수','목','금','토'];
 
   function getEvents(){try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
-  function setEvents(a){localStorage.setItem(KEY,JSON.stringify(a));renderScheduleWeek();renderDashboardSchedule()}
+  function setEvents(a){localStorage.setItem(KEY,JSON.stringify(a));renderMasterCalendar();renderDashboardSchedule()}
   function migrateLegacy(){if(localStorage.getItem(KEY)!==null)return;const rows=(typeof db!=='undefined'&&db.schedule?.['통합 일정']?.rows)||[];const mapped=rows.filter(r=>r&&r[0]).map(r=>({id:uid(),startDate:r[0],endDate:r[0],type:({외근:'field',연차:'annual',오전반차:'half_am',오후반차:'half_pm'}[r[1]]||'annual'),person:r[3]||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})).filter(e=>e.person);localStorage.setItem(KEY,JSON.stringify(mapped))}
   function eventCovers(e,date){return date>=(e.startDate||'')&&date<=(e.endDate||e.startDate||'')}
-  function weekBounds(offset=0){const now=new Date(),day=now.getDay(),monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((day+6)%7)+(offset*7)),sunday=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6);return{monday,sunday,start:dateKey(monday),end:dateKey(sunday)}}
-  function rangeLabel(a,b){return `${a.getFullYear()}.${pad(a.getMonth()+1)}.${pad(a.getDate())} ~ ${b.getFullYear()}.${pad(b.getMonth()+1)}.${pad(b.getDate())}`}
+  function isoToSeoulDate(iso){if(!iso)return'';const d=new Date(iso);return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
+  function normalizeImport(raw){return (raw||[]).map(e=>({id:e.id||'',title:String(e.title||'').trim(),startDate:isoToSeoulDate(e.start),endDate:isoToSeoulDate(e.end),type:'import'})).filter(e=>e.startDate&&e.title)}
+
+  function holidayEvents(year){
+    const fixed=[
+      [`${year}-01-01`,'신정'],[`${year}-03-01`,'삼일절'],[`${year}-05-05`,'어린이날'],
+      [`${year}-06-06`,'현충일'],[`${year}-08-15`,'광복절'],[`${year}-10-03`,'개천절'],
+      [`${year}-10-09`,'한글날'],[`${year}-12-25`,'성탄절']
+    ];
+    const known={
+      2026:[['2026-02-16','설날 연휴'],['2026-02-17','설날'],['2026-02-18','설날 연휴'],['2026-03-02','삼일절 대체공휴일'],['2026-05-24','부처님오신날'],['2026-05-25','부처님오신날 대체공휴일'],['2026-09-24','추석 연휴'],['2026-09-25','추석'],['2026-09-26','추석 연휴'],['2026-10-05','개천절 대체공휴일']],
+      2027:[]
+    };
+    return fixed.concat(known[year]||[]).map(([startDate,title],i)=>({id:`holiday_${year}_${i}_${startDate}`,startDate,endDate:startDate,title,type:'holiday'}));
+  }
+
+  async function loadImportSchedule(force=false){
+    if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='Google 수입 일정을 불러오는 중입니다.';
+    if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 불러오는 중';
+    try{
+      const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default'});
+      if(!res.ok)throw new Error(`HTTP ${res.status}`);
+      const data=await res.json();
+      if(!data.success||!Array.isArray(data.events))throw new Error('응답 형식 오류');
+      importEvents=normalizeImport(data.events);importLoadError='';
+      const now=new Date(),stamp=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
+      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent=`수입 일정 ${importEvents.length}건 연동 완료 · ${stamp} 기준`;
+      if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent=`수입 일정 연동 완료 · ${stamp}`;
+    }catch(err){
+      importLoadError=String(err?.message||err);importEvents=[];
+      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='수입 일정 연결 실패 · 새로고침 후 다시 확인해주세요.';
+      if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 연결 확인 필요';
+      console.error('Import calendar load failed:',err);
+    }
+    renderMasterCalendar();renderDashboardSchedule();
+  }
 
   function showScheduleBoard(){if($('scheduleBoardPanel'))$('scheduleBoardPanel').hidden=false;if($('scheduleEditorPanel'))$('scheduleEditorPanel').hidden=true}
   function showScheduleEditor(reset=true){if($('scheduleBoardPanel'))$('scheduleBoardPanel').hidden=true;if($('scheduleEditorPanel'))$('scheduleEditorPanel').hidden=false;if(reset)resetForm()}
@@ -2155,42 +2171,47 @@ setTimeout(initInventoryColumnResize,0);
   function loadSchedule(id){const e=getEvents().find(x=>x.id===id);if(!e)return;showScheduleEditor(false);$('scheduleRecordId').value=e.id;$('scheduleType').value=e.type||'annual';$('schedulePerson').value=e.person||'';$('scheduleStartDate').value=e.startDate||todayKey();$('scheduleEndDate').value=e.endDate||e.startDate||todayKey();$('scheduleFormTitle').textContent='연차 일정 수정';$('deleteScheduleBtn').hidden=false}
   function deleteCurrentSchedule(){const id=$('scheduleRecordId').value;if(!id)return;const e=getEvents().find(x=>x.id===id);if(!e)return;if(!confirm(`${e.person} · ${types[e.type]||'일정'}을 삭제하시겠습니까?`))return;setEvents(getEvents().filter(x=>x.id!==id));resetForm();showScheduleBoard();toastMsg('일정을 삭제했습니다.')}
 
-  function renderScheduleWeek(){
-    if(!$('weeklyAttendanceDays'))return;
-    const {monday,sunday,start,end}=weekBounds(weekOffset),events=getEvents().filter(e=>absenceTypes.has(e.type));
-    $('scheduleWeekRange').textContent=rangeLabel(monday,sunday);
-    const weekEvents=events.filter(e=>(e.endDate||e.startDate)>=start&&e.startDate<=end);
-    $('scheduleWeekAnnual').textContent=`${weekEvents.filter(e=>e.type==='annual').length}건`;
-    $('scheduleWeekHalf').textContent=`${weekEvents.filter(e=>e.type==='half_am'||e.type==='half_pm').length}건`;
-    $('scheduleWeekField').textContent=`${weekEvents.filter(e=>e.type==='field').length}건`;
+  function allEventsForYears(years){
+    const attendance=getEvents().filter(e=>absenceTypes.has(e.type)).map(e=>({...e,title:`${e.person} · ${types[e.type]}`}));
+    const holidays=years.flatMap(y=>holidayEvents(y));
+    return attendance.concat(importEvents,holidays);
+  }
+  function eventLabel(e){if(e.type==='import')return['수입',e.title];if(e.type==='holiday')return['휴일',e.title];return[types[e.type]||'일정',e.person||e.title||''];}
+  function eventSort(a,b){const order={annual:0,half_am:1,half_pm:1,field:2,import:3,holiday:4};return (order[a.type]??9)-(order[b.type]??9)||(a.title||'').localeCompare(b.title||'ko')}
+
+  function renderMasterCalendar(){
+    if(!$('masterCalendarGrid'))return;
+    const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),gridStart=new Date(y,m,1-first.getDay()),events=allEventsForYears([y-1,y,y+1]);
+    $('calendarMonthLabel').textContent=`${y}년 ${m+1}월`;
     let html='';
-    for(let i=0;i<7;i++){
-      const d=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key));
-      html+=`<div class="weekly-day-block"><div class="weekly-day-head"><b>${d.getMonth()+1}/${d.getDate()} (${dows[d.getDay()]})</b><span>${list.length?`${list.length}건`:'일정 없음'}</span></div><div class="weekly-day-events">${list.length?list.map(e=>`<button type="button" class="weekly-attendance-event ${e.type}" data-attendance-id="${e.id}"><span>${escHtml(e.person)}</span><small>${types[e.type]}</small></button>`).join(''):'<div class="dashboard-schedule-empty">등록 일정 없음</div>'}</div></div>`;
+    for(let i=0;i<42;i++){
+      const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort);
+      const visible=list.slice(0,5);
+      html+=`<div class="master-calendar-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [tag,title]=eventLabel(e);const inner=`<span class="event-type">${escHtml(tag)}</span><span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
     }
-    $('weeklyAttendanceDays').innerHTML=html;
-    $('weeklyAttendanceDays').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
+    $('masterCalendarGrid').innerHTML=html;
+    $('masterCalendarGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
   }
 
-  function renderDashboardSchedule(){
-    const {monday,sunday,start,end}=weekBounds(0),events=getEvents().filter(e=>absenceTypes.has(e.type));
-    const weekEvents=events.filter(e=>(e.endDate||e.startDate)>=start&&e.startDate<=end);
-    if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=rangeLabel(monday,sunday);
-    if($('weekAnnualCount'))$('weekAnnualCount').textContent=`${weekEvents.filter(e=>e.type==='annual').length}건`;
-    if($('weekHalfCount'))$('weekHalfCount').textContent=`${weekEvents.filter(e=>e.type==='half_am'||e.type==='half_pm').length}건`;
-    if($('weekFieldCount'))$('weekFieldCount').textContent=`${weekEvents.filter(e=>e.type==='field').length}건`;
+  function weekBounds(){const now=new Date(),day=now.getDay(),monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((day+6)%7)),sunday=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6);return{monday,sunday,start:dateKey(monday),end:dateKey(sunday)}}
+  function rangeLabel(a,b){return `${a.getFullYear()}.${pad(a.getMonth()+1)}.${pad(a.getDate())} ~ ${b.getFullYear()}.${pad(b.getMonth()+1)}.${pad(b.getDate())}`}
 
-    if($('dashboardAttendanceList')){
+  function renderDashboardSchedule(){
+    const {monday,sunday,start,end}=weekBounds(),events=allEventsForYears([monday.getFullYear(),sunday.getFullYear()]),weekEvents=events.filter(e=>(e.endDate||e.startDate)>=start&&e.startDate<=end);
+    if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=rangeLabel(monday,sunday);
+    if($('weekAttendanceCount'))$('weekAttendanceCount').textContent=`${weekEvents.filter(e=>absenceTypes.has(e.type)).length}건`;
+    if($('weekImportCount'))$('weekImportCount').textContent=importLoadError?'연결 확인':`${weekEvents.filter(e=>e.type==='import').length}건`;
+    if($('weekHolidayCount'))$('weekHolidayCount').textContent=`${weekEvents.filter(e=>e.type==='holiday').length}건`;
+    if($('dashboardUnifiedAgenda')){
       let html='';
       for(let i=0;i<7;i++){
-        const d=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key));
+        const d=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort);
         if(!list.length)continue;
-        html+=`<div class="dashboard-attendance-day"><div class="dashboard-attendance-day-head"><b>${d.getMonth()+1}/${d.getDate()} (${dows[d.getDay()]})</b><span>${list.length}건</span></div>${list.map(e=>`<div class="dashboard-attendance-row"><span class="person">${escHtml(e.person)}</span><span class="kind ${e.type}">${types[e.type]}</span></div>`).join('')}</div>`;
+        html+=`<div class="dash-agenda-day"><div class="dash-agenda-date"><b>${d.getMonth()+1}/${d.getDate()}</b><span>${dows[d.getDay()]}요일</span></div><div class="dash-agenda-events">${list.map(e=>{const [tag,title]=eventLabel(e);return`<div class="dash-agenda-event ${e.type}"><b>${escHtml(tag)}</b><span title="${escHtml(title)}">${escHtml(title)}</span></div>`}).join('')}</div></div>`;
       }
-      $('dashboardAttendanceList').innerHTML=html||'<div class="dashboard-schedule-empty">이번 주 등록된 근태 일정이 없습니다.</div>';
+      $('dashboardUnifiedAgenda').innerHTML=html||'<div class="dashboard-schedule-empty">이번 주 등록된 일정이 없습니다.</div>';
     }
-
-    const today=todayKey(),todayAbs=events.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();
+    const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey(),todayAbs=attendance.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();
     todayAbs.forEach(e=>{const factor=fullAbsence.has(e.type)?1:.5;perPerson.set(e.person,Math.max(perPerson.get(e.person)||0,factor))});
     const excluded=[...perPerson.values()].reduce((a,b)=>a+b,0),available=Math.max(0,TEAM_SIZE-excluded);
     if($('todayOperatingCount'))$('todayOperatingCount').textContent=Number.isInteger(available)?available:available.toFixed(1);
@@ -2200,13 +2221,7 @@ setTimeout(initInventoryColumnResize,0);
   }
 
   window.openScheduleManager=function(label,el){
-    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
-    $('scheduleManagerView').classList.add('active');
-    pageTitle.textContent=label||'통합 일정';
-    document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-    if(el)el.classList.add('active');
-    currentSheet=null;showScheduleBoard();renderScheduleWeek();renderDashboardSchedule();
-    if(window.lucide)lucide.createIcons();
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('scheduleManagerView').classList.add('active');pageTitle.textContent=label||'통합 일정';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;showScheduleBoard();renderMasterCalendar();renderDashboardSchedule();if(window.lucide)lucide.createIcons()
   };
 
   migrateLegacy();
@@ -2215,11 +2230,12 @@ setTimeout(initInventoryColumnResize,0);
   $('newScheduleBtn')&&($('newScheduleBtn').onclick=()=>showScheduleEditor(true));
   $('backToCalendarBtn')&&($('backToCalendarBtn').onclick=showScheduleBoard);
   $('deleteScheduleBtn')&&($('deleteScheduleBtn').onclick=deleteCurrentSchedule);
-  $('schedulePrevWeek')&&($('schedulePrevWeek').onclick=()=>{weekOffset--;renderScheduleWeek()});
-  $('scheduleNextWeek')&&($('scheduleNextWeek').onclick=()=>{weekOffset++;renderScheduleWeek()});
-  $('scheduleThisWeek')&&($('scheduleThisWeek').onclick=()=>{weekOffset=0;renderScheduleWeek()});
+  $('calendarPrevMonth')&&($('calendarPrevMonth').onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()-1,1);renderMasterCalendar()});
+  $('calendarNextMonth')&&($('calendarNextMonth').onclick=()=>{calendarCursor=new Date(calendarCursor.getFullYear(),calendarCursor.getMonth()+1,1);renderMasterCalendar()});
+  $('calendarTodayBtn')&&($('calendarTodayBtn').onclick=()=>{calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);renderMasterCalendar()});
+  $('refreshImportScheduleBtn')&&($('refreshImportScheduleBtn').onclick=()=>loadImportSchedule(true));
 
-  resetForm();showScheduleBoard();renderScheduleWeek();renderDashboardSchedule();
+  resetForm();showScheduleBoard();renderMasterCalendar();renderDashboardSchedule();loadImportSchedule();
 })();
 </script>
 </body>
