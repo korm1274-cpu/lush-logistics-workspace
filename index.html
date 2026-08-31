@@ -1096,6 +1096,67 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 #dashboard .cal-event.annual{background:#e9f0f8;color:#315f95;border-left:2px solid #3f6fa8}#dashboard .cal-event.half_am,#dashboard .cal-event.half_pm{background:#f0ebf6;color:#68488f;border-left:2px solid #7b5aa6}#dashboard .cal-event.field{background:#e7f2f1;color:#246d68;border-left:2px solid #2e7d78}
 @media(max-width:700px){.dashboard-schedule-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.attendance-calendar-wrap{padding:8px}.attendance-month-grid,.attendance-week-head{min-width:650px}.attendance-calendar-wrap{overflow-x:auto}.attendance-day{min-height:90px}.schedule-editor-panel .schedule-form-grid{grid-template-columns:1fr}.google-calendar-frame-wrap{height:600px}}
 
+
+/* V41 schedule board */
+.schedule-board{display:grid;grid-template-columns:1fr;gap:14px}
+.schedule-board-card{background:#fff;border:1px solid #e7eaec;border-radius:14px;overflow:hidden}
+.schedule-board-card-head{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border-bottom:1px solid #edf0f1;background:#fbfcfc}
+.schedule-board-title{display:flex;align-items:center;gap:10px;min-width:0}
+.schedule-board-title h3{margin:0;font-size:15px;color:#29343a}
+.schedule-board-title p{margin:3px 0 0;font-size:9px;color:#899399}
+.schedule-board-icon{display:inline-flex;align-items:center;justify-content:center;min-width:38px;height:24px;border-radius:7px;font-size:8px;font-weight:900}
+.schedule-board-icon.attendance{background:#e9f0f8;color:#315f95}
+.schedule-board-icon.import{background:#fff0e4;color:#b55300}
+.schedule-board-icon.holiday{background:#eef0f1;color:#68747a}
+.schedule-board-card.attendance-card{border-left:4px solid #3f6fa8}
+.schedule-board-card.import-card{border-left:4px solid #ef6c00}
+.schedule-board-card.holiday-card{border-left:4px solid #8a9499}
+.attendance-board-nav{display:flex;align-items:center;gap:8px}
+.attendance-board-nav strong{font-size:12px;min-width:90px;text-align:center}
+.schedule-google-board{height:540px;background:#fff}
+.schedule-google-board.holiday{height:420px}
+.schedule-google-board iframe{display:block;width:100%;height:100%;border:0}
+#scheduleBoardPanel[hidden]{display:none!important}
+
+.dashboard-unified-schedule{display:grid;grid-template-columns:1.15fr .925fr .925fr;gap:8px;margin-top:8px}
+.dashboard-schedule-section{min-width:0;border:1px solid #e9edef;border-radius:10px;overflow:hidden;background:#fff}
+.dashboard-schedule-section.attendance{border-top:3px solid #3f6fa8}
+.dashboard-schedule-section.import{border-top:3px solid #ef6c00}
+.dashboard-schedule-section.holiday{border-top:3px solid #8a9499}
+.dashboard-schedule-section-head{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:8px 9px;border-bottom:1px solid #edf0f1;background:#fbfcfc}
+.dashboard-schedule-section-head>div{min-width:0}
+.dashboard-schedule-section-head b{display:block;font-size:9px;color:#303b40}
+.dashboard-schedule-section-head span{display:block;margin-top:2px;font-size:7px;color:#8a9499}
+.schedule-key{padding:3px 6px;border-radius:5px;font-size:7px!important;font-weight:800;white-space:nowrap}
+.schedule-key.attendance{background:#e9f0f8;color:#315f95!important}
+.schedule-key.import{background:#fff0e4;color:#b55300!important}
+.schedule-key.holiday{background:#eef0f1;color:#68747a!important}
+.dashboard-attendance-list{padding:6px 8px;max-height:215px;overflow:auto}
+.dashboard-attendance-row{display:grid;grid-template-columns:48px 1fr auto;gap:6px;align-items:center;padding:6px 3px;border-bottom:1px solid #f0f2f3;font-size:8px}
+.dashboard-attendance-row:last-child{border-bottom:0}
+.dashboard-attendance-row .date{font-weight:800;color:#526168}
+.dashboard-attendance-row .person{font-weight:800;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dashboard-attendance-row .kind{padding:3px 5px;border-radius:5px;font-weight:800}
+.dashboard-attendance-row .kind.annual{background:#e9f0f8;color:#315f95}
+.dashboard-attendance-row .kind.half_am,.dashboard-attendance-row .kind.half_pm{background:#f0ebf6;color:#68488f}
+.dashboard-attendance-row .kind.field{background:#e7f2f1;color:#246d68}
+.dashboard-schedule-empty{padding:18px 8px;text-align:center;font-size:8px;color:#9aa2a7}
+.dashboard-google-agenda{height:215px;background:#fff;overflow:hidden}
+.dashboard-google-agenda iframe{width:100%;height:100%;border:0;display:block}
+
+@media(max-width:1050px){
+  .dashboard-unified-schedule{grid-template-columns:1fr}
+  .dashboard-google-agenda{height:240px}
+}
+@media(max-width:700px){
+  .schedule-board-card-head{align-items:flex-start;flex-direction:column}
+  .attendance-board-nav{width:100%;justify-content:space-between}
+  .schedule-google-board{height:560px}
+  .schedule-google-board.holiday{height:360px}
+  .dashboard-unified-schedule{grid-template-columns:1fr}
+  .dashboard-attendance-list{max-height:none}
+}
+
 </style>
 
 <style id="v38-schedule-style">
@@ -1206,15 +1267,35 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
       <div class="dash-two-col">
         <div class="dash-section schedule-card">
           <div class="dash-section-head"><div><h3>2주 운영 일정</h3></div></div>
-          <div class="two-week-calendar" id="twoWeekCalendar"></div>
-          <div class="dashboard-schedule-summary">
-            <div class="dash-sum-chip import"><span>수입 일정</span><b>Google Calendar</b></div>
-            <div class="dash-sum-chip holiday"><span>휴일 일정</span><b>Google Calendar</b></div>
-            <div class="dash-sum-chip annual"><span>2주 연차</span><b id="summaryAnnualCount">0건</b></div>
-            <div class="dash-sum-chip half"><span>2주 반차</span><b id="summaryHalfCount">0건</b></div>
-            <div class="dash-sum-chip field"><span>2주 외근</span><b id="summaryFieldCount">0건</b></div>
+          <div class="dashboard-unified-schedule">
+            <div class="dashboard-schedule-section attendance">
+              <div class="dashboard-schedule-section-head">
+                <div><b>연차 일정</b><span id="dashboardAttendanceSummary">2주 0건</span></div>
+                <span class="schedule-key attendance">근태</span>
+              </div>
+              <div class="dashboard-attendance-list" id="dashboardAttendanceList">
+                <div class="dashboard-schedule-empty">등록된 연차·반차·외근 일정이 없습니다.</div>
+              </div>
+            </div>
+            <div class="dashboard-schedule-section import">
+              <div class="dashboard-schedule-section-head">
+                <div><b>수입 일정</b><span>Google Calendar</span></div>
+                <span class="schedule-key import">수입</span>
+              </div>
+              <div class="dashboard-google-agenda">
+                <iframe title="대시보드 수입 일정" src="https://calendar.google.com/calendar/embed?height=240&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00" frameborder="0" scrolling="no"></iframe>
+              </div>
+            </div>
+            <div class="dashboard-schedule-section holiday">
+              <div class="dashboard-schedule-section-head">
+                <div><b>휴일 일정</b><span>대한민국 공휴일</span></div>
+                <span class="schedule-key holiday">휴일</span>
+              </div>
+              <div class="dashboard-google-agenda">
+                <iframe title="대시보드 휴일 일정" src="https://calendar.google.com/calendar/embed?height=240&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
+              </div>
+            </div>
           </div>
-          <div class="calendar-foot"><span><i class="cal-dot annual-dot"></i> 연차</span><span><i class="cal-dot half-dot"></i> 반차</span><span><i class="cal-dot field-dot"></i> 외근</span><small>근태 일정은 통합 일정과 자동 연동</small></div>
         </div>
         <div class="dash-section staffing-card">
           <div class="dash-section-head"><div><h3>금일 운영 인원</h3></div></div>
@@ -1258,35 +1339,71 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
     <section id="scheduleManagerView" class="view">
   <div class="schedule-shell">
     <div class="schedule-head">
-      <div><div class="eyebrow">TEAM SCHEDULE</div><h2>통합 일정</h2><p>수입·휴일 Google Calendar와 물류팀 연차·반차·외근 일정을 한 곳에서 확인합니다.</p></div>
-      <div class="schedule-head-actions"><button class="btn add" id="newScheduleBtn" type="button">＋ 일정 등록</button></div>
+      <div>
+        <div class="eyebrow">TEAM SCHEDULE</div>
+        <h2>통합 일정</h2>
+        <p>연차 일정, 수입 일정, 휴일 일정을 한 화면에서 구분하여 확인합니다.</p>
+      </div>
+      <div class="schedule-head-actions">
+        <button class="btn add" id="newScheduleBtn" type="button">＋ 연차 일정 등록</button>
+      </div>
     </div>
 
-    <div class="schedule-calendar-panel" id="scheduleCalendarPanel">
-      <div class="schedule-calendar-toolbar">
-        <div class="schedule-calendar-tabs" role="tablist" aria-label="통합 일정 선택">
-          <button class="schedule-calendar-tab active" id="allCalendarTab" type="button" data-calendar-tab="all">전체 일정</button>
-          <button class="schedule-calendar-tab import-tab" id="importCalendarTab" type="button" data-calendar-tab="import">수입 일정</button>
-          <button class="schedule-calendar-tab holiday-tab" id="holidayCalendarTab" type="button" data-calendar-tab="holiday">휴일 일정</button>
-          <button class="schedule-calendar-tab attendance-tab" id="attendanceCalendarTab" type="button" data-calendar-tab="attendance">연차 · 반차 · 외근</button>
+    <div class="schedule-board" id="scheduleBoardPanel">
+      <section class="schedule-board-card attendance-card">
+        <div class="schedule-board-card-head">
+          <div class="schedule-board-title">
+            <span class="schedule-board-icon attendance">연차</span>
+            <div><h3>연차 일정</h3><p>연차 · 오전반차 · 오후반차 · 외근</p></div>
+          </div>
+          <div class="attendance-board-nav">
+            <button class="btn" id="attendancePrevMonth" type="button">‹</button>
+            <strong id="attendanceMonthLabel"></strong>
+            <button class="btn" id="attendanceNextMonth" type="button">›</button>
+          </div>
         </div>
-        <div class="schedule-calendar-note">수입 일정은 주황색 · 휴일은 회색 · 근태 일정은 유형별 색상으로 구분됩니다.</div>
-      </div>
-      <div class="google-calendar-frame-wrap" id="googleCalendarWrap">
-        <iframe class="google-calendar-frame active" id="allCalendarFrame" title="수입 및 대한민국 휴일 일정" src="https://calendar.google.com/calendar/embed?height=680&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
-        <iframe class="google-calendar-frame" id="importCalendarFrame" title="수입 일정 Google Calendar" src="https://calendar.google.com/calendar/embed?height=680&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00" frameborder="0" scrolling="no"></iframe>
-        <iframe class="google-calendar-frame" id="holidayCalendarFrame" title="대한민국 휴일 Google Calendar" src="https://calendar.google.com/calendar/embed?height=680&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
-      </div>
-      <div class="attendance-calendar-wrap" id="attendanceCalendarWrap" hidden>
-        <div class="attendance-calendar-head"><button class="btn" id="attendancePrevMonth" type="button">‹ 이전</button><strong id="attendanceMonthLabel"></strong><button class="btn" id="attendanceNextMonth" type="button">다음 ›</button></div>
-        <div class="attendance-week-head"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
-        <div class="attendance-month-grid" id="attendanceMonthGrid"></div>
-        <div class="attendance-legend"><span><i class="legend-swatch annual"></i>연차</span><span><i class="legend-swatch half"></i>반차</span><span><i class="legend-swatch field"></i>외근</span></div>
-      </div>
+        <div class="attendance-calendar-wrap">
+          <div class="attendance-week-head"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+          <div class="attendance-month-grid" id="attendanceMonthGrid"></div>
+          <div class="attendance-legend">
+            <span><i class="legend-swatch annual"></i>연차</span>
+            <span><i class="legend-swatch half"></i>반차</span>
+            <span><i class="legend-swatch field"></i>외근</span>
+            <small>일정을 클릭하면 수정·삭제할 수 있습니다.</small>
+          </div>
+        </div>
+      </section>
+
+      <section class="schedule-board-card import-card">
+        <div class="schedule-board-card-head">
+          <div class="schedule-board-title">
+            <span class="schedule-board-icon import">수입</span>
+            <div><h3>수입 일정</h3><p>Google Calendar 수입 일정</p></div>
+          </div>
+        </div>
+        <div class="schedule-google-board">
+          <iframe title="수입 일정 Google Calendar" src="https://calendar.google.com/calendar/embed?height=540&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=c_f88c0f71c0f7098e5230a93dcd0c3845f1779061c43d42e40a2b71bdaa3817a4%40group.calendar.google.com&amp;color=%23EF6C00" frameborder="0" scrolling="no"></iframe>
+        </div>
+      </section>
+
+      <section class="schedule-board-card holiday-card">
+        <div class="schedule-board-card-head">
+          <div class="schedule-board-title">
+            <span class="schedule-board-icon holiday">휴일</span>
+            <div><h3>휴일 일정</h3><p>대한민국 공휴일</p></div>
+          </div>
+        </div>
+        <div class="schedule-google-board holiday">
+          <iframe title="대한민국 휴일 Google Calendar" src="https://calendar.google.com/calendar/embed?height=420&amp;wkst=1&amp;ctz=Asia%2FSeoul&amp;mode=AGENDA&amp;showTitle=0&amp;showNav=1&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0&amp;src=ko.south_korea%23holiday%40group.v.calendar.google.com&amp;color=%238A9499" frameborder="0" scrolling="no"></iframe>
+        </div>
+      </section>
     </div>
 
     <div class="schedule-editor-panel" id="scheduleEditorPanel" hidden>
-      <div class="schedule-editor-top"><div><h3 id="scheduleFormTitle">근태 일정 등록</h3><p>등록한 일정은 근태 캘린더와 대시보드 운영 인원에 즉시 반영됩니다.</p></div><button class="btn" id="backToCalendarBtn" type="button">← 캘린더로 돌아가기</button></div>
+      <div class="schedule-editor-top">
+        <div><h3 id="scheduleFormTitle">연차 일정 등록</h3><p>등록한 일정은 연차 캘린더와 메인 대시보드 운영 인원에 즉시 반영됩니다.</p></div>
+        <button class="btn" id="backToCalendarBtn" type="button">← 통합 일정으로 돌아가기</button>
+      </div>
       <div class="schedule-form-card compact-attendance-form">
         <input type="hidden" id="scheduleRecordId">
         <div class="schedule-form-grid">
@@ -1295,7 +1412,11 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
           <div class="field"><label>시작일</label><input type="date" id="scheduleStartDate"></div>
           <div class="field"><label>종료일</label><input type="date" id="scheduleEndDate"></div>
         </div>
-        <div class="schedule-form-actions"><button class="btn add" id="saveScheduleBtn" type="button">일정 저장</button><button class="btn" id="cancelScheduleEditBtn" type="button">입력 초기화</button><button class="btn danger" id="deleteScheduleBtn" type="button" hidden>일정 삭제</button></div>
+        <div class="schedule-form-actions">
+          <button class="btn add" id="saveScheduleBtn" type="button">일정 저장</button>
+          <button class="btn" id="cancelScheduleEditBtn" type="button">입력 초기화</button>
+          <button class="btn danger" id="deleteScheduleBtn" type="button" hidden>일정 삭제</button>
+        </div>
       </div>
     </div>
   </div>
@@ -1947,35 +2068,35 @@ setTimeout(initInventoryColumnResize,0);
   const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
   const uid=()=>`sch_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
   const escHtml=v=>String(v??'').replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+  const fmtMD=d=>{if(!d)return'-';const [,m,day]=d.split('-');return `${Number(m)}/${Number(day)}`};
   function getEvents(){try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function setEvents(a){localStorage.setItem(KEY,JSON.stringify(a));renderAttendanceCalendar();renderDashboardSchedule()}
   function migrateLegacy(){if(localStorage.getItem(KEY)!==null)return;const rows=(typeof db!=='undefined'&&db.schedule?.['통합 일정']?.rows)||[];const mapped=rows.filter(r=>r&&r[0]).map(r=>({id:uid(),startDate:r[0],endDate:r[0],type:({외근:'field',연차:'annual',오전반차:'half_am',오후반차:'half_pm'}[r[1]]||'annual'),person:r[3]||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})).filter(e=>e.person);localStorage.setItem(KEY,JSON.stringify(mapped))}
   function eventCovers(e,date){return date>=(e.startDate||'')&&date<=(e.endDate||e.startDate||'')}
-  function showCalendarHome(){if(!$('scheduleCalendarPanel')||!$('scheduleEditorPanel'))return;$('scheduleCalendarPanel').hidden=false;$('scheduleEditorPanel').hidden=true}
-  function showScheduleEditor(reset=true){if(!$('scheduleCalendarPanel')||!$('scheduleEditorPanel'))return;$('scheduleCalendarPanel').hidden=true;$('scheduleEditorPanel').hidden=false;if(reset)resetForm()}
-  function selectCalendarTab(name){
-    ['all','import','holiday','attendance'].forEach(n=>$(n==='all'?'allCalendarTab':n==='attendance'?'attendanceCalendarTab':n+'CalendarTab')?.classList.toggle('active',n===name));
-    ['all','import','holiday'].forEach(n=>$(n+'CalendarFrame')?.classList.toggle('active',n===name));
-    if($('googleCalendarWrap'))$('googleCalendarWrap').hidden=name==='attendance';if($('attendanceCalendarWrap'))$('attendanceCalendarWrap').hidden=name!=='attendance';if(name==='attendance')renderAttendanceCalendar();
-  }
-  function resetForm(){if(!$('scheduleRecordId'))return;$('scheduleRecordId').value='';$('scheduleType').value='annual';$('schedulePerson').value='';$('scheduleStartDate').value=todayKey();$('scheduleEndDate').value=todayKey();$('scheduleFormTitle').textContent='근태 일정 등록';$('deleteScheduleBtn').hidden=true}
-  function saveSchedule(){const type=$('scheduleType').value,person=$('schedulePerson').value,start=$('scheduleStartDate').value,end=$('scheduleEndDate').value||start;if(!person){toastMsg('대상자를 선택해주세요.');return}if(!start){toastMsg('시작일을 선택해주세요.');return}if(end<start){toastMsg('종료일은 시작일보다 빠를 수 없습니다.');return}const all=getEvents(),id=$('scheduleRecordId').value||uid(),old=all.find(x=>x.id===id),rec={...old,id,type,person,startDate:start,endDate:end,title:`${person} · ${types[type]}`,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};const i=all.findIndex(x=>x.id===id);if(i>=0)all[i]=rec;else all.unshift(rec);setEvents(all);toastMsg(i>=0?'일정을 수정했습니다.':'일정을 등록했습니다.');resetForm();showCalendarHome();selectCalendarTab('attendance')}
-  function loadSchedule(id){const e=getEvents().find(x=>x.id===id);if(!e)return;showScheduleEditor(false);$('scheduleRecordId').value=e.id;$('scheduleType').value=e.type||'annual';$('schedulePerson').value=e.person||'';$('scheduleStartDate').value=e.startDate||todayKey();$('scheduleEndDate').value=e.endDate||e.startDate||todayKey();$('scheduleFormTitle').textContent='근태 일정 수정';$('deleteScheduleBtn').hidden=false}
-  function deleteScheduleById(id){const e=getEvents().find(x=>x.id===id);if(!e)return;if(!confirm(`${e.person} · ${types[e.type]||'일정'}을 삭제하시겠습니까?`))return;setEvents(getEvents().filter(x=>x.id!==id));resetForm();showCalendarHome();selectCalendarTab('attendance');toastMsg('일정을 삭제했습니다.')}
+  function showScheduleBoard(){if($('scheduleBoardPanel'))$('scheduleBoardPanel').hidden=false;if($('scheduleEditorPanel'))$('scheduleEditorPanel').hidden=true}
+  function showScheduleEditor(reset=true){if($('scheduleBoardPanel'))$('scheduleBoardPanel').hidden=true;if($('scheduleEditorPanel'))$('scheduleEditorPanel').hidden=false;if(reset)resetForm()}
+  function resetForm(){if(!$('scheduleRecordId'))return;$('scheduleRecordId').value='';$('scheduleType').value='annual';$('schedulePerson').value='';$('scheduleStartDate').value=todayKey();$('scheduleEndDate').value=todayKey();$('scheduleFormTitle').textContent='연차 일정 등록';$('deleteScheduleBtn').hidden=true}
+  function saveSchedule(){const type=$('scheduleType').value,person=$('schedulePerson').value,start=$('scheduleStartDate').value,end=$('scheduleEndDate').value||start;if(!person){toastMsg('대상자를 선택해주세요.');return}if(!start){toastMsg('시작일을 선택해주세요.');return}if(end<start){toastMsg('종료일은 시작일보다 빠를 수 없습니다.');return}const all=getEvents(),id=$('scheduleRecordId').value||uid(),old=all.find(x=>x.id===id),rec={...old,id,type,person,startDate:start,endDate:end,title:`${person} · ${types[type]}`,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};const i=all.findIndex(x=>x.id===id);if(i>=0)all[i]=rec;else all.unshift(rec);setEvents(all);toastMsg(i>=0?'일정을 수정했습니다.':'일정을 등록했습니다.');resetForm();showScheduleBoard()}
+  function loadSchedule(id){const e=getEvents().find(x=>x.id===id);if(!e)return;showScheduleEditor(false);$('scheduleRecordId').value=e.id;$('scheduleType').value=e.type||'annual';$('schedulePerson').value=e.person||'';$('scheduleStartDate').value=e.startDate||todayKey();$('scheduleEndDate').value=e.endDate||e.startDate||todayKey();$('scheduleFormTitle').textContent='연차 일정 수정';$('deleteScheduleBtn').hidden=false}
+  function deleteScheduleById(id){const e=getEvents().find(x=>x.id===id);if(!e)return;if(!confirm(`${e.person} · ${types[e.type]||'일정'}을 삭제하시겠습니까?`))return;setEvents(getEvents().filter(x=>x.id!==id));resetForm();showScheduleBoard();toastMsg('일정을 삭제했습니다.')}
   function deleteCurrentSchedule(){const id=$('scheduleRecordId').value;if(id)deleteScheduleById(id)}
-  function renderAttendanceCalendar(){if(!$('attendanceMonthGrid'))return;const y=attendanceCursor.getFullYear(),m=attendanceCursor.getMonth(),first=new Date(y,m,1),start=new Date(y,m,1-first.getDay()),events=getEvents().filter(e=>absenceTypes.has(e.type));$('attendanceMonthLabel').textContent=`${y}년 ${m+1}월`;let html='';for(let i=0;i<42;i++){const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),key=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,list=events.filter(e=>eventCovers(e,key));html+=`<div class="attendance-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><span class="attendance-day-number">${d.getDate()}</span>${list.map(e=>`<button type="button" class="attendance-event ${e.type}" data-attendance-id="${e.id}" title="클릭하여 수정 또는 삭제">${escHtml(e.person)} · ${types[e.type]}</button>`).join('')}</div>`} $('attendanceMonthGrid').innerHTML=html;$('attendanceMonthGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId))}
+  function renderAttendanceCalendar(){if(!$('attendanceMonthGrid'))return;const y=attendanceCursor.getFullYear(),m=attendanceCursor.getMonth(),first=new Date(y,m,1),start=new Date(y,m,1-first.getDay()),events=getEvents().filter(e=>absenceTypes.has(e.type));$('attendanceMonthLabel').textContent=`${y}년 ${m+1}월`;let html='';for(let i=0;i<42;i++){const d=new Date(start.getFullYear(),start.getMonth(),start.getDate()+i),key=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`,list=events.filter(e=>eventCovers(e,key));html+=`<div class="attendance-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><span class="attendance-day-number">${d.getDate()}</span>${list.map(e=>`<button type="button" class="attendance-event ${e.type}" data-attendance-id="${e.id}" title="클릭하여 수정 또는 삭제">${escHtml(e.person)} · ${types[e.type]}</button>`).join('')}</div>`}$('attendanceMonthGrid').innerHTML=html;$('attendanceMonthGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId))}
   function renderDashboardSchedule(){
-    const cal=$('twoWeekCalendar');if(!cal)return;const now=new Date(),dows=['일','월','화','수','목','금','토'],events=getEvents().filter(e=>absenceTypes.has(e.type));let html='',rangeKeys=[];
-    for(let i=0;i<14;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i),key=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;rangeKeys.push(key);const list=events.filter(e=>eventCovers(e,key));html+=`<div class="cal-day ${d.getDay()===0||d.getDay()===6?'weekend':''} ${i===0?'today':''}"><span class="dow">${dows[d.getDay()]}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span><div class="cal-events">${list.slice(0,3).map(e=>`<span class="cal-event ${e.type}" title="${escHtml(e.person)} · ${types[e.type]}">${escHtml(e.person)} · ${types[e.type]}</span>`).join('')}${list.length>3?`<span class="cal-event more">+${list.length-3}건</span>`:''}</div></div>`}cal.innerHTML=html;
-    const start=rangeKeys[0],end=rangeKeys[rangeKeys.length-1],twoWeek=events.filter(e=>(e.endDate||e.startDate)>=start&&e.startDate<=end);if($('summaryAnnualCount'))$('summaryAnnualCount').textContent=`${twoWeek.filter(e=>e.type==='annual').length}건`;if($('summaryHalfCount'))$('summaryHalfCount').textContent=`${twoWeek.filter(e=>e.type==='half_am'||e.type==='half_pm').length}건`;if($('summaryFieldCount'))$('summaryFieldCount').textContent=`${twoWeek.filter(e=>e.type==='field').length}건`;
+    const now=new Date(),start=`${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}`,endDate=new Date(now.getFullYear(),now.getMonth(),now.getDate()+13),end=`${endDate.getFullYear()}-${pad(endDate.getMonth()+1)}-${pad(endDate.getDate())}`,events=getEvents().filter(e=>absenceTypes.has(e.type)),twoWeek=events.filter(e=>(e.endDate||e.startDate)>=start&&e.startDate<=end).sort((a,b)=>a.startDate.localeCompare(b.startDate)||(a.person||'').localeCompare(b.person||''));
+    if($('dashboardAttendanceSummary'))$('dashboardAttendanceSummary').textContent=`2주 ${twoWeek.length}건`;
+    if($('dashboardAttendanceList'))$('dashboardAttendanceList').innerHTML=twoWeek.length?twoWeek.map(e=>`<div class="dashboard-attendance-row"><span class="date">${fmtMD(e.startDate)}${e.endDate&&e.endDate!==e.startDate?`~${fmtMD(e.endDate)}`:''}</span><span class="person">${escHtml(e.person)}</span><span class="kind ${e.type}">${types[e.type]}</span></div>`).join(''):'<div class="dashboard-schedule-empty">등록된 연차·반차·외근 일정이 없습니다.</div>';
     const today=todayKey(),todayAbs=events.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();todayAbs.forEach(e=>{const factor=fullAbsence.has(e.type)?1:.5;perPerson.set(e.person,Math.max(perPerson.get(e.person)||0,factor))});const excluded=[...perPerson.values()].reduce((a,b)=>a+b,0),available=Math.max(0,TEAM_SIZE-excluded);if($('todayOperatingCount'))$('todayOperatingCount').textContent=Number.isInteger(available)?available:available.toFixed(1);if($('todayAbsenceCount'))$('todayAbsenceCount').textContent=excluded?`${excluded}명`:'0명';if($('todayAbsenceList'))$('todayAbsenceList').innerHTML=todayAbs.length?todayAbs.map(e=>`<div class="absence-item"><b>${escHtml(e.person)}</b><span>${types[e.type]}</span></div>`).join(''):'<div class="absence-empty">금일 제외 인원이 없습니다.</div>';if(window.lucide)lucide.createIcons()
   }
-  window.openScheduleManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('scheduleManagerView').classList.add('active');pageTitle.textContent=label||'통합 일정';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;showCalendarHome();selectCalendarTab('all');renderDashboardSchedule();if(window.lucide)lucide.createIcons()};
+  window.openScheduleManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('scheduleManagerView').classList.add('active');pageTitle.textContent=label||'통합 일정';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;showScheduleBoard();renderAttendanceCalendar();renderDashboardSchedule();if(window.lucide)lucide.createIcons()};
   migrateLegacy();
-  $('saveScheduleBtn')&&($('saveScheduleBtn').onclick=saveSchedule);$('cancelScheduleEditBtn')&&($('cancelScheduleEditBtn').onclick=resetForm);$('newScheduleBtn')&&($('newScheduleBtn').onclick=()=>showScheduleEditor(true));$('backToCalendarBtn')&&($('backToCalendarBtn').onclick=()=>{showCalendarHome();selectCalendarTab('attendance')});$('deleteScheduleBtn')&&($('deleteScheduleBtn').onclick=deleteCurrentSchedule);
-  $('allCalendarTab')&&($('allCalendarTab').onclick=()=>selectCalendarTab('all'));$('importCalendarTab')&&($('importCalendarTab').onclick=()=>selectCalendarTab('import'));$('holidayCalendarTab')&&($('holidayCalendarTab').onclick=()=>selectCalendarTab('holiday'));$('attendanceCalendarTab')&&($('attendanceCalendarTab').onclick=()=>selectCalendarTab('attendance'));
-  $('attendancePrevMonth')&&($('attendancePrevMonth').onclick=()=>{attendanceCursor=new Date(attendanceCursor.getFullYear(),attendanceCursor.getMonth()-1,1);renderAttendanceCalendar()});$('attendanceNextMonth')&&($('attendanceNextMonth').onclick=()=>{attendanceCursor=new Date(attendanceCursor.getFullYear(),attendanceCursor.getMonth()+1,1);renderAttendanceCalendar()});
-  resetForm();selectCalendarTab('all');renderAttendanceCalendar();renderDashboardSchedule();
+  $('saveScheduleBtn')&&($('saveScheduleBtn').onclick=saveSchedule);
+  $('cancelScheduleEditBtn')&&($('cancelScheduleEditBtn').onclick=resetForm);
+  $('newScheduleBtn')&&($('newScheduleBtn').onclick=()=>showScheduleEditor(true));
+  $('backToCalendarBtn')&&($('backToCalendarBtn').onclick=showScheduleBoard);
+  $('deleteScheduleBtn')&&($('deleteScheduleBtn').onclick=deleteCurrentSchedule);
+  $('attendancePrevMonth')&&($('attendancePrevMonth').onclick=()=>{attendanceCursor=new Date(attendanceCursor.getFullYear(),attendanceCursor.getMonth()-1,1);renderAttendanceCalendar()});
+  $('attendanceNextMonth')&&($('attendanceNextMonth').onclick=()=>{attendanceCursor=new Date(attendanceCursor.getFullYear(),attendanceCursor.getMonth()+1,1);renderAttendanceCalendar()});
+  resetForm();showScheduleBoard();renderAttendanceCalendar();renderDashboardSchedule();
 })();
 </script>
 </body>
