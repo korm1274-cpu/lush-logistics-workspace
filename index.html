@@ -933,6 +933,7 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
   white-space:nowrap;
 }
 .request-row .status-cell{text-align:center}
+.request-link-cell{width:100%;min-width:0;border:0;background:transparent;padding:0;text-align:left;font-family:inherit;color:inherit;cursor:pointer;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.request-link-cell:hover{text-decoration:underline}.request-row .complete-btn{border:1px solid #d5e8de;border-radius:7px;background:#eaf4ef;color:#40735a;padding:5px 7px;font-family:inherit;font-size:8px;font-weight:800;cursor:pointer}.request-row .complete-btn:hover{background:#dfeee6}
 .request-status{
   display:inline-flex;
   align-items:center;
@@ -977,31 +978,32 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 }
 
 
-/* V34 — outbound request manager */
+/* V36 — outbound request manager */
 .request-manager-shell{display:flex;flex-direction:column;gap:14px}
 .request-manager-top{display:flex;align-items:flex-start;justify-content:space-between;gap:20px;padding:20px 22px;border:1px solid #e2e7e9;border-radius:14px;background:#fff}
 .request-manager-top h2{margin:3px 0 6px;font-size:21px;color:#26343a}.request-manager-top p{margin:0;max-width:760px;color:#748087;font-size:10px;line-height:1.65}
-.request-manager-grid{display:grid;grid-template-columns:minmax(340px,.78fr) minmax(520px,1.22fr);gap:14px}
-.request-form-card,.request-register-list{border:1px solid #e2e7e9;border-radius:14px;background:#fff;overflow:hidden}
-.request-form-head,.request-register-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid #edf0f1}
-.request-form-head h3,.request-register-head h3{margin:0;font-size:13px}.request-register-head p{margin:4px 0 0;font-size:9px;color:#8a959a}
+.request-manager-grid{display:grid;grid-template-columns:minmax(330px,.72fr) minmax(560px,1.28fr);gap:14px}
+.request-form-card,.request-register-list,.request-period-card{border:1px solid #e2e7e9;border-radius:14px;background:#fff;overflow:hidden}
+.request-form-head,.request-register-head,.request-period-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 17px;border-bottom:1px solid #edf0f1}
+.request-form-head h3,.request-register-head h3,.request-period-head h3{margin:0;font-size:13px}.request-register-head p,.request-period-head p{margin:4px 0 0;font-size:9px;color:#8a959a}
 #requestEditBadge,#requestManagerCount{padding:5px 8px;border-radius:999px;background:#eef2f2;color:#617078;font-size:8px;font-weight:800}
 .request-form-fields{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:16px 17px}.request-form-fields .full{grid-column:1/-1}
 .request-form-fields label{display:block;margin-bottom:6px;font-size:9px;font-weight:800;color:#5e6c73}
-.request-form-fields input,.request-form-fields select,.request-form-fields textarea,.request-filter-row input,.request-filter-row select{width:100%;box-sizing:border-box;border:1px solid #dfe5e7;border-radius:9px;background:#fbfcfc;padding:9px 10px;font-family:inherit;font-size:10px;color:#2d393e;outline:none}
-.request-form-fields input:focus,.request-form-fields select:focus,.request-form-fields textarea:focus,.request-filter-row input:focus,.request-filter-row select:focus{border-color:#87979d;background:#fff}
+.request-form-fields input,.request-form-fields select,.request-form-fields textarea,.request-filter-row input,.request-filter-row select,.request-period-controls input{width:100%;box-sizing:border-box;border:1px solid #dfe5e7;border-radius:9px;background:#fbfcfc;padding:9px 10px;font-family:inherit;font-size:10px;color:#2d393e;outline:none}
+.request-form-fields input:focus,.request-form-fields select:focus,.request-form-fields textarea:focus,.request-filter-row input:focus,.request-filter-row select:focus,.request-period-controls input:focus{border-color:#87979d;background:#fff}
 .request-date-entry{display:grid;grid-template-columns:1fr auto;gap:7px}.request-date-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;min-height:22px}
 .request-date-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 7px;border-radius:7px;background:#eef3f3;color:#53636a;font-size:9px;font-weight:800}.request-date-chip button{border:0;background:transparent;color:#87949a;cursor:pointer;padding:0;font-size:11px}
 .request-field-note{display:block;margin-top:5px;color:#929ca1;font-size:8px}.request-form-actions{display:flex;justify-content:flex-end;gap:7px;padding:13px 17px;border-top:1px solid #edf0f1;background:#fafbfb}
 .request-filter-row{display:grid;grid-template-columns:130px 130px 1fr;gap:7px;padding:11px 13px;border-bottom:1px solid #edf0f1}
-.request-manager-list-head,.request-manager-row{display:grid;grid-template-columns:.95fr 1.05fr 1.05fr .8fr .7fr;gap:8px;align-items:center}
+.request-manager-list-head,.request-manager-row{display:grid;grid-template-columns:1.25fr 1.15fr .85fr .85fr 1.35fr;gap:8px;align-items:center}
 .request-manager-list-head{padding:8px 13px;background:#f2f5f5;color:#75838a;font-size:8px;font-weight:800}
-.request-manager-row{width:100%;border:0;border-bottom:1px solid #f0f2f2;background:#fff;padding:10px 13px;text-align:left;font-family:inherit;font-size:9px;color:#354147;cursor:pointer}.request-manager-row:hover{background:#f8fafa}.request-manager-row.selected{background:#f1f5f5}
-.request-manager-row span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.request-manager-empty{padding:42px 18px;text-align:center;color:#9aa4a8;font-size:9px}
-.request-manager-row .request-status{justify-self:start}.request-manager-actions-inline{display:flex;gap:6px;margin-top:8px}.request-open-original{font-size:8px;color:#63747b}
-@media(max-width:1100px){.request-manager-grid{grid-template-columns:1fr}.request-filter-row{grid-template-columns:1fr 1fr}.request-filter-row input{grid-column:1/-1}}
-@media(max-width:700px){.request-manager-top{flex-direction:column}.request-form-fields{grid-template-columns:1fr}.request-form-fields .full{grid-column:auto}.request-manager-list-head,.request-manager-row{grid-template-columns:1fr 1fr .8fr}.request-manager-list-head span:nth-child(1),.request-manager-row span:nth-child(1),.request-manager-list-head span:nth-child(4),.request-manager-row span:nth-child(4){display:none}}
-
+.request-manager-row{border-bottom:1px solid #f0f2f2;background:#fff;padding:10px 13px;font-size:9px;color:#354147}.request-manager-row:hover{background:#f8fafa}.request-manager-row.selected{background:#f1f5f5}
+.request-manager-row>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.request-manager-empty{padding:42px 18px;text-align:center;color:#9aa4a8;font-size:9px}
+.request-row-actions{display:flex;align-items:center;gap:5px;justify-content:flex-start;flex-wrap:wrap}.request-row-actions .btn{padding:5px 7px;font-size:8px}.request-row-actions .complete-btn{background:#eaf4ef;border-color:#d5e8de;color:#40735a}.request-row-actions .undo-btn{background:#f4f1e9;border-color:#e6decc;color:#7c6a42}
+.request-status{display:inline-flex;align-items:center;justify-content:center;min-width:44px}.request-completed-time{display:block;margin-top:3px;font-size:7px;color:#8a969b}
+.request-period-card{margin-top:0}.request-period-body{padding:14px 17px 17px}.request-period-controls{display:grid;grid-template-columns:150px 150px auto 1fr;gap:8px;align-items:end}.request-period-control label{display:block;margin-bottom:5px;font-size:8px;font-weight:800;color:#68767c}.request-period-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}.request-period-stat{border:1px solid #e6eaeb;border-radius:10px;background:#fafbfb;padding:12px 13px}.request-period-stat span{display:block;font-size:8px;color:#7e8a8f;margin-bottom:5px}.request-period-stat b{font-size:20px;color:#27363c}.request-period-stat small{font-size:8px;color:#8a969b;margin-left:3px}.request-period-foot{margin-top:9px;font-size:8px;color:#919ca1}
+@media(max-width:1100px){.request-manager-grid{grid-template-columns:1fr}.request-filter-row{grid-template-columns:1fr 1fr}.request-filter-row input{grid-column:1/-1}.request-period-controls{grid-template-columns:1fr 1fr auto}.request-period-summary{grid-template-columns:1fr 1fr}}
+@media(max-width:700px){.request-manager-top{flex-direction:column}.request-form-fields{grid-template-columns:1fr}.request-form-fields .full{grid-column:auto}.request-manager-list-head,.request-manager-row{grid-template-columns:1.1fr 1fr 1fr}.request-manager-list-head span:nth-child(1),.request-manager-row>span:nth-child(1),.request-manager-list-head span:nth-child(3),.request-manager-row>span:nth-child(3){display:none}.request-period-controls{grid-template-columns:1fr}.request-period-summary{grid-template-columns:1fr 1fr}}
 
 /* V35 — make the new outbound request menu obvious */
 .nav-item[data-menu-id="out-request"]{
@@ -1065,7 +1067,7 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
               <span class="request-badge" data-request-count="bulk">0건</span>
             </div>
             <div class="request-mini-table">
-              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-header"><span>매장명</span><span>요청일자</span><span>처리</span></div>
               <div class="request-mini-body" data-request-list="bulk">
                 <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
               </div>
@@ -1081,7 +1083,7 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
               <span class="request-badge" data-request-count="traffic">0건</span>
             </div>
             <div class="request-mini-table">
-              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-header"><span>매장명</span><span>요청일자</span><span>처리</span></div>
               <div class="request-mini-body" data-request-list="traffic">
                 <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
               </div>
@@ -1097,7 +1099,7 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
               <span class="request-badge" data-request-count="hq">0건</span>
             </div>
             <div class="request-mini-table">
-              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-header"><span>매장명</span><span>요청일자</span><span>처리</span></div>
               <div class="request-mini-body" data-request-list="hq">
                 <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
               </div>
@@ -1162,9 +1164,28 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
           <div>
             <div class="eyebrow">출고 요청</div>
             <h2>출고 요청 관리</h2>
-            <p>Amaranth 원본 문서를 등록하고 물류팀 처리 상태를 관리합니다. 등록된 요청 중 요청일자가 오늘인 건은 메인 대시보드에 자동 표시됩니다.</p>
+            <p>Amaranth 원본 문서를 등록하고 요청일자별 출고 요청과 처리 여부를 관리합니다. 신규 요청은 자동으로 미처리 상태로 등록되며, 작업자가 목록에서 바로 처리완료할 수 있습니다.</p>
           </div>
           <button class="btn primary" id="newOutboundRequestBtn">＋ 신규 요청 등록</button>
+        </div>
+
+        <div class="request-period-card">
+          <div class="request-period-head"><div><h3>기간별 출고 요청 현황</h3><p>조회 기간에 포함된 요청을 구분별 건수로 확인합니다.</p></div></div>
+          <div class="request-period-body">
+            <div class="request-period-controls">
+              <div class="request-period-control"><label>시작일</label><input type="date" id="requestPeriodStart"></div>
+              <div class="request-period-control"><label>종료일</label><input type="date" id="requestPeriodEnd"></div>
+              <button type="button" class="btn" id="requestPeriodApplyBtn">조회</button>
+              <div></div>
+            </div>
+            <div class="request-period-summary">
+              <div class="request-period-stat"><span>전체 출고 요청</span><b id="requestPeriodTotal">0</b><small>건</small></div>
+              <div class="request-period-stat"><span>대량 주문</span><b id="requestPeriodBulk">0</b><small>건</small></div>
+              <div class="request-period-stat"><span>트래픽</span><b id="requestPeriodTraffic">0</b><small>건</small></div>
+              <div class="request-period-stat"><span>본사 출고</span><b id="requestPeriodHq">0</b><small>건</small></div>
+            </div>
+            <div class="request-period-foot" id="requestPeriodCaption">현재 월 기준</div>
+          </div>
         </div>
 
         <div class="request-manager-grid">
@@ -1173,30 +1194,27 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
             <input type="hidden" id="requestRecordId">
             <div class="request-form-fields">
               <div class="field full"><label>Amaranth 문서 URL</label><input id="requestUrl" placeholder="Amaranth 전자결재 문서 URL을 붙여넣어 주세요."></div>
-              <div class="field"><label>문서번호</label><input id="requestDocumentNo" placeholder="URL 입력 시 자동 추출"></div>
+              <div class="field"><label>매장명</label><input id="requestStoreName" placeholder="예: 압구정1호"></div>
               <div class="field"><label>구분</label><select id="requestType"><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option></select></div>
-              <div class="field full"><label>문서 제목</label><input id="requestTitle" placeholder="예: 2026.08.신세계광주점.카인드.대량판매 출고 요청서"></div>
-              <div class="field"><label>매장명</label><input id="requestStoreName" placeholder="예: 신세계광주점"></div>
-              <div class="field"><label>상태</label><select id="requestStatus"><option value="미처리">미처리</option><option value="진행중">진행중</option><option value="완료">완료</option></select></div>
               <div class="field full">
                 <label>요청일자</label>
                 <div class="request-date-entry"><input type="date" id="requestDateInput"><button type="button" class="btn" id="addRequestDateBtn">＋ 요청일자 추가</button></div>
                 <div class="request-date-chips" id="requestDateChips"></div>
                 <small class="request-field-note">한 문서에 여러 요청일자가 있는 경우 날짜를 추가할 수 있습니다.</small>
               </div>
-              <div class="field full"><label>비고</label><textarea id="requestNote" rows="3" placeholder="물류팀 내부 참고사항이 있을 경우 입력"></textarea></div>
+              <div class="field full"><label>특이사항</label><textarea id="requestNote" rows="3" placeholder="재고 부족, 일부 수량 출고, 일정 변경, 퀵/냉장 배송, 요청 취소 등 예외사항이 있을 경우 입력"></textarea></div>
             </div>
             <div class="request-form-actions"><button class="btn" id="cancelRequestEditBtn">초기화</button><button class="btn primary" id="saveOutboundRequestBtn">저장</button></div>
           </div>
 
           <div class="request-register-list">
-            <div class="request-register-head"><div><h3>등록된 출고 요청</h3><p>문서를 선택하면 상태 수정 및 Amaranth 원본 문서 확인이 가능합니다.</p></div><span id="requestManagerCount">0건</span></div>
+            <div class="request-register-head"><div><h3>등록된 출고 요청</h3><p>원본 문서를 열거나 작업자가 목록에서 바로 처리완료할 수 있습니다.</p></div><span id="requestManagerCount">0건</span></div>
             <div class="request-filter-row">
               <select id="requestManagerTypeFilter"><option value="">전체 구분</option><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option></select>
-              <select id="requestManagerStatusFilter"><option value="">전체 상태</option><option value="미처리">미처리</option><option value="진행중">진행중</option><option value="완료">완료</option></select>
-              <input id="requestManagerSearch" placeholder="문서번호 / 매장명 검색">
+              <select id="requestManagerStatusFilter"><option value="">전체 상태</option><option value="미처리">미처리</option><option value="완료">완료</option></select>
+              <input id="requestManagerSearch" placeholder="매장명 / 특이사항 검색">
             </div>
-            <div class="request-manager-list-head"><span>요청일자</span><span>문서번호</span><span>매장명</span><span>구분</span><span>상태</span></div>
+            <div class="request-manager-list-head"><span>요청일자</span><span>매장명</span><span>구분</span><span>상태</span><span>처리 / 원본</span></div>
             <div id="requestManagerList" class="request-manager-list"></div>
           </div>
         </div>
@@ -1735,144 +1753,89 @@ setTimeout(initInventoryColumnResize,0);
 (function initTodayOutboundRequestCards(){
   const STORAGE_KEY="lush_outbound_requests_v1";
   const pad=n=>String(n).padStart(2,"0");
-  const todayKey=()=>{
-    const d=new Date();
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
-  };
+  const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
   const safeText=v=>String(v??"");
   const escText=v=>safeText(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
-
-  function getRequests(){
-    try{
-      const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
-      return Array.isArray(data)?data:[];
-    }catch{return []}
+  function getRequests(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(data)?data:[]}catch{return []}}
+  function setRequests(data){localStorage.setItem(STORAGE_KEY,JSON.stringify(data));renderAll()}
+  function statusClass(status){return safeText(status).trim()==="완료"?"done":"pending"}
+  function completeRequest(id){
+    const all=getRequests(), idx=all.findIndex(r=>r.id===id);if(idx<0)return;
+    all[idx].status="완료";all[idx].completedAt=new Date().toISOString();all[idx].updatedAt=new Date().toISOString();setRequests(all);
+    if(typeof window.refreshOutboundRequestManager==="function")window.refreshOutboundRequestManager();
+    if(typeof toastMsg==="function")toastMsg("처리완료로 변경했습니다.");
   }
-
-  function statusClass(status){
-    const s=safeText(status).trim();
-    if(s==="완료")return "done";
-    if(s==="진행중"||s==="진행 중")return "progress";
-    return "pending";
-  }
-
-  function openRequestDetail(request){
-    // Future left-menu management screen hook.
-    // If a request management navigation function is added later, this call can be replaced there.
-    window.dispatchEvent(new CustomEvent("lush:open-request-detail",{detail:request}));
-    if(typeof window.openOutboundRequestDetail==="function"){
-      window.openOutboundRequestDetail(request);
-      return;
-    }
-    if(typeof toastMsg==="function"){
-      toastMsg(`${request.documentNo||"요청"} 상세 화면은 출고 요청 관리 메뉴와 연결 예정입니다.`);
-    }
-  }
-
+  function openOriginal(r){if(r?.url)window.open(r.url,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
   function renderType(type){
     const today=todayKey();
-    const all=getRequests()
-      .filter(r=>r && r.type===type && ((Array.isArray(r.requestDates)&&r.requestDates.includes(today))||r.requestDate===today))
-      .sort((a,b)=>{
-        const rank=s=>s==="미처리"?0:(s==="진행중"||s==="진행 중"?1:2);
-        return rank(a.status)-rank(b.status);
-      });
-
-    const list=document.querySelector(`[data-request-list="${type}"]`);
-    const count=document.querySelector(`[data-request-count="${type}"]`);
-    if(count)count.textContent=`${all.length}건`;
-    if(!list)return;
-
-    if(!all.length){
-      list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>';
-      return;
-    }
-
-    list.innerHTML=all.slice(0,4).map((r,i)=>`
-      <button type="button" class="request-row" data-request-type="${escText(type)}" data-request-index="${i}" title="클릭하여 상세내역 보기">
-        <span class="doc-no">${escText(r.documentNo||"-")}</span>
-        <span class="store-name">${escText(r.storeName||"-")}</span>
-        <span class="status-cell"><span class="request-status ${statusClass(r.status)}">${escText(r.status||"미처리")}</span></span>
-      </button>`).join("");
-
-    list.querySelectorAll(".request-row").forEach((row,i)=>{
-      row.addEventListener("click",()=>openRequestDetail(all[i]));
-    });
+    const all=getRequests().filter(r=>r&&r.type===type&&((Array.isArray(r.requestDates)&&r.requestDates.includes(today))||r.requestDate===today)).sort((a,b)=>(a.status==="완료"?1:0)-(b.status==="완료"?1:0));
+    const list=document.querySelector(`[data-request-list="${type}"]`),count=document.querySelector(`[data-request-count="${type}"]`);if(count)count.textContent=`${all.length}건`;if(!list)return;
+    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>';return}
+    list.innerHTML=all.slice(0,4).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명 또는 요청일자를 클릭하면 Amaranth 원본 문서가 열립니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(today.slice(5).replace("-","/"))}</button><span class="status-cell">${r.status==="완료"?`<span class="request-status done">완료</span>`:`<button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">처리완료</button>`}</span></div>`).join("");
+    list.querySelectorAll("[data-open-original]").forEach(b=>b.onclick=e=>{e.stopPropagation();openOriginal(all.find(r=>r.id===b.dataset.openOriginal))});
+    list.querySelectorAll("[data-complete-request]").forEach(b=>b.onclick=e=>{e.stopPropagation();completeRequest(b.dataset.completeRequest)});
   }
-
-  function renderAll(){
-    ["bulk","traffic","hq"].forEach(renderType);
-  }
-
-  window.renderTodayOutboundRequests=renderAll;
-  window.getTodayOutboundRequestDate=todayKey;
-  renderAll();
+  function renderAll(){["bulk","traffic","hq"].forEach(renderType)}
+  window.renderTodayOutboundRequests=renderAll;window.getTodayOutboundRequestDate=todayKey;renderAll();
 })();
 </script>
 
 
 <script>
 (function initOutboundRequestManager(){
- const KEY="lush_outbound_requests_v1";
- let editDates=[];
+ const KEY="lush_outbound_requests_v1";let editDates=[];
  const $=id=>document.getElementById(id);
  const get=()=>{try{const x=JSON.parse(localStorage.getItem(KEY)||"[]");return Array.isArray(x)?x:[]}catch{return[]}};
- const set=x=>{localStorage.setItem(KEY,JSON.stringify(x));if(typeof window.renderTodayOutboundRequests==="function")window.renderTodayOutboundRequests()};
+ const set=x=>{localStorage.setItem(KEY,JSON.stringify(x));if(typeof window.renderTodayOutboundRequests==="function")window.renderTodayOutboundRequests();renderPeriodSummary()};
  const uid=()=>`REQ-${Date.now()}-${Math.random().toString(36).slice(2,7)}`;
  const typeLabel=t=>({bulk:"대량 주문",traffic:"트래픽",hq:"본사 출고"}[t]||t);
- const docIdFromUrl=url=>{try{return new URL(url).searchParams.get("docID")||""}catch{const m=String(url||"").match(/[?&]docID=([^&#]+)/i);return m?decodeURIComponent(m[1]):""}};
- const guessStore=title=>{
-   const parts=String(title||"").split(".").map(x=>x.trim()).filter(Boolean);
-   if(parts.length>=3 && /^\d{4}$/.test(parts[0]) && /^\d{1,2}$/.test(parts[1])) return parts[2];
-   return "";
- };
+ const statusClass=s=>s==="완료"?"done":"pending";
+ const fmtDateTime=iso=>{if(!iso)return"";const d=new Date(iso);if(Number.isNaN(d.getTime()))return"";const p=n=>String(n).padStart(2,"0");return `${p(d.getMonth()+1)}/${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
+ const requestDates=r=>Array.isArray(r.requestDates)&&r.requestDates.length?r.requestDates:(r.requestDate?[r.requestDate]:[]);
+ function currentMonthRange(){const d=new Date(),p=n=>String(n).padStart(2,"0"),last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();return [`${d.getFullYear()}-${p(d.getMonth()+1)}-01`,`${d.getFullYear()}-${p(d.getMonth()+1)}-${p(last)}`]}
+ function ensurePeriodDefaults(){if(!$('requestPeriodStart')||!$('requestPeriodEnd'))return;const [a,b]=currentMonthRange();if(!$('requestPeriodStart').value)$('requestPeriodStart').value=a;if(!$('requestPeriodEnd').value)$('requestPeriodEnd').value=b}
+ function renderPeriodSummary(){
+   if(!$('requestPeriodTotal'))return;ensurePeriodDefaults();let a=$('requestPeriodStart').value,b=$('requestPeriodEnd').value;if(a&&b&&a>b){[a,b]=[b,a];$('requestPeriodStart').value=a;$('requestPeriodEnd').value=b}
+   const rows=get().filter(r=>requestDates(r).some(d=>(!a||d>=a)&&(!b||d<=b)));
+   $('requestPeriodTotal').textContent=rows.length;$('requestPeriodBulk').textContent=rows.filter(r=>r.type==='bulk').length;$('requestPeriodTraffic').textContent=rows.filter(r=>r.type==='traffic').length;$('requestPeriodHq').textContent=rows.filter(r=>r.type==='hq').length;
+   $('requestPeriodCaption').textContent=`${a||'-'} ~ ${b||'-'} · 동일 문서에 요청일자가 여러 개 있어도 요청 1건으로 집계`;
+ }
  function renderDates(){
-   $("requestDateChips").innerHTML=editDates.length?editDates.map(d=>`<span class="request-date-chip">${d}<button type="button" data-remove-date="${d}">×</button></span>`).join(""):'<span class="request-field-note">등록된 요청일자가 없습니다.</span>';
-   $("requestDateChips").querySelectorAll("[data-remove-date]").forEach(b=>b.onclick=()=>{editDates=editDates.filter(d=>d!==b.dataset.removeDate);renderDates()});
+   $('requestDateChips').innerHTML=editDates.length?editDates.map(d=>`<span class="request-date-chip">${d}<button type="button" data-remove-date="${d}">×</button></span>`).join(''):'<span class="request-field-note">등록된 요청일자가 없습니다.</span>';
+   $('requestDateChips').querySelectorAll('[data-remove-date]').forEach(b=>b.onclick=()=>{editDates=editDates.filter(d=>d!==b.dataset.removeDate);renderDates()});
  }
  function reset(){
-   $("requestRecordId").value="";$("requestUrl").value="";$("requestDocumentNo").value="";$("requestType").value="bulk";$("requestTitle").value="";$("requestStoreName").value="";$("requestStatus").value="미처리";$("requestDateInput").value="";$("requestNote").value="";editDates=[];
-   $("requestFormTitle").textContent="신규 요청 등록";$("requestEditBadge").textContent="신규";renderDates();renderList();
+   $('requestRecordId').value='';$('requestUrl').value='';$('requestType').value='bulk';$('requestStoreName').value='';$('requestDateInput').value='';$('requestNote').value='';editDates=[];
+   $('requestFormTitle').textContent='신규 요청 등록';$('requestEditBadge').textContent='신규';renderDates();renderList();
  }
  function loadRecord(r){
-   $("requestRecordId").value=r.id;$("requestUrl").value=r.url||"";$("requestDocumentNo").value=r.documentNo||"";$("requestType").value=r.type||"bulk";$("requestTitle").value=r.title||"";$("requestStoreName").value=r.storeName||"";$("requestStatus").value=r.status||"미처리";$("requestNote").value=r.note||"";editDates=Array.isArray(r.requestDates)?[...r.requestDates]:(r.requestDate?[r.requestDate]:[]);
-   $("requestFormTitle").textContent="요청 수정";$("requestEditBadge").textContent="수정 중";renderDates();window.scrollTo({top:0,behavior:"smooth"});
+   $('requestRecordId').value=r.id;$('requestUrl').value=r.url||'';$('requestType').value=r.type||'bulk';$('requestStoreName').value=r.storeName||'';$('requestNote').value=r.note||'';editDates=[...requestDates(r)];
+   $('requestFormTitle').textContent='요청 수정';$('requestEditBadge').textContent='수정 중';renderDates();window.scrollTo({top:0,behavior:'smooth'});
  }
  function save(){
-   const url=$("requestUrl").value.trim(), documentNo=$("requestDocumentNo").value.trim(), title=$("requestTitle").value.trim(), storeName=$("requestStoreName").value.trim();
-   if(!url){toastMsg("Amaranth 문서 URL을 입력해주세요.");return}
-   if(!documentNo){toastMsg("문서번호를 확인해주세요.");return}
-   if(!storeName){toastMsg("매장명을 입력해주세요.");return}
-   if(!editDates.length){toastMsg("요청일자를 1개 이상 등록해주세요.");return}
-   const all=get(), id=$("requestRecordId").value||uid(), old=all.find(x=>x.id===id);
-   const rec={id,url,documentNo,title,storeName,type:$("requestType").value,status:$("requestStatus").value,requestDates:[...editDates].sort(),requestDate:[...editDates].sort()[0],note:$("requestNote").value.trim(),createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
-   const idx=all.findIndex(x=>x.id===id); if(idx>=0)all[idx]=rec;else all.unshift(rec);set(all);toastMsg(idx>=0?"요청을 수정했습니다.":"출고 요청을 등록했습니다.");reset();
+   const url=$('requestUrl').value.trim(),storeName=$('requestStoreName').value.trim();if(!url){toastMsg('Amaranth 문서 URL을 입력해주세요.');return}if(!storeName){toastMsg('매장명을 입력해주세요.');return}if(!editDates.length){toastMsg('요청일자를 1개 이상 등록해주세요.');return}
+   const all=get(),id=$('requestRecordId').value||uid(),old=all.find(x=>x.id===id);const dates=[...editDates].sort();
+   const rec={...old,id,url,storeName,type:$('requestType').value,status:old?.status==='완료'?'완료':'미처리',requestDates:dates,requestDate:dates[0],note:$('requestNote').value.trim(),completedAt:old?.completedAt||null,createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()};
+   delete rec.documentNo;delete rec.title;
+   const idx=all.findIndex(x=>x.id===id);if(idx>=0)all[idx]=rec;else all.unshift(rec);set(all);toastMsg(idx>=0?'요청을 수정했습니다.':'출고 요청을 등록했습니다.');reset();
  }
+ function updateStatus(id,done){
+   const all=get(),idx=all.findIndex(r=>r.id===id);if(idx<0)return;all[idx].status=done?'완료':'미처리';all[idx].completedAt=done?new Date().toISOString():null;all[idx].updatedAt=new Date().toISOString();set(all);renderList();toastMsg(done?'처리완료로 변경했습니다.':'미처리 상태로 되돌렸습니다.');
+ }
+ function openOriginal(id){const r=get().find(x=>x.id===id);if(r?.url)window.open(r.url,'_blank','noopener');else toastMsg('등록된 원본 URL이 없습니다.')}
  function renderList(){
-   if(!$("requestManagerList"))return;
-   const type=$("requestManagerTypeFilter").value,status=$("requestManagerStatusFilter").value,q=$("requestManagerSearch").value.trim().toLowerCase();
-   let rows=get().filter(r=>(!type||r.type===type)&&(!status||r.status===status)&&(!q||`${r.documentNo} ${r.storeName} ${r.title}`.toLowerCase().includes(q)));
-   rows.sort((a,b)=>String((b.requestDates||[b.requestDate||""])[0]).localeCompare(String((a.requestDates||[a.requestDate||""])[0])));
-   $("requestManagerCount").textContent=`${rows.length}건`;
-   $("requestManagerList").innerHTML=rows.length?rows.map(r=>`<button type="button" class="request-manager-row" data-request-id="${r.id}"><span>${(r.requestDates||[r.requestDate||"-"]).join(", ")}</span><span>${esc(r.documentNo||"-")}</span><span>${esc(r.storeName||"-")}</span><span>${typeLabel(r.type)}</span><span><span class="request-status ${r.status==="완료"?"done":r.status==="진행중"?"progress":"pending"}">${esc(r.status||"미처리")}</span></span></button>`).join(""):'<div class="request-manager-empty">등록된 출고 요청이 없습니다.</div>';
-   $("requestManagerList").querySelectorAll("[data-request-id]").forEach(b=>b.onclick=()=>{const r=get().find(x=>x.id===b.dataset.requestId);if(r)loadRecord(r)});
+   if(!$('requestManagerList'))return;const type=$('requestManagerTypeFilter').value,status=$('requestManagerStatusFilter').value,q=$('requestManagerSearch').value.trim().toLowerCase();
+   let rows=get().filter(r=>(!type||r.type===type)&&(!status||(status==='미처리'?r.status!=='완료':r.status==='완료'))&&(!q||`${r.storeName||''} ${r.note||''}`.toLowerCase().includes(q)));
+   rows.sort((a,b)=>String(requestDates(b)[0]||'').localeCompare(String(requestDates(a)[0]||'')));$('requestManagerCount').textContent=`${rows.length}건`;
+   $('requestManagerList').innerHTML=rows.length?rows.map(r=>`<div class="request-manager-row" data-request-id="${r.id}"><span>${requestDates(r).join(', ')||'-'}</span><span>${esc(r.storeName||'-')}</span><span>${typeLabel(r.type)}</span><span><span class="request-status ${statusClass(r.status)}">${r.status==='완료'?'완료':'미처리'}</span>${r.status==='완료'&&r.completedAt?`<small class="request-completed-time">${fmtDateTime(r.completedAt)} 완료</small>`:''}</span><span class="request-row-actions">${r.status==='완료'?`<button type="button" class="btn undo-btn" data-undo="${r.id}">완료 취소</button>`:`<button type="button" class="btn complete-btn" data-complete="${r.id}">처리완료</button>`}<button type="button" class="btn" data-open="${r.id}">원본문서</button><button type="button" class="btn" data-edit="${r.id}">수정</button></span></div>`).join(''):'<div class="request-manager-empty">등록된 출고 요청이 없습니다.</div>';
+   $('requestManagerList').querySelectorAll('[data-complete]').forEach(b=>b.onclick=()=>updateStatus(b.dataset.complete,true));$('requestManagerList').querySelectorAll('[data-undo]').forEach(b=>b.onclick=()=>updateStatus(b.dataset.undo,false));$('requestManagerList').querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>openOriginal(b.dataset.open));$('requestManagerList').querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>{const r=get().find(x=>x.id===b.dataset.edit);if(r)loadRecord(r)});
  }
- window.openOutboundRequestManager=function(label,el){
-   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));$("outboundRequestManager").classList.add("active");pageTitle.textContent=label||"출고 요청 관리";document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;renderList();renderDates();
- };
- window.openOutboundRequestDetail=function(request){
-   const menu=menus.find(m=>m.id==="out-request"), btn=document.querySelector('[data-menu-id="out-request"]');
-   window.openOutboundRequestManager(menu?.label||"출고 요청 관리",btn);
-   const r=get().find(x=>x.id===request.id || (x.documentNo===request.documentNo && x.url===request.url));
-   if(r)loadRecord(r);
- };
- $("requestUrl").addEventListener("input",()=>{const id=docIdFromUrl($("requestUrl").value);if(id)$("requestDocumentNo").value=id});
- $("requestTitle").addEventListener("blur",()=>{if(!$("requestStoreName").value.trim()){const s=guessStore($("requestTitle").value);if(s)$("requestStoreName").value=s}});
- $("addRequestDateBtn").onclick=()=>{const d=$("requestDateInput").value;if(!d){toastMsg("추가할 요청일자를 선택해주세요.");return}if(!editDates.includes(d))editDates.push(d);editDates.sort();$("requestDateInput").value="";renderDates()};
- $("saveOutboundRequestBtn").onclick=save;$("cancelRequestEditBtn").onclick=reset;$("newOutboundRequestBtn").onclick=reset;
- ["requestManagerTypeFilter","requestManagerStatusFilter"].forEach(id=>$(id).onchange=renderList);$("requestManagerSearch").oninput=renderList;
- window.addEventListener("lush:open-request-detail",e=>{if(e.detail)window.openOutboundRequestDetail(e.detail)});
- renderDates();renderList();
+ window.openOutboundRequestManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('outboundRequestManager').classList.add('active');pageTitle.textContent=label||'출고 요청 관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;renderList();renderDates();renderPeriodSummary()};
+ window.openOutboundRequestDetail=function(request){const menu=menus.find(m=>m.id==='out-request'),btn=document.querySelector('[data-menu-id="out-request"]');window.openOutboundRequestManager(menu?.label||'출고 요청 관리',btn);const r=get().find(x=>x.id===request.id);if(r)loadRecord(r)};
+ window.refreshOutboundRequestManager=function(){renderList();renderPeriodSummary()};
+ $('addRequestDateBtn').onclick=()=>{const d=$('requestDateInput').value;if(!d){toastMsg('추가할 요청일자를 선택해주세요.');return}if(!editDates.includes(d))editDates.push(d);editDates.sort();$('requestDateInput').value='';renderDates()};
+ $('saveOutboundRequestBtn').onclick=save;$('cancelRequestEditBtn').onclick=reset;$('newOutboundRequestBtn').onclick=reset;['requestManagerTypeFilter','requestManagerStatusFilter'].forEach(id=>$(id).onchange=renderList);$('requestManagerSearch').oninput=renderList;$('requestPeriodApplyBtn').onclick=renderPeriodSummary;$('requestPeriodStart').onchange=renderPeriodSummary;$('requestPeriodEnd').onchange=renderPeriodSummary;
+ window.addEventListener('lush:open-request-detail',e=>{if(e.detail)window.openOutboundRequestDetail(e.detail)});ensurePeriodDefaults();renderDates();renderList();renderPeriodSummary();
 })();
 </script>
 
