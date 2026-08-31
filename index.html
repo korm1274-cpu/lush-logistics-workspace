@@ -1242,6 +1242,12 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
  .master-calendar-toolbar,.calendar-sync-bar{align-items:flex-start;flex-direction:column}.master-calendar-legend{gap:8px}.master-calendar-day{min-height:112px}.weekly-summary-chips{grid-template-columns:1fr 1fr 1fr}.dash-agenda-day{grid-template-columns:50px 1fr}
 }
 
+
+/* V46 access-control prototype */
+.auth-gate{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#f5f8fa,#eaf0f3);padding:24px}
+.auth-card{width:min(430px,100%);background:#fff;border:1px solid #dfe6ea;border-radius:18px;padding:28px;box-shadow:0 18px 60px rgba(30,45,55,.12)}
+.auth-brand{font-size:12px;font-weight:900;letter-spacing:.12em;color:#647b8a}.auth-card h2{margin:8px 0 7px;font-size:24px;letter-spacing:-.04em}.auth-card p{margin:0 0 20px;color:#7b8790;font-size:11px;line-height:1.6}.auth-field{margin-bottom:11px}.auth-field label{display:block;font-size:10px;font-weight:800;color:#596a75;margin-bottom:5px}.auth-field input{width:100%;height:42px;border:1px solid #dbe3e8;border-radius:10px;padding:0 12px;font-size:12px;outline:0}.auth-field input:focus{border-color:#7891a2;box-shadow:0 0 0 3px #edf3f6}.auth-login{width:100%;height:43px;border:0;border-radius:10px;background:#344b5a;color:#fff;font-weight:800;cursor:pointer}.auth-error{min-height:18px;margin-top:9px;color:#a24f4f;font-size:10px}.auth-note{margin-top:15px;padding:10px 11px;background:#f7f9fa;border:1px solid #e7ecef;border-radius:9px;color:#7a858c;font-size:9px;line-height:1.55}.auth-demo{margin-top:10px;font-size:9px;color:#98a1a7}.app-locked{display:none!important}
+.readonly-banner{display:none;background:#fff7ea;border:1px solid #f0dfc0;color:#8b642f;border-radius:9px;padding:8px 10px;font-size:10px;font-weight:700;margin-bottom:10px}.readonly-mode .readonly-banner{display:block}
 </style>
 
 <style id="v38-schedule-style">
@@ -1267,45 +1273,24 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 @media(max-width:600px){.schedule-calendar-panel{border-radius:12px}.schedule-calendar-toolbar{padding:10px}.schedule-calendar-tabs{width:100%}.schedule-calendar-tab{flex:1;min-height:44px}.google-calendar-frame-wrap{height:560px;overflow:hidden}.google-calendar-frame{min-width:100%;max-width:100%}.schedule-editor-top{align-items:flex-start;flex-direction:column}.schedule-editor-top .btn{width:100%;min-height:44px}}
 
 </style>
-
-<style id="v45-base-style">
-/* V45 base workspace layer */
-.v45-utilitybar{display:flex;align-items:center;gap:8px;margin-left:auto}
-.v45-iconbtn{width:38px;height:38px;border:1px solid var(--border,#e5e7eb);background:var(--card,#fff);border-radius:10px;display:grid;place-items:center;cursor:pointer;position:relative}
-.v45-iconbtn:hover{background:#f6f7f9}
-.v45-badge{position:absolute;right:-3px;top:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;font-size:10px;line-height:16px;text-align:center;background:#111827;color:#fff}
-.v45-drawer{position:fixed;inset:0;z-index:9999;display:none}
-.v45-drawer.open{display:block}
-.v45-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.35)}
-.v45-panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92vw);background:#fff;box-shadow:-12px 0 35px rgba(0,0,0,.14);padding:22px;overflow:auto}
-.v45-panel h3{margin:0 0 14px;font-size:18px}
-.v45-close{float:right;border:0;background:none;font-size:22px;cursor:pointer}
-.v45-search{display:flex;gap:8px;margin:12px 0}
-.v45-search input{flex:1;border:1px solid #d9dde5;border-radius:10px;padding:11px 12px}
-.v45-list{display:grid;gap:8px}
-.v45-item{border:1px solid #e7e9ee;border-radius:10px;padding:11px 12px;cursor:pointer}
-.v45-item:hover{background:#f7f8fa}
-.v45-muted{font-size:12px;color:#6b7280}
-.v45-section{margin:20px 0}
-.v45-setting{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}
-.v45-toggle{width:42px;height:24px;border-radius:999px;border:0;background:#d1d5db;position:relative;cursor:pointer}
-.v45-toggle.on{background:#111827}
-.v45-toggle:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.15s}
-.v45-toggle.on:after{left:21px}
-.v45-toast{position:fixed;right:22px;bottom:22px;z-index:10001;background:#111827;color:#fff;padding:11px 14px;border-radius:10px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}
-.v45-toast.show{opacity:1;transform:translateY(0)}
-@media (max-width:900px){
-  .v45-utilitybar{gap:4px}
-  .v45-iconbtn{width:34px;height:34px}
-}
-</style>
-
-<style id="v45-settings-style">
-html[data-v45-dark="1"] body{filter:brightness(.86)}
-body.v45-compact .card,body.v45-compact .panel{padding-top:10px;padding-bottom:10px}
-</style>
 </head>
 <body>
+<div id="authGate" class="auth-gate">
+  <div class="auth-card">
+    <div class="auth-brand">LUSH LOGISTICS WORKSPACE</div>
+    <h2>물류 워크스테이션</h2>
+    <p>로그인 후 권한이 부여된 메뉴와 데이터만 접근할 수 있습니다.</p>
+    <form id="authForm">
+      <div class="auth-field"><label>회사 이메일</label><input id="authEmail" type="email" autocomplete="username" placeholder="name@lush.co.kr" required></div>
+      <div class="auth-field"><label>비밀번호</label><input id="authPassword" type="password" autocomplete="current-password" placeholder="비밀번호" required></div>
+      <button class="auth-login" type="submit">로그인</button>
+      <div id="authError" class="auth-error"></div>
+    </form>
+    <div class="auth-note"><b>현재 버전 안내</b><br>실제 도메인 보안·계정 인증이 연결되기 전의 실행 가능한 프로토타입입니다. 실제 배포에서는 회사 계정 인증과 서버 DB 권한을 연결해야 합니다.</div>
+    <div class="auth-demo">테스트 계정: admin@lush.co.kr / 1234</div>
+  </div>
+</div>
+
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo">L</div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
@@ -1320,7 +1305,7 @@ body.v45-compact .card,body.v45-compact .panel{padding-top:10px;padding-bottom:1
       <div class="mobile-title-wrap"><button class="btn sidebar-toggle mobile-menu-btn" id="mobileMenuBtn" title="메뉴 열기">☰</button><div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">Dashboard</h1></div></div>
       <div class="top-actions">
         <select id="rolePreview" class="role-preview" title="권한 미리보기"><option value="admin">권한 미리보기: 관리자</option><option value="leader">권한 미리보기: 팀 리더</option><option value="editor">권한 미리보기: 팀원</option><option value="restricted">권한 미리보기: 제한 열람</option></select>
-        <button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
+        <button class="btn" id="logoutBtn" type="button">로그아웃</button><button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
       </div>
     </div>
 
@@ -1427,7 +1412,7 @@ body.v45-compact .card,body.v45-compact .panel{padding-top:10px;padding-bottom:1
       </div>
     </section>
 
-    <section id="inventoryOwnerView" class="view">
+    <section id="inventoryOwnerView" class="view"><div class="readonly-banner" id="inventoryReadonlyBanner">과거 기준일은 원본 보존을 위해 읽기 전용입니다. 오늘 기준 데이터만 수정할 수 있습니다.</div>
       <div class="inventory-shell">
         <div class="inventory-head"><div><div class="eyebrow">INVENTORY WORKBOOK</div><h2 id="inventoryOwnerTitle">담당자 재고파일</h2><p>기준일별 업로드 파일을 기준으로 제품코드에 맞는 제품명·제품군·현재고를 불러옵니다. 이전 기준일의 저장값은 변경되지 않으며, 실사와 제조일별 수량 수정은 즉시 자동 저장됩니다.</p></div><div class="inventory-actions"><button class="btn" id="exportInventoryCsv">CSV 내보내기</button><button class="btn" id="printInventory">인쇄</button><span class="auto-save-state" id="inventoryAutoSave">자동 저장</span></div></div>
         <div class="inventory-commandbar"><div class="inventory-command-left"><div class="inventory-date-control"><label for="newInventoryDateValue">기준일</label><input type="date" id="newInventoryDateValue" class="role-preview"></div><div class="inventory-history-controls" title="과거 재고 조회">
@@ -1583,7 +1568,7 @@ body.v45-compact .card,body.v45-compact .panel{padding-top:10px;padding-bottom:1
 
     <section id="settings" class="view">
       <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button></div>
-      <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
+      <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다. 실제 배포에서는 비밀번호를 이 HTML에 저장하지 않고 인증 서비스에서 관리합니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
       <div id="admin-menus" class="admin-section"><div class="admin-grid"><div class="admin-card"><h3>메뉴 구성</h3><p>메뉴명 수정, 표시/숨김, 신규 메뉴 추가를 Admin에서 직접 관리합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>그룹</th><th>메뉴명</th><th>유형</th><th>표시</th><th>관리</th></tr></thead><tbody id="menuRows"></tbody></table></div></div><div class="admin-card"><h3>새 메뉴 추가</h3><p>별도 코드 수정 없이 기본 메뉴를 추가할 수 있는 구조입니다.</p><div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div><div class="hint" style="margin-top:13px">Dashboard와 Admin은 운영 안전을 위해 삭제할 수 없고, 나머지 사용자 추가 메뉴는 자유롭게 삭제할 수 있습니다.</div></div></div></div>
       <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
     </section>
@@ -1649,7 +1634,10 @@ function normalizeInventoryDb(){
 normalizeInventoryDb();
 
 const DEFAULT_USERS=[
- {name:"Time",email:"time@company.com",role:"admin",active:true},{name:"Leader",email:"leader@company.com",role:"leader",active:true},{name:"Team Member",email:"member@company.com",role:"editor",active:true},{name:"Restricted",email:"viewer@company.com",role:"restricted",active:true}
+ {name:"Time",email:"admin@lush.co.kr",role:"admin",active:true,password:"1234",owner:null},
+ {name:"Leader",email:"leader@lush.co.kr",role:"leader",active:true,password:"1234",owner:"SAND"},
+ {name:"Team Member",email:"member@lush.co.kr",role:"editor",active:true,password:"1234",owner:"TIME (SOILD)"},
+ {name:"Restricted",email:"viewer@lush.co.kr",role:"restricted",active:true,password:"1234",owner:null}
 ];
 const DEFAULT_DATA={
  inventory:{"총 재고파일":{cols:["담당","PLU","제품명","카테고리","08/27","08/28","차이","상태","비고"],rows:[["TIME","101894","Sleepy Body Lotion","BODY","336","329","-7","확인 필요",""],["SAND","100871","Karma Soap","SOAP","160","151","-9","확인 필요",""]] },"TIME":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["101894","Sleepy Body Lotion","BODY","336","329","-7",""]] },"SAND":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["100871","Karma Soap","SOAP","160","151","-9",""]] }},
@@ -1713,14 +1701,29 @@ function normalizeMenus(){
 }
 normalizeMenus();
 let users=JSON.parse(localStorage.getItem(USER_KEY)||"null")||structuredClone(DEFAULT_USERS);
+// 기존 V44 사용자 데이터와의 호환: 기존 계정은 비밀번호/담당영역을 보정합니다.
+const DEMO_ACCOUNT_MAP={"time@company.com":{"email":"admin@lush.co.kr","password":"1234","role":"admin","owner":null},"leader@company.com":{"email":"leader@lush.co.kr","password":"1234","role":"leader","owner":"SAND"},"member@company.com":{"email":"member@lush.co.kr","password":"1234","role":"editor","owner":"TIME (SOILD)"},"viewer@company.com":{"email":"viewer@lush.co.kr","password":"1234","role":"restricted","owner":null}};
+users=users.map(u=>{const m=DEMO_ACCOUNT_MAP[String(u.email||"").toLowerCase()];return {...u,...(m||{}),password:u.password||m?.password||"1234",owner:Object.prototype.hasOwnProperty.call(u,"owner")?u.owner:(m?.owner??null)}});
+localStorage.setItem(USER_KEY,JSON.stringify(users));
 let currentRole="admin",currentSheet=null,dirty=false;
+let currentUser=null;
+const AUTH_KEY="lush-logistics-auth-v1";
+function getSession(){try{return JSON.parse(sessionStorage.getItem(AUTH_KEY)||"null")}catch(e){return null}}
+function isAuthenticated(){return !!getSession()}
+function canEditInventory(){return !!currentUser && (currentRole==="admin" || currentRole==="leader" || currentRole==="editor") && (!currentUser.owner || currentInventoryOwner===currentUser.owner)}
+function isTodayDate(d){return d===todayKey()}
+function isPastDate(d){return /^\d{4}-\d{2}-\d{2}$/.test(d) && d<todayKey()}
+function isFutureDate(d){return /^\d{4}-\d{2}-\d{2}$/.test(d) && d>todayKey()}
+function isReadOnlyInventory(){return !isTodayDate(currentInventoryDate)}
+function updateInventoryEditability(){document.body.classList.toggle("readonly-mode",isReadOnlyInventory()||!canEditInventory())}
+
 function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} function saveUsers(){localStorage.setItem(USER_KEY,JSON.stringify(users))} function saveDb(){localStorage.setItem(DATA_KEY,JSON.stringify(db));dirty=false;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
-function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
+function canAccess(m){return isAuthenticated() && (currentRole==="admin"||m.roles.includes(currentRole))}
 function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.innerHTML=`<button class="nav-root"><span><i data-lucide="${g.icon}"></i>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.textContent=m.label;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
-function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
+function activateMenu(m,el){if(!isAuthenticated()){toastMsg("로그인이 필요합니다.");return}if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 addRow.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];s.rows.push(Array(s.cols.length).fill(""));saveDb();renderSheet();toastMsg("새 행을 추가했습니다.")};exportCsv.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];const csv=[s.cols,...s.rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(currentSheet.name+".csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
@@ -1737,9 +1740,14 @@ function productActual(p){return (p.lots||[]).reduce((s,l)=>s+invNum(l.qty),0)}
 function productDiff(p){return productActual(p)-invNum(p.system)}
 function fmtNum(v){return invNum(v).toLocaleString("ko-KR")}
 function diffClass(v){return v>0?"diff-plus":v<0?"diff-minus":"diff-zero"}
-function markInventoryDirty(){saveInventoryDb();if(window.inventoryAutoSave){inventoryAutoSave.textContent="자동 저장 완료";clearTimeout(window.__invSaveTimer);window.__invSaveTimer=setTimeout(()=>inventoryAutoSave.textContent="자동 저장",900)}}
+function markInventoryDirty(action="EDIT"){
+  const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);
+  if(snap){snap.updatedAt=new Date().toISOString();snap.updatedBy=currentUser?.email||"unknown";snap.revision=(snap.revision||0)+1;}
+  saveInventoryDb();
+  if(window.inventoryAutoSave){inventoryAutoSave.textContent="자동 저장 완료";clearTimeout(window.__invSaveTimer);window.__invSaveTimer=setTimeout(()=>inventoryAutoSave.textContent="자동 저장",900)}
+}
 function ensureOwner(owner){if(!inventoryDb.owners[owner])inventoryDb.owners[owner]={label:owner,snapshots:{}};return inventoryDb.owners[owner]}
-function openInventoryOwner(owner,label,el){ensureOwner(owner);if(typeof clearInventoryUndo==="function")clearInventoryUndo();currentInventoryOwner=owner;currentInventoryDate=ensureTodaySnapshot(owner);const o=inventoryDb.owners[owner];document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));inventoryOwnerView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;inventoryOwnerTitle.textContent=label+" 재고";newInventoryDateValue.value=currentInventoryDate;renderInventoryDates();renderInventoryOwner()}
+function openInventoryOwner(owner,label,el){if(currentRole!=="admin" && currentUser?.owner && owner!==currentUser.owner){toastMsg("본인에게 지정된 재고만 수정할 수 있습니다.");return}ensureOwner(owner);if(typeof clearInventoryUndo==="function")clearInventoryUndo();currentInventoryOwner=owner;currentInventoryDate=ensureTodaySnapshot(owner);const o=inventoryDb.owners[owner];document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));inventoryOwnerView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;inventoryOwnerTitle.textContent=label+" 재고";newInventoryDateValue.value=currentInventoryDate;renderInventoryDates();renderInventoryOwner()}
 function renderInventoryDates(){const o=ensureOwner(currentInventoryOwner);const ds=Object.keys(o.snapshots||{}).sort().reverse();inventoryDate.innerHTML=ds.map(d=>`<option value="${d}" ${d===currentInventoryDate?"selected":""}>${d}</option>`).join("")||`<option value="${currentInventoryDate}">${currentInventoryDate}</option>`;newInventoryDateValue.value=currentInventoryDate}
 function currentInventoryMaster(){const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);return snap?.sourceMaster||{}}
 function lookupInventoryProduct(code){return currentInventoryMaster()[String(code||"").trim()]||null}
@@ -1814,6 +1822,7 @@ function renderInventoryOwner(){
   bindInventoryInputs();
   renderInventoryHistory();
   applyInventoryColumnWidths();
+  updateInventoryEditability();
 }
 function parseInventoryNumber(v){return invNum(String(v??"").replace(/,/g,""))}
 function formatInventoryNumberInput(el){
@@ -1825,6 +1834,8 @@ function formatInventoryNumberInput(el){
 function bindInventoryInputs(){
   const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);if(!snap)return;
   const commitText=e=>{if(e.key==="Enter"){e.preventDefault();e.currentTarget.blur()}};
+  const editable=canEditInventory()&&!isReadOnlyInventory();
+  if(!editable){inventoryBody.querySelectorAll("input,button").forEach(el=>{el.disabled=true;el.title="읽기 전용 또는 권한 없음"})}
 
   inventoryBody.querySelectorAll("[data-product-code]").forEach(x=>{
     x.addEventListener("keydown",commitText);
@@ -1913,7 +1924,27 @@ function renderInventoryHistory(){
   dateEl.value=monthDates.includes(currentInventoryDate) ? currentInventoryDate : "";
 }
 
-function switchInventoryDate(d){if(!d)return;const o=ensureOwner(currentInventoryOwner);if(!o.snapshots[d]){const latest=latestOwnerDate(currentInventoryOwner);const base=ownerSnapshot(currentInventoryOwner,latest)||{products:[],sourceMaster:{},sourceFile:null};o.snapshots[d]=JSON.parse(JSON.stringify(base));o.snapshots[d].sourceFile=null;markInventoryDirty();toastMsg(`${d.replaceAll("-",".")} 기준 재고를 생성했습니다.`)}currentInventoryDate=d;renderInventoryDates();renderInventoryOwner()}
+function switchInventoryDate(d){
+  if(!d)return;
+  if(isFutureDate(d)){toastMsg("미래 기준일은 생성할 수 없습니다.");newInventoryDateValue.value=currentInventoryDate;return}
+  if(currentRole!=="admin" && currentUser?.owner && currentInventoryOwner!==currentUser.owner){toastMsg("본인 담당 재고만 처리할 수 있습니다.");return}
+  const o=ensureOwner(currentInventoryOwner);
+  if(!o.snapshots[d]){
+    if(!isPastDate(d) && !isTodayDate(d)){toastMsg("유효하지 않은 기준일입니다.");return}
+    if(!confirm(`${d.replaceAll("-",".")} 기준의 과거 재고를 생성할까요? 생성 후 원본은 보존되며 수정은 오늘 기준에서만 가능합니다.`)) {newInventoryDateValue.value=currentInventoryDate;return}
+    const latest=latestOwnerDate(currentInventoryOwner);
+    const base=ownerSnapshot(currentInventoryOwner,latest)||{products:[],sourceMaster:{},sourceFile:null};
+    o.snapshots[d]=JSON.parse(JSON.stringify(base));
+    o.snapshots[d].sourceFile=null;
+    // 과거 생성은 기록만 남기고 이후 수정 불가
+    if(!o.audit)o.audit=[];
+    o.audit.push({at:new Date().toISOString(),action:"CREATE_SNAPSHOT",date:d,actor:currentUser?.email||"unknown"});
+    markInventoryDirty();
+    toastMsg(`${d.replaceAll("-",".")} 기준 재고를 생성했습니다.`);
+  }
+  currentInventoryDate=d;
+  renderInventoryDates();renderInventoryOwner();updateInventoryEditability();
+}
 newInventoryDateValue.onchange=()=>{clearInventoryUndo();switchInventoryDate(newInventoryDateValue.value)};
 newInventoryDate.onclick=()=>switchInventoryDate(newInventoryDateValue.value);
 const inventoryHistoryMonth=document.getElementById("inventoryHistoryMonth");
@@ -1937,7 +1968,7 @@ inventoryHistoryDateEl.onchange=()=>{
   renderInventoryDates();
   renderInventoryOwner();
 };
-uploadOwnerInventory.onclick=()=>ownerInventoryFile.click();
+uploadOwnerInventory.onclick=()=>{if(!canEditInventory()||isReadOnlyInventory()){toastMsg("오늘 기준의 본인 재고만 업로드할 수 있습니다.");return}ownerInventoryFile.click()};
 ownerInventoryFile.onchange=async()=>{const f=ownerInventoryFile.files?.[0];if(!f)return;try{const buf=await f.arrayBuffer();const wb=XLSX.read(buf,{type:"array"});const ws=wb.Sheets[wb.SheetNames[0]];const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:""});if(!rows.length)throw new Error("empty");const headers=rows[0].map(x=>String(x||"").trim());const findCol=(names)=>headers.findIndex(h=>names.includes(h));const ciCode=findCol(["제품코드","상품코드","PLU","코드"]),ciGroup=findCol(["제품군","카테고리","상품군"]),ciName=findCol(["제품명","상품명"]),ciStock=findCol(["현재고","전산","전산재고","재고"]);if(ciCode<0||ciName<0||ciStock<0){toastMsg("파일에서 제품코드·제품명·현재고 열을 찾지 못했습니다.");ownerInventoryFile.value="";return}const master={};for(const r of rows.slice(1)){const code=String(r[ciCode]??"").trim();if(!code)continue;master[code]={id:code,name:String(r[ciName]??"").trim(),category:ciGroup>=0?String(r[ciGroup]??"").trim():"",system:invNum(r[ciStock])}}const snap=ownerSnapshot(currentInventoryOwner,currentInventoryDate);snap.sourceMaster=master;snap.sourceFile={name:f.name,uploadedAt:new Date().toISOString(),rows:Object.keys(master).length};let matched=0;for(const p of (snap.products||[])){if(isBlankInventoryRow(p))continue;const m=master[p.id];if(!m)continue;p.name=m.name;p.sourceCategory=m.category;p.category=m.category;p.system=m.system;matched++}markInventoryDirty();renderInventoryOwner();toastMsg(`${currentInventoryDate.replaceAll("-",".")} 기준 파일 ${Object.keys(master).length.toLocaleString("ko-KR")} SKU를 읽었습니다. 관리 중 ${matched} SKU를 갱신했습니다.`)}catch(e){console.error(e);toastMsg("Excel 파일을 읽는 중 오류가 발생했습니다.")}finally{ownerInventoryFile.value=""}};
 function inventoryCsvRows(owner,date){
   const snap=ownerSnapshot(owner,date);
@@ -1978,7 +2009,7 @@ document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.query
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","Dashboard",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","Dashboard",document.querySelector('[data-menu-id="dashboard-main"]'));
 
-const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
+const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();if(document.getElementById("logoutBtn"))document.getElementById("logoutBtn").onclick=()=>window.logoutWorkspace();
 </script>
 
 <div id="inventoryContextMenu" class="inventory-context-menu">
@@ -2010,23 +2041,26 @@ function normalizeManufactureDate(raw){
 (function(){
   const body=document.getElementById("inventoryBody"),menu=document.getElementById("inventoryContextMenu");
   const addManual=document.getElementById("inventoryAddManual"),addProduct=document.getElementById("inventoryAddProduct"),del=document.getElementById("inventoryRowDelete");
+  const canModify=()=>canEditInventory()&&!isReadOnlyInventory();
   if(!body||!menu||!addManual||!addProduct||!del)return;
   let targetIndex=null;
   const snap=()=>ownerSnapshot(currentInventoryOwner,currentInventoryDate);
   const hide=()=>{menu.classList.remove("show");targetIndex=null};
   const insert=(item,focusSelector)=>{
+    if(!canModify()){toastMsg("오늘 기준의 본인 재고만 수정할 수 있습니다.");hide();return}
     const s=snap();if(!s)return;const index=targetIndex===null?s.products.length:Math.min(targetIndex+1,s.products.length);
     s.products.splice(index,0,item);pushInventoryUndo({type:"add",index});markInventoryDirty();renderInventoryOwner();hide();
     if(focusSelector)setTimeout(()=>document.querySelector(`${focusSelector}[data-p="${index}"]`)?.focus(),0);
   };
   body.addEventListener("contextmenu",e=>{
+    if(!canModify()){e.preventDefault();hide();return}
     const row=e.target.closest("tr[data-inventory-row]");e.preventDefault();targetIndex=row?Number(row.dataset.inventoryRow):null;
     menu.style.left=Math.min(e.clientX,window.innerWidth-270)+"px";menu.style.top=Math.min(e.clientY,window.innerHeight-220)+"px";
     del.style.display=targetIndex===null?"none":"";menu.classList.add("show");
   });
   addManual.onclick=()=>insert({rowType:"manual",id:"",name:"",sourceCategory:"",category:"",system:0,lots:[{date:"",qty:0}]},'[data-product-code]');
   addProduct.onclick=()=>insert({id:"",name:"",sourceCategory:"",category:"",system:0,lots:[{date:"",qty:0}]},'[data-product-code]');
-  del.onclick=()=>{if(targetIndex===null)return;if(!confirm("선택한 행을 삭제할까요?"))return;const s=snap();if(!s)return;const index=targetIndex,removed=cloneInventoryValue(s.products[index]);s.products.splice(index,1);pushInventoryUndo({type:"delete",index,item:removed});markInventoryDirty();renderInventoryOwner();hide()};
+  del.onclick=()=>{if(!canModify()){toastMsg("오늘 기준의 본인 재고만 수정할 수 있습니다.");return}if(targetIndex===null)return;if(!confirm("선택한 행을 삭제할까요?"))return;const s=snap();if(!s)return;const index=targetIndex,removed=cloneInventoryValue(s.products[index]);s.products.splice(index,1);pushInventoryUndo({type:"delete",index,item:removed});markInventoryDirty();renderInventoryOwner();hide()};
   document.addEventListener("click",e=>{if(!menu.contains(e.target))hide()});window.addEventListener("scroll",hide,true);window.addEventListener("resize",hide);
   document.addEventListener("keydown",e=>{if(!(e.ctrlKey||e.metaKey)||e.key.toLowerCase()!=="z"||e.target.closest("input,textarea,[contenteditable=true]"))return;const a=inventoryUndoStack.at(-1);if(!a)return;if(a.owner!==currentInventoryOwner||a.date!==currentInventoryDate){clearInventoryUndo();return}inventoryUndoStack.pop();const s=snap();if(!s)return;e.preventDefault();if(a.type==="add")s.products.splice(a.index,1);if(a.type==="delete")s.products.splice(Math.min(a.index,s.products.length),0,cloneInventoryValue(a.item));markInventoryDirty();renderInventoryOwner();toastMsg("직전 행 작업을 되돌렸습니다.")});
 })();
@@ -2276,191 +2310,31 @@ setTimeout(initInventoryColumnResize,0);
 })();
 </script>
 
-<!-- V45 BASE WORKSPACE LAYER -->
-<div id="v45Toast" class="v45-toast"></div>
-
-<div id="v45Drawer" class="v45-drawer" aria-hidden="true">
-  <div class="v45-backdrop" data-v45-close></div>
-  <aside class="v45-panel">
-    <button class="v45-close" data-v45-close aria-label="닫기">×</button>
-    <h3 id="v45PanelTitle">알림센터</h3>
-    <div id="v45PanelBody"></div>
-  </aside>
-</div>
-
-<script id="v45-base-script">
-(function(){
-  const V45 = {
-    notes: JSON.parse(localStorage.getItem("lush-v45-notifications") || "[]"),
-    favorites: JSON.parse(localStorage.getItem("lush-v45-favorites") || "[]"),
-    recent: JSON.parse(localStorage.getItem("lush-v45-recent") || "[]"),
-    drafts: JSON.parse(localStorage.getItem("lush-v45-drafts") || "{}"),
-    undo: JSON.parse(localStorage.getItem("lush-v45-undo") || "[]"),
-    settings: JSON.parse(localStorage.getItem("lush-v45-settings") || '{"darkMode":false,"compact":false}'),
-    save(k,v){ localStorage.setItem(k, JSON.stringify(v)); },
-    toast(msg){
-      const el=document.getElementById("v45Toast"); if(!el)return;
-      el.textContent=msg; el.classList.add("show");
-      clearTimeout(this._tt); this._tt=setTimeout(()=>el.classList.remove("show"),1800);
-    },
-    open(title, html){
-      const d=document.getElementById("v45Drawer");
-      document.getElementById("v45PanelTitle").textContent=title;
-      document.getElementById("v45PanelBody").innerHTML=html;
-      d.classList.add("open"); d.setAttribute("aria-hidden","false");
-      if(window.lucide) lucide.createIcons();
-    },
-    close(){
-      const d=document.getElementById("v45Drawer"); d.classList.remove("open"); d.setAttribute("aria-hidden","true");
-    },
-    currentPage(){
-      const active=document.querySelector(".nav-item.active,.menu-item.active,[aria-current='page']");
-      return active ? (active.textContent||"현재 페이지").trim() : (document.title||"페이지");
-    },
-    addRecent(label){
-      if(!label)return;
-      this.recent=[label,...this.recent.filter(x=>x!==label)].slice(0,10);
-      this.save("lush-v45-recent",this.recent);
-    },
-    toggleFavorite(label){
-      if(!label)return;
-      if(this.favorites.includes(label)) this.favorites=this.favorites.filter(x=>x!==label);
-      else this.favorites.unshift(label);
-      this.save("lush-v45-favorites",this.favorites);
-      this.toast(this.favorites.includes(label) ? "즐겨찾기에 추가했습니다." : "즐겨찾기에서 제거했습니다.");
-      this.renderFavoriteCount();
-    },
-    renderFavoriteCount(){
-      const n=document.getElementById("v45FavCount");
-      if(n) n.textContent=this.favorites.length||"";
-    },
-    renderNotifCount(){
-      const n=document.getElementById("v45NotifCount");
-      if(n) n.textContent=this.notes.filter(x=>!x.read).length||"";
-    },
-    panelNotifications(){
-      const rows=this.notes.length ? this.notes.map((x,i)=>`
-        <div class="v45-item" data-notif="${i}">
-          <b>${this.esc(x.title||"알림")}</b>
-          <div>${this.esc(x.text||"")}</div>
-          <div class="v45-muted">${this.esc(x.time||"")}</div>
-        </div>`).join("") : '<div class="v45-muted">새로운 알림이 없습니다.</div>';
-      this.open("알림센터", `<div class="v45-section">${rows}</div>
-        <button id="v45ReadAll" class="btn">모두 읽음 처리</button>`);
-      document.getElementById("v45ReadAll")?.addEventListener("click",()=>{
-        this.notes=this.notes.map(x=>({...x,read:true})); this.save("lush-v45-notifications",this.notes);
-        this.renderNotifCount(); this.toast("알림을 확인했습니다."); this.close();
-      });
-    },
-    panelSearch(){
-      this.open("전체 검색", `<div class="v45-search"><input id="v45SearchInput" placeholder="메뉴나 업무를 검색하세요"><button id="v45SearchBtn" class="btn">검색</button></div><div id="v45SearchResults" class="v45-list"></div>`);
-      const run=()=>{
-        const q=(document.getElementById("v45SearchInput").value||"").toLowerCase().trim();
-        const items=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
-        const uniq=[...new Map(items.map(el=>[(el.textContent||"").trim(),el]).filter(([t])=>t)).values()];
-        const found=uniq.filter(el=>(el.textContent||"").toLowerCase().includes(q)).slice(0,30);
-        document.getElementById("v45SearchResults").innerHTML=found.length
-          ? found.map((el,i)=>`<div class="v45-item" data-sr="${i}">${this.esc((el.textContent||"").trim())}</div>`).join("")
-          : '<div class="v45-muted">검색 결과가 없습니다.</div>';
-        found.forEach((el,i)=>document.querySelector(`[data-sr="${i}"]`)?.addEventListener("click",()=>{el.click();this.addRecent((el.textContent||"").trim());this.close();}));
-      };
-      document.getElementById("v45SearchBtn").onclick=run;
-      document.getElementById("v45SearchInput").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
-      document.getElementById("v45SearchInput").focus();
-    },
-    panelFavorites(){
-      const rows=this.favorites.length ? this.favorites.map(x=>`<div class="v45-item" data-fav="${this.esc(x)}">${this.esc(x)}</div>`).join("") : '<div class="v45-muted">등록된 즐겨찾기가 없습니다.</div>';
-      this.open("즐겨찾기", `<div class="v45-list">${rows}</div>`);
-      this.favorites.forEach(x=>document.querySelector(`[data-fav="${CSS.escape(x)}"]`)?.addEventListener("click",()=>{
-        const all=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
-        const el=all.find(e=>(e.textContent||"").trim()===x); if(el){el.click();this.addRecent(x);this.close();}
-      }));
-    },
-    panelRecent(){
-      const rows=this.recent.length ? this.recent.map(x=>`<div class="v45-item" data-rec="${this.esc(x)}">${this.esc(x)}</div>`).join("") : '<div class="v45-muted">최근 사용한 메뉴가 없습니다.</div>';
-      this.open("최근 사용", `<div class="v45-list">${rows}</div>`);
-      this.recent.forEach(x=>document.querySelector(`[data-rec="${CSS.escape(x)}"]`)?.addEventListener("click",()=>{
-        const all=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
-        const el=all.find(e=>(e.textContent||"").trim()===x); if(el){el.click();this.close();}
-      }));
-    },
-    panelProfile(){
-      const role = (window.currentRole && window.ROLE_LABEL) ? (window.ROLE_LABEL[window.currentRole]||window.currentRole) : "사용자";
-      this.open("내 정보", `<div class="v45-section">
-        <div class="v45-setting"><span>계정 역할</span><b>${this.esc(role)}</b></div>
-        <div class="v45-setting"><span>다크 모드</span><button id="v45Dark" class="v45-toggle ${this.settings.darkMode?"on":""}"></button></div>
-        <div class="v45-setting"><span>간결한 화면</span><button id="v45Compact" class="v45-toggle ${this.settings.compact?"on":""}"></button></div>
-      </div>`);
-      const toggle=(key,btn)=>{
-        this.settings[key]=!this.settings[key]; this.save("lush-v45-settings",this.settings);
-        btn.classList.toggle("on",this.settings[key]); this.applySettings();
-      };
-      document.getElementById("v45Dark").onclick=e=>toggle("darkMode",e.currentTarget);
-      document.getElementById("v45Compact").onclick=e=>toggle("compact",e.currentTarget);
-    },
-    applySettings(){
-      document.documentElement.dataset.v45Dark=this.settings.darkMode?"1":"0";
-      document.body.classList.toggle("v45-compact",!!this.settings.compact);
-    },
-    saveDraft(key, value){
-      this.drafts[key]={value,updatedAt:new Date().toISOString()};
-      this.save("lush-v45-drafts",this.drafts);
-    },
-    getDraft(key){ return this.drafts[key]?.value ?? null; },
-    pushUndo(label, snapshot){
-      this.undo=[{label,snapshot,time:new Date().toISOString()},...this.undo].slice(0,30);
-      this.save("lush-v45-undo",this.undo);
-    },
-    exportRows(rows, filename="export.csv"){
-      if(!Array.isArray(rows)||!rows.length){this.toast("내보낼 데이터가 없습니다.");return;}
-      const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];
-      const esc=v=>`"${String(v??"").replace(/"/g,'""')}"`;
-      const csv="\uFEFF"+[keys.map(esc).join(","),...rows.map(r=>keys.map(k=>esc(r[k])).join(","))].join("\n");
-      const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
-      const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
-    },
-    esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
-  };
-
-  window.LUSH_V45=V45;
-
-  function addUtilityButtons(){
-    // Try common header containers first, then the top-level shell.
-    const target=document.querySelector("header .header-right,header .top-actions,header,.topbar,.header,.app-header");
-    if(!target || document.getElementById("v45Utilitybar")) return;
-    const bar=document.createElement("div"); bar.id="v45Utilitybar"; bar.className="v45-utilitybar";
-    bar.innerHTML=`
-      <button class="v45-iconbtn" id="v45Search" title="전체 검색">⌕</button>
-      <button class="v45-iconbtn" id="v45Notif" title="알림센터">🔔<span id="v45NotifCount" class="v45-badge"></span></button>
-      <button class="v45-iconbtn" id="v45Fav" title="즐겨찾기">★<span id="v45FavCount" class="v45-badge"></span></button>
-      <button class="v45-iconbtn" id="v45Recent" title="최근 사용">↶</button>
-      <button class="v45-iconbtn" id="v45Profile" title="내 정보">◎</button>`;
-    target.appendChild(bar);
-    document.getElementById("v45Search").onclick=()=>V45.panelSearch();
-    document.getElementById("v45Notif").onclick=()=>V45.panelNotifications();
-    document.getElementById("v45Fav").onclick=()=>V45.panelFavorites();
-    document.getElementById("v45Recent").onclick=()=>V45.panelRecent();
-    document.getElementById("v45Profile").onclick=()=>V45.panelProfile();
-    V45.renderFavoriteCount(); V45.renderNotifCount();
-  }
-
-  document.addEventListener("click",e=>{
-    if(e.target.closest("[data-v45-close]")) V45.close();
-    const nav=e.target.closest("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]");
-    if(nav && (nav.textContent||"").trim()) V45.addRecent((nav.textContent||"").trim());
-  });
-
-  // Expose generic hooks for later module work without changing current modules.
-  window.LUSH_V45_AUTOSAVE = (key,value)=>V45.saveDraft(key,value);
-  window.LUSH_V45_DRAFT = key=>V45.getDraft(key);
-  window.LUSH_V45_UNDO = (label,snapshot)=>V45.pushUndo(label,snapshot);
-  window.LUSH_V45_EXPORT = (rows,filename)=>V45.exportRows(rows,filename);
-
-  // Retry because some existing V44 UI is initialized after this layer.
-  addUtilityButtons();
-  setTimeout(addUtilityButtons,300);
-  setTimeout(addUtilityButtons,1000);
-  V45.applySettings();
+<script>
+(()=>{
+ const gate=document.getElementById("authGate"),form=document.getElementById("authForm"),err=document.getElementById("authError"),email=document.getElementById("authEmail"),pw=document.getElementById("authPassword");
+ function applySession(){
+   const sess=getSession();
+   if(!sess){gate.style.display="flex";return false}
+   currentUser=users.find(u=>u.email===sess.email&&u.active)!==undefined?users.find(u=>u.email===sess.email&&u.active):null;
+   if(!currentUser){sessionStorage.removeItem(AUTH_KEY);gate.style.display="flex";return false}
+   currentRole=currentUser.role;
+   gate.style.display="none";
+   if(typeof profileRole!=="undefined")profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentUser.name}`;
+   if(typeof renderNav==="function")renderNav();
+   if(typeof updateInventoryEditability==="function")updateInventoryEditability();
+   return true;
+ }
+ form.addEventListener("submit",e=>{
+   e.preventDefault();
+   const u=users.find(x=>x.email.toLowerCase()===email.value.trim().toLowerCase()&&x.active);
+   if(!u||u.password!==pw.value){err.textContent="이메일 또는 비밀번호가 올바르지 않습니다.";return}
+   currentUser=u;currentRole=u.role;sessionStorage.setItem(AUTH_KEY,JSON.stringify({email:u.email,loginAt:new Date().toISOString()}));err.textContent="";applySession();
+   if(typeof showView==="function")showView("dashboard","Dashboard",null);
+   toastMsg("로그인되었습니다.");
+ });
+ window.logoutWorkspace=()=>{sessionStorage.removeItem(AUTH_KEY);currentUser=null;gate.style.display="flex";email.value="";pw.value="";err.textContent=""};
+ window.addEventListener("load",()=>{setTimeout(applySession,0)});
 })();
 </script>
 </body>
