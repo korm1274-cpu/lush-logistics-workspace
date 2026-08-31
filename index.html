@@ -852,6 +852,130 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
   padding:5px 8px;
 }
 
+
+/* V33 — same-row outbound request cards, compact list view */
+.request-list-stack{display:none!important}
+.request-card-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:10px;
+}
+.request-mini-card{
+  min-width:0;
+  border:1px solid #e2e7e9;
+  border-radius:12px;
+  background:rgba(255,255,255,.88);
+  overflow:hidden;
+}
+.request-mini-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  padding:11px 12px;
+  border-bottom:1px solid #edf0f1;
+}
+.request-mini-head>div{
+  display:flex;
+  align-items:center;
+  gap:8px;
+  min-width:0;
+}
+.request-mini-head b{
+  min-width:0;
+  font-size:10.5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+.request-mini-table{width:100%}
+.request-mini-header,
+.request-row{
+  display:grid;
+  grid-template-columns:1.25fr 1.05fr .72fr;
+  gap:8px;
+  align-items:center;
+}
+.request-mini-header{
+  padding:7px 11px;
+  background:#f2f5f5;
+  border-bottom:1px solid #edf0f1;
+  color:#75838a;
+  font-size:8px;
+  font-weight:800;
+}
+.request-mini-header span:last-child{text-align:center}
+.request-mini-body{min-height:118px}
+.request-row{
+  width:100%;
+  border:0;
+  border-bottom:1px solid #f0f2f2;
+  background:transparent;
+  padding:9px 11px;
+  text-align:left;
+  cursor:pointer;
+  font-family:inherit;
+  color:#2d383e;
+}
+.request-row:last-child{border-bottom:0}
+.request-row:hover{background:#f7f9f9}
+.request-row .doc-no{
+  font-size:9px;
+  font-weight:800;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.request-row .store-name{
+  font-size:9px;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.request-row .status-cell{text-align:center}
+.request-status{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:39px;
+  padding:4px 6px;
+  border-radius:999px;
+  background:#edf1f1;
+  color:#607077;
+  font-size:8px;
+  font-weight:800;
+}
+.request-status.pending{background:#f4eeee;color:#8b6063}
+.request-status.progress{background:#f3f1e8;color:#7c7049}
+.request-status.done{background:#edf3ef;color:#5f7465}
+.request-empty-card{
+  width:100%;
+  min-height:118px;
+  border:0;
+  background:transparent;
+  color:#9aa3a8;
+  font-family:inherit;
+  font-size:9px;
+}
+.request-mini-foot{
+  padding:7px 11px;
+  border-top:1px solid #f0f2f2;
+  text-align:right;
+}
+.request-mini-foot button{
+  border:0;
+  background:transparent;
+  padding:0;
+  color:#6d7b82;
+  font-size:8.5px;
+  font-weight:800;
+  cursor:pointer;
+}
+@media(max-width:1100px){
+  .request-card-grid{grid-template-columns:1fr}
+  .request-mini-head b{white-space:normal}
+}
+
 </style>
 </head>
 <body>
@@ -884,32 +1008,53 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
 
       <div class="dash-section">
         <div class="dash-section-head"><div><h3>금일 출고 요청</h3></div></div>
-        <div class="request-list-stack">
-          <div class="request-list-card">
-            <div class="request-list-head">
-              <div><span class="request-type-icon"><i data-lucide="boxes"></i></span><b>대량 주문 출고 요청 현황</b></div>
-              <span class="request-badge">0건</span>
+        <div class="request-card-grid" id="todayRequestGrid">
+          <div class="request-mini-card" data-request-type="bulk">
+            <div class="request-mini-head">
+              <div>
+                <span class="request-type-icon"><i data-lucide="boxes"></i></span>
+                <b>대량 주문 출고 요청 현황</b>
+              </div>
+              <span class="request-badge" data-request-count="bulk">0건</span>
             </div>
-            <div class="request-table-head"><span>요청처</span><span>요청 내용</span><span>요청시간</span><span>상태</span></div>
-            <div class="request-empty-row"><span>등록된 대량 주문 출고 요청이 없습니다.</span></div>
+            <div class="request-mini-table">
+              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-body" data-request-list="bulk">
+                <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
+              </div>
+            </div>
           </div>
 
-          <div class="request-list-card">
-            <div class="request-list-head">
-              <div><span class="request-type-icon"><i data-lucide="activity"></i></span><b>트래픽 요청 현황</b></div>
-              <span class="request-badge">0건</span>
+          <div class="request-mini-card" data-request-type="traffic">
+            <div class="request-mini-head">
+              <div>
+                <span class="request-type-icon"><i data-lucide="activity"></i></span>
+                <b>트래픽 요청 현황</b>
+              </div>
+              <span class="request-badge" data-request-count="traffic">0건</span>
             </div>
-            <div class="request-table-head"><span>요청처</span><span>요청 내용</span><span>요청시간</span><span>상태</span></div>
-            <div class="request-empty-row"><span>등록된 트래픽 요청이 없습니다.</span></div>
+            <div class="request-mini-table">
+              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-body" data-request-list="traffic">
+                <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
+              </div>
+            </div>
           </div>
 
-          <div class="request-list-card">
-            <div class="request-list-head">
-              <div><span class="request-type-icon"><i data-lucide="building-2"></i></span><b>본사 출고 요청 현황</b></div>
-              <span class="request-badge">0건</span>
+          <div class="request-mini-card" data-request-type="hq">
+            <div class="request-mini-head">
+              <div>
+                <span class="request-type-icon"><i data-lucide="building-2"></i></span>
+                <b>본사 출고 요청 현황</b>
+              </div>
+              <span class="request-badge" data-request-count="hq">0건</span>
             </div>
-            <div class="request-table-head"><span>요청처</span><span>요청 내용</span><span>요청시간</span><span>상태</span></div>
-            <div class="request-empty-row"><span>등록된 본사 출고 요청이 없습니다.</span></div>
+            <div class="request-mini-table">
+              <div class="request-mini-header"><span>문서번호</span><span>매장명</span><span>상태</span></div>
+              <div class="request-mini-body" data-request-list="hq">
+                <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1466,6 +1611,86 @@ setTimeout(initInventoryColumnResize,0);
     cal.innerHTML=s;
   }
   if(window.lucide)lucide.createIcons();
+})();
+</script>
+
+
+<script>
+(function initTodayOutboundRequestCards(){
+  const STORAGE_KEY="lush_outbound_requests_v1";
+  const pad=n=>String(n).padStart(2,"0");
+  const todayKey=()=>{
+    const d=new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  };
+  const safeText=v=>String(v??"");
+  const escText=v=>safeText(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+
+  function getRequests(){
+    try{
+      const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");
+      return Array.isArray(data)?data:[];
+    }catch{return []}
+  }
+
+  function statusClass(status){
+    const s=safeText(status).trim();
+    if(s==="완료")return "done";
+    if(s==="진행중"||s==="진행 중")return "progress";
+    return "pending";
+  }
+
+  function openRequestDetail(request){
+    // Future left-menu management screen hook.
+    // If a request management navigation function is added later, this call can be replaced there.
+    window.dispatchEvent(new CustomEvent("lush:open-request-detail",{detail:request}));
+    if(typeof window.openOutboundRequestDetail==="function"){
+      window.openOutboundRequestDetail(request);
+      return;
+    }
+    if(typeof toastMsg==="function"){
+      toastMsg(`${request.documentNo||"요청"} 상세 화면은 출고 요청 관리 메뉴와 연결 예정입니다.`);
+    }
+  }
+
+  function renderType(type){
+    const today=todayKey();
+    const all=getRequests()
+      .filter(r=>r && r.type===type && r.requestDate===today)
+      .sort((a,b)=>{
+        const rank=s=>s==="미처리"?0:(s==="진행중"||s==="진행 중"?1:2);
+        return rank(a.status)-rank(b.status);
+      });
+
+    const list=document.querySelector(`[data-request-list="${type}"]`);
+    const count=document.querySelector(`[data-request-count="${type}"]`);
+    if(count)count.textContent=`${all.length}건`;
+    if(!list)return;
+
+    if(!all.length){
+      list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>';
+      return;
+    }
+
+    list.innerHTML=all.slice(0,4).map((r,i)=>`
+      <button type="button" class="request-row" data-request-type="${escText(type)}" data-request-index="${i}" title="클릭하여 상세내역 보기">
+        <span class="doc-no">${escText(r.documentNo||"-")}</span>
+        <span class="store-name">${escText(r.storeName||"-")}</span>
+        <span class="status-cell"><span class="request-status ${statusClass(r.status)}">${escText(r.status||"미처리")}</span></span>
+      </button>`).join("");
+
+    list.querySelectorAll(".request-row").forEach((row,i)=>{
+      row.addEventListener("click",()=>openRequestDetail(all[i]));
+    });
+  }
+
+  function renderAll(){
+    ["bulk","traffic","hq"].forEach(renderType);
+  }
+
+  window.renderTodayOutboundRequests=renderAll;
+  window.getTodayOutboundRequestDate=todayKey;
+  renderAll();
 })();
 </script>
 
