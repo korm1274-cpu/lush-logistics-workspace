@@ -707,6 +707,21 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
   .order-cell{display:block!important;text-align:center!important;min-height:0!important}
 }
 
+
+/* V30 Dashboard — notice → requests → schedule/staff → monthly logistics */
+.dash-welcome{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;padding:8px 2px 18px;border-bottom:1px solid var(--modern-line,#e7e9ec)}
+.dash-welcome h2{margin:5px 0 5px;font-size:25px;letter-spacing:-.04em}.dash-welcome p{margin:0;color:#7b858d;font-size:11px}
+.dash-date{text-align:right;min-width:110px}.dash-date span{display:block;font-size:9px;color:#99a1a7;font-weight:800}.dash-date b{display:block;margin-top:4px;font-size:13px}
+.dash-section{margin-top:14px;background:#fff;border:1px solid var(--modern-line,#e7e9ec);border-radius:14px;padding:16px;box-shadow:none}
+.dash-section-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.dash-section-head small{font-size:9px;color:#9aa2a8;font-weight:800;letter-spacing:.09em}.dash-section-head h3{font-size:14px;margin:3px 0 0}
+.notice-board{display:grid;grid-template-columns:1fr 150px;gap:10px}.notice-main{min-height:74px;border-radius:11px;background:#f7f8f9;padding:14px;display:flex;align-items:flex-start;gap:11px}.notice-pin{flex:0 0 auto;border-radius:6px;background:#222b31;color:#fff;padding:5px 7px;font-size:9px;font-weight:800}.notice-main b{font-size:12px}.notice-main p{margin:5px 0 0;color:#818b92;font-size:10px}.notice-side{border-left:1px solid #eceeef;padding:9px 8px 7px 16px}.notice-side span,.notice-side small{display:block;font-size:9px;color:#929ba1}.notice-side b{display:block;font-size:23px;margin:4px 0}
+.request-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.request-card{position:relative;border:1px solid #e8ebed;border-radius:12px;padding:14px;min-height:150px;background:#fff}.request-card:hover{border-color:#d4d9dc}.request-icon{width:32px;height:32px;border-radius:9px;background:#f2f4f5;display:flex;align-items:center;justify-content:center;margin-bottom:12px}.request-icon svg{width:15px;height:15px}.request-title{font-size:11px;font-weight:800;min-height:30px}.request-count{display:flex;align-items:baseline;gap:4px;margin:7px 0}.request-count b{font-size:26px;line-height:1}.request-count span{font-size:10px;color:#7c868d}.request-meta{display:flex;gap:13px;border-top:1px solid #f0f1f2;padding-top:9px}.request-meta span{font-size:9px;color:#89939a}.request-meta span b{color:#364047}.request-card>small{display:block;margin-top:8px;color:#a0a7ac;font-size:8px}.dash-live,.dash-month{font-size:9px;color:#7b858d;font-weight:800}
+.dash-two-col{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(260px,.7fr);gap:14px}.schedule-card,.staffing-card{margin-top:14px}
+.two-week-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}.cal-day{min-height:72px;border:1px solid #eceeef;border-radius:9px;padding:8px;background:#fff}.cal-day.weekend{background:#fafafa}.cal-day.today{border-color:#7d898f;box-shadow:inset 0 0 0 1px #7d898f}.cal-day .dow{font-size:8px;color:#9aa2a8;font-weight:800}.cal-day .date{display:block;font-size:14px;font-weight:800;margin:2px 0 7px}.cal-day .empty-event{display:block;height:4px;width:24px;border-radius:5px;background:#edf0f1}.calendar-foot{display:flex;align-items:center;gap:13px;margin-top:10px;font-size:8px;color:#8c959b}.calendar-foot small{margin-left:auto}.cal-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:4px;background:#b7c0c5}.cal-dot.major{background:#4d5b63}
+.staff-total{padding:13px;border-radius:11px;background:#f6f7f8}.staff-total span{font-size:10px;color:#747f86}.staff-total div{margin-top:4px}.staff-total b{font-size:31px}.staff-total em{font-size:10px;font-style:normal;margin-left:4px;color:#7d878d}.staff-breakdown{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:9px}.staff-breakdown>div{border:1px solid #eceeef;border-radius:10px;padding:11px}.staff-breakdown span,.staff-breakdown small{display:block;font-size:9px;color:#90999f}.staff-breakdown b{display:block;font-size:15px;margin:5px 0}.staff-note{display:flex;gap:7px;align-items:center;margin-top:11px;color:#8d969c;font-size:9px}.staff-note svg{width:13px;height:13px}
+.monthly-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.monthly-card{border:1px solid #e8ebed;border-radius:12px;padding:15px}.monthly-head{display:flex;align-items:center;gap:10px}.monthly-icon{width:34px;height:34px;border-radius:9px;background:#f3f5f5;display:flex;align-items:center;justify-content:center}.monthly-icon svg{width:16px}.monthly-head small{font-size:8px;color:#a0a7ac;font-weight:800}.monthly-head h4{font-size:12px;margin:2px 0}.monthly-stats{display:grid;grid-template-columns:1fr 1fr;margin-top:15px}.monthly-stats>div+div{border-left:1px solid #eceeef;padding-left:18px}.monthly-stats span{display:block;font-size:9px;color:#7f8990}.monthly-stats b{display:inline-block;font-size:25px;margin-top:5px}.monthly-stats small{font-size:9px;margin-left:4px;color:#919aa0}.monthly-foot{margin-top:12px;padding-top:9px;border-top:1px solid #f0f1f2;font-size:8px;color:#a0a7ac}
+@media(max-width:1000px){.request-grid{grid-template-columns:1fr}.dash-two-col{grid-template-columns:1fr}.notice-board{grid-template-columns:1fr}.notice-side{border-left:0;border-top:1px solid #eceeef;padding-left:8px}.two-week-calendar{overflow-x:auto;grid-template-columns:repeat(7,minmax(85px,1fr))}.monthly-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -729,38 +744,50 @@ body{background:var(--modern-bg)!important;color:var(--modern-text)!important;le
     </div>
 
     <section id="dashboard" class="view active">
-      <div class="hero"><div class="hero-copy"><div class="hero-kicker"><i data-lucide="warehouse"></i> DAILY LOGISTICS CONTROL</div><h2>오늘 물류 운영에서<br>확인할 것만 빠르게 봅니다.</h2><p>재고·입고·출고·일정·이슈를 한 화면에 모아 운영 흐름과 확인 필요 항목을 빠르게 파악하는 팀 워크스테이션입니다.</p></div></div>
-      <div class="summary-grid">
-        <div class="summary-card"><div class="summary-top"><span>금일 입고</span><div class="summary-icon"><i data-lucide="package-plus"></i></div></div><b>18,420</b><small><span class="delta up">+12.4%</span> 전일 대비 · EA</small></div>
-        <div class="summary-card"><div class="summary-top"><span>금일 출고</span><div class="summary-icon"><i data-lucide="truck"></i></div></div><b>31,860</b><small><span class="delta up">+7.8%</span> 전일 대비 · EA</small></div>
-        <div class="summary-card"><div class="summary-top"><span>재고 차이</span><div class="summary-icon"><i data-lucide="scan-search"></i></div></div><b>18 <span style="font-size:13px">SKU</span></b><small><span class="delta down">확인 필요</span> · 247EA</small></div>
-        <div class="summary-card"><div class="summary-top"><span>미확인 이슈</span><div class="summary-icon"><i data-lucide="triangle-alert"></i></div></div><b>7</b><small>오출고 4 · 파손 3</small></div>
+      <div class="dash-welcome">
+        <div><div class="eyebrow">DAILY LOGISTICS DASHBOARD</div><h2>오늘의 물류 운영 현황</h2><p>공지와 출고 요청을 우선 확인하고, 향후 일정·운영 인원·월간 입출고 현황을 한 화면에서 확인합니다.</p></div>
+        <div class="dash-date"><span>운영 기준</span><b id="dashboardToday">TODAY</b></div>
       </div>
-      <div class="dashboard-grid">
-        <div class="panel"><div class="panel-head"><div><small>TODAY FLOW</small><h3>금일 운영 흐름</h3></div><span class="badge info">08/28</span></div><div class="flow-list">
-          <div class="flow-item"><i><i data-lucide="package-check"></i></i><span>재고 입력</span><b>82%</b><small>11 / 13 완료</small></div>
-          <div class="flow-item"><i><i data-lucide="package-plus"></i></i><span>입고</span><b>18.4K</b><small>102차 완료</small></div>
-          <div class="flow-item"><i><i data-lucide="truck"></i></i><span>출고</span><b>31.9K</b><small>10명 작업</small></div>
-          <div class="flow-item"><i><i data-lucide="calendar-clock"></i></i><span>예정 작업</span><b>4건</b><small>금일 잔여</small></div>
-        </div></div>
-        <div class="panel"><div class="panel-head"><div><small>CHECK LIST</small><h3>오늘 확인 필요</h3></div><span class="badge danger">7건</span></div><div class="issue-list">
-          <div class="issue-row"><div><b>재고 차이 5EA 초과</b><span>우선 확인 SKU</span></div><span class="badge danger">8 SKU</span></div>
-          <div class="issue-row"><div><b>당일 입고 미반영</b><span>시스템 반영 확인</span></div><span class="badge warn">4 SKU</span></div>
-          <div class="issue-row"><div><b>출고 대비 재고 불일치</b><span>원인 확인 필요</span></div><span class="badge danger">3 SKU</span></div>
-        </div></div>
+
+      <div class="dash-section">
+        <div class="dash-section-head"><div><small>TEAM NOTICE</small><h3>팀 공지사항 및 주요 전달사항</h3></div><span class="badge info">공지</span></div>
+        <div class="notice-board">
+          <div class="notice-main"><span class="notice-pin">중요</span><div><b>등록된 주요 공지사항이 없습니다.</b><p>왼쪽 메뉴의 공지 관리에서 등록한 내용이 이 영역에 표시됩니다.</p></div></div>
+          <div class="notice-side"><span>최근 공지</span><b>0건</b><small>공지 관리 연동 예정</small></div>
+        </div>
       </div>
-      <div class="dashboard-grid">
-        <div class="panel"><div class="panel-head"><div><small>OWNER STATUS</small><h3>담당자별 재고 확인</h3></div><span class="badge">82%</span></div><div class="progress-list">
-          <div class="progress-row"><b>TIME</b><div class="progress"><i style="width:100%"></i></div><span>100%</span></div><div class="progress-row"><b>SAND</b><div class="progress"><i style="width:92%"></i></div><span>92%</span></div><div class="progress-row"><b>BUS</b><div class="progress"><i style="width:74%"></i></div><span>74%</span></div><div class="progress-row"><b>FURZE</b><div class="progress"><i style="width:61%"></i></div><span>61%</span></div>
-        </div></div>
-        <div class="panel"><div class="panel-head"><div><small>SCHEDULE</small><h3>금일 / 익일 일정</h3></div></div><div class="task-list">
-          <div class="task-row"><div><b>102차 입고</b><span>오늘 09:00–12:00 · TIME</span></div><span class="status-chip">완료</span></div>
-          <div class="task-row"><div><b>Winter FS 출고</b><span>내일 10:00–16:00 · SAND</span></div><span class="status-chip">예정</span></div>
-          <div class="task-row"><div><b>재고 차이 확인</b><span>오늘 17:00 마감</span></div><span class="status-chip">진행</span></div>
-        </div></div>
+
+      <div class="dash-section">
+        <div class="dash-section-head"><div><small>TODAY REQUESTS</small><h3>금일 출고 요청</h3></div><span class="dash-live">TODAY</span></div>
+        <div class="request-grid">
+          <div class="request-card"><div class="request-icon"><i data-lucide="boxes"></i></div><div class="request-title">대량 주문 출고 요청 현황</div><div class="request-count"><b>0</b><span>건</span></div><div class="request-meta"><span>완료 <b>0</b></span><span>미처리 <b>0</b></span></div><small>출고 요청 관리 데이터 연동</small></div>
+          <div class="request-card"><div class="request-icon"><i data-lucide="activity"></i></div><div class="request-title">트래픽 요청 현황</div><div class="request-count"><b>0</b><span>건</span></div><div class="request-meta"><span>완료 <b>0</b></span><span>미처리 <b>0</b></span></div><small>출고 요청 관리 데이터 연동</small></div>
+          <div class="request-card"><div class="request-icon"><i data-lucide="building-2"></i></div><div class="request-title">본사 출고 요청 현황</div><div class="request-count"><b>0</b><span>건</span></div><div class="request-meta"><span>완료 <b>0</b></span><span>미처리 <b>0</b></span></div><small>출고 요청 관리 데이터 연동</small></div>
+        </div>
+      </div>
+
+      <div class="dash-two-col">
+        <div class="dash-section schedule-card">
+          <div class="dash-section-head"><div><small>2 WEEK SCHEDULE</small><h3>2주 운영 일정</h3></div><span class="badge">14 DAYS</span></div>
+          <div class="two-week-calendar" id="twoWeekCalendar"></div>
+          <div class="calendar-foot"><span><i class="cal-dot major"></i> 주요 일정</span><span><i class="cal-dot normal"></i> 일반 일정</span><small>일정 관리 데이터 연동</small></div>
+        </div>
+        <div class="dash-section staffing-card">
+          <div class="dash-section-head"><div><small>TODAY STAFF</small><h3>금일 운영 인원</h3></div><span class="badge info">TODAY</span></div>
+          <div class="staff-total"><span>금일 작업인원</span><div><b>0</b><em>명</em></div></div>
+          <div class="staff-breakdown"><div><span>연차</span><b>0명</b><small>등록 인원 없음</small></div><div><span>외근</span><b>0명</b><small>등록 인원 없음</small></div></div>
+          <div class="staff-note"><i data-lucide="users"></i><span>근태/인원 관리 데이터가 대시보드에 반영됩니다.</span></div>
+        </div>
+      </div>
+
+      <div class="dash-section">
+        <div class="dash-section-head"><div><small>MONTHLY LOGISTICS</small><h3>이번 달 입출고 현황</h3></div><span class="dash-month" id="dashboardMonth">THIS MONTH</span></div>
+        <div class="monthly-grid">
+          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><small>INBOUND</small><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b>0</b><small>건</small></div><div><span>입고 수량</span><b>0</b><small>EA</small></div></div><div class="monthly-foot">입고 실적 데이터 연동</div></div>
+          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><small>OUTBOUND</small><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 건수</span><b>0</b><small>건</small></div><div><span>출고 수량</span><b>0</b><small>EA</small></div></div><div class="monthly-foot">출고 실적 데이터 연동</div></div>
+        </div>
       </div>
     </section>
-
 
     <section id="inventoryOwnerView" class="view">
       <div class="inventory-shell">
@@ -1271,6 +1298,22 @@ function initInventoryColumnResize(){
   applyInventoryColumnWidths();
 }
 setTimeout(initInventoryColumnResize,0);
+</script>
+
+
+<script>
+(function initV30Dashboard(){
+  const now=new Date(), pad=n=>String(n).padStart(2,"0");
+  const today=document.getElementById("dashboardToday"), month=document.getElementById("dashboardMonth"), cal=document.getElementById("twoWeekCalendar");
+  if(today)today.textContent=`${now.getFullYear()}.${pad(now.getMonth()+1)}.${pad(now.getDate())}`;
+  if(month)month.textContent=`${now.getFullYear()}.${pad(now.getMonth()+1)}`;
+  if(cal){
+    const dows=["일","월","화","수","목","금","토"];let s="";
+    for(let i=0;i<14;i++){const d=new Date(now.getFullYear(),now.getMonth(),now.getDate()+i),w=d.getDay();s+=`<div class="cal-day ${w===0||w===6?"weekend":""} ${i===0?"today":""}"><span class="dow">${dows[w]}</span><span class="date">${d.getMonth()+1}/${d.getDate()}</span><span class="empty-event"></span></div>`}
+    cal.innerHTML=s;
+  }
+  if(window.lucide)lucide.createIcons();
+})();
 </script>
 
 </body>
