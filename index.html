@@ -1267,6 +1267,43 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 @media(max-width:600px){.schedule-calendar-panel{border-radius:12px}.schedule-calendar-toolbar{padding:10px}.schedule-calendar-tabs{width:100%}.schedule-calendar-tab{flex:1;min-height:44px}.google-calendar-frame-wrap{height:560px;overflow:hidden}.google-calendar-frame{min-width:100%;max-width:100%}.schedule-editor-top{align-items:flex-start;flex-direction:column}.schedule-editor-top .btn{width:100%;min-height:44px}}
 
 </style>
+
+<style id="v45-base-style">
+/* V45 base workspace layer */
+.v45-utilitybar{display:flex;align-items:center;gap:8px;margin-left:auto}
+.v45-iconbtn{width:38px;height:38px;border:1px solid var(--border,#e5e7eb);background:var(--card,#fff);border-radius:10px;display:grid;place-items:center;cursor:pointer;position:relative}
+.v45-iconbtn:hover{background:#f6f7f9}
+.v45-badge{position:absolute;right:-3px;top:-3px;min-width:16px;height:16px;padding:0 4px;border-radius:999px;font-size:10px;line-height:16px;text-align:center;background:#111827;color:#fff}
+.v45-drawer{position:fixed;inset:0;z-index:9999;display:none}
+.v45-drawer.open{display:block}
+.v45-backdrop{position:absolute;inset:0;background:rgba(15,23,42,.35)}
+.v45-panel{position:absolute;right:0;top:0;height:100%;width:min(420px,92vw);background:#fff;box-shadow:-12px 0 35px rgba(0,0,0,.14);padding:22px;overflow:auto}
+.v45-panel h3{margin:0 0 14px;font-size:18px}
+.v45-close{float:right;border:0;background:none;font-size:22px;cursor:pointer}
+.v45-search{display:flex;gap:8px;margin:12px 0}
+.v45-search input{flex:1;border:1px solid #d9dde5;border-radius:10px;padding:11px 12px}
+.v45-list{display:grid;gap:8px}
+.v45-item{border:1px solid #e7e9ee;border-radius:10px;padding:11px 12px;cursor:pointer}
+.v45-item:hover{background:#f7f8fa}
+.v45-muted{font-size:12px;color:#6b7280}
+.v45-section{margin:20px 0}
+.v45-setting{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid #eee}
+.v45-toggle{width:42px;height:24px;border-radius:999px;border:0;background:#d1d5db;position:relative;cursor:pointer}
+.v45-toggle.on{background:#111827}
+.v45-toggle:after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;background:#fff;border-radius:50%;transition:.15s}
+.v45-toggle.on:after{left:21px}
+.v45-toast{position:fixed;right:22px;bottom:22px;z-index:10001;background:#111827;color:#fff;padding:11px 14px;border-radius:10px;font-size:13px;box-shadow:0 8px 24px rgba(0,0,0,.18);opacity:0;transform:translateY(8px);pointer-events:none;transition:.18s}
+.v45-toast.show{opacity:1;transform:translateY(0)}
+@media (max-width:900px){
+  .v45-utilitybar{gap:4px}
+  .v45-iconbtn{width:34px;height:34px}
+}
+</style>
+
+<style id="v45-settings-style">
+html[data-v45-dark="1"] body{filter:brightness(.86)}
+body.v45-compact .card,body.v45-compact .panel{padding-top:10px;padding-bottom:10px}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -2236,6 +2273,194 @@ setTimeout(initInventoryColumnResize,0);
   $('refreshImportScheduleBtn')&&($('refreshImportScheduleBtn').onclick=()=>loadImportSchedule(true));
 
   resetForm();showScheduleBoard();renderMasterCalendar();renderDashboardSchedule();loadImportSchedule();
+})();
+</script>
+
+<!-- V45 BASE WORKSPACE LAYER -->
+<div id="v45Toast" class="v45-toast"></div>
+
+<div id="v45Drawer" class="v45-drawer" aria-hidden="true">
+  <div class="v45-backdrop" data-v45-close></div>
+  <aside class="v45-panel">
+    <button class="v45-close" data-v45-close aria-label="닫기">×</button>
+    <h3 id="v45PanelTitle">알림센터</h3>
+    <div id="v45PanelBody"></div>
+  </aside>
+</div>
+
+<script id="v45-base-script">
+(function(){
+  const V45 = {
+    notes: JSON.parse(localStorage.getItem("lush-v45-notifications") || "[]"),
+    favorites: JSON.parse(localStorage.getItem("lush-v45-favorites") || "[]"),
+    recent: JSON.parse(localStorage.getItem("lush-v45-recent") || "[]"),
+    drafts: JSON.parse(localStorage.getItem("lush-v45-drafts") || "{}"),
+    undo: JSON.parse(localStorage.getItem("lush-v45-undo") || "[]"),
+    settings: JSON.parse(localStorage.getItem("lush-v45-settings") || '{"darkMode":false,"compact":false}'),
+    save(k,v){ localStorage.setItem(k, JSON.stringify(v)); },
+    toast(msg){
+      const el=document.getElementById("v45Toast"); if(!el)return;
+      el.textContent=msg; el.classList.add("show");
+      clearTimeout(this._tt); this._tt=setTimeout(()=>el.classList.remove("show"),1800);
+    },
+    open(title, html){
+      const d=document.getElementById("v45Drawer");
+      document.getElementById("v45PanelTitle").textContent=title;
+      document.getElementById("v45PanelBody").innerHTML=html;
+      d.classList.add("open"); d.setAttribute("aria-hidden","false");
+      if(window.lucide) lucide.createIcons();
+    },
+    close(){
+      const d=document.getElementById("v45Drawer"); d.classList.remove("open"); d.setAttribute("aria-hidden","true");
+    },
+    currentPage(){
+      const active=document.querySelector(".nav-item.active,.menu-item.active,[aria-current='page']");
+      return active ? (active.textContent||"현재 페이지").trim() : (document.title||"페이지");
+    },
+    addRecent(label){
+      if(!label)return;
+      this.recent=[label,...this.recent.filter(x=>x!==label)].slice(0,10);
+      this.save("lush-v45-recent",this.recent);
+    },
+    toggleFavorite(label){
+      if(!label)return;
+      if(this.favorites.includes(label)) this.favorites=this.favorites.filter(x=>x!==label);
+      else this.favorites.unshift(label);
+      this.save("lush-v45-favorites",this.favorites);
+      this.toast(this.favorites.includes(label) ? "즐겨찾기에 추가했습니다." : "즐겨찾기에서 제거했습니다.");
+      this.renderFavoriteCount();
+    },
+    renderFavoriteCount(){
+      const n=document.getElementById("v45FavCount");
+      if(n) n.textContent=this.favorites.length||"";
+    },
+    renderNotifCount(){
+      const n=document.getElementById("v45NotifCount");
+      if(n) n.textContent=this.notes.filter(x=>!x.read).length||"";
+    },
+    panelNotifications(){
+      const rows=this.notes.length ? this.notes.map((x,i)=>`
+        <div class="v45-item" data-notif="${i}">
+          <b>${this.esc(x.title||"알림")}</b>
+          <div>${this.esc(x.text||"")}</div>
+          <div class="v45-muted">${this.esc(x.time||"")}</div>
+        </div>`).join("") : '<div class="v45-muted">새로운 알림이 없습니다.</div>';
+      this.open("알림센터", `<div class="v45-section">${rows}</div>
+        <button id="v45ReadAll" class="btn">모두 읽음 처리</button>`);
+      document.getElementById("v45ReadAll")?.addEventListener("click",()=>{
+        this.notes=this.notes.map(x=>({...x,read:true})); this.save("lush-v45-notifications",this.notes);
+        this.renderNotifCount(); this.toast("알림을 확인했습니다."); this.close();
+      });
+    },
+    panelSearch(){
+      this.open("전체 검색", `<div class="v45-search"><input id="v45SearchInput" placeholder="메뉴나 업무를 검색하세요"><button id="v45SearchBtn" class="btn">검색</button></div><div id="v45SearchResults" class="v45-list"></div>`);
+      const run=()=>{
+        const q=(document.getElementById("v45SearchInput").value||"").toLowerCase().trim();
+        const items=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
+        const uniq=[...new Map(items.map(el=>[(el.textContent||"").trim(),el]).filter(([t])=>t)).values()];
+        const found=uniq.filter(el=>(el.textContent||"").toLowerCase().includes(q)).slice(0,30);
+        document.getElementById("v45SearchResults").innerHTML=found.length
+          ? found.map((el,i)=>`<div class="v45-item" data-sr="${i}">${this.esc((el.textContent||"").trim())}</div>`).join("")
+          : '<div class="v45-muted">검색 결과가 없습니다.</div>';
+        found.forEach((el,i)=>document.querySelector(`[data-sr="${i}"]`)?.addEventListener("click",()=>{el.click();this.addRecent((el.textContent||"").trim());this.close();}));
+      };
+      document.getElementById("v45SearchBtn").onclick=run;
+      document.getElementById("v45SearchInput").addEventListener("keydown",e=>{if(e.key==="Enter")run()});
+      document.getElementById("v45SearchInput").focus();
+    },
+    panelFavorites(){
+      const rows=this.favorites.length ? this.favorites.map(x=>`<div class="v45-item" data-fav="${this.esc(x)}">${this.esc(x)}</div>`).join("") : '<div class="v45-muted">등록된 즐겨찾기가 없습니다.</div>';
+      this.open("즐겨찾기", `<div class="v45-list">${rows}</div>`);
+      this.favorites.forEach(x=>document.querySelector(`[data-fav="${CSS.escape(x)}"]`)?.addEventListener("click",()=>{
+        const all=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
+        const el=all.find(e=>(e.textContent||"").trim()===x); if(el){el.click();this.addRecent(x);this.close();}
+      }));
+    },
+    panelRecent(){
+      const rows=this.recent.length ? this.recent.map(x=>`<div class="v45-item" data-rec="${this.esc(x)}">${this.esc(x)}</div>`).join("") : '<div class="v45-muted">최근 사용한 메뉴가 없습니다.</div>';
+      this.open("최근 사용", `<div class="v45-list">${rows}</div>`);
+      this.recent.forEach(x=>document.querySelector(`[data-rec="${CSS.escape(x)}"]`)?.addEventListener("click",()=>{
+        const all=[...document.querySelectorAll("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]")];
+        const el=all.find(e=>(e.textContent||"").trim()===x); if(el){el.click();this.close();}
+      }));
+    },
+    panelProfile(){
+      const role = (window.currentRole && window.ROLE_LABEL) ? (window.ROLE_LABEL[window.currentRole]||window.currentRole) : "사용자";
+      this.open("내 정보", `<div class="v45-section">
+        <div class="v45-setting"><span>계정 역할</span><b>${this.esc(role)}</b></div>
+        <div class="v45-setting"><span>다크 모드</span><button id="v45Dark" class="v45-toggle ${this.settings.darkMode?"on":""}"></button></div>
+        <div class="v45-setting"><span>간결한 화면</span><button id="v45Compact" class="v45-toggle ${this.settings.compact?"on":""}"></button></div>
+      </div>`);
+      const toggle=(key,btn)=>{
+        this.settings[key]=!this.settings[key]; this.save("lush-v45-settings",this.settings);
+        btn.classList.toggle("on",this.settings[key]); this.applySettings();
+      };
+      document.getElementById("v45Dark").onclick=e=>toggle("darkMode",e.currentTarget);
+      document.getElementById("v45Compact").onclick=e=>toggle("compact",e.currentTarget);
+    },
+    applySettings(){
+      document.documentElement.dataset.v45Dark=this.settings.darkMode?"1":"0";
+      document.body.classList.toggle("v45-compact",!!this.settings.compact);
+    },
+    saveDraft(key, value){
+      this.drafts[key]={value,updatedAt:new Date().toISOString()};
+      this.save("lush-v45-drafts",this.drafts);
+    },
+    getDraft(key){ return this.drafts[key]?.value ?? null; },
+    pushUndo(label, snapshot){
+      this.undo=[{label,snapshot,time:new Date().toISOString()},...this.undo].slice(0,30);
+      this.save("lush-v45-undo",this.undo);
+    },
+    exportRows(rows, filename="export.csv"){
+      if(!Array.isArray(rows)||!rows.length){this.toast("내보낼 데이터가 없습니다.");return;}
+      const keys=[...new Set(rows.flatMap(r=>Object.keys(r)))];
+      const esc=v=>`"${String(v??"").replace(/"/g,'""')}"`;
+      const csv="\uFEFF"+[keys.map(esc).join(","),...rows.map(r=>keys.map(k=>esc(r[k])).join(","))].join("\n");
+      const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+      const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=filename; a.click(); URL.revokeObjectURL(a.href);
+    },
+    esc(s){return String(s??"").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]))}
+  };
+
+  window.LUSH_V45=V45;
+
+  function addUtilityButtons(){
+    // Try common header containers first, then the top-level shell.
+    const target=document.querySelector("header .header-right,header .top-actions,header,.topbar,.header,.app-header");
+    if(!target || document.getElementById("v45Utilitybar")) return;
+    const bar=document.createElement("div"); bar.id="v45Utilitybar"; bar.className="v45-utilitybar";
+    bar.innerHTML=`
+      <button class="v45-iconbtn" id="v45Search" title="전체 검색">⌕</button>
+      <button class="v45-iconbtn" id="v45Notif" title="알림센터">🔔<span id="v45NotifCount" class="v45-badge"></span></button>
+      <button class="v45-iconbtn" id="v45Fav" title="즐겨찾기">★<span id="v45FavCount" class="v45-badge"></span></button>
+      <button class="v45-iconbtn" id="v45Recent" title="최근 사용">↶</button>
+      <button class="v45-iconbtn" id="v45Profile" title="내 정보">◎</button>`;
+    target.appendChild(bar);
+    document.getElementById("v45Search").onclick=()=>V45.panelSearch();
+    document.getElementById("v45Notif").onclick=()=>V45.panelNotifications();
+    document.getElementById("v45Fav").onclick=()=>V45.panelFavorites();
+    document.getElementById("v45Recent").onclick=()=>V45.panelRecent();
+    document.getElementById("v45Profile").onclick=()=>V45.panelProfile();
+    V45.renderFavoriteCount(); V45.renderNotifCount();
+  }
+
+  document.addEventListener("click",e=>{
+    if(e.target.closest("[data-v45-close]")) V45.close();
+    const nav=e.target.closest("nav a,nav button,.sidebar a,.sidebar button,.menu-item,.nav-item,[data-menu-id]");
+    if(nav && (nav.textContent||"").trim()) V45.addRecent((nav.textContent||"").trim());
+  });
+
+  // Expose generic hooks for later module work without changing current modules.
+  window.LUSH_V45_AUTOSAVE = (key,value)=>V45.saveDraft(key,value);
+  window.LUSH_V45_DRAFT = key=>V45.getDraft(key);
+  window.LUSH_V45_UNDO = (label,snapshot)=>V45.pushUndo(label,snapshot);
+  window.LUSH_V45_EXPORT = (rows,filename)=>V45.exportRows(rows,filename);
+
+  // Retry because some existing V44 UI is initialized after this layer.
+  addUtilityButtons();
+  setTimeout(addUtilityButtons,300);
+  setTimeout(addUtilityButtons,1000);
+  V45.applySettings();
 })();
 </script>
 </body>
