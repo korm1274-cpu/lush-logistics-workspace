@@ -1465,15 +1465,93 @@ body{letter-spacing:-.018em!important}
 @media(max-width:900px){.main,.app.sidebar-collapsed .main{margin-left:0!important;width:100%!important;padding:0 16px 36px!important}.sidebar{width:min(310px,88vw)!important}.sidebar-panel-toggle{display:none!important}.topbar{height:92px!important}.topbar h1{font-size:27px!important}.dashboard-notice-todo-grid,.dash-two-col{grid-template-columns:1fr!important}.dashboard-month-calendar{overflow-x:auto!important}.dashboard-two-week-weekhead,.dashboard-two-week-grid{min-width:720px!important}}
 </style>
 
+
+<style id="v59-cos-nav-dashboard-refined">
+/* V59 — navigation geometry + hierarchy + dashboard separation refinement */
+:root{--sidebar-w:264px;--sidebar-collapsed-w:76px;--ui-ink:#151515;--ui-sub:#70706d;--ui-line:#e4e4e0;--ui-soft:#f7f7f4;--ui-soft-2:#fbfbf9;--ui-focus:#111;}
+.app{--current-sidebar-w:var(--sidebar-w);}
+.app.sidebar-collapsed{--current-sidebar-w:var(--sidebar-collapsed-w);}
+
+/* Sidebar becomes a real two-zone layout: scrollable navigation + fixed profile footer. */
+.sidebar{display:flex!important;flex-direction:column!important;overflow:hidden!important;padding-bottom:16px!important;}
+.sidebar-head{flex:0 0 auto!important;}
+.workspace-badge{flex:0 0 auto!important;}
+#navContainer{flex:1 1 auto!important;min-height:0!important;overflow-y:auto!important;overflow-x:hidden!important;padding:0 5px 12px 0!important;margin-right:-4px!important;scrollbar-width:thin;scrollbar-color:#d1d1cd transparent;}
+#navContainer::-webkit-scrollbar{width:5px}#navContainer::-webkit-scrollbar-thumb{background:#d1d1cd;border-radius:10px}#navContainer::-webkit-scrollbar-track{background:transparent}
+.side-bottom{position:static!important;flex:0 0 auto!important;margin:10px 0 0!important;padding:14px 4px 0!important;border-top:1px solid #deded9!important;background:transparent!important;z-index:auto!important;}
+.profile{min-width:0!important;padding:6px 4px!important;border-radius:8px!important;}
+.profile>div:last-child{min-width:0!important;overflow:hidden!important}.profile b,.profile small{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:155px!important;}
+.avatar{width:36px!important;height:36px!important;flex:0 0 36px!important;border-radius:50%!important;background:#e9f6ee!important;color:#2b7c4a!important;border:1px solid #d6eadc!important;}
+
+/* True outside rail toggle. No dependency on sidebar internal padding/scrolling. */
+.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{position:fixed!important;left:var(--current-sidebar-w)!important;top:88px!important;transform:translateX(-50%)!important;width:30px!important;height:46px!important;padding:0!important;border:1px solid #dadad6!important;border-radius:0 10px 10px 0!important;background:#fff!important;color:#333!important;box-shadow:0 4px 14px rgba(0,0,0,.07)!important;z-index:95!important;display:grid!important;place-items:center!important;font-size:0!important;transition:left .2s ease,background .15s ease,box-shadow .15s ease!important;}
+.sidebar-panel-toggle:before{content:""!important;position:absolute!important;left:-1px!important;top:7px!important;bottom:7px!important;width:1px!important;background:#fff!important;}
+.sidebar-panel-toggle:after{content:"‹"!important;font:400 20px/1 Arial,sans-serif!important;margin-left:1px!important;}
+.app.sidebar-collapsed .sidebar-panel-toggle:after{content:"›"!important;}
+.sidebar-panel-toggle:hover{background:#f5f5f2!important;box-shadow:0 6px 17px rgba(0,0,0,.1)!important;}
+.app.sidebar-collapsed .sidebar-head{margin-bottom:14px!important;padding-bottom:14px!important;}
+.app.sidebar-collapsed #navContainer{padding-right:0!important;margin-right:0!important;}
+.app.sidebar-collapsed .side-bottom{padding-top:12px!important;}
+.app.sidebar-collapsed .profile{justify-content:center!important;padding:4px 0!important;}
+.app.sidebar-collapsed .profile>div:last-child{display:none!important;}
+
+/* Clearer menu taxonomy without turning it into colorful tiles. */
+.nav-group{margin:0!important;padding:14px 0 10px!important;border-top:1px solid #e2e2de!important;}
+.nav-group:first-child{border-top:0!important;padding-top:4px!important;}
+.nav-root{min-height:40px!important;padding:7px 7px!important;font-size:13px!important;font-weight:760!important;letter-spacing:-.01em!important;border-radius:7px!important;}
+.nav-root:hover{background:#efefec!important}.nav-group.open>.nav-root{background:transparent!important;color:#111!important;}
+.nav-root .nav-root-icon{width:27px!important;height:27px!important;flex:0 0 27px!important;border-radius:8px!important;background:#ecece8!important;color:#4d4d49!important;display:grid!important;place-items:center!important;}
+.nav-group[data-group="inventory"] .nav-root-icon{background:#f0edf8!important;color:#6f5aa8!important}.nav-group[data-group="inbound"] .nav-root-icon{background:#edf5ef!important;color:#467b57!important}.nav-group[data-group="outbound"] .nav-root-icon{background:#faf0e9!important;color:#a15f32!important}.nav-group[data-group="schedule"] .nav-root-icon{background:#eaf4f4!important;color:#477c82!important}.nav-group[data-group="issues"] .nav-root-icon{background:#f8ecee!important;color:#a0525d!important}.nav-group[data-group="dashboard"] .nav-root-icon,.nav-group[data-group="upload"] .nav-root-icon,.nav-group[data-group="admin"] .nav-root-icon{background:#ecece8!important;color:#454542!important;}
+.nav-children{margin:4px 0 0 34px!important;padding:2px 0 3px 10px!important;border-left:1px solid #d4d4cf!important;}
+.nav-item{position:relative!important;min-height:35px!important;padding:7px 9px!important;border-radius:6px!important;color:#666662!important;font-size:12.5px!important;font-weight:520!important;}
+.nav-item:hover{background:#f0f0ed!important;color:#111!important}.nav-item.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important;}
+.nav-child-dot{display:none!important}.nav-new-badge{display:none!important;}
+.nav-folder{margin:3px 0!important}.nav-folder-btn{min-height:34px!important;padding:7px 9px!important;border-radius:6px!important;color:#555551!important;font-size:12px!important;}
+.nav-folder-btn:before{display:none!important}.nav-folder-btn:after{content:"";position:absolute;left:-11px;top:50%;width:5px;height:1px;background:#c7c7c1;}
+.nav-folder-btn{position:relative!important}.nav-folder-children{margin:2px 0 0 8px!important;padding-left:10px!important;border-left:1px solid #d9d9d4!important;}
+
+/* Dashboard: editorial but easier to scan. */
+#dashboard{max-width:1600px!important;margin:0 auto!important;}
+#dashboard .dashboard-first-section{margin-top:12px!important;}
+#dashboard .dash-section{margin-top:34px!important;padding-top:0!important;}
+#dashboard .dash-section:not(.dashboard-first-section){border-top:1px solid #dcdcd8!important;padding-top:24px!important;}
+#dashboard .dash-section-head{border-bottom:0!important;padding:0 0 14px!important;margin-bottom:14px!important;}
+#dashboard .dash-section-head h3{font-size:14px!important;font-weight:720!important;letter-spacing:.015em!important;text-transform:none!important;}
+#dashboard .dash-section-head:after{content:"";display:block;width:32px;height:2px;background:#111;margin-top:10px;}
+.dashboard-notice-todo-grid{gap:18px!important;}
+.dashboard-info-panel{padding:20px 22px!important;border:1px solid #e3e3df!important;border-radius:4px!important;background:#fff!important;}
+.dashboard-info-panel.notice-panel,.dashboard-info-panel.todo-panel{border:1px solid #e3e3df!important;background:#fff!important;}
+.dashboard-panel-title{padding-bottom:13px!important;margin-bottom:14px!important;border-bottom:1px solid #ecece8!important;}
+.dashboard-panel-title h3{font-size:16px!important;font-weight:650!important;}
+.panel-kicker{font-size:9px!important;letter-spacing:.11em!important;color:#858580!important;}
+.notice-main{padding:16px!important;background:#f8f8f5!important;border-radius:3px!important;}
+.dashboard-info-panel .notice-side{padding-left:16px!important;}
+.ops-todo-item{min-height:47px!important;padding:11px 0!important;}
+.request-card-grid{gap:14px!important}.request-mini-card{overflow:hidden!important;border:1px solid #e3e3df!important;border-radius:4px!important}.request-mini-head{padding:14px 15px!important;background:#fafaf8!important;border-bottom:1px solid #e7e7e3!important}.request-mini-table{padding:0 14px 10px!important;}
+.monthly-card,.schedule-card,.staffing-card{border:1px solid #e3e3df!important;border-radius:4px!important;overflow:hidden!important;}
+.monthly-card{padding:18px!important}.monthly-card .card-title,.schedule-card .card-title,.staffing-card .card-title{font-weight:650!important;}
+.dashboard-month-calendar{border:1px solid #dededa!important;border-radius:4px!important;}
+.dashboard-two-week-weekhead{border-bottom:1px solid #dededa!important}.dashboard-two-week-weekhead span{background:#fafaf8!important;}
+.dash-two-week-day{border-color:#ecece8!important;background:#fff!important}.dash-two-week-day:hover{background:#fafaf8!important}.dash-two-week-day.today{background:#f7f7f4!important;box-shadow:inset 0 0 0 1px #111!important;}
+
+/* Keep TIME inventory rows stable and aligned. */
+#inventoryOwnerView .inventory-grid tbody tr,#inventoryOwnerView .inventory-grid tbody tr.lot-row{height:46px!important;min-height:46px!important;max-height:46px!important;}
+#inventoryOwnerView .inventory-grid tbody td,#inventoryOwnerView .inventory-grid tbody tr.lot-row td{height:46px!important;min-height:46px!important;max-height:46px!important;padding-top:6px!important;padding-bottom:6px!important;vertical-align:middle!important;}
+#inventoryOwnerView .inventory-grid input,#inventoryOwnerView .inventory-grid select,#inventoryOwnerView .inventory-grid button{max-height:32px!important;}
+
+@media(max-width:1100px) and (min-width:901px){:root{--sidebar-w:240px}.sidebar{width:240px!important}.main{margin-left:240px!important;width:calc(100% - 240px)!important}.app.sidebar-collapsed .main{margin-left:76px!important;width:calc(100% - 76px)!important}}
+@media(max-width:900px){.sidebar-panel-toggle{display:none!important}.sidebar{overflow:hidden!important}#navContainer{overflow-y:auto!important}.side-bottom{position:static!important}.main,.app.sidebar-collapsed .main{margin-left:0!important;width:100%!important}.dashboard-notice-todo-grid{grid-template-columns:1fr!important}}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V57</small></div>
+    <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V59</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
+  <button class="sidebar-panel-toggle" id="desktopSidebarBtn" type="button" title="메뉴 접기/펼치기" aria-label="메뉴 접기/펼치기"><span aria-hidden="true"></span></button>
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
   <main class="main">
@@ -1922,7 +2000,7 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
