@@ -1320,12 +1320,121 @@ html,body{background:linear-gradient(180deg,#fbfcf8 0%,#f5f8f3 100%)!important;c
 @media(max-width:700px){.dashboard-notice-todo-grid{gap:12px!important}.dashboard-info-panel{padding:15px!important}.dashboard-info-panel .notice-board{grid-template-columns:1fr!important}.dashboard-info-panel .ops-todo-item{grid-template-columns:24px 64px minmax(0,1fr)!important}.dashboard-info-panel .ops-todo-item>*:last-child{grid-column:1/-1!important}.dash-section{padding:15px!important}}
 </style>
 
+
+<style id="v56-menu-hierarchy-row-fix">
+/* V56 — clearer navigation hierarchy + aligned edge toggle + inventory row normalization */
+:root{--v56-side:#eef4ec;--v56-side-deep:#e2ece0;--v56-side-line:#cbd9c9;--v56-side-ink:#17241a;--v56-child:#f8fbf7;--v56-active:#d9f0df;--v56-active-ink:#24613a}
+.sidebar{background:var(--v56-side)!important;border-right:1px solid var(--v56-side-line)!important;box-shadow:10px 0 30px rgba(43,66,47,.07)!important;overflow:visible!important}
+.sidebar-head{position:relative!important}
+/* top-level category: stronger, block-like */
+.nav-group{margin:10px 0 0!important}
+.nav-root{min-height:46px!important;padding:11px 12px!important;border-radius:11px!important;background:transparent!important;color:var(--v56-side-ink)!important;font-size:14px!important;font-weight:900!important;letter-spacing:-.01em!important;border:1px solid transparent!important}
+.nav-root span{gap:10px!important}.nav-root .lucide{width:17px!important;height:17px!important;stroke-width:2.2!important}
+.nav-root em{font-size:15px!important;color:#758579!important;font-weight:900!important}
+.nav-root:hover,.nav-group.open>.nav-root{background:var(--v56-side-deep)!important;border-color:#d4e0d2!important;color:#132018!important}
+/* second-level area: visually nested */
+.nav-children{margin:5px 5px 4px 15px!important;padding:6px 0 7px 12px!important;border-left:2px solid #b8cab7!important;background:linear-gradient(90deg,rgba(255,255,255,.45),rgba(255,255,255,0))!important;border-radius:0 10px 10px 0!important}
+.nav-item{position:relative!important;min-height:39px!important;margin:2px 0!important;padding:9px 10px 9px 13px!important;border-radius:9px!important;color:#56665a!important;font-size:13px!important;font-weight:650!important;background:transparent!important}
+.nav-item:before{content:"";position:absolute;left:-14px;top:50%;width:8px;height:1px;background:#b8cab7;transform:translateY(-50%)}
+.nav-item:hover{background:#fff!important;color:#203526!important;box-shadow:0 1px 0 rgba(35,60,40,.03)!important}
+.nav-item.active{background:var(--v56-active)!important;color:var(--v56-active-ink)!important;font-weight:900!important;box-shadow:inset 3px 0 0 #55a96e!important}
+/* third level: inventory file folder */
+.nav-folder{margin:1px 0 3px!important}.nav-folder-btn{min-height:38px!important;padding:8px 10px!important;border-radius:8px!important;color:#334a38!important;background:#f7faf6!important;border:1px solid #dce6da!important;font-size:12px!important;font-weight:900!important}
+.nav-folder-btn:hover,.nav-folder.open>.nav-folder-btn{background:#fff!important;color:#1e3324!important;border-color:#cad9c8!important}
+.nav-folder-btn em{color:#7c8c80!important;font-size:13px!important}.nav-folder-children{margin:4px 0 0 10px!important;padding:3px 0 3px 10px!important;border-left:1px dashed #b9c9b8!important}
+.nav-folder-children .nav-item{font-size:12px!important;min-height:36px!important;padding:8px 9px 8px 12px!important;color:#667369!important}
+.nav-folder-children .nav-item:before{left:-11px!important;width:6px!important;background:#b9c9b8!important}.nav-folder-children .nav-item.active{background:#fff!important;color:#2d7244!important;box-shadow:inset 3px 0 0 #62b77a,0 1px 4px rgba(40,70,45,.05)!important}
+/* edge toggle: exactly straddles the sidebar boundary */
+.sidebar-panel-toggle{right:-21px!important;top:78px!important;width:42px!important;height:46px!important;border-radius:13px!important;border:1px solid #cbd9c9!important;background:#fff!important;color:#314638!important;box-shadow:0 5px 16px rgba(42,65,46,.12)!important;display:grid!important;place-items:center!important;padding:0!important;font-size:0!important;line-height:1!important;transition:background .16s ease,transform .16s ease!important}
+.sidebar-panel-toggle:after{content:"‹";font-size:27px!important;font-family:Arial,sans-serif!important;font-weight:400!important;line-height:1!important;margin-top:-2px!important}
+.sidebar-panel-toggle:hover{background:#e4f3e6!important;transform:translateX(1px)!important}
+.app.sidebar-collapsed .sidebar-panel-toggle{right:-21px!important;top:78px!important;width:42px!important;height:46px!important}
+.app.sidebar-collapsed .sidebar-panel-toggle:after{content:"›"!important}
+/* collapsed navigation keeps toggle outside, hides hierarchy cleanly */
+.app.sidebar-collapsed .nav-root,.app.sidebar-collapsed .nav-folder-btn{justify-content:center!important;padding-left:0!important;padding-right:0!important}.app.sidebar-collapsed .nav-root span{gap:0!important}.app.sidebar-collapsed .nav-root span:not(:has(.lucide)){font-size:0!important}
+/* TIME / owner inventory: force consistent row geometry */
+.inventory-grid{table-layout:auto!important}.inventory-grid tr{height:42px!important}.inventory-grid th{height:42px!important;min-height:42px!important;box-sizing:border-box!important;vertical-align:middle!important;padding-top:0!important;padding-bottom:0!important}.inventory-grid td{height:42px!important;min-height:42px!important;box-sizing:border-box!important;vertical-align:middle!important;padding-top:0!important;padding-bottom:0!important;line-height:1.25!important}.inventory-grid tbody tr.lot-row{height:38px!important}.inventory-grid tbody tr.lot-row td{height:38px!important;min-height:38px!important}.inventory-grid input,.inventory-grid select{height:32px!important;min-height:32px!important;box-sizing:border-box!important;line-height:32px!important;margin:0!important}.inventory-grid .drag-handle{height:32px!important}.inventory-grid .manage-actions{min-height:32px!important}.inventory-grid .group-name-input,.inventory-grid .group-select{height:32px!important;min-height:32px!important}.inventory-grid .mini-add,.inventory-grid .mini-remove,.inventory-grid .row-delete,.inventory-grid .product-delete,.inventory-grid .lot-delete{min-height:28px!important;line-height:1!important}
+/* prevent content clipping at common widths */
+.sidebar,.main,.topbar,.view,.inventory-grid-card,.inventory-grid-wrap{box-sizing:border-box!important}.inventory-grid-wrap{width:100%!important;max-width:100%!important}.main{min-width:0!important}
+@media(max-width:1180px) and (min-width:901px){.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{top:76px!important}}
+@media(max-width:900px){.sidebar-panel-toggle{display:none!important}.nav-root{font-size:15px!important}.nav-item{font-size:14px!important}}
+</style>
+
+
+<style id="v57-white-color-nav-refined">
+/* V57 — white workspace, clearly separated navigation, color-coded icon system */
+:root{
+  --v57-c-dashboard:#2563eb; --v57-c-inventory:#7c3aed; --v57-c-inbound:#16a34a;
+  --v57-c-outbound:#ea580c; --v57-c-schedule:#0891b2; --v57-c-issues:#dc2626;
+  --v57-c-upload:#4f46e5; --v57-c-admin:#64748b;
+  --v57-side:#f3f5f7; --v57-side-hover:#ffffff; --v57-side-line:#d9dfe5;
+  --v57-text:#17202a; --v57-sub:#66727d;
+}
+html,body{background:#fff!important}
+.main{background:#fff!important}
+.view{background:#fff!important}
+/* menu is intentionally a different neutral surface so it never merges with the workspace */
+.sidebar{background:var(--v57-side)!important;border-right:1px solid var(--v57-side-line)!important;box-shadow:5px 0 18px rgba(31,41,55,.055)!important}
+.sidebar-head{padding-bottom:12px!important;margin-bottom:6px!important;border-bottom:1px solid #dde2e7!important}
+.brand b{color:#151a20!important}.brand small{color:#7a858f!important}
+.logo{background:#fff!important;border:1px solid #d6dce2!important;color:#111827!important;box-shadow:none!important}
+.workspace-badge{background:#fff!important;border:1px solid #dde2e7!important;color:#4b5563!important;box-shadow:none!important}
+.workspace-badge small{color:#68737d!important}
+/* top-level category is a distinct visual tier */
+.nav-group{--group-color:#64748b;margin:11px 0 0!important}
+.nav-group[data-group="dashboard"]{--group-color:var(--v57-c-dashboard)}
+.nav-group[data-group="inventory"]{--group-color:var(--v57-c-inventory)}
+.nav-group[data-group="inbound"]{--group-color:var(--v57-c-inbound)}
+.nav-group[data-group="outbound"]{--group-color:var(--v57-c-outbound)}
+.nav-group[data-group="schedule"]{--group-color:var(--v57-c-schedule)}
+.nav-group[data-group="issues"]{--group-color:var(--v57-c-issues)}
+.nav-group[data-group="upload"]{--group-color:var(--v57-c-upload)}
+.nav-group[data-group="admin"]{--group-color:var(--v57-c-admin)}
+.nav-root{min-height:47px!important;background:transparent!important;border:1px solid transparent!important;color:#202830!important;font-size:14px!important;font-weight:900!important;padding:11px 11px!important}
+.nav-root .nav-root-icon{display:grid!important;place-items:center!important;width:29px!important;height:29px!important;flex:0 0 29px!important;border-radius:9px!important;background:color-mix(in srgb,var(--group-color) 12%,white)!important;color:var(--group-color)!important}
+.nav-root .nav-root-icon .lucide{width:17px!important;height:17px!important;stroke-width:2.35!important}
+.nav-root:hover,.nav-group.open>.nav-root{background:#fff!important;border-color:#e0e5ea!important;color:#111820!important;box-shadow:0 2px 8px rgba(30,41,59,.035)!important}
+.nav-group.open>.nav-root{box-shadow:inset 3px 0 0 var(--group-color),0 2px 8px rgba(30,41,59,.035)!important}
+.nav-root em{color:#8b959e!important}
+/* second level uses white inset panel + colored guide line */
+.nav-children{margin:5px 4px 5px 15px!important;padding:7px 5px 7px 12px!important;background:#fff!important;border:1px solid #e3e7eb!important;border-left:3px solid color-mix(in srgb,var(--group-color) 65%,white)!important;border-radius:10px!important;box-shadow:0 2px 7px rgba(30,41,59,.025)!important}
+.nav-item{display:flex!important;align-items:center!important;gap:8px!important;min-height:39px!important;padding:8px 9px!important;color:#59636d!important;font-size:13px!important;font-weight:650!important;border:1px solid transparent!important}
+.nav-item:before{display:none!important}
+.nav-child-dot{width:7px;height:7px;border-radius:50%;background:color-mix(in srgb,var(--group-color) 72%,white);box-shadow:0 0 0 3px color-mix(in srgb,var(--group-color) 10%,white);flex:0 0 7px}
+.nav-item:hover{background:color-mix(in srgb,var(--group-color) 5%,white)!important;color:#202830!important;border-color:color-mix(in srgb,var(--group-color) 13%,white)!important;box-shadow:none!important}
+.nav-item.active{background:color-mix(in srgb,var(--group-color) 10%,white)!important;color:color-mix(in srgb,var(--group-color) 78%,#111)!important;border-color:color-mix(in srgb,var(--group-color) 22%,white)!important;font-weight:900!important;box-shadow:inset 3px 0 0 var(--group-color)!important}
+.nav-item.active .nav-child-dot{background:var(--group-color);box-shadow:0 0 0 3px color-mix(in srgb,var(--group-color) 13%,white)}
+/* third level inventory file is visibly another tier */
+.nav-folder{margin:1px 0!important}.nav-folder-btn{min-height:39px!important;background:#f7f8fa!important;border:1px solid #e1e5e9!important;color:#3d4650!important;font-size:12.5px!important;font-weight:900!important;padding:8px 10px!important}
+.nav-folder-btn:before{content:"";width:8px;height:8px;border-radius:2px;background:var(--group-color);opacity:.78;margin-right:8px;flex:0 0 8px}
+.nav-folder-btn:hover,.nav-folder.open>.nav-folder-btn{background:#f1effb!important;border-color:#ded8f2!important;color:#312e55!important}
+.nav-folder-children{margin:5px 0 0 11px!important;padding:4px 0 4px 10px!important;border-left:1px dashed color-mix(in srgb,var(--group-color) 40%,white)!important}
+.nav-folder-children .nav-item{font-size:12.5px!important;min-height:37px!important;color:#69737c!important}
+.nav-folder-children .nav-item.active{background:color-mix(in srgb,var(--group-color) 9%,white)!important;color:#4c2f8c!important;box-shadow:inset 3px 0 0 var(--group-color)!important}
+/* toggle stays centered on the physical menu edge; same geometry open/closed */
+.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{right:-18px!important;top:78px!important;width:36px!important;height:44px!important;border-radius:0 12px 12px 0!important;border:1px solid #cfd6dc!important;border-left:0!important;background:#fff!important;color:#4b5563!important;box-shadow:5px 2px 12px rgba(31,41,55,.09)!important;transform:none!important}
+.sidebar-panel-toggle:hover{background:#f8fafc!important;color:#111827!important;transform:none!important}
+.sidebar-panel-toggle:after{font-size:25px!important}.app.sidebar-collapsed .sidebar-panel-toggle:after{font-size:25px!important}
+/* cards remain white, using restrained color only for information hierarchy */
+.dash-section,.dashboard-info-panel,.request-mini-card,.monthly-card,.schedule-card,.inventory-card,.inventory-grid-card,.sheet-card,.analysis-card,.request-manager-card,.data-filter-row,.box-entry-card{background:#fff!important}
+.dashboard-info-panel.notice-panel{border-top:3px solid #2563eb!important}.dashboard-info-panel.todo-panel{border-top:3px solid #7c3aed!important}
+/* TIME inventory geometry: every product/lot row and control uses one consistent baseline */
+#inventoryOwnerView .inventory-grid tbody tr,#inventoryOwnerView .inventory-grid tbody tr.lot-row{height:44px!important;min-height:44px!important}
+#inventoryOwnerView .inventory-grid tbody td,#inventoryOwnerView .inventory-grid tbody tr.lot-row td{height:44px!important;min-height:44px!important;padding-top:5px!important;padding-bottom:5px!important;vertical-align:middle!important;box-sizing:border-box!important}
+#inventoryOwnerView .inventory-grid input,#inventoryOwnerView .inventory-grid select{height:32px!important;min-height:32px!important;line-height:normal!important;padding-top:0!important;padding-bottom:0!important;box-sizing:border-box!important}
+#inventoryOwnerView .inventory-grid button{box-sizing:border-box!important}
+/* clipping safeguards */
+.main,.view,.dash-section,.dashboard-info-panel,.schedule-card,.inventory-shell,.inventory-grid-card{min-width:0!important;max-width:100%!important;box-sizing:border-box!important}
+.dashboard-notice-todo-grid>*{min-width:0!important}.dashboard-two-week-calendar,.inventory-grid-wrap,.table-wrap{max-width:100%!important}
+@media(max-width:900px){.sidebar{background:#f3f5f7!important}.nav-root{font-size:15px!important}.nav-item{font-size:14px!important}}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V55</small></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V57</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -1777,7 +1886,7 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.innerHTML=`<button class="nav-root"><span><i data-lucide="${g.icon}"></i>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.textContent=m.label;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;if(m.id==="out-request"){const n=document.createElement("span");n.className="nav-new-badge";n.textContent="NEW";b.appendChild(n)}b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
