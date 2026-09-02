@@ -1285,12 +1285,47 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 <style id="v52-ui-css">
 .dashboard-two-week-calendar{border:1px solid #e7ecef;border-radius:12px;overflow:hidden;background:#fff}.dashboard-two-week-weekhead,.dashboard-two-week-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}.dashboard-two-week-weekhead span{padding:7px;text-align:center;font-size:9px;font-weight:800;color:#7b878e;background:#f8fafb;border-bottom:1px solid #e8edef}.dash-two-week-day{min-height:105px;padding:7px;border-right:1px solid #edf1f3;border-bottom:1px solid #edf1f3}.dash-two-week-day:nth-child(7n){border-right:0}.dash-two-week-day.today{box-shadow:inset 0 0 0 2px #596970}.dash-two-week-day.weekend{background:#fcfcfc}.dash-two-week-date{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}.dash-two-week-date b{font-size:13px}.dash-two-week-date span{font-size:8px;color:#98a1a6}.dash-two-week-events{display:grid;gap:3px}.dash-two-week-event{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px;align-items:center;padding:4px 5px;border-radius:6px;font-size:7px;overflow:hidden}.dash-two-week-event b{font-size:7px;white-space:nowrap}.dash-two-week-event span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dash-two-week-event.annual,.dash-two-week-event.half_am,.dash-two-week-event.half_pm,.dash-two-week-event.field{background:#eaf1f7;color:#315f95}.dash-two-week-event.import{background:#fff0e4;color:#a9510a}.dash-two-week-event.holiday{background:#eef0f1;color:#67737a}.alarm-popup{position:fixed;right:22px;top:70px;z-index:10000;width:min(390px,calc(100vw - 30px));display:grid;grid-template-columns:34px 1fr 24px;gap:10px;align-items:start;padding:13px 14px;background:#fff;border:1px solid #dfe5e8;border-radius:12px;box-shadow:0 14px 38px rgba(0,0,0,.18);transform:translateY(-15px);opacity:0;pointer-events:none;transition:.2s}.alarm-popup.show{transform:translateY(0);opacity:1;pointer-events:auto}.alarm-popup-icon{font-size:19px}.alarm-popup b{display:block;font-size:11px;margin-bottom:3px}.alarm-popup span{display:block;font-size:10px;color:#69767d;line-height:1.45}.alarm-popup button{border:0;background:none;font-size:18px;color:#879198;cursor:pointer}@media(max-width:760px){.dashboard-two-week-calendar{overflow:auto}.dashboard-two-week-weekhead,.dashboard-two-week-grid{min-width:700px}}
 </style>
+
+<style id="v55-bright-ui-fix">
+/* V55 — brighter LUSH product palette + layout hardening */
+:root{
+  --v55-bg:#f8faf6;--v55-surface:#ffffff;--v55-ink:#172019;--v55-muted:#647067;--v55-line:#dfe7de;
+  --v55-mint:#dff4e7;--v55-mint-strong:#4fa96e;--v55-lilac:#eee8fb;--v55-lilac-strong:#8061b4;
+  --v55-peach:#fff0df;--v55-peach-strong:#e98b38;--v55-lemon:#fff8cf;--v55-pink:#fce7ec;--v55-sky:#e8f2fb;
+}
+html,body{background:linear-gradient(180deg,#fbfcf8 0%,#f5f8f3 100%)!important;color:var(--v55-ink)!important;overflow-x:hidden!important}
+.app,.main,.view,.dash-section,.dashboard-info-panel,.request-mini-card,.monthly-card{min-width:0!important;box-sizing:border-box!important}
+.sidebar{background:#f4f8f1!important;border-right:1px solid #dce6da!important;box-shadow:8px 0 28px rgba(52,75,55,.055)!important;color:#1d2820!important;overflow:visible!important}
+.brand{cursor:pointer!important}.brand b{color:#172019!important}.brand small{color:#758078!important}.logo{background:#fff!important;color:#172019!important;border:1px solid #d7e2d6!important;box-shadow:4px 4px 0 #bfe8cb!important;border-radius:12px!important}.logo svg{width:24px!important;height:24px!important;stroke-width:2.4!important}
+.workspace-badge{background:#fff!important;border:1px solid #dce6da!important;color:#344239!important}.workspace-badge small{color:#4b9d69!important}
+.nav-group-title{color:#8a958d!important}.nav-item,.nav-folder-btn{color:#425048!important}.nav-item:hover,.nav-folder-btn:hover{background:#e9f4e9!important;color:#172019!important}.nav-item.active,.nav-folder.open>.nav-folder-btn{background:#172019!important;color:#fff!important;box-shadow:0 7px 16px rgba(23,32,25,.10)!important}.nav-folder-children{border-left-color:#d5e3d4!important}.nav-folder-children .nav-item{color:#657168!important}.nav-folder-children .nav-item:hover{background:#edf6ec!important;color:#172019!important}.nav-folder-children .nav-item.active{background:#172019!important;color:#fff!important}.profile b{color:#243128!important}.profile small{color:#7a867d!important}.avatar{background:#dff4e7!important;color:#1f6f3c!important;border:1px solid #c9e8d2!important}
+/* sidebar toggle protrudes beside the rail, including collapsed state */
+.sidebar-head{position:relative!important}.sidebar-panel-toggle{position:absolute!important;right:-35px!important;top:18px!important;width:36px!important;height:42px!important;border-radius:0 11px 11px 0!important;border:1px solid #d7e2d6!important;border-left:0!important;background:#fff!important;color:#253129!important;box-shadow:6px 3px 14px rgba(42,61,45,.08)!important;z-index:70!important}.sidebar-panel-toggle:hover{background:#e8f5e9!important}.app.sidebar-collapsed .sidebar{width:78px!important;padding:14px 10px!important}.app.sidebar-collapsed .main{margin-left:78px!important;width:calc(100% - 78px)!important}.app.sidebar-collapsed .sidebar-head{flex-direction:column!important}.app.sidebar-collapsed .sidebar-panel-toggle{position:absolute!important;right:-35px!important;top:11px!important;width:36px!important;height:42px!important}.app.sidebar-collapsed .sidebar-head .logo{width:42px!important;height:42px!important}
+.main{background:transparent!important}.topbar{background:rgba(251,252,248,.94)!important;backdrop-filter:blur(10px);position:sticky!important;top:0!important;z-index:35!important;padding-right:4px!important}.topbar h1{color:#152019!important}.eyebrow{color:#718077!important}.base-tool,.btn,.role-preview{background:#fff!important;color:#2a362d!important;border-color:#d9e3d8!important;box-shadow:none!important}.base-tool:hover,.btn:hover{background:#edf6ec!important;border-color:#cbdcca!important}
+/* lighter dashboard panels */
+.dashboard-first-section{border-top:0!important;background:transparent!important;padding:0!important;box-shadow:none!important;border:0!important;overflow:visible!important}.dashboard-first-section:after{display:none!important}
+.dashboard-notice-todo-grid{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;gap:18px!important}.dashboard-info-panel{background:#fff!important;border:1px solid var(--v55-line)!important;border-radius:18px!important;padding:20px!important;box-shadow:0 9px 24px rgba(50,70,52,.045)!important;overflow:hidden!important}.dashboard-info-panel.notice-panel{background:linear-gradient(135deg,#fff 0%,#f0f9f3 100%)!important;border-top:4px solid #61b67b!important}.dashboard-info-panel.todo-panel{background:linear-gradient(135deg,#fff 0%,#f5f1fd 100%)!important;border-top:4px solid #9173c5!important}.dashboard-panel-title{display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;margin-bottom:15px!important}.dashboard-panel-title h3{margin:3px 0 0!important;font-size:19px!important;font-weight:900!important;color:#1c2820!important}.panel-kicker{font-size:10px!important;font-weight:900!important;letter-spacing:.13em!important;color:#7b887f!important}.todo-badge{background:#eee8fb!important;color:#654995!important;border-color:#ddd2f1!important}.dashboard-info-panel .notice-board{display:grid!important;grid-template-columns:minmax(0,1fr) 110px!important;gap:10px!important}.dashboard-info-panel .notice-main{min-height:118px!important;background:rgba(255,255,255,.78)!important}.dashboard-info-panel .notice-side{background:rgba(255,255,255,.75)!important;border:1px solid #e4ece3!important;border-radius:12px!important;padding:14px!important}.dashboard-info-panel .ops-todo-head{margin-bottom:8px!important}.dashboard-info-panel .ops-todo-list{max-height:164px!important;overflow:auto!important;padding-right:3px!important}.dashboard-info-panel .ops-todo-item{background:rgba(255,255,255,.82)!important;border-color:#e8e1f4!important;font-size:12px!important;grid-template-columns:24px 78px minmax(0,1fr) auto!important}
+.dash-section{background:#fff!important;border-color:var(--v55-line)!important;box-shadow:0 9px 24px rgba(50,70,52,.04)!important}.dash-section-head h3{background:transparent!important;color:#1c2820!important;padding:0!important;font-size:19px!important;transform:none!important;box-shadow:none!important;position:relative!important}.dash-section-head h3:after{content:"";display:block;width:34px;height:4px;border-radius:99px;background:#75bd8a;margin-top:7px}.dash-section:nth-of-type(3) .dash-section-head h3:after{background:#9273c7}.dash-section:nth-of-type(4) .dash-section-head h3:after{background:#ef9d55}.badge.info{background:#e3f4e8!important;color:#2f7e4c!important;border-color:#cce8d4!important}
+.request-mini-card:nth-child(1){border-top-color:#efa156!important;background:linear-gradient(180deg,#fff,#fffaf5)!important}.request-mini-card:nth-child(2){border-top-color:#9173c5!important;background:linear-gradient(180deg,#fff,#faf8ff)!important}.request-mini-card:nth-child(3){border-top-color:#66b97f!important;background:linear-gradient(180deg,#fff,#f8fcf9)!important}
+.request-type-icon{background:#f3f6f2!important;color:#2e4034!important}
+/* current month dashboard calendar */
+.dash-two-col{display:grid!important;grid-template-columns:minmax(0,2.35fr) minmax(270px,.65fr)!important;gap:18px!important;align-items:start!important}.schedule-card{overflow:hidden!important}.dashboard-month-calendar{width:100%!important;overflow:hidden!important;border-color:#dfe7de!important;background:#fff!important}.dashboard-two-week-weekhead span{font-size:12px!important;background:#f3f7f1!important;color:#5f6d63!important;padding:10px 4px!important}.dashboard-two-week-weekhead span:first-child{color:#cf6262!important}.dashboard-two-week-weekhead span:last-child{color:#537db1!important}.dashboard-two-week-grid{display:grid!important;grid-template-columns:repeat(7,minmax(0,1fr))!important}.dash-two-week-day{min-height:104px!important;padding:7px!important;background:#fff!important;overflow:hidden!important}.dash-two-week-day.weekend{background:#fbfcfa!important}.dash-two-week-day.outside{background:#f7f8f5!important;color:#a5aea7!important}.dash-two-week-day.outside .dash-two-week-events{opacity:.55!important}.dash-two-week-day.today{box-shadow:inset 0 0 0 2px #62af79!important;background:#f4fbf6!important}.dash-two-week-date b{font-size:14px!important}.dash-two-week-date span{font-size:9px!important;color:#9aa49c!important}.dash-two-week-event{font-size:9px!important;padding:4px 5px!important;border-radius:6px!important;min-width:0!important}.dash-two-week-event b{font-size:8px!important}.dash-more{font-size:9px!important;color:#7b877f!important}.dash-two-week-event.annual,.dash-two-week-event.half_am,.dash-two-week-event.half_pm,.dash-two-week-event.field{background:#e9f4ff!important;color:#3e6c9b!important}.dash-two-week-event.import{background:#fff0df!important;color:#a75c19!important}.dash-two-week-event.holiday{background:#f0f2ef!important;color:#67736a!important}
+.staffing-card{background:linear-gradient(180deg,#fff 0%,#f5fbf7 100%)!important}.staff-total-main b{color:#327d4c!important}.absence-summary{background:#fff!important;border-color:#e0e9df!important}
+.monthly-card:first-child{background:linear-gradient(135deg,#fff,#eaf8ef)!important;border-top-color:#5db477!important}.monthly-card:last-child{background:linear-gradient(135deg,#fff,#fff1e3)!important;border-top-color:#ee9a4e!important}
+/* layout clipping hardening */
+.main{min-width:0!important;overflow:visible!important}.topbar,.dash-two-col,.dashboard-notice-todo-grid,.request-card-grid,.monthly-grid{min-width:0!important}.request-mini-head>div,.request-row>span,.notice-main>div,.ops-todo-item>*{min-width:0!important}.notice-main b,.notice-main p,.todo-content{overflow-wrap:anywhere!important}.table-wrap,.inventory-grid-wrap,.data-table-wrap{max-width:100%!important;overflow:auto!important}.data-workbench,.inventory-shell,.schedule-shell,.request-manager-shell{max-width:100%!important;overflow:visible!important}
+@media(max-width:1280px){.dash-two-col{grid-template-columns:minmax(0,1.8fr) minmax(250px,.7fr)!important}.dashboard-info-panel .notice-board{grid-template-columns:1fr!important}.dashboard-info-panel .notice-side{display:flex!important;justify-content:space-between!important;align-items:center!important}}
+@media(max-width:1100px){.dashboard-notice-todo-grid,.dash-two-col{grid-template-columns:1fr!important}.dashboard-info-panel .notice-board{grid-template-columns:minmax(0,1fr) 120px!important}.staffing-card{width:100%!important}}
+@media(max-width:900px){.app.sidebar-collapsed .main,.main{margin-left:0!important;width:100%!important}.sidebar-panel-toggle{display:none!important}.topbar{position:relative!important}.dashboard-two-week-calendar{overflow-x:auto!important}.dashboard-two-week-weekhead,.dashboard-two-week-grid{min-width:720px!important}}
+@media(max-width:700px){.dashboard-notice-todo-grid{gap:12px!important}.dashboard-info-panel{padding:15px!important}.dashboard-info-panel .notice-board{grid-template-columns:1fr!important}.dashboard-info-panel .ops-todo-item{grid-template-columns:24px 64px minmax(0,1fr)!important}.dashboard-info-panel .ops-todo-item>*:last-child{grid-column:1/-1!important}.dash-section{padding:15px!important}}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
-    <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo">L</div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V54</small></div>
+    <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div><button class="sidebar-panel-toggle" id="desktopSidebarBtn" title="메뉴 접기/펼치기">☰</button></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V55</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -1312,14 +1347,19 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 
     <section id="dashboard" class="view active">
       <div class="dash-section dashboard-first-section">
-        <div class="dash-section-head"><div><h3>팀 공지사항 및 주요 전달사항</h3></div><span class="badge info">공지</span></div>
-        <div class="notice-board">
-          <div class="notice-main"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
-          <div class="notice-side"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div>
-        </div>
-        <div class="ops-todo-wrap">
-          <div class="ops-todo-head"><div><b>TO DO</b><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
-          <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 할 일이 없습니다.</div></div>
+        <div class="dashboard-notice-todo-grid">
+          <div class="dashboard-info-panel notice-panel">
+            <div class="dashboard-panel-title"><div><span class="panel-kicker">TEAM NOTICE</span><h3>팀 공지사항</h3></div><span class="badge info">공지</span></div>
+            <div class="notice-board">
+              <div class="notice-main"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
+              <div class="notice-side"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div>
+            </div>
+          </div>
+          <div class="dashboard-info-panel todo-panel">
+            <div class="dashboard-panel-title"><div><span class="panel-kicker">TODAY'S TASK</span><h3>TO DO</h3></div><span class="badge todo-badge">업무</span></div>
+            <div class="ops-todo-head"><div><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
+            <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 할 일이 없습니다.</div></div>
+          </div>
         </div>
       </div>
 
@@ -1378,8 +1418,8 @@ button.master-event{cursor:pointer}.master-event .event-type{flex:0 0 auto;font-
 
       <div class="dash-two-col">
         <div class="dash-section schedule-card">
-          <div class="dash-section-head"><div><h3>2주 운영 일정</h3></div><span id="dashboardWeekRange" class="dash-month"></span></div>
-          <div class="dashboard-two-week-calendar">
+          <div class="dash-section-head"><div><h3>스케줄</h3></div><span id="dashboardWeekRange" class="dash-month"></span></div>
+          <div class="dashboard-two-week-calendar dashboard-month-calendar">
             <div class="dashboard-two-week-weekhead"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
             <div class="dashboard-two-week-grid" id="dashboardTwoWeekCalendar"><div class="dashboard-schedule-empty">일정을 불러오는 중입니다.</div></div>
           </div>
@@ -2253,11 +2293,12 @@ setTimeout(initInventoryColumnResize,0);
   function rangeLabel(a,b){return `${a.getFullYear()}.${pad(a.getMonth()+1)}.${pad(a.getDate())} ~ ${b.getFullYear()}.${pad(b.getMonth()+1)}.${pad(b.getDate())}`}
 
   function renderDashboardSchedule(){
-    const now=new Date(),startDate=new Date(now.getFullYear(),now.getMonth(),now.getDate()-now.getDay()),endDate=new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()+13);
-    const start=dateKey(startDate),end=dateKey(endDate),events=allEventsForYears([startDate.getFullYear(),endDate.getFullYear()]);
-    if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=rangeLabel(startDate,endDate);
+    const now=new Date(),y=now.getFullYear(),m=now.getMonth();
+    const first=new Date(y,m,1),gridStart=new Date(y,m,1-first.getDay()),gridEnd=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+41);
+    const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
+    if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${y}년 ${m+1}월`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<14;i++){const d=new Date(startDate.getFullYear(),startDate.getMonth(),startDate.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,3);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()+1}/${d.getDate()}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>3?`<small>+${list.length-3}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey(),todayAbs=attendance.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();
     todayAbs.forEach(e=>{const factor=fullAbsence.has(e.type)?1:.5;perPerson.set(e.person,Math.max(perPerson.get(e.person)||0,factor))});
     const excluded=[...perPerson.values()].reduce((a,b)=>a+b,0),available=Math.max(0,TEAM_SIZE-excluded);
