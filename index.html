@@ -1668,16 +1668,17 @@ const DEFAULT_USERS=[
  {name:"Time",email:"time@company.com",role:"admin",active:true},{name:"Leader",email:"leader@company.com",role:"leader",active:true},{name:"Team Member",email:"member@company.com",role:"editor",active:true},{name:"Restricted",email:"viewer@company.com",role:"restricted",active:true}
 ];
 const DEFAULT_DATA={
- inventory:{"총 재고파일":{cols:["담당","PLU","제품명","카테고리","08/27","08/28","차이","상태","비고"],rows:[["TIME","101894","Sleepy Body Lotion","BODY","336","329","-7","확인 필요",""],["SAND","100871","Karma Soap","SOAP","160","151","-9","확인 필요",""]] },"TIME":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["101894","Sleepy Body Lotion","BODY","336","329","-7",""]] },"SAND":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["100871","Karma Soap","SOAP","160","151","-9",""]] }},
+ inventory:{"총 재고파일":{cols:["담당","PLU","제품명","카테고리","08/27","08/28","차이","상태","비고"],rows:[["TIME","101894","Sleepy Body Lotion","BODY","336","329","-7","확인 필요",""]] },"TIME":{cols:["PLU","제품명","카테고리","08/27","08/28","차이","비고"],rows:[["101894","Sleepy Body Lotion","BODY","336","329","-7",""]] }},
  inbound:{"일일 입고관리":{cols:["일자","차수","제품수량","SKU","투입인원","소요시간","생산성","비고"],rows:[["2026-08-28","102차","18420","128","8","3.2","719",""]]},"월별 입고현황":{cols:["월","입고수량","입고차수","평균 투입인원","평균 생산성","비고"],rows:[["2026-08","18420","1","8","719",""]]}},
  outbound:{"일일 출고관리":{cols:["일자","구분","출고수량","SKU","투입인원","소요시간","생산성","비고"],rows:[["2026-08-28","매장","31860","224","10","3.0","1062",""]]},"FS / 시즌 출고":{cols:["일자","프로젝트","매장수","수량","상태","비고"],rows:[["2026-08-28","Winter FS","32","12140","진행",""]]}},
  schedule:{"통합 일정":{cols:["일자","구분","업무명","담당자","시작","종료","상태","비고"],rows:[["2026-08-28","입고","102차 입고","TIME","09:00","12:00","완료",""]]}},
  issues:{"오출고":{cols:["일자","매장","제품","수량","금액","담당자","처리상태","비고"],rows:[["2026-08-28","강남역","Sample A","2","32000","TIME","확인중",""]]},"파손":{cols:["일자","제품","입고차수","파손수량","원인","담당자","처리상태","비고"],rows:[["2026-08-28","Sample B","102차","4","운송","BUS","확인중",""]]}}
 };
 let db=JSON.parse(localStorage.getItem(DATA_KEY)||"null")||structuredClone(DEFAULT_DATA);
+if(db&&db.inventory){delete db.inventory.SAND; const total=db.inventory["총 재고파일"]; if(total&&Array.isArray(total.rows)) total.rows=total.rows.filter(r=>String(r?.[0]||"").toUpperCase()!=="SAND"); localStorage.setItem(DATA_KEY,JSON.stringify(db));}
 let menus=JSON.parse(localStorage.getItem(MENU_KEY)||"null")||structuredClone(DEFAULT_MENUS);
 function normalizeMenus(){
-  const cleaned=[]; let totalSeen=false;
+  let cleaned=[]; let totalSeen=false;
   for(const raw of menus){
     if(!raw||raw.id==="inv-gap"||raw.target==="inventoryAnalysis") continue;
     const m={...raw};
