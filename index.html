@@ -1542,12 +1542,74 @@ body{letter-spacing:-.018em!important}
 @media(max-width:1100px) and (min-width:901px){:root{--sidebar-w:240px}.sidebar{width:240px!important}.main{margin-left:240px!important;width:calc(100% - 240px)!important}.app.sidebar-collapsed .main{margin-left:76px!important;width:calc(100% - 76px)!important}}
 @media(max-width:900px){.sidebar-panel-toggle{display:none!important}.sidebar{overflow:hidden!important}#navContainer{overflow-y:auto!important}.side-bottom{position:static!important}.main,.app.sidebar-collapsed .main{margin-left:0!important;width:100%!important}.dashboard-notice-todo-grid{grid-template-columns:1fr!important}}
 </style>
+
+<style id="v60-cos-layout-alignment">
+/* V60 — exact sidebar-edge toggle, clearer taxonomy, unified dashboard rhythm */
+:root{--dash-pad-x:20px;--dash-pad-y:18px;--dash-title:15px;--dash-body:12px;--dash-small:10px;}
+/* Toggle: its LEFT edge is the live sidebar right border, so it follows both widths exactly. */
+.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{left:calc(var(--current-sidebar-w) - 1px)!important;top:50vh!important;transform:translateY(-50%)!important;width:22px!important;height:54px!important;border:1px solid #d7d7d2!important;border-left-color:#cfcfca!important;border-radius:0 8px 8px 0!important;box-shadow:3px 3px 10px rgba(0,0,0,.055)!important;background:#fff!important;}
+.sidebar-panel-toggle:before{display:none!important}.sidebar-panel-toggle:after{font-size:17px!important;margin:0!important}.sidebar-panel-toggle:hover{background:#f4f4f1!important;}
+/* Major menu categories are always visibly separated from the sidebar canvas. */
+.nav-group{border-top:0!important;padding:6px 0 7px!important;margin:0 0 5px!important;}
+.nav-root{background:#ecece8!important;border:1px solid #e2e2dd!important;min-height:42px!important;padding:7px 8px!important;border-radius:6px!important;}
+.nav-root:hover{background:#e6e6e1!important}.nav-group.open>.nav-root{background:#e8e8e3!important;border-color:#dcdcd6!important;}
+.nav-children{margin-top:5px!important;margin-bottom:2px!important;}
+.app.sidebar-collapsed .nav-root{background:transparent!important;border-color:transparent!important;padding-left:6px!important;padding-right:6px!important;}
+.app.sidebar-collapsed .nav-root:hover{background:#ecece8!important;}
+/* Dashboard uses one alignment and type scale. */
+#dashboard .dash-section,#dashboard .dashboard-info-panel,#dashboard .schedule-card,#dashboard .monthly-card{box-sizing:border-box!important;}
+#dashboard .dash-section{margin-top:28px!important;}
+#dashboard .dash-section:not(.dashboard-first-section){padding-top:22px!important;}
+#dashboard .dashboard-info-panel{padding:var(--dash-pad-y) var(--dash-pad-x)!important;}
+#dashboard .dashboard-panel-title,#dashboard .dash-section-head{min-height:44px!important;margin:0 0 14px!important;padding:0 0 12px!important;align-items:flex-start!important;}
+#dashboard .dashboard-panel-title h3,#dashboard .dash-section-head h3,#dashboard .schedule-title-line h3{font-size:var(--dash-title)!important;line-height:1.25!important;font-weight:700!important;letter-spacing:-.01em!important;margin:0!important;}
+#dashboard .panel-kicker{font-size:var(--dash-small)!important;line-height:1.2!important;letter-spacing:.1em!important;}
+#dashboard .notice-main b,#dashboard .ops-todo-item,#dashboard .request-mini-head b,#dashboard .monthly-head h4{font-size:var(--dash-body)!important;line-height:1.45!important;}
+#dashboard .notice-main p,#dashboard .ops-todo-head,#dashboard .request-mini-header,#dashboard .monthly-stats span,#dashboard .monthly-foot{font-size:var(--dash-small)!important;line-height:1.4!important;}
+/* Outbound request cards: strong individual boundaries, including each live row. */
+#dashboard .request-card-grid{gap:16px!important;}
+#dashboard .request-mini-card{border:1px solid #cecec8!important;border-radius:4px!important;background:#fff!important;}
+#dashboard .request-mini-head{min-height:62px!important;padding:14px var(--dash-pad-x)!important;background:#f7f7f4!important;border-bottom:1px solid #d7d7d1!important;}
+#dashboard .request-mini-table{padding:0 12px 12px!important;}
+#dashboard .request-mini-header{padding:10px 8px!important;border-bottom:1px solid #deded8!important;}
+#dashboard .request-mini-body{padding-top:8px!important;}
+#dashboard .request-row,#dashboard .request-empty-card{border:1px solid #deded8!important;border-radius:3px!important;margin:0 0 7px!important;background:#fff!important;}
+#dashboard .request-row:last-child,#dashboard .request-empty-card:last-child{margin-bottom:0!important;}
+#dashboard .request-row{padding:9px 8px!important;}
+#dashboard .request-row:hover{background:#fafaf7!important;border-color:#c7c7c1!important;}
+#dashboard .request-empty-card{min-height:48px!important;padding:10px!important;}
+/* Schedule + today's staffing become one full-width unit. */
+#dashboard .schedule-full-card{width:100%!important;margin-top:28px!important;padding:0!important;border:1px solid #d8d8d2!important;border-radius:4px!important;overflow:hidden!important;}
+#dashboard .schedule-unified-head{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:24px!important;min-height:82px!important;padding:16px var(--dash-pad-x)!important;background:#fafaf8!important;border-bottom:1px solid #deded8!important;}
+#dashboard .schedule-title-group{min-width:0!important;}
+#dashboard .schedule-title-line{display:flex!important;align-items:baseline!important;gap:12px!important;margin-top:5px!important;}
+#dashboard .schedule-title-line .dash-month{font-size:11px!important;color:#777773!important;font-weight:550!important;}
+#dashboard .schedule-staff-summary{display:flex!important;align-items:center!important;gap:22px!important;flex:0 0 auto!important;padding-left:22px!important;border-left:1px solid #ddddD7!important;}
+#dashboard .schedule-staff-primary,#dashboard .schedule-staff-secondary{display:flex!important;align-items:baseline!important;gap:7px!important;white-space:nowrap!important;}
+#dashboard .schedule-staff-primary span,#dashboard .schedule-staff-secondary span{font-size:9px!important;font-weight:750!important;letter-spacing:.08em!important;color:#7b7b76!important;}
+#dashboard .schedule-staff-primary strong{font-size:24px!important;line-height:1!important;font-weight:750!important;color:#171717!important;}
+#dashboard .schedule-staff-primary em{font-size:10px!important;font-style:normal!important;color:#8a8a85!important;}
+#dashboard .schedule-staff-secondary b{font-size:13px!important;color:#333!important;}
+#dashboard .dashboard-month-calendar{border:0!important;border-radius:0!important;}
+#dashboard .schedule-staff-detail{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:14px!important;min-height:42px!important;padding:8px var(--dash-pad-x)!important;border-top:1px solid #e2e2dd!important;background:#fff!important;}
+#dashboard .schedule-staff-detail .absence-list{display:flex!important;align-items:center!important;gap:8px!important;min-width:0!important;}
+#dashboard .schedule-staff-detail .absence-empty{font-size:10px!important;color:#8a8a85!important;}
+#dashboard .schedule-staff-detail .absence-item{border:0!important;padding:0 8px!important;font-size:10px!important;}
+#dashboard .schedule-staff-detail .staff-note{margin:0!important;font-size:10px!important;white-space:nowrap!important;}
+/* Monthly cards share identical internal geometry. */
+#dashboard .monthly-grid{gap:16px!important;align-items:stretch!important;}
+#dashboard .monthly-card{padding:var(--dash-pad-y) var(--dash-pad-x)!important;border:1px solid #deded8!important;min-height:168px!important;display:flex!important;flex-direction:column!important;}
+#dashboard .monthly-head{min-height:40px!important;align-items:center!important;}
+#dashboard .monthly-stats{margin-top:14px!important;}
+#dashboard .monthly-foot{margin-top:auto!important;padding-top:12px!important;}
+@media(max-width:900px){.sidebar-panel-toggle{display:none!important}#dashboard .schedule-unified-head{align-items:flex-start!important;flex-direction:column!important;gap:12px!important}#dashboard .schedule-staff-summary{width:100%!important;padding:12px 0 0!important;border-left:0!important;border-top:1px solid #e1e1dc!important;justify-content:space-between!important}.schedule-staff-detail{align-items:flex-start!important;flex-direction:column!important}.schedule-staff-detail .staff-note{white-space:normal!important}}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V59</small></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V60</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -1639,25 +1701,19 @@ body{letter-spacing:-.018em!important}
         </div>
       </div>
 
-      <div class="dash-two-col">
-        <div class="dash-section schedule-card">
-          <div class="dash-section-head"><div><h3>스케줄</h3></div><span id="dashboardWeekRange" class="dash-month"></span></div>
-          <div class="dashboard-two-week-calendar dashboard-month-calendar">
-            <div class="dashboard-two-week-weekhead"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
-            <div class="dashboard-two-week-grid" id="dashboardTwoWeekCalendar"><div class="dashboard-schedule-empty">일정을 불러오는 중입니다.</div></div>
+      <div class="dash-section schedule-card schedule-full-card">
+        <div class="schedule-unified-head">
+          <div class="schedule-title-group"><span class="panel-kicker">MONTHLY SCHEDULE</span><div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span></div></div>
+          <div class="schedule-staff-summary" aria-label="금일 운영 인원">
+            <div class="schedule-staff-primary"><span>TODAY STAFF</span><strong id="todayOperatingCount">14</strong><em>/ 14명</em></div>
+            <div class="schedule-staff-secondary"><span>금일 제외 인원</span><b id="todayAbsenceCount">0명</b></div>
           </div>
         </div>
-          <div class="dash-section staffing-card">
-          <div class="dash-section-head"><div><h3>금일 운영 인원</h3></div></div>
-          <div class="staff-total"><div class="staff-total-main"><b id="todayOperatingCount">14</b><em> / 14명</em></div><small>일정 기준 운영 가능 인원</small></div>
-          <div class="absence-summary">
-            <div class="absence-summary-head"><span>금일 제외 인원</span><b id="todayAbsenceCount">0명</b></div>
-            <div class="absence-list" id="todayAbsenceList">
-              <div class="absence-empty">금일 제외 인원이 없습니다.</div>
-            </div>
-          </div>
-          <div class="staff-note"><i data-lucide="users"></i><span>통합 일정의 연차·반차·외근 일정이 자동 반영됩니다.</span></div>
+        <div class="dashboard-two-week-calendar dashboard-month-calendar">
+          <div class="dashboard-two-week-weekhead"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
+          <div class="dashboard-two-week-grid" id="dashboardTwoWeekCalendar"><div class="dashboard-schedule-empty">일정을 불러오는 중입니다.</div></div>
         </div>
+        <div class="schedule-staff-detail"><div class="absence-list" id="todayAbsenceList"><div class="absence-empty">금일 제외 인원이 없습니다.</div></div><div class="staff-note"><i data-lucide="users"></i><span>통합 일정의 연차·반차·외근 일정이 자동 반영됩니다.</span></div></div>
       </div>
 
       <div class="dash-section">
