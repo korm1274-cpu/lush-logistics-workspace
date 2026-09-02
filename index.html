@@ -1749,73 +1749,7 @@ body{font-family:"Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif!important
 }
 </style>
 
-<style id="v63-cos-airy-gradient">
-/* V63 — COS-inspired airy neutral UI with restrained luminous gradients */
-:root{--v63-ink:#151515;--v63-muted:#777772;--v63-line:#e7e7e2;--v63-side:#f5f5f1;--v63-paper:#fff;--v63-lav:#f4f1fb;--v63-sage:#f1f6f1;--v63-blue:#f1f6f8;--v63-warm:#faf6ef;}
-html,body,button,input,select,textarea,table{font-family:"Noto Sans KR","Apple SD Gothic Neo",Arial,sans-serif!important;}
-/* Sidebar: three levels must read differently at a glance. */
-.sidebar{background:linear-gradient(180deg,#f7f7f4 0%,#f3f3ef 100%)!important;border-right:1px solid #deded8!important;}
-.nav-group{margin:0 0 14px!important;padding:0!important;}
-.nav-root{min-height:46px!important;padding:9px 11px!important;border:1px solid #d7d7d1!important;border-radius:8px!important;background:linear-gradient(135deg,#e8e8e3 0%,#deded8 100%)!important;color:#111!important;font-size:13px!important;font-weight:800!important;box-shadow:0 1px 0 rgba(255,255,255,.8) inset!important;}
-.nav-root:hover,.nav-group.open>.nav-root{background:linear-gradient(135deg,#e3e3dd 0%,#d8d8d1 100%)!important;border-color:#cdcdc6!important;}
-.nav-children{margin:7px 0 0 18px!important;padding:2px 0 3px 15px!important;border-left:1px solid #c9c9c2!important;}
-.nav-folder-btn{min-height:34px!important;padding:6px 8px 6px 9px!important;border:0!important;background:transparent!important;border-radius:0!important;color:#252525!important;font-size:11px!important;font-weight:800!important;letter-spacing:.02em!important;}
-.nav-folder-btn:before{left:-16px!important;width:10px!important;background:#c9c9c2!important;}
-.nav-folder-btn:hover,.nav-folder.open>.nav-folder-btn{background:transparent!important;color:#000!important;}
-.nav-folder-children{margin:1px 0 0 3px!important;padding:3px 0 2px 12px!important;border-left:0!important;}
-.nav-folder-children .nav-item{min-height:35px!important;padding:8px 10px!important;border:0!important;border-radius:5px!important;background:transparent!important;color:#686863!important;font-size:11.5px!important;font-weight:500!important;}
-.nav-folder-children .nav-item:before{display:none!important;}
-.nav-folder-children .nav-item:hover{background:rgba(255,255,255,.72)!important;color:#171717!important;}
-.nav-folder-children .nav-item.active{background:linear-gradient(90deg,#f0edf8 0%,rgba(255,255,255,.88) 100%)!important;color:#30264e!important;font-weight:700!important;box-shadow:inset 2px 0 0 #7968a5!important;}
-.nav-children>.nav-item:not(.nav-folder-children .nav-item){margin:2px 0!important;padding:8px 9px!important;color:#666!important;}
-.app.sidebar-collapsed .nav-root{background:transparent!important;border-color:transparent!important;box-shadow:none!important;}
-/* Toggle remains physically centered on the live sidebar edge. */
-.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{left:var(--current-sidebar-w)!important;top:50vh!important;transform:translate(-50%,-50%)!important;width:28px!important;height:50px!important;border:1px solid #d3d3cd!important;border-radius:15px!important;background:rgba(255,255,255,.96)!important;box-shadow:0 4px 14px rgba(20,20,20,.07)!important;display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;}
-.sidebar-panel-toggle:after,.app.sidebar-collapsed .sidebar-panel-toggle:after{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;line-height:1!important;text-align:center!important;position:static!important;transform:none!important;}
-/* Dashboard: white-first; gradients read as light, not colored cards. */
-#dashboard{background:#fafaf8!important;}
-#dashboard .dash-section,#dashboard .dashboard-info-panel,#dashboard .monthly-card{box-shadow:none!important;}
-#dashboard .dashboard-info-panel{background:#fff!important;border:1px solid var(--v63-line)!important;}
-#dashboard .dashboard-info-panel.notice-panel{background:linear-gradient(135deg,#fff 0%,#fff 62%,#f6f2fc 100%)!important;border-color:#e9e5ee!important;}
-#dashboard .dashboard-info-panel.todo-panel{background:linear-gradient(135deg,#fff 0%,#fff 62%,#f1f7f2 100%)!important;border-color:#e4ebe5!important;}
-#dashboard .dashboard-info-panel .dashboard-panel-title{background:transparent!important;border-bottom:1px solid #ecece7!important;}
-#dashboard .dash-section:nth-of-type(2){background:linear-gradient(145deg,#fff 0%,#fff 78%,#faf5ec 100%)!important;border:1px solid #e8e6e0!important;}
-#dashboard .dash-section:nth-of-type(2)>.dash-section-head{background:transparent!important;border-bottom:1px solid #eceae5!important;}
-#dashboard .schedule-full-card{background:linear-gradient(150deg,#fff 0%,#fff 82%,#f1f7f9 100%)!important;border:1px solid #e3e8e9!important;}
-#dashboard .schedule-unified-head{background:transparent!important;border-bottom:1px solid #e7eaea!important;}
-#dashboard .monthly-card.inbound-month{background:linear-gradient(145deg,#fff 0%,#fff 72%,#f1f6f1 100%)!important;border-color:#e4e9e4!important;}
-#dashboard .monthly-card.outbound-month{background:linear-gradient(145deg,#fff 0%,#fff 72%,#f4f1f8 100%)!important;border-color:#e7e3eb!important;}
-#dashboard .panel-kicker{color:#85857f!important;}
-/* Outbound request: no nested-card clutter. Columns are separated by rules; actual rows get borders. */
-#dashboard .request-card-grid{gap:0!important;background:transparent!important;}
-#dashboard .request-mini-card{background:transparent!important;border:0!important;border-radius:0!important;}
-#dashboard .request-mini-card+.request-mini-card{border-left:1px solid #e3e0da!important;}
-#dashboard .request-mini-head{background:transparent!important;border-bottom:1px solid #ebe8e2!important;}
-#dashboard .request-mini-header{background:transparent!important;}
-#dashboard .request-empty-card{background:transparent!important;border:0!important;}
-#dashboard .request-row{background:#fff!important;border:1px solid #ddd9d2!important;border-radius:5px!important;}
-/* Small accents carry color; text remains editorial black/grey. */
-#dashboard .notice-pin{background:#29252f!important;}
-#dashboard .request-type-icon{background:#f3f1ed!important;}
-#dashboard .request-mini-card:nth-child(1) .request-type-icon{background:#f2f0f8!important;color:#66588c!important;}
-#dashboard .request-mini-card:nth-child(2) .request-type-icon{background:#eef5f2!important;color:#4e7465!important;}
-#dashboard .request-mini-card:nth-child(3) .request-type-icon{background:#f7f1e9!important;color:#7a654b!important;}
-/* Mobile: keep hierarchy spacious and gradients subtle, never squeezed. */
-@media(max-width:900px){
- .sidebar{background:linear-gradient(180deg,#f7f7f4,#f2f2ee)!important;}
- .nav-group{margin-bottom:13px!important;}
- .nav-root{min-height:45px!important;}
- #dashboard .dashboard-info-panel,#dashboard .dash-section{border-radius:7px!important;}
- #dashboard .request-mini-card+.request-mini-card{border-left:0!important;border-top:1px solid #e3e0da!important;}
-}
-@media(max-width:560px){
- .nav-children{margin-left:16px!important;padding-left:13px!important;}
- .nav-folder-children{padding-left:10px!important;}
- #dashboard{background:#fafaf8!important;}
- #dashboard .dashboard-info-panel.notice-panel{background:linear-gradient(145deg,#fff 0%,#fff 72%,#f6f2fc 100%)!important;}
- #dashboard .dashboard-info-panel.todo-panel{background:linear-gradient(145deg,#fff 0%,#fff 72%,#f1f7f2 100%)!important;}
-}
-</style>
+
 
 <style id="v64-pure-white-ui">
 /* V64: Pure white COS direction — separation through borders, spacing and hierarchy */
@@ -1892,12 +1826,74 @@ html, body, .app, .main, .content, .dashboard-shell, .dashboard-grid { backgroun
   .app.mobile-nav-open #desktopSidebarBtn{left:min(88vw,294px) !important;}
 }
 </style>
+
+<style id="v66-white-nav-active-gradient">
+/* V66 — pure white canvas, crisp borders, consistent navigation states */
+:root{--v66-line:#d9dcdf;--v66-line-soft:#e9ebed;--v66-ink:#171717;--v66-muted:#71757a;--v66-active-a:#f3f0fb;--v66-active-b:#f8fafc;--v66-active-line:#8170ad;}
+html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!important;}
+.sidebar{background:#fff!important;background-image:none!important;border-right:1px solid #cfd3d6!important;box-shadow:3px 0 12px rgba(20,20,20,.025)!important;}
+.side-bottom{background:#fff!important;border-top:1px solid #e1e4e6!important;}
+/* Dashboard: remove every decorative tint/gradient; separation comes from lines only. */
+#dashboard .dashboard-info-panel,
+#dashboard .dash-section,
+#dashboard .schedule-full-card,
+#dashboard .monthly-card,
+#dashboard .request-mini-card,
+#dashboard .request-mini-head,
+#dashboard .request-mini-header,
+#dashboard .request-empty-card,
+#dashboard .request-card-grid,
+#dashboard .dashboard-panel-title,
+#dashboard .dash-section-head,
+#dashboard .schedule-unified-head,
+#dashboard .notice-main,
+#dashboard .staff-total,
+#dashboard .staff-breakdown>div,
+#dashboard .cal-day,
+#dashboard .cal-day.weekend,
+#dashboard .dashboard-two-week-weekhead span{
+  background:#fff!important;background-image:none!important;box-shadow:none!important;
+}
+#dashboard .dashboard-info-panel,#dashboard .dash-section,#dashboard .schedule-full-card,#dashboard .monthly-card{border-color:var(--v66-line)!important;}
+#dashboard .dashboard-panel-title,#dashboard .dash-section-head,#dashboard .schedule-unified-head{border-bottom-color:var(--v66-line-soft)!important;}
+#dashboard .request-mini-card+.request-mini-card{border-left-color:var(--v66-line-soft)!important;}
+#dashboard .request-row{background:#fff!important;background-image:none!important;border-color:#dfe2e4!important;}
+/* No warm accents in dashboard icons either. */
+#dashboard .request-type-icon,#dashboard .request-mini-card:nth-child(1) .request-type-icon,#dashboard .request-mini-card:nth-child(2) .request-type-icon,#dashboard .request-mini-card:nth-child(3) .request-type-icon{background:#f4f5f6!important;color:#5c6268!important;}
+/* Navigation: all top-level groups use exactly the same interaction model. */
+.nav-group{margin:0 0 9px!important;}
+.nav-root{background:#fff!important;background-image:none!important;border:1px solid transparent!important;border-radius:7px!important;color:var(--v66-ink)!important;box-shadow:none!important;transition:background .16s ease,border-color .16s ease,color .16s ease!important;}
+.nav-root:hover{background:#f7f7f7!important;border-color:#e4e6e7!important;}
+.nav-group.open>.nav-root{background:linear-gradient(100deg,var(--v66-active-a) 0%,#f7f5fc 42%,var(--v66-active-b) 100%)!important;border-color:#e1dced!important;color:#29213e!important;box-shadow:inset 3px 0 0 var(--v66-active-line)!important;}
+.nav-group.open>.nav-root .nav-root-icon{background:rgba(255,255,255,.72)!important;color:#66558f!important;}
+.nav-children{margin:5px 0 0 18px!important;padding:2px 0 5px 13px!important;border-left:1px solid #e0e2e4!important;}
+/* Middle level: no white-on-white framed box at rest; clear gradient only while expanded. */
+.nav-folder{margin:1px 0!important;}
+.nav-folder-btn{position:relative!important;min-height:35px!important;padding:7px 9px!important;background:transparent!important;background-image:none!important;border:1px solid transparent!important;border-radius:6px!important;color:#54575b!important;font-size:11.5px!important;font-weight:700!important;box-shadow:none!important;transition:background .16s ease,border-color .16s ease!important;}
+.nav-folder-btn:before,.nav-folder-btn:after{display:none!important;}
+.nav-folder-btn:hover{background:#f7f7f8!important;border-color:#eceeef!important;color:#202124!important;}
+.nav-folder.open>.nav-folder-btn{background:linear-gradient(100deg,#f5f2fb 0%,#fafbfc 100%)!important;border-color:#e5e0ef!important;color:#32294a!important;font-weight:800!important;box-shadow:inset 2px 0 0 #8a78b3!important;}
+.nav-folder-children{margin:2px 0 0 8px!important;padding:2px 0 2px 10px!important;border-left:1px solid #e4e6e8!important;}
+/* Leaf item: strongest current-page cue, still restrained and editorial. */
+.nav-item,.nav-folder-children .nav-item{background:transparent!important;background-image:none!important;border:1px solid transparent!important;border-radius:6px!important;color:#696d71!important;box-shadow:none!important;transition:background .16s ease,border-color .16s ease,color .16s ease!important;}
+.nav-item:hover,.nav-folder-children .nav-item:hover{background:#f7f8f9!important;border-color:#eceeef!important;color:#202124!important;}
+.nav-item.active,.nav-folder-children .nav-item.active{background:linear-gradient(100deg,#efebf8 0%,#f7f5fb 46%,#fbfcfd 100%)!important;border-color:#ddd6eb!important;color:#2d2441!important;font-weight:800!important;box-shadow:inset 3px 0 0 #7f6ba9!important;}
+.app.sidebar-collapsed .nav-root{background:#fff!important;border-color:transparent!important;box-shadow:none!important;}
+/* Keep the single mobile edge toggle from V65. */
+@media(max-width:900px){
+  .sidebar{background:#fff!important;background-image:none!important;}
+  .nav-group.open>.nav-root{background:linear-gradient(100deg,#f2eef9 0%,#fafbfd 100%)!important;}
+  .nav-folder.open>.nav-folder-btn{background:linear-gradient(100deg,#f4f1fa 0%,#fbfcfd 100%)!important;}
+  #dashboard .request-mini-card+.request-mini-card{border-left:0!important;border-top:1px solid var(--v66-line-soft)!important;}
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V65</small></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V66</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -2344,7 +2340,7 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g,gi)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group "+((gi<2||g.id==="outbound")?"open":"");box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>${(gi<2||g.id==="outbound")?"⌄":"›"}</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{box.classList.toggle("open");box.querySelector("em").textContent=box.classList.contains("open")?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder open";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>⌄</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{folder.classList.toggle("open");folder.querySelector("em").textContent=folder.classList.contains("open")?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>›</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{const willOpen=!folder.classList.contains("open");folder.classList.toggle("open",willOpen);folder.querySelector("em").textContent=willOpen?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
