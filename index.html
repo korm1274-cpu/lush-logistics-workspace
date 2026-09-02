@@ -1816,12 +1816,88 @@ html,body,button,input,select,textarea,table{font-family:"Noto Sans KR","Apple S
  #dashboard .dashboard-info-panel.todo-panel{background:linear-gradient(145deg,#fff 0%,#fff 72%,#f1f7f2 100%)!important;}
 }
 </style>
+
+<style id="v64-pure-white-ui">
+/* V64: Pure white COS direction — separation through borders, spacing and hierarchy */
+html, body, .app, .main, .content, .dashboard-shell, .dashboard-grid { background:#fff !important; }
+.sidebar {
+  background:#fff !important;
+  border-right:1px solid #cfd2d4 !important;
+  box-shadow:4px 0 14px rgba(20,20,20,.025) !important;
+}
+/* Remove warm / tinted dashboard surfaces */
+#dashboard .card, #dashboard .panel, #dashboard .dash-card,
+#dashboard .notice-card, #dashboard .todo-card, #dashboard .schedule-card,
+#dashboard .request-card, #dashboard .metric-card, #dashboard [class*="dashboard-card"],
+#dashboard [class*="dash-section"], #dashboard [class*="request-section"] {
+  background:#fff !important;
+  background-image:none !important;
+  border-color:#d9dcde !important;
+  box-shadow:none !important;
+}
+/* Keep dashboard sections crisp and editorial */
+#dashboard .card, #dashboard .panel, #dashboard .dash-card { border:1px solid #d9dcde !important; }
+/* Sidebar hierarchy: white canvas, structure through type/spacing */
+.sidebar .nav-root, .sidebar .nav-parent { background:#fff !important; background-image:none !important; }
+.sidebar .nav-root { border:1px solid #e0e2e3 !important; }
+.sidebar .nav-folder, .sidebar .nav-subgroup, .sidebar .nav-child-group { background:transparent !important; background-image:none !important; }
+.sidebar .nav-item.active, .sidebar .nav-subitem.active { background:#f4f4f2 !important; background-image:none !important; }
+/* Ensure toggle visually sits on the sidebar boundary and arrow is perfectly centered */
+#desktopSidebarBtn {
+  display:flex !important; align-items:center !important; justify-content:center !important;
+  padding:0 !important; text-align:center !important; line-height:1 !important;
+  background:#fff !important; border:1px solid #cfd2d4 !important;
+  box-shadow:0 2px 8px rgba(20,20,20,.06) !important;
+}
+#desktopSidebarBtn > *, #desktopSidebarBtn svg { margin:auto !important; }
+/* Neutralize remaining warm dashboard gradients without removing functional status colors */
+#dashboard [style*="linear-gradient"], #dashboard [style*="radial-gradient"] { background-image:none !important; }
+@media (max-width:900px){
+  .sidebar{background:#fff !important;border-right:1px solid #cfd2d4 !important;}
+  #dashboard .card,#dashboard .panel,#dashboard .dash-card{background:#fff !important;}
+}
+</style>
+
+<style id="v65-mobile-single-toggle-fix">
+/* V65: one mobile navigation control only — the edge toggle bar. */
+@media (max-width:900px){
+  .mobile-menu-btn{display:none !important;}
+  .topbar{padding-left:0 !important;}
+  .mobile-title-wrap{padding-left:0 !important;}
+  #desktopSidebarBtn{
+    display:flex !important;
+    position:fixed !important;
+    z-index:85 !important;
+    top:50vh !important;
+    left:8px !important;
+    width:28px !important;
+    height:50px !important;
+    transform:translateY(-50%) !important;
+    border-radius:0 15px 15px 0 !important;
+    border-left:0 !important;
+    background:#fff !important;
+    border-color:#cfd2d4 !important;
+    box-shadow:2px 3px 10px rgba(20,20,20,.07) !important;
+  }
+  .app.mobile-nav-open #desktopSidebarBtn{
+    left:min(82vw,300px) !important;
+    transform:translate(-50%,-50%) !important;
+    border:1px solid #cfd2d4 !important;
+    border-radius:15px !important;
+  }
+  .app.sidebar-collapsed #desktopSidebarBtn{display:flex !important;}
+}
+@media (max-width:560px){
+  #desktopSidebarBtn{left:6px !important;}
+  .app.mobile-nav-open #desktopSidebarBtn{left:min(88vw,294px) !important;}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V63</small></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V65</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -1830,7 +1906,7 @@ html,body,button,input,select,textarea,table{font-family:"Noto Sans KR","Apple S
 
   <main class="main">
     <div class="topbar">
-      <div class="mobile-title-wrap"><button class="btn sidebar-toggle mobile-menu-btn" id="mobileMenuBtn" title="메뉴 열기">☰</button><div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">TODAY · LOGISTICS</h1></div></div>
+      <div class="mobile-title-wrap"><div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">TODAY · LOGISTICS</h1></div></div>
       <div class="top-actions">
         <div class="base-tools" id="baseTools">
         <button type="button" class="base-tool" id="baseNoticeBtn" title="알림센터">🔔 <span class="base-count" id="baseNoticeCount">0</span></button>
@@ -2528,7 +2604,7 @@ document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.query
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","Dashboard",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","Dashboard",document.querySelector('[data-menu-id="dashboard-main"]'));
 
-const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};mobileMenuBtn.onclick=()=>appShell.classList.toggle("mobile-nav-open");sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
+const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{if(isMobile()){appShell.classList.toggle("mobile-nav-open");return}appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 </script>
 
 <div id="inventoryContextMenu" class="inventory-context-menu">
