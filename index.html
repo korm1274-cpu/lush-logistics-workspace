@@ -1604,12 +1604,53 @@ body{letter-spacing:-.018em!important}
 #dashboard .monthly-foot{margin-top:auto!important;padding-top:12px!important;}
 @media(max-width:900px){.sidebar-panel-toggle{display:none!important}#dashboard .schedule-unified-head{align-items:flex-start!important;flex-direction:column!important;gap:12px!important}#dashboard .schedule-staff-summary{width:100%!important;padding:12px 0 0!important;border-left:0!important;border-top:1px solid #e1e1dc!important;justify-content:space-between!important}.schedule-staff-detail{align-items:flex-start!important;flex-direction:column!important}.schedule-staff-detail .staff-note{white-space:normal!important}}
 </style>
+
+<style id="v61-cos-visual-hierarchy">
+/* V61 — hierarchy contrast, centered toggle, lighter dashboard sections, larger staff summary */
+/* Sidebar: top-level category is visually distinct; nested levels stay clean and light. */
+.sidebar{background:#f5f5f2!important;border-right:1px solid #deded8!important;}
+.nav-group{margin-bottom:7px!important;}
+.nav-root{background:#e4e4df!important;border:1px solid #d9d9d3!important;color:#151515!important;box-shadow:none!important;}
+.nav-root:hover{background:#ddddD7!important;}
+.nav-group.open>.nav-root{background:#dfdfda!important;border-color:#d2d2cc!important;}
+.nav-children{background:transparent!important;}
+.nav-folder-btn{background:#fafaf8!important;border:1px solid #ecece7!important;border-radius:5px!important;color:#222!important;box-shadow:none!important;}
+.nav-folder-btn:hover,.nav-folder.open>.nav-folder-btn{background:#f8f8f5!important;border-color:#e4e4de!important;}
+.nav-folder-children{background:transparent!important;}
+.nav-item{background:transparent!important;}
+.nav-item:hover,.nav-item.active{background:#fff!important;}
+.app.sidebar-collapsed .nav-root{background:transparent!important;border-color:transparent!important;}
+/* Toggle: centered arrow; left edge follows the current sidebar's right border exactly. */
+.sidebar-panel-toggle,.app.sidebar-collapsed .sidebar-panel-toggle{display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;left:calc(var(--current-sidebar-w) - 1px)!important;top:50vh!important;transform:translateY(-50%)!important;padding:0!important;text-align:center!important;line-height:1!important;}
+.sidebar-panel-toggle>span{display:none!important;}
+.sidebar-panel-toggle:after,.app.sidebar-collapsed .sidebar-panel-toggle:after{display:flex!important;align-items:center!important;justify-content:center!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;line-height:1!important;position:static!important;transform:none!important;text-align:center!important;}
+/* Dashboard: white cards remain, but each major part gets a very light surrounding tone. */
+#dashboard{background:#f8f8f6!important;}
+#dashboard>.dashboard-topbar{background:#fff!important;}
+#dashboard .dashboard-info-panel,#dashboard .request-mini-card,#dashboard .schedule-full-card,#dashboard .monthly-card{background:#fff!important;border-color:#e2e2dc!important;}
+#dashboard .dashboard-info-panel{box-shadow:0 1px 0 rgba(20,20,20,.02)!important;}
+#dashboard .dash-section{border-radius:6px!important;}
+#dashboard .dash-section-head{background:#fbfbf9!important;border-bottom:1px solid #e8e8e3!important;padding:12px var(--dash-pad-x)!important;margin:0 0 14px!important;}
+#dashboard .request-mini-head{background:#fbfbf9!important;}
+#dashboard .schedule-unified-head{background:#fbfbf9!important;}
+#dashboard .monthly-card{background:#fff!important;}
+/* Staff summary: large enough to scan at the same distance as schedule title. */
+#dashboard .schedule-staff-summary{gap:28px!important;padding-left:26px!important;}
+#dashboard .schedule-staff-primary span,#dashboard .schedule-staff-secondary span{font-size:11px!important;line-height:1.2!important;font-weight:800!important;letter-spacing:.055em!important;color:#666661!important;}
+#dashboard .schedule-staff-primary strong{font-size:28px!important;line-height:1!important;font-weight:780!important;}
+#dashboard .schedule-staff-primary em{font-size:12px!important;color:#777772!important;}
+#dashboard .schedule-staff-secondary b{font-size:16px!important;line-height:1!important;font-weight:800!important;color:#222!important;}
+/* Dashboard schedule footer/legend removed: calendar is the visual endpoint. Keep hidden DOM for existing JS IDs. */
+#dashboard .schedule-staff-detail{display:none!important;}
+#dashboard .schedule-full-card{overflow:hidden!important;}
+@media(max-width:900px){#dashboard .schedule-staff-primary span,#dashboard .schedule-staff-secondary span{font-size:10px!important}#dashboard .schedule-staff-primary strong{font-size:25px!important}#dashboard .schedule-staff-secondary b{font-size:15px!important}}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
     <div class="sidebar-head"><div class="brand" id="homeBrand"><div class="logo" title="홈으로 이동" aria-label="홈으로 이동"><i data-lucide="house"></i></div><div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div></div></div>
-    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V60</small></div>
+    <div class="workspace-badge"><span><i class="dot"></i> Workspace Prototype</span><small>V61</small></div>
     <div id="navContainer"></div>
     <div class="side-bottom"><div class="profile"><div class="avatar">T</div><div><b>Time</b><small id="profileRole">관리자 · Admin</small></div></div></div>
   </aside>
@@ -1713,7 +1754,7 @@ body{letter-spacing:-.018em!important}
           <div class="dashboard-two-week-weekhead"><span>일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span>토</span></div>
           <div class="dashboard-two-week-grid" id="dashboardTwoWeekCalendar"><div class="dashboard-schedule-empty">일정을 불러오는 중입니다.</div></div>
         </div>
-        <div class="schedule-staff-detail"><div class="absence-list" id="todayAbsenceList"><div class="absence-empty">금일 제외 인원이 없습니다.</div></div><div class="staff-note"><i data-lucide="users"></i><span>통합 일정의 연차·반차·외근 일정이 자동 반영됩니다.</span></div></div>
+        <div class="schedule-staff-detail" aria-hidden="true"><div class="absence-list" id="todayAbsenceList"></div></div>
       </div>
 
       <div class="dash-section">
