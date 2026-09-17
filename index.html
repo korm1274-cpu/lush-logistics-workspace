@@ -2232,8 +2232,13 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   </div>
   <div class="box-grid-empty" id="boxGridEmpty">출고일을 선택하고 "불러오기"를 누르면 해당 요일의 매장 입력 표가 나타납니다.</div>
 
+<<<<<<< HEAD
+  <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field"><label>담당자</label><input type="text" id="boxManagerFilter" list="boxManagerDatalist" placeholder="담당자 검색 (예: bl)" autocomplete="off"><datalist id="boxManagerDatalist"></datalist></div><div class="field"><label>매장</label><input type="text" id="boxStoreFilter" list="boxStoreDatalist" placeholder="매장 검색 (예: 신)" autocomplete="off"><datalist id="boxStoreDatalist"></datalist></div><button class="btn primary" id="boxRun">조회</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div>
+  <div class="kpis data-kpis" id="boxResultKpis" style="margin-bottom:10px"><div class="kpi"><span>조회 기간 총 박스</span><b id="boxSumQty">-</b><small>BOX</small></div><div class="kpi"><span>담당자 수</span><b id="boxSumManagers">-</b><small>명</small></div><div class="kpi"><span>매장 수</span><b id="boxSumStores">-</b><small>곳</small></div></div>
+=======
   <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field"><label>담당자</label><select id="boxManagerFilter"><option value="">전체 담당자</option></select></div><div class="field"><label>매장</label><select id="boxStoreFilter"><option value="">전체 매장</option></select></div><button class="btn primary" id="boxRun">조회</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div>
   <div class="kpis data-kpis" id="boxResultKpis" style="margin-bottom:10px"><div class="kpi"><span>조회 기간 총 박스</span><b id="boxSumQty">-</b><small>BOX</small></div><div class="kpi"><span>담당자 수</span><b id="boxSumManagers">-</b><small>명</small></div><div class="kpi"><span>매장 수</span><b id="boxSumStores">-</b><small>곳</small></div></div>
+>>>>>>> 3cfde063fc928a7bc507a4b2f02eab3b58601b32
   <div class="panel" id="boxResultPanel"><div class="panel-head"><div><small>SEARCH RESULT</small><h3>조회 결과</h3></div><span class="badge" id="boxResultSummary">-</span></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:130px">날짜</th><th style="width:56px">요일</th><th>담당자</th><th>매장</th><th class="num" style="width:100px">수량</th></tr></thead><tbody id="boxBody"><tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr></tbody></table></div></div>
 </div></section>
 
@@ -2985,17 +2990,15 @@ setTimeout(initInventoryColumnResize,0);
   function boxTodayKey(){try{return typeof todayKey==='function'?todayKey():new Date().toISOString().slice(0,10)}catch{return new Date().toISOString().slice(0,10)}}
   let boxHasSearched=false;
   function populateBoxFilterDropdowns(){
-    const mgrSel=$('boxManagerFilter'),storeSel=$('boxStoreFilter');
-    if(mgrSel&&!mgrSel.dataset.filled){
-      mgrSel.innerHTML='<option value="">전체 담당자</option>'+BOX_MANAGERS.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
-      mgrSel.dataset.filled='1';
+    const mgrList=$('boxManagerDatalist'),storeList=$('boxStoreDatalist');
+    if(mgrList&&!mgrList.dataset.filled){
+      mgrList.innerHTML=BOX_MANAGERS.map(m=>`<option value="${esc(m)}">`).join('');
+      mgrList.dataset.filled='1';
     }
-    if(storeSel){
-      const prev=storeSel.value;
+    if(storeList){
       const map=getBoxStoreMap();
       const allStores=[...new Set(Object.values(map).flat())].sort((a,b)=>a.localeCompare(b,'ko'));
-      storeSel.innerHTML='<option value="">전체 매장</option>'+allStores.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
-      if(allStores.includes(prev))storeSel.value=prev;
+      storeList.innerHTML=allStores.map(s=>`<option value="${esc(s)}">`).join('');
     }
   }
   function runBoxSearch(){
@@ -3010,8 +3013,8 @@ setTimeout(initInventoryColumnResize,0);
       $('boxSumQty').textContent='-';$('boxSumManagers').textContent='-';$('boxSumStores').textContent='-';
       return;
     }
-    const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value,store=$('boxStoreFilter').value;
-    const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||r[2]===mgr)&&(!store||r[3]===store)&&num(r[4])>0);
+    const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();
+    const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);
     const sorted=rows.slice().sort((a,b)=>normDate(b[0]||'').localeCompare(normDate(a[0]||'')));
     const totalQty=sorted.reduce((a,r)=>a+num(r[4]),0);
     const managerCount=new Set(sorted.map(r=>r[2]).filter(Boolean)).size;
@@ -3142,7 +3145,7 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamage],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));populateBoxFilterDropdowns();$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();tmr.setDate(tmr.getDate()+1);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value,store=$('boxStoreFilter').value;const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||r[2]===mgr)&&(!store||r[3]===store)&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});renderAll()});setTimeout(renderAll,600);
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamage],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));populateBoxFilterDropdowns();$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();tmr.setDate(tmr.getDate()+1);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});renderAll()});setTimeout(renderAll,600);
 })();
 </script>
 <script id="v52-dashboard-ops">
