@@ -2213,7 +2213,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
     <section id="damageAnalyticsView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">DAMAGE ANALYTICS</div><h2>파손 분석</h2><p>업로드된 파손 원본을 금액·매장·담당자·출고방식 기준으로 분석합니다.</p></div></div><div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="dmStart"></div><div class="field"><label>종료일</label><input type="date" id="dmEnd"></div><div class="field"><label>구분</label><select id="dmGroup"><option value="month">월</option><option value="manager">담당자</option><option value="store">매장</option><option value="method">출고방식</option></select></div><div class="field grow"><label>검색</label><input id="dmQuery" placeholder="매장 / 제품 / 제품군 / 담당자"></div><button class="btn primary" id="dmRun">조회</button></div><div class="kpis data-kpis"><div class="kpi"><span>파손 건수</span><b id="dmCount">0</b><small>건</small></div><div class="kpi"><span>파손 수량</span><b id="dmQty">0</b><small>EA</small></div><div class="kpi"><span>파손 금액</span><b id="dmAmount">0</b><small>원</small></div><div class="kpi"><span>전년동월 대비</span><b id="dmYoy">-</b><small>%</small></div></div><div class="data-split"><div class="panel"><div class="panel-head"><div><small>BREAKDOWN</small><h3>구분별 집계</h3></div></div><div id="dmBreakdown" class="rank-list"></div></div><div class="panel"><div class="panel-head"><div><small>RECORDS</small><h3>파손 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>No.</th><th>날짜</th><th>매장</th><th>출고방식</th><th>제품</th><th class="num">수량</th><th class="num">금액</th><th>담당자</th></tr></thead><tbody id="dmBody"></tbody></table></div></div></div></div></section>
 
     <section id="outboundBoxView" class="view"><div class="data-workbench">
-  <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND BOX</div><h2>출고 박스 관리</h2><p>출고일을 선택하고 불러오면 해당 요일의 매장이 상단에, 담당자가 좌측에 나열된 입력 표가 나타납니다. 수량은 입력 즉시 자동 저장됩니다.</p></div><div class="tools"><button class="btn" id="boxStoreMapBtn">요일별 매장 설정</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div></div>
+  <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND BOX</div><h2>출고 박스 관리</h2><p>출고일을 선택하고 불러오면 해당 요일의 매장이 상단에, 담당자가 좌측에 나열된 입력 표가 나타납니다. 수량은 입력 즉시 자동 저장됩니다.</p></div><div class="tools"><button class="btn" id="boxStoreMapBtn">요일별 매장 설정</button></div></div>
 
   <div class="inventory-commandbar">
     <div class="inventory-command-left">
@@ -2232,9 +2232,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   </div>
   <div class="box-grid-empty" id="boxGridEmpty">출고일을 선택하고 "불러오기"를 누르면 해당 요일의 매장 입력 표가 나타납니다.</div>
 
-  <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field grow"><label>검색</label><input id="boxQuery" placeholder="담당자 / 매장"></div><button class="btn" id="boxRun">조회</button></div>
-  <div class="kpis data-kpis"><div class="kpi"><span>박스 합계</span><b id="boxTotal">0</b><small>BOX</small></div><div class="kpi"><span>매장</span><b id="boxStores">0</b><small>곳</small></div><div class="kpi"><span>담당자</span><b id="boxManagers">0</b><small>명</small></div><div class="kpi"><span>기록</span><b id="boxRowCount">0</b><small>행</small></div></div>
-  <div class="panel"><div class="panel-head"><div><small>BOX RECORDS</small><h3>출고 박스 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:130px">날짜</th><th style="width:56px">요일</th><th>담당자</th><th>매장</th><th class="num" style="width:100px">수량</th><th style="width:64px">관리</th></tr></thead><tbody id="boxBody"></tbody></table></div></div>
+  <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field"><label>담당자</label><select id="boxManagerFilter"><option value="">전체 담당자</option></select></div><div class="field"><label>매장</label><select id="boxStoreFilter"><option value="">전체 매장</option></select></div><button class="btn primary" id="boxRun">조회</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div>
+  <div class="panel" id="boxResultPanel"><div class="panel-head"><div><small>SEARCH RESULT</small><h3>조회 결과</h3></div><span class="badge" id="boxResultSummary">-</span></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:130px">날짜</th><th style="width:56px">요일</th><th>담당자</th><th>매장</th><th class="num" style="width:100px">수량</th></tr></thead><tbody id="boxBody"><tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr></tbody></table></div></div>
 </div></section>
 
 <div class="dialog-mask" id="boxStoreMapDialog" style="display:none">
@@ -2983,43 +2982,43 @@ setTimeout(initInventoryColumnResize,0);
   function weekday(d){try{return ['일','월','화','수','목','금','토'][new Date(d+'T12:00:00').getDay()]}catch{return''}}
   function boxAutoSaveTick(){const el=$('boxAutoSaveState');if(!el)return;el.textContent='자동 저장 완료';clearTimeout(window.__boxSaveTimer);window.__boxSaveTimer=setTimeout(()=>el.textContent='자동 저장',900)}
   function boxTodayKey(){try{return typeof todayKey==='function'?todayKey():new Date().toISOString().slice(0,10)}catch{return new Date().toISOString().slice(0,10)}}
+  let boxHasSearched=false;
+  function populateBoxFilterDropdowns(){
+    const mgrSel=$('boxManagerFilter'),storeSel=$('boxStoreFilter');
+    if(mgrSel&&!mgrSel.dataset.filled){
+      mgrSel.innerHTML='<option value="">전체 담당자</option>'+BOX_MANAGERS.map(m=>`<option value="${esc(m)}">${esc(m)}</option>`).join('');
+      mgrSel.dataset.filled='1';
+    }
+    if(storeSel){
+      const prev=storeSel.value;
+      const map=getBoxStoreMap();
+      const allStores=[...new Set(Object.values(map).flat())].sort((a,b)=>a.localeCompare(b,'ko'));
+      storeSel.innerHTML='<option value="">전체 매장</option>'+allStores.map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
+      if(allStores.includes(prev))storeSel.value=prev;
+    }
+  }
+  function runBoxSearch(){
+    boxHasSearched=true;
+    renderBox();
+  }
   function renderBox(){
     if(!$('boxBody'))return;
-    const st=$('boxStart').value,en=$('boxEnd').value,q=$('boxQuery').value.trim().toLowerCase();
-    const all=boxRows();
-    const visible=all.map((r,i)=>({r,i})).filter(({r})=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q)));
-    $('boxTotal').textContent=fmt(visible.reduce((a,{r})=>a+num(r[4]),0));
-    $('boxStores').textContent=fmt(new Set(visible.map(({r})=>r[3]).filter(Boolean)).size);
-    $('boxManagers').textContent=fmt(new Set(visible.map(({r})=>r[2]).filter(Boolean)).size);
-    $('boxRowCount').textContent=fmt(visible.length);
-    $('boxBody').innerHTML=visible.length?visible.slice().sort((a,b)=>normDate(b.r[0]||'').localeCompare(normDate(a.r[0]||''))).map(({r,i})=>`<tr>
-      <td><input class="cell" type="date" data-box-field="date" data-i="${i}" value="${esc(r[0]||'')}"></td>
+    if(!boxHasSearched){
+      $('boxBody').innerHTML='<tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr>';
+      $('boxResultSummary').textContent='-';
+      return;
+    }
+    const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value,store=$('boxStoreFilter').value;
+    const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||r[2]===mgr)&&(!store||r[3]===store)&&num(r[4])>0);
+    const sorted=rows.slice().sort((a,b)=>normDate(b[0]||'').localeCompare(normDate(a[0]||'')));
+    $('boxResultSummary').textContent=`${fmt(sorted.length)}건 · 합계 ${fmt(sorted.reduce((a,r)=>a+num(r[4]),0))} BOX`;
+    $('boxBody').innerHTML=sorted.length?sorted.map(r=>`<tr>
+      <td>${esc(normDate(r[0]||''))}</td>
       <td>${esc(r[1]||(r[0]?weekday(normDate(r[0])):''))}</td>
-      <td><input class="cell" type="text" data-box-field="manager" data-i="${i}" value="${esc(r[2]||'')}" placeholder="담당자"></td>
-      <td><input class="cell" type="text" data-box-field="store" data-i="${i}" value="${esc(r[3]||'')}" placeholder="매장명"></td>
-      <td><input class="cell num" type="number" min="0" data-box-field="qty" data-i="${i}" value="${r[4]!==''&&r[4]!=null?r[4]:''}" placeholder="0"></td>
-      <td><button class="row-delete" data-box-del="${i}">삭제</button></td>
-    </tr>`).join(''):'<tr><td colspan="6"><div class="inventory-empty">등록된 출고 박스 기록이 없습니다. "행 추가"로 새 줄을 만들어주세요.</div></td></tr>';
-    bindBoxInputs();
-  }
-  function bindBoxInputs(){
-    const commit=(inp,live)=>{
-      const i=+inp.dataset.i,field=inp.dataset.boxField;
-      const rows=boxRows();if(!rows[i])return;
-      if(field==='date'){rows[i][0]=inp.value;rows[i][1]=inp.value?weekday(inp.value):''}
-      else if(field==='manager')rows[i][2]=inp.value;
-      else if(field==='store')rows[i][3]=inp.value;
-      else if(field==='qty')rows[i][4]=num(inp.value);
-      saveBoxRows(rows);boxAutoSaveTick();
-      if(!live)renderBox();
-    };
-    $('boxBody').querySelectorAll('[data-box-field="qty"]').forEach(inp=>{inp.oninput=()=>commit(inp,true)});
-    $('boxBody').querySelectorAll('[data-box-field="manager"],[data-box-field="store"]').forEach(inp=>{inp.onchange=()=>commit(inp,true)});
-    $('boxBody').querySelectorAll('[data-box-field="date"]').forEach(inp=>{inp.onchange=()=>commit(inp,false)});
-    $('boxBody').querySelectorAll('[data-box-del]').forEach(b=>b.onclick=()=>{
-      if(!confirm('이 행을 삭제할까요?'))return;
-      const i=+b.dataset.boxDel,rows=boxRows();rows.splice(i,1);saveBoxRows(rows);renderBox();
-    });
+      <td>${esc(r[2]||'')}</td>
+      <td>${esc(r[3]||'')}</td>
+      <td class="num">${fmt(r[4])}</td>
+    </tr>`).join(''):'<tr><td colspan="5" class="data-empty">조회 결과가 없습니다.</td></tr>';
   }
 
   const BOX_MANAGERS=['Sand','Black','Furze','Volcano','Star','Blue','Time','Art','Amazon','New','Tarot','Bus','Hanami','Luxe'];
@@ -3087,6 +3086,22 @@ setTimeout(initInventoryColumnResize,0);
         upsertBoxQty(date,dow,inp.dataset.boxGridManager,inp.dataset.boxGridStore,num(inp.value));
         renderBox();
       };
+      inp.addEventListener('keydown',e=>{
+        const key=e.key;
+        if(key!=='ArrowRight'&&key!=='ArrowLeft'&&key!=='ArrowUp'&&key!=='ArrowDown')return;
+        e.preventDefault();
+        const td=inp.closest('td'),tr=td.parentElement;
+        const cellIndex=Array.prototype.indexOf.call(tr.children,td);
+        let targetTr=tr,targetIndex=cellIndex;
+        if(key==='ArrowRight')targetIndex=cellIndex+1;
+        else if(key==='ArrowLeft')targetIndex=cellIndex-1;
+        else if(key==='ArrowDown')targetTr=tr.nextElementSibling;
+        else if(key==='ArrowUp')targetTr=tr.previousElementSibling;
+        if(!targetTr)return;
+        const targetTd=targetTr.children[targetIndex];
+        const targetInput=targetTd&&targetTd.querySelector('input');
+        if(targetInput){targetInput.focus();targetInput.select()}
+      });
     });
   }
   function loadBoxGrid(){
@@ -3110,6 +3125,7 @@ setTimeout(initInventoryColumnResize,0);
     saveBoxStoreMap(map);
     closeBoxStoreMapDialog();
     toastMsg('요일별 매장 설정을 저장했습니다.');
+    populateBoxFilterDropdowns();
     const date=$('boxGridDate')?.value||'';
     if(date)loadBoxGrid();
   }
@@ -3118,7 +3134,7 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamage],['boxRun',renderBox],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();tmr.setDate(tmr.getDate()+1);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const rows=boxRows();const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});renderAll()});setTimeout(renderAll,600);
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamage],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));populateBoxFilterDropdowns();$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();tmr.setDate(tmr.getDate()+1);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value,store=$('boxStoreFilter').value;const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||r[2]===mgr)&&(!store||r[3]===store)&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});renderAll()});setTimeout(renderAll,600);
 })();
 </script>
 <script id="v52-dashboard-ops">
