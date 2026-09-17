@@ -2233,6 +2233,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   <div class="box-grid-empty" id="boxGridEmpty">출고일을 선택하고 "불러오기"를 누르면 해당 요일의 매장 입력 표가 나타납니다.</div>
 
   <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field"><label>담당자</label><select id="boxManagerFilter"><option value="">전체 담당자</option></select></div><div class="field"><label>매장</label><select id="boxStoreFilter"><option value="">전체 매장</option></select></div><button class="btn primary" id="boxRun">조회</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div>
+  <div class="kpis data-kpis" id="boxResultKpis" style="margin-bottom:10px"><div class="kpi"><span>조회 기간 총 박스</span><b id="boxSumQty">-</b><small>BOX</small></div><div class="kpi"><span>담당자 수</span><b id="boxSumManagers">-</b><small>명</small></div><div class="kpi"><span>매장 수</span><b id="boxSumStores">-</b><small>곳</small></div></div>
   <div class="panel" id="boxResultPanel"><div class="panel-head"><div><small>SEARCH RESULT</small><h3>조회 결과</h3></div><span class="badge" id="boxResultSummary">-</span></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:130px">날짜</th><th style="width:56px">요일</th><th>담당자</th><th>매장</th><th class="num" style="width:100px">수량</th></tr></thead><tbody id="boxBody"><tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr></tbody></table></div></div>
 </div></section>
 
@@ -3006,12 +3007,19 @@ setTimeout(initInventoryColumnResize,0);
     if(!boxHasSearched){
       $('boxBody').innerHTML='<tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr>';
       $('boxResultSummary').textContent='-';
+      $('boxSumQty').textContent='-';$('boxSumManagers').textContent='-';$('boxSumStores').textContent='-';
       return;
     }
     const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value,store=$('boxStoreFilter').value;
     const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||r[2]===mgr)&&(!store||r[3]===store)&&num(r[4])>0);
     const sorted=rows.slice().sort((a,b)=>normDate(b[0]||'').localeCompare(normDate(a[0]||'')));
-    $('boxResultSummary').textContent=`${fmt(sorted.length)}건 · 합계 ${fmt(sorted.reduce((a,r)=>a+num(r[4]),0))} BOX`;
+    const totalQty=sorted.reduce((a,r)=>a+num(r[4]),0);
+    const managerCount=new Set(sorted.map(r=>r[2]).filter(Boolean)).size;
+    const storeCount=new Set(sorted.map(r=>r[3]).filter(Boolean)).size;
+    $('boxSumQty').textContent=fmt(totalQty);
+    $('boxSumManagers').textContent=fmt(managerCount);
+    $('boxSumStores').textContent=fmt(storeCount);
+    $('boxResultSummary').textContent=`${fmt(sorted.length)}건`;
     $('boxBody').innerHTML=sorted.length?sorted.map(r=>`<tr>
       <td>${esc(normDate(r[0]||''))}</td>
       <td>${esc(r[1]||(r[0]?weekday(normDate(r[0])):''))}</td>
