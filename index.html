@@ -2107,7 +2107,15 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   </div>
 </section>
 <section id="inventoryAnalysis" class="view"><div class="analysis-grid"><div class="analysis-box"><div class="eyebrow">INVENTORY GAP</div><div class="big-number">18 SKU</div><div class="muted" style="font-size:10px">전일 대비 확인이 필요한 제품 수</div></div><div class="analysis-box"><div class="eyebrow">ABSOLUTE GAP</div><div class="big-number">247 EA</div><div class="muted" style="font-size:10px">재고 차이 수량 합계</div></div></div><div class="panel mt14"><div class="panel-head"><div><small>DAILY COMPARISON</small><h3>재고 차이 우선 확인 목록</h3></div></div><table class="compare-table"><thead><tr><th>PLU</th><th>제품명</th><th>전일</th><th>금일</th><th>차이</th><th>상태</th></tr></thead><tbody><tr><td>101894</td><td>Sleepy Body Lotion</td><td>336</td><td>329</td><td>-7</td><td><span class="badge danger">확인 필요</span></td></tr><tr><td>100871</td><td>Karma Soap</td><td>160</td><td>151</td><td>-9</td><td><span class="badge danger">확인 필요</span></td></tr></tbody></table></div></section>
+<section id="inboundDailyView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">DAILY INBOUND</div><h2>일일 입고관리</h2><p>업로드된 입고 Excel 데이터를 기준으로 일자별 입고수량·SKU·차수를 자동 집계합니다. 투입인원과 소요시간을 입력하면 생산성이 자동 계산되어 저장됩니다.</p></div><button class="btn" id="exportInboundDailyCsv">CSV 내보내기</button></div>
+  <div class="panel"><div class="panel-head"><div><small>DAILY INBOUND</small><h3>일자별 입고 현황</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>일자</th><th class="num">입고수량</th><th class="num">SKU</th><th class="num">차수</th><th style="width:90px">투입인원</th><th style="width:90px">소요시간</th><th class="num">생산성</th><th>비고</th></tr></thead><tbody id="inboundDailyBody"></tbody></table></div></div>
+</div></section>
 
+<section id="inboundMonthlyView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">MONTHLY INBOUND</div><h2>월별 입고현황</h2><p>일자별 입고 데이터를 월 단위로 합산하고, 일일 입고관리에 입력된 투입인원을 기준으로 평균 투입인원·평균 생산성을 자동 계산합니다.</p></div><button class="btn" id="exportInboundMonthlyCsv">CSV 내보내기</button></div>
+  <div class="panel"><div class="panel-head"><div><small>MONTHLY INBOUND</small><h3>월별 입고 현황</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">입고수량</th><th class="num">입고차수</th><th class="num">평균 투입인원</th><th class="num">평균 생산성</th></tr></thead><tbody id="inboundMonthlyBody"></tbody></table></div></div>
+</div></section>
     <section id="inboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND ANALYTICS</div><h2>입고 분석</h2><p>업로드 누적 데이터를 기준으로 일자·제품·월별 입고 실적을 조회합니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>조회일</label><input type="date" id="inAnaDate"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="PLU 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button><button class="btn" id="inAnaReset">전체</button></div>
@@ -2318,6 +2326,42 @@ function normalizeMenus(){
     scheduleMenu.group="schedule"; scheduleMenu.label="통합 일정"; scheduleMenu.kind="scheduleManager";
     scheduleMenu.visible=true; scheduleMenu.roles=["admin","leader","editor","restricted"];
     delete scheduleMenu.cat; delete scheduleMenu.sheet; delete scheduleMenu.target;
+  }
+
+  /* V67: 일일 입고관리 / 월별 입고현황을 업로드 데이터 기반 자동 집계 화면으로 전환 */
+  const inDailyMenu=cleaned.find(m=>m.id==="in-daily");
+  if(inDailyMenu){
+    inDailyMenu.group="inbound"; inDailyMenu.kind="inboundDaily"; inDailyMenu.label=inDailyMenu.label||"일일 입고관리";
+    inDailyMenu.visible=true; delete inDailyMenu.cat; delete inDailyMenu.sheet; delete inDailyMenu.target;
+  }
+  const inMonthMenu=cleaned.find(m=>m.id==="in-month");
+  if(inMonthMenu){
+    inMonthMenu.group="inbound"; inMonthMenu.kind="inboundMonthly"; inMonthMenu.label=inMonthMenu.label||"월별 입고현황";
+    inMonthMenu.visible=true; delete inMonthMenu.cat; delete inMonthMenu.sheet; delete inMonthMenu.target;
+  }
+
+  /* V67: 일일 입고관리 / 월별 입고현황을 업로드 데이터 기반 자동 집계 화면으로 전환 */
+  const inDailyMenu=cleaned.find(m=>m.id==="in-daily");
+  if(inDailyMenu){
+    inDailyMenu.group="inbound"; inDailyMenu.kind="inboundDaily"; inDailyMenu.label=inDailyMenu.label||"일일 입고관리";
+    inDailyMenu.visible=true; delete inDailyMenu.cat; delete inDailyMenu.sheet; delete inDailyMenu.target;
+  }
+  const inMonthMenu=cleaned.find(m=>m.id==="in-month");
+  if(inMonthMenu){
+    inMonthMenu.group="inbound"; inMonthMenu.kind="inboundMonthly"; inMonthMenu.label=inMonthMenu.label||"월별 입고현황";
+    inMonthMenu.visible=true; delete inMonthMenu.cat; delete inMonthMenu.sheet; delete inMonthMenu.target;
+  }
+
+  /* V67: 일일 입고관리 / 월별 입고현황을 업로드 데이터 기반 자동 집계 화면으로 전환 */
+  const inDailyMenu=cleaned.find(m=>m.id==="in-daily");
+  if(inDailyMenu){
+    inDailyMenu.group="inbound"; inDailyMenu.kind="inboundDaily"; inDailyMenu.label=inDailyMenu.label||"일일 입고관리";
+    inDailyMenu.visible=true; delete inDailyMenu.cat; delete inDailyMenu.sheet; delete inDailyMenu.target;
+  }
+  const inMonthMenu=cleaned.find(m=>m.id==="in-month");
+  if(inMonthMenu){
+    inMonthMenu.group="inbound"; inMonthMenu.kind="inboundMonthly"; inMonthMenu.label=inMonthMenu.label||"월별 입고현황";
+    inMonthMenu.visible=true; delete inMonthMenu.cat; delete inMonthMenu.sheet; delete inMonthMenu.target;
   }
 
   /* 출고 요청 관리는 출고 그룹의 첫 번째 메뉴로 고정 */
@@ -2965,6 +3009,112 @@ setTimeout(initInventoryColumnResize,0);
 })();
 </script>
 <script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>\n
+<script id="v67-inbound-daily-monthly">
+(function(){
+  const LABOR_KEY='lush-logistics-inbound-labor-v1';
+  const $=id=>document.getElementById(id);
+  const nf=n=>(Number(n)||0).toLocaleString('ko-KR');
+  const num=v=>{const n=Number(String(v??'').replace(/,/g,'').trim());return Number.isFinite(n)?n:0};
+  function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+  function getLabor(){try{return JSON.parse(localStorage.getItem(LABOR_KEY)||'{}')||{}}catch{return{}}}
+  function setLabor(v){localStorage.setItem(LABOR_KEY,JSON.stringify(v))}
+  function inboundRows(){return (window.FILE_DATA_ENGINE?.getData()?.inbound?.rows)||[]}
+  function dailyQtyMap(rows){const map={};rows.forEach(r=>{const d=String(r[0]||'').trim();if(!d)return;map[d]=(map[d]||0)+num(r[4])});return map}
+  function dailyAgg(){
+    const rows=inboundRows(),map={};
+    rows.forEach(r=>{
+      const date=String(r[0]||'').trim();if(!date)return;
+      if(!map[date])map[date]={date,qty:0,skus:new Set(),batches:new Set()};
+      map[date].qty+=num(r[4]);
+      if(r[2])map[date].skus.add(String(r[2]));
+      if(r[1])map[date].batches.add(String(r[1]));
+    });
+    return Object.values(map).map(x=>({date:x.date,qty:x.qty,sku:x.skus.size,batch:x.batches.size})).sort((a,b)=>b.date.localeCompare(a.date));
+  }
+  function monthlyAgg(){
+    const rows=inboundRows(),labor=getLabor(),dailyQty=dailyQtyMap(rows),map={};
+    rows.forEach(r=>{
+      const date=String(r[0]||'').trim(),month=date.slice(0,7);
+      if(!/^\d{4}-\d{2}$/.test(month))return;
+      if(!map[month])map[month]={month,qty:0,batches:new Set(),days:new Set()};
+      map[month].qty+=num(r[4]);
+      if(r[1])map[month].batches.add(String(r[1]));
+      map[month].days.add(date);
+    });
+    return Object.values(map).map(x=>{
+      let staffSum=0,staffCnt=0,prodSum=0,prodCnt=0;
+      x.days.forEach(d=>{
+        const lab=labor[d];if(!lab)return;
+        const staff=num(lab.staff),hours=num(lab.hours);
+        if(staff>0){staffSum+=staff;staffCnt++}
+        if(staff>0&&hours>0){prodSum+=(dailyQty[d]||0)/(staff*hours);prodCnt++}
+      });
+      return{month:x.month,qty:x.qty,batchCount:x.batches.size,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
+    }).sort((a,b)=>b.month.localeCompare(a.month));
+  }
+  function renderInboundDailyView(){
+    const tbody=$('inboundDailyBody');if(!tbody)return;
+    const agg=dailyAgg(),labor=getLabor();
+    if(!agg.length){tbody.innerHTML='<tr><td colspan="8" class="data-empty">업로드된 입고 데이터가 없습니다. 데이터 업로드 메뉴에서 입고 Excel을 올려주세요.</td></tr>';return}
+    tbody.innerHTML=agg.map(r=>{
+      const lab=labor[r.date]||{};
+      const staff=num(lab.staff),hours=num(lab.hours);
+      const prod=(staff>0&&hours>0)?Math.round(r.qty/(staff*hours)):null;
+      return `<tr>
+        <td>${esc(r.date)}</td>
+        <td class="num">${nf(r.qty)}</td>
+        <td class="num">${r.sku}</td>
+        <td class="num">${r.batch}</td>
+        <td><input class="cell" type="number" min="0" data-labor-staff="${esc(r.date)}" value="${lab.staff??''}"></td>
+        <td><input class="cell" type="number" min="0" step="0.1" data-labor-hours="${esc(r.date)}" value="${lab.hours??''}"></td>
+        <td class="num">${prod!==null?nf(prod):'-'}</td>
+        <td><input class="cell" type="text" data-labor-note="${esc(r.date)}" value="${esc(lab.note||'')}"></td>
+      </tr>`;
+    }).join('');
+    tbody.querySelectorAll('[data-labor-staff],[data-labor-hours],[data-labor-note]').forEach(inp=>{
+      inp.onchange=()=>{
+        const d=inp.dataset.laborStaff||inp.dataset.laborHours||inp.dataset.laborNote;
+        const lab=getLabor();if(!lab[d])lab[d]={staff:'',hours:'',note:''};
+        if(inp.dataset.laborStaff!==undefined)lab[d].staff=inp.value;
+        if(inp.dataset.laborHours!==undefined)lab[d].hours=inp.value;
+        if(inp.dataset.laborNote!==undefined)lab[d].note=inp.value;
+        setLabor(lab);renderInboundDailyView();renderInboundMonthlyView();
+      };
+    });
+  }
+  function renderInboundMonthlyView(){
+    const tbody=$('inboundMonthlyBody');if(!tbody)return;
+    const agg=monthlyAgg();
+    if(!agg.length){tbody.innerHTML='<tr><td colspan="5" class="data-empty">업로드된 입고 데이터가 없습니다.</td></tr>';return}
+    tbody.innerHTML=agg.map(r=>`<tr>
+      <td>${esc(r.month)}</td>
+      <td class="num">${nf(r.qty)}</td>
+      <td class="num">${r.batchCount}</td>
+      <td class="num">${r.avgStaff!==null?r.avgStaff.toFixed(1):'-'}</td>
+      <td class="num">${r.avgProd!==null?nf(Math.round(r.avgProd)):'-'}</td>
+    </tr>`).join('');
+  }
+  function exportDailyCsv(){
+    const agg=dailyAgg(),labor=getLabor();
+    const rows=[['일자','입고수량','SKU','차수','투입인원','소요시간','생산성','비고']];
+    agg.forEach(r=>{const lab=labor[r.date]||{};const staff=num(lab.staff),hours=num(lab.hours);const prod=(staff>0&&hours>0)?Math.round(r.qty/(staff*hours)):'';rows.push([r.date,r.qty,r.sku,r.batch,lab.staff||'',lab.hours||'',prod,lab.note||''])});
+    download('일일_입고관리.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
+  }
+  function exportMonthlyCsv(){
+    const agg=monthlyAgg();
+    const rows=[['월','입고수량','입고차수','평균 투입인원','평균 생산성']];
+    agg.forEach(r=>rows.push([r.month,r.qty,r.batchCount,r.avgStaff!==null?r.avgStaff.toFixed(1):'',r.avgProd!==null?Math.round(r.avgProd):'']));
+    download('월별_입고현황.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
+  }
+  window.openInboundDailyView=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('inboundDailyView').classList.add('active');pageTitle.textContent=label||'일일 입고관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;renderInboundDailyView()};
+  window.openInboundMonthlyView=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('inboundMonthlyView').classList.add('active');pageTitle.textContent=label||'월별 입고현황';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;renderInboundMonthlyView()};
+  window.renderInboundDailyView=renderInboundDailyView;window.renderInboundMonthlyView=renderInboundMonthlyView;
+  document.addEventListener('DOMContentLoaded',()=>{
+    $('exportInboundDailyCsv')?.addEventListener('click',exportDailyCsv);
+    $('exportInboundMonthlyCsv')?.addEventListener('click',exportMonthlyCsv);
+  });
+})();
+</script>
 <script id="v52-outbound-request-manager">
 (function(){
  const KEY='lush_outbound_requests_v1',$=id=>document.getElementById(id),read=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return[]}},save=a=>{localStorage.setItem(KEY,JSON.stringify(a));render();window.renderTodayOutboundRequests?.()},esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));let dates=[];
