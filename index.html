@@ -2367,7 +2367,45 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 
     <section id="misshipAnalyticsView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">MISSHIP ANALYTICS</div><h2>오출고 분석</h2><p>업로드된 오출고 원본을 매장·담당자·사유·상태 기준으로 분석합니다.</p></div></div><div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="msStart"></div><div class="field"><label>종료일</label><input type="date" id="msEnd"></div><div class="field"><label>구분</label><select id="msGroup"><option value="manager">담당자</option><option value="store">매장</option><option value="reason">사유</option></select></div><div class="field grow"><label>검색</label><input id="msQuery" placeholder="매장 / 제품 / 담당자 / 사유"></div><button class="btn primary" id="msRun">조회</button></div><div class="kpis data-kpis"><div class="kpi"><span>오출고 건수</span><b id="msCount">0</b><small>건</small></div><div class="kpi"><span>처리완료</span><b id="msDone">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="msPending">0</b><small>건</small></div><div class="kpi"><span>전년동월 대비</span><b id="msYoy">-</b><small>%</small></div></div><div class="data-split"><div class="panel"><div class="panel-head"><div><small>BREAKDOWN</small><h3>구분별 집계</h3></div></div><div id="msBreakdown" class="rank-list"></div></div><div class="panel"><div class="panel-head"><div><small>RECORDS</small><h3>오출고 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>No.</th><th>날짜</th><th>매장</th><th>제품</th><th>담당자</th><th>사유</th><th>상태</th></tr></thead><tbody id="msBody"></tbody></table></div></div></div></div></section>
 
-    <section id="damageAnalyticsView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">DAMAGE ANALYTICS</div><h2>파손 분석</h2><p>업로드된 파손 원본을 금액·매장·담당자·출고방식 기준으로 분석합니다.</p></div></div><div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="dmStart"></div><div class="field"><label>종료일</label><input type="date" id="dmEnd"></div><div class="field"><label>구분</label><select id="dmGroup"><option value="month">월</option><option value="manager">담당자</option><option value="store">매장</option><option value="method">출고방식</option></select></div><div class="field grow"><label>검색</label><input id="dmQuery" placeholder="매장 / 제품 / 제품군 / 담당자"></div><button class="btn primary" id="dmRun">조회</button></div><div class="kpis data-kpis"><div class="kpi"><span>파손 건수</span><b id="dmCount">0</b><small>건</small></div><div class="kpi"><span>파손 수량</span><b id="dmQty">0</b><small>EA</small></div><div class="kpi"><span>파손 금액</span><b id="dmAmount">0</b><small>원</small></div><div class="kpi"><span>전년동월 대비</span><b id="dmYoy">-</b><small>%</small></div></div><div class="data-split"><div class="panel"><div class="panel-head"><div><small>BREAKDOWN</small><h3>구분별 집계</h3></div></div><div id="dmBreakdown" class="rank-list"></div></div><div class="panel"><div class="panel-head"><div><small>RECORDS</small><h3>파손 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>No.</th><th>날짜</th><th>매장</th><th>출고방식</th><th>제품</th><th class="num">수량</th><th class="num">금액</th><th>담당자</th></tr></thead><tbody id="dmBody"></tbody></table></div></div></div></div></section>
+    <section id="damageAnalyticsView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE ANALYTICS</div><h2>파손 분석</h2><p>업로드된 파손 원본을 기준으로 회계연도 현황, 상세 기록 조회, 월별 증감을 확인합니다.</p></div></div>
+
+  <div class="panel">
+    <div class="panel-head"><div><small>FISCAL YEAR</small><h3 id="dmFyTitle">💥 파손 현황</h3></div></div>
+    <div class="kpis data-kpis">
+      <div class="kpi"><span id="dmFyCountLabel">FY 총 파손 건수</span><b id="dmFyCount">0</b><small>건</small></div>
+      <div class="kpi"><span id="dmFyAmountLabel">FY 총 파손 금액</span><b id="dmFyAmount">0</b><small>원</small></div>
+    </div>
+    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="manager">담당자별</option><option value="store">매장별</option><option value="method">출고방식별</option></select></div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
+  </div>
+
+  <div class="panel mt14">
+    <div class="panel-head"><div><small>SEARCH</small><h3>파손 기록 조회 (필터)</h3></div></div>
+    <div class="data-filter-row">
+      <div class="field"><label>시작일</label><input type="date" id="dmStart"></div>
+      <div class="field"><label>종료일</label><input type="date" id="dmEnd"></div>
+      <div class="field"><label>매장</label><input id="dmStoreQuery" placeholder="매장명 일부"></div>
+      <div class="field"><label>담당자</label><input id="dmManagerQuery" placeholder="이름 일부"></div>
+      <div class="field"><label>제품군</label><input id="dmCategoryQuery" placeholder="제품군 일부"></div>
+      <div class="field"><label>출고방식</label><input id="dmMethodQuery" placeholder="출고방식 일부"></div>
+      <button class="btn primary" id="dmRun">조회</button>
+    </div>
+    <div style="padding:9px 2px;font-size:11px;color:#69757c" id="dmRecordSummary">기간·조건을 선택한 뒤 "조회"를 눌러주세요.</div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>날짜</th><th>매장</th><th>출고방식</th><th>제품명</th><th>제품군</th><th>담당자</th><th class="num">파손수량</th><th class="num">파손금액</th></tr></thead><tbody id="dmBody"></tbody></table></div>
+  </div>
+
+  <div class="panel mt14">
+    <div class="panel-head"><div><small>MOM / YOY</small><h3>파손 금액 증감 (전월대비 / 전년동월대비)</h3></div></div>
+    <div class="data-filter-row"><div class="field"><label>조회 월</label><input type="month" id="dmMomMonth"></div><button class="btn primary" id="dmMomRun">조회</button></div>
+    <div style="padding:0 2px 12px;font-size:11px;color:#8a949e">담당자 구분 없이 월 전체 파손금액 기준입니다.</div>
+    <div class="kpis data-kpis">
+      <div class="kpi"><span id="dmMomCurLabel">파손금액</span><b id="dmMomCurAmount">-</b><small>원</small></div>
+      <div class="kpi"><span id="dmMomPrevLabel">전월대비</span><b id="dmMomPrevPct">-</b><small id="dmMomPrevDetail"></small></div>
+      <div class="kpi"><span id="dmMomYoyLabel">전년동월대비</span><b id="dmMomYoyPct">-</b><small id="dmMomYoyDetail"></small></div>
+    </div>
+  </div>
+</div></section>
 
     <section id="outboundBoxView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND BOX</div><h2>출고 박스 관리</h2><p>출고일을 선택하고 불러오면 해당 요일의 매장이 상단에, 담당자가 좌측에 나열된 입력 표가 나타납니다. 수량은 입력 즉시 자동 저장됩니다.</p></div><div class="tools"><button class="btn" id="boxStoreMapBtn">요일별 매장 설정</button></div></div>
@@ -3172,7 +3210,72 @@ setTimeout(initInventoryColumnResize,0);
   function renderOutbound(){if(!$('outAnaBody'))return;const d=read(),all=d.outbound?.rows||[],date=$('outAnaDate')?.value||'',q=($('outAnaQuery')?.value||'').trim().toLowerCase();const rows=all.filter(r=>(!date||normDate(r[0])===date)&&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q)));$('outAnaQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[4]),0));$('outAnaSku').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);$('outAnaDays').textContent=fmt(new Set(rows.map(r=>normDate(r[0])).filter(Boolean)).size);$('outAnaRows').textContent=fmt(rows.length);$('outAnaCaption').textContent=date||q?'필터 적용':'전체';$('outAnaTrend').innerHTML=trendHtml(all,4);$('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="num">${fmt(r[4])}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">조회 결과가 없습니다.</td></tr>'}
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
   function renderMisship(){if(!$('msBody'))return;const all=read().misship?.rows||[],st=$('msStart').value,en=$('msEnd').value,q=$('msQuery').value.trim().toLowerCase(),group=$('msGroup').value;let rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return(!st||d>=st)&&(!en||d<=en)&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q))) });const done=rows.filter(r=>String(r[9]??'').includes('완료')).length;$('msCount').textContent=fmt(rows.length);$('msDone').textContent=fmt(done);$('msPending').textContent=fmt(rows.length-done);const cur=today().slice(0,7),prev=String(Number(cur.slice(0,4))-1)+cur.slice(4),curCnt=all.filter(r=>ym(r[1]??r[0])===cur).length,prevCnt=all.filter(r=>ym(r[1]??r[0])===prev).length,py=pct(curCnt,prevCnt);$('msYoy').textContent=py===null?'-':(py>0?'+':'')+py.toFixed(1);const idx=group==='store'?2:group==='reason'?8:7,map={};rows.forEach(r=>{const k=String(r[idx]||'(미지정)').trim();map[k]=(map[k]||0)+1});$('msBreakdown').innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v],i)=>`<div class="rank-row"><em>${i+1}</em><span>${esc(k)}</span><b>${fmt(v)}건</b></div>`).join('')||'<div class="data-empty">집계 데이터가 없습니다.</div>';$('msBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(normDate(r[1]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[7])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>'}
-  function renderDamage(){if(!$('dmBody'))return;const all=read().damage?.rows||[],st=$('dmStart').value,en=$('dmEnd').value,q=$('dmQuery').value.trim().toLowerCase(),group=$('dmGroup').value;let rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return(!st||d>=st)&&(!en||d<=en)&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q))) });$('dmCount').textContent=fmt(rows.length);$('dmQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[6]),0));$('dmAmount').textContent=fmt(rows.reduce((a,r)=>a+num(r[7]),0));const cur=today().slice(0,7),prev=String(Number(cur.slice(0,4))-1)+cur.slice(4),ca=all.filter(r=>ym(r[1]??r[0])===cur).reduce((a,r)=>a+num(r[7]),0),pa=all.filter(r=>ym(r[1]??r[0])===prev).reduce((a,r)=>a+num(r[7]),0),py=pct(ca,pa);$('dmYoy').textContent=py===null?'-':(py>0?'+':'')+py.toFixed(1);const idx=group==='store'?2:group==='method'?3:group==='manager'?9:null,map={};rows.forEach(r=>{const k=group==='month'?ym(r[1]):String(r[idx]||'(미지정)').trim();if(!map[k])map[k]={c:0,a:0};map[k].c++;map[k].a+=num(r[7])});$('dmBreakdown').innerHTML=Object.entries(map).sort((a,b)=>b[1].a-a[1].a).slice(0,20).map(([k,v],i)=>`<div class="rank-row"><em>${i+1}</em><span>${esc(k)}</span><b>${fmt(v.c)}건 · ${fmt(v.a)}원</b></div>`).join('')||'<div class="data-empty">집계 데이터가 없습니다.</div>';$('dmBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(normDate(r[1]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td class="num">${fmt(r[6])}</td><td class="num">${fmt(r[7])}</td><td>${esc(r[9])}</td></tr>`).join(''):'<tr><td colspan="8" class="data-empty">조회 결과가 없습니다.</td></tr>'}
+  function damageFY(baseDate){
+    const d=baseDate||new Date(),y=d.getFullYear(),m=d.getMonth()+1;
+    const fyEndYear=m>=7?y+1:y;
+    return{label:`FY${String(fyEndYear).slice(2)}`,start:`${fyEndYear-1}-07-01`,end:`${fyEndYear}-06-30`};
+  }
+  function renderDamageFY(){
+    if(!$('dmFyBody'))return;
+    const all=read().damage?.rows||[],fy=damageFY();
+    $('dmFyTitle').textContent=`💥 파손 현황 (${fy.label}: ${fy.start.replaceAll('-','.')} ~ ${fy.end.replaceAll('-','.')})`;
+    $('dmFyCountLabel').textContent=`${fy.label} 총 파손 건수`;
+    $('dmFyAmountLabel').textContent=`${fy.label} 총 파손 금액`;
+    const rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return d>=fy.start&&d<=fy.end});
+    $('dmFyCount').textContent=fmt(rows.length);
+    $('dmFyAmount').textContent=fmt(rows.reduce((a,r)=>a+num(r[7]),0))+'원';
+    const group=$('dmFyGroup').value;
+    const idx=group==='store'?2:group==='method'?3:group==='manager'?9:null,map={};
+    rows.forEach(r=>{const k=group==='month'?ym(r[1]??r[0]):String(r[idx]||'(미지정)').trim();if(!map[k])map[k]={c:0,a:0};map[k].c++;map[k].a+=num(r[7])});
+    $('dmFyTableHead').innerHTML=group==='month'?'<th>월</th><th class="num">건수</th><th class="num">금액</th>':`<th>${group==='manager'?'담당자':group==='store'?'매장':'출고방식'}</th><th class="num">건수</th><th class="num">금액</th>`;
+    const entries=Object.entries(map).sort((a,b)=>group==='month'?a[0].localeCompare(b[0]):b[1].a-a[1].a);
+    $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${fmt(v.c)}건</td><td class="num">${fmt(v.a)}원</td></tr>`).join(''):'<tr><td colspan="3" class="data-empty">데이터가 없습니다.</td></tr>';
+  }
+  function renderDamageRecords(){
+    if(!$('dmBody'))return;
+    const all=read().damage?.rows||[];
+    const st=$('dmStart').value,en=$('dmEnd').value;
+    const storeQ=($('dmStoreQuery').value||'').trim().toLowerCase();
+    const mgrQ=($('dmManagerQuery').value||'').trim().toLowerCase();
+    const catQ=($('dmCategoryQuery').value||'').trim().toLowerCase();
+    const methodQ=($('dmMethodQuery').value||'').trim().toLowerCase();
+    const rows=all.filter(r=>{
+      const d=normDate(r[1]??r[0]);
+      return(!st||d>=st)&&(!en||d<=en)
+        &&(!storeQ||String(r[2]||'').toLowerCase().includes(storeQ))
+        &&(!mgrQ||String(r[9]||'').toLowerCase().includes(mgrQ))
+        &&(!catQ||String(r[8]||'').toLowerCase().includes(catQ))
+        &&(!methodQ||String(r[3]||'').toLowerCase().includes(methodQ));
+    });
+    const totalQty=rows.reduce((a,r)=>a+num(r[6]),0),totalAmt=rows.reduce((a,r)=>a+num(r[7]),0);
+    $('dmRecordSummary').textContent=`${fmt(rows.length)}건, 파손수량 합계 ${fmt(totalQty)}, 파손금액 합계 ${fmt(totalAmt)}원`;
+    $('dmBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[1]??r[0]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td><td class="num">${fmt(r[6])}</td><td class="num">${fmt(r[7])}원</td></tr>`).join(''):'<tr><td colspan="8" class="data-empty">조회 결과가 없습니다.</td></tr>';
+  }
+  function shiftMonth(ymStr,delta){
+    const[y,m]=ymStr.split('-').map(Number),d=new Date(y,m-1+delta,1);
+    return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  }
+  function damageAmountForMonth(all,ymStr){
+    return all.filter(r=>ym(r[1]??r[0])===ymStr).reduce((a,r)=>a+num(r[7]),0);
+  }
+  function renderDamageMoM(){
+    if(!$('dmMomCurAmount'))return;
+    const all=read().damage?.rows||[];
+    let monthVal=$('dmMomMonth').value||today().slice(0,7);
+    const curAmt=damageAmountForMonth(all,monthVal);
+    const prevMonth=shiftMonth(monthVal,-1),prevAmt=damageAmountForMonth(all,prevMonth);
+    const yoyMonth=shiftMonth(monthVal,-12),yoyAmt=damageAmountForMonth(all,yoyMonth);
+    const momPct=pct(curAmt,prevAmt),yoyPct=pct(curAmt,yoyAmt);
+    $('dmMomCurLabel').textContent=`${monthVal} 파손금액`;
+    $('dmMomCurAmount').textContent=fmt(curAmt)+'원';
+    $('dmMomPrevLabel').textContent=`전월대비(${prevMonth})`;
+    $('dmMomPrevPct').innerHTML=momPct===null?'-':`<span class="badge ${momPct<0?'danger':''}">${momPct<0?'▼':'▲'} ${Math.abs(momPct).toFixed(1)}%</span>`;
+    $('dmMomPrevDetail').textContent=`${prevMonth} ${fmt(prevAmt)}원`;
+    $('dmMomYoyLabel').textContent=`전년동월대비(${yoyMonth})`;
+    $('dmMomYoyPct').innerHTML=yoyPct===null?'-':`<span class="badge ${yoyPct<0?'danger':''}">${yoyPct<0?'▼':'▲'} ${Math.abs(yoyPct).toFixed(1)}%</span>`;
+    $('dmMomYoyDetail').textContent=`${yoyMonth} ${fmt(yoyAmt)}원`;
+  }
+  function renderDamage(){renderDamageFY();renderDamageRecords();renderDamageMoM()}
   function boxRows(){return read().box?.rows||[]}
   function saveBoxRows(rows){const d=read();d.box={header:['날짜','요일','담당자','매장','수량'],rows,updatedAt:new Date().toISOString(),mode:'표 직접 입력'};save(d)}
   function weekday(d){try{return ['일','월','화','수','목','금','토'][new Date(d+'T12:00:00').getDay()]}catch{return''}}
@@ -3376,7 +3479,7 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamage],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));populateBoxFilterDropdowns();$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();const addDays=tmr.getDay()===5?3:1;tmr.setDate(tmr.getDate()+addDays);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});$('exportBoxExcel')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);if(!rows.length){toastMsg('내려받을 조회 결과가 없습니다. 먼저 조회를 실행해주세요.');return}const aoa=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:12},{wch:6},{wch:10},{wch:14},{wch:8}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'출고박스');XLSX.writeFile(wb,'출고박스_조회결과.xlsx')});renderAll();pullSharedData(true);setInterval(()=>pullSharedData(true),20000);});setTimeout(renderAll,600);
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamageRecords],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();const addDays=tmr.getDay()===5?3:1;tmr.setDate(tmr.getDate()+addDays);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});$('exportBoxExcel')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);if(!rows.length){toastMsg('내려받을 조회 결과가 없습니다. 먼저 조회를 실행해주세요.');return}const aoa=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:12},{wch:6},{wch:10},{wch:14},{wch:8}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'출고박스');XLSX.writeFile(wb,'출고박스_조회결과.xlsx')});renderAll();pullSharedData(true);setInterval(()=>pullSharedData(true),20000);});setTimeout(renderAll,600);
 })();
 </script>
 <script id="v52-dashboard-ops">
