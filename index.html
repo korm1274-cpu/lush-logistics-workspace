@@ -3187,14 +3187,17 @@ setTimeout(initInventoryColumnResize,0);
     pushSharedData(d);
   }
   let __sharedSyncing=false;
+  let __suppressPullUntil=0;
   function pushSharedData(d){
+    __suppressPullUntil=Date.now()+4000;
     fetch(SHARED_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d)})
       .then(r=>r.json())
       .then(j=>{if(!j||!j.success)console.error('공유 저장 실패:',j&&j.error)})
-      .catch(err=>console.error('공유 저장 실패:',err));
+      .catch(err=>console.error('공유 저장 실패:',err))
+      .finally(()=>{__suppressPullUntil=Date.now()+2000});
   }
   async function pullSharedData(silent){
-    if(__sharedSyncing)return;
+    if(__sharedSyncing||Date.now()<__suppressPullUntil)return;
     __sharedSyncing=true;
     try{
       const res=await fetch(SHARED_API);
