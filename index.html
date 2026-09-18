@@ -1941,10 +1941,10 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 .nav-group:has(.nav-item.active)>.nav-root:after,.nav-group:has(.nav-folder-children .nav-item.active)>.nav-root:after{background:var(--v70-accent)!important;}
 
 .nav-children{
-  display:none;position:fixed!important;top:var(--v70-bar-h)!important;left:0!important;right:0!important;min-width:0!important;
-  margin:0!important;padding:0 18px!important;border:0!important;border-top:1px solid #24272c!important;border-bottom:1px solid #24272c!important;border-radius:0!important;
-  background:#15171a!important;box-shadow:0 10px 24px rgba(0,0,0,.35)!important;z-index:150!important;
-  flex-direction:row!important;align-items:center!important;gap:4px!important;height:46px!important;overflow-x:auto!important;
+  display:none;position:absolute!important;top:100%!important;left:0!important;right:auto!important;min-width:0!important;width:max-content!important;max-width:70vw!important;
+  margin:6px 0 0!important;padding:6px!important;border:1px solid #24272c!important;border-radius:11px!important;
+  background:#15171a!important;box-shadow:0 14px 30px rgba(0,0,0,.4)!important;z-index:150!important;
+  flex-direction:row!important;align-items:center!important;gap:4px!important;height:auto!important;overflow-x:visible!important;
 }
 .nav-group.open>.nav-children{display:flex!important;}
 .nav-item{color:var(--v70-muted)!important;border-radius:8px!important;padding:8px 14px!important;font-size:12px!important;font-weight:700!important;box-shadow:none!important;white-space:nowrap!important;}
@@ -2011,6 +2011,18 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 .sidebar .nav-item.active,.sidebar .nav-subitem.active{background:rgba(55,168,102,.16)!important;color:#5fd58c!important;}
 .sidebar .profile b{color:var(--v70-text)!important;}
 .sidebar .avatar{background:#242830!important;color:#fff!important;}
+
+/* 글자 크기 확대 + 수직 정렬 보강 */
+.sidebar .nav-root{font-size:16px!important;line-height:1!important;}
+.sidebar .brand b{font-size:17px!important;line-height:1!important;}
+.sidebar,.sidebar-head,#navContainer,.nav-group,.side-bottom,.profile{align-items:center!important;}
+.nav-root{line-height:1!important;}
+.nav-root>span{display:flex!important;align-items:center!important;height:100%!important;line-height:1!important;}
+.nav-item{line-height:1.2!important;}
+
+/* 토버 중복 제목 숨김 (각 화면이 자체 제목을 이미 가지고 있음) */
+.topbar .mobile-title-wrap{display:none!important;}
+.topbar{justify-content:flex-end!important;}
 </style>
 </head>
 <body>
@@ -2517,7 +2529,7 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};if(g.id==="inventory"){const folder=document.createElement("div");folder.className="nav-folder";folder.innerHTML=`<button class="nav-folder-btn"><span>재고파일</span><em>›</em></button><div class="nav-folder-children"></div>`;const sub=folder.querySelector(".nav-folder-children");list.forEach(m=>addMenuButton(m,sub));folder.querySelector(".nav-folder-btn").onclick=()=>{const willOpen=!folder.classList.contains("open");folder.classList.toggle("open",willOpen);folder.querySelector("em").textContent=willOpen?"⌄":"›"};holder.appendChild(folder)}else{list.forEach(m=>addMenuButton(m,holder))}navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
