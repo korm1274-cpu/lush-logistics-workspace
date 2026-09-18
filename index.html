@@ -2376,7 +2376,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="kpi"><span id="dmFyCountLabel">FY 총 파손 건수</span><b id="dmFyCount">0</b><small>건</small></div>
       <div class="kpi"><span id="dmFyAmountLabel">FY 총 파손 금액</span><b id="dmFyAmount">0</b><small>원</small></div>
     </div>
-    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="manager">담당자별</option><option value="store">매장별</option><option value="method">출고방식별</option></select></div>
+    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="store">매장별</option><option value="manager">담당자별</option><option value="method">출고방식별</option></select></div>
     <div class="data-table-wrap"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
   </div>
 
@@ -2385,10 +2385,10 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
     <div class="data-filter-row">
       <div class="field"><label>시작일</label><input type="date" id="dmStart"></div>
       <div class="field"><label>종료일</label><input type="date" id="dmEnd"></div>
-      <div class="field"><label>매장</label><input id="dmStoreQuery" placeholder="매장명 일부"></div>
-      <div class="field"><label>담당자</label><input id="dmManagerQuery" placeholder="이름 일부"></div>
-      <div class="field"><label>제품군</label><input id="dmCategoryQuery" placeholder="제품군 일부"></div>
-      <div class="field"><label>출고방식</label><input id="dmMethodQuery" placeholder="출고방식 일부"></div>
+      <div class="field"><label>매장</label><input id="dmStoreQuery" list="dmStoreDatalist" placeholder="매장명 일부" autocomplete="off"><datalist id="dmStoreDatalist"></datalist></div>
+      <div class="field"><label>담당자</label><input id="dmManagerQuery" list="dmManagerDatalist" placeholder="이름 일부" autocomplete="off"><datalist id="dmManagerDatalist"></datalist></div>
+      <div class="field"><label>제품군</label><input id="dmCategoryQuery" list="dmCategoryDatalist" placeholder="제품군 일부" autocomplete="off"><datalist id="dmCategoryDatalist"></datalist></div>
+      <div class="field"><label>출고방식</label><input id="dmMethodQuery" list="dmMethodDatalist" placeholder="출고방식 일부" autocomplete="off"><datalist id="dmMethodDatalist"></datalist></div>
       <button class="btn primary" id="dmRun">조회</button>
     </div>
     <div style="padding:9px 2px;font-size:11px;color:#69757c" id="dmRecordSummary">기간·조건을 선택한 뒤 "조회"를 눌러주세요.</div>
@@ -2396,13 +2396,25 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   </div>
 
   <div class="panel mt14">
-    <div class="panel-head"><div><small>MOM / YOY</small><h3>파손 금액 증감 (전월대비 / 전년동월대비)</h3></div></div>
+    <div class="panel-head"><div><small>MOM / YOY</small><h3>파손 금액/건 증감율 (전월대비 / 전년동월대비)</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>조회 월</label><input type="month" id="dmMomMonth"></div><button class="btn primary" id="dmMomRun">조회</button></div>
-    <div style="padding:0 2px 12px;font-size:11px;color:#8a949e">담당자 구분 없이 월 전체 파손금액 기준입니다.</div>
-    <div class="kpis data-kpis">
-      <div class="kpi"><span id="dmMomCurLabel">파손금액</span><b id="dmMomCurAmount">-</b><small>원</small></div>
-      <div class="kpi"><span id="dmMomPrevLabel">전월대비</span><b id="dmMomPrevPct">-</b><small id="dmMomPrevDetail"></small></div>
-      <div class="kpi"><span id="dmMomYoyLabel">전년동월대비</span><b id="dmMomYoyPct">-</b><small id="dmMomYoyDetail"></small></div>
+    <div style="padding:0 2px 12px;font-size:11px;color:#8a949e">담당자 구분 없이 월 전체 파손금액·건수 기준입니다.</div>
+    <div class="analysis-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="analysis-box">
+        <div class="eyebrow" id="dmMomCurTitle">조회월</div>
+        <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomCurAmount">-</div></div>
+        <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomCurCount" style="font-size:22px">-</div></div>
+      </div>
+      <div class="analysis-box">
+        <div class="eyebrow" id="dmMomPrevTitle">전월대비</div>
+        <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomPrevAmountPct" style="font-size:22px">-</div><small class="muted" id="dmMomPrevAmountDetail"></small></div>
+        <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomPrevCountPct" style="font-size:22px">-</div><small class="muted" id="dmMomPrevCountDetail"></small></div>
+      </div>
+      <div class="analysis-box">
+        <div class="eyebrow" id="dmMomYoyTitle">전년동월대비</div>
+        <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomYoyAmountPct" style="font-size:22px">-</div><small class="muted" id="dmMomYoyAmountDetail"></small></div>
+        <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomYoyCountPct" style="font-size:22px">-</div><small class="muted" id="dmMomYoyCountDetail"></small></div>
+      </div>
     </div>
   </div>
 </div></section>
@@ -2484,9 +2496,8 @@ const DEFAULT_MENUS=[
  {id:"schedule-notice",group:"schedule",label:"공지 등록",kind:"view",target:"noticeManagerView",visible:true,roles:["admin","leader","editor"]},
  {id:"schedule-todo",group:"schedule",label:"할 일 등록",kind:"view",target:"todoManagerView",visible:true,roles:["admin","leader","editor"]},
  {id:"issue-wrong",group:"issues",label:"오출고",kind:"sheet",cat:"issues",sheet:"오출고",visible:true,roles:["admin","leader","editor"]},
- {id:"issue-damage",group:"issues",label:"파손",kind:"sheet",cat:"issues",sheet:"파손",visible:true,roles:["admin","leader","editor"]},
+ {id:"issue-damage",group:"issues",label:"파손",kind:"view",target:"damageAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-misship-analysis",group:"issues",label:"오출고 분석",kind:"view",target:"misshipAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
- {id:"issue-damage-analysis",group:"issues",label:"파손 분석",kind:"view",target:"damageAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
  {id:"admin-main",group:"admin",label:"사용자 / 메뉴 / 권한 설정",kind:"view",target:"settings",visible:true,roles:["admin"],protected:true}
 ];
@@ -2553,7 +2564,15 @@ function normalizeMenus(){
   if(!totalSeen){const base=structuredClone(DEFAULT_MENUS.find(m=>m.id==="inv-total"));const firstInv=cleaned.findIndex(m=>m.group==="inventory");cleaned.splice(firstInv<0?1:firstInv,0,base)}
 
   /* V52: 제거 대상 메뉴는 기존 localStorage에서도 정리 */
-  cleaned = cleaned.filter(m=>m.id!=="inv-sand" && m.group!=="attendance" && m.id!=="att-team");
+  cleaned = cleaned.filter(m=>m.id!=="inv-sand" && m.group!=="attendance" && m.id!=="att-team" && m.id!=="issue-damage-analysis");
+
+  /* V71: 기존 사용자에게도 '파손' 메뉴를 분석 화면으로 전환 */
+  const damageMenu=cleaned.find(m=>m.id==="issue-damage");
+  if(damageMenu){
+    damageMenu.kind="view"; damageMenu.target="damageAnalyticsView"; damageMenu.label="파손";
+    damageMenu.roles=["admin","leader","editor","restricted"];
+    delete damageMenu.cat; delete damageMenu.sheet;
+  }
 
   /* V35: 이전 버전 localStorage 메뉴에도 새 기본 메뉴를 자동 추가 */
   for(const def of DEFAULT_MENUS){
@@ -3231,8 +3250,21 @@ setTimeout(initInventoryColumnResize,0);
     const entries=Object.entries(map).sort((a,b)=>group==='month'?a[0].localeCompare(b[0]):b[1].a-a[1].a);
     $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${fmt(v.c)}건</td><td class="num">${fmt(v.a)}원</td></tr>`).join(''):'<tr><td colspan="3" class="data-empty">데이터가 없습니다.</td></tr>';
   }
+  function populateDamageDatalists(){
+    const all=read().damage?.rows||[];
+    const fill=(id,idx)=>{
+      const el=$(id);if(!el)return;
+      const vals=[...new Set(all.map(r=>String(r[idx]||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+      el.innerHTML=vals.map(v=>`<option value="${esc(v)}">`).join('');
+    };
+    fill('dmStoreDatalist',2);
+    fill('dmManagerDatalist',9);
+    fill('dmCategoryDatalist',8);
+    fill('dmMethodDatalist',3);
+  }
   function renderDamageRecords(){
     if(!$('dmBody'))return;
+    populateDamageDatalists();
     const all=read().damage?.rows||[];
     const st=$('dmStart').value,en=$('dmEnd').value;
     const storeQ=($('dmStoreQuery').value||'').trim().toLowerCase();
@@ -3255,25 +3287,34 @@ setTimeout(initInventoryColumnResize,0);
     const[y,m]=ymStr.split('-').map(Number),d=new Date(y,m-1+delta,1);
     return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
   }
-  function damageAmountForMonth(all,ymStr){
-    return all.filter(r=>ym(r[1]??r[0])===ymStr).reduce((a,r)=>a+num(r[7]),0);
+  function damageStatsForMonth(all,ymStr){
+    const rows=all.filter(r=>ym(r[1]??r[0])===ymStr);
+    return{amount:rows.reduce((a,r)=>a+num(r[7]),0),count:rows.length};
+  }
+  function pctBadge(v){
+    if(v===null)return'-';
+    return`<span class="badge ${v<0?'danger':''}">${v<0?'▼':'▲'} ${Math.abs(v).toFixed(1)}%</span>`;
   }
   function renderDamageMoM(){
     if(!$('dmMomCurAmount'))return;
     const all=read().damage?.rows||[];
-    let monthVal=$('dmMomMonth').value||today().slice(0,7);
-    const curAmt=damageAmountForMonth(all,monthVal);
-    const prevMonth=shiftMonth(monthVal,-1),prevAmt=damageAmountForMonth(all,prevMonth);
-    const yoyMonth=shiftMonth(monthVal,-12),yoyAmt=damageAmountForMonth(all,yoyMonth);
-    const momPct=pct(curAmt,prevAmt),yoyPct=pct(curAmt,yoyAmt);
-    $('dmMomCurLabel').textContent=`${monthVal} 파손금액`;
-    $('dmMomCurAmount').textContent=fmt(curAmt)+'원';
-    $('dmMomPrevLabel').textContent=`전월대비(${prevMonth})`;
-    $('dmMomPrevPct').innerHTML=momPct===null?'-':`<span class="badge ${momPct<0?'danger':''}">${momPct<0?'▼':'▲'} ${Math.abs(momPct).toFixed(1)}%</span>`;
-    $('dmMomPrevDetail').textContent=`${prevMonth} ${fmt(prevAmt)}원`;
-    $('dmMomYoyLabel').textContent=`전년동월대비(${yoyMonth})`;
-    $('dmMomYoyPct').innerHTML=yoyPct===null?'-':`<span class="badge ${yoyPct<0?'danger':''}">${yoyPct<0?'▼':'▲'} ${Math.abs(yoyPct).toFixed(1)}%</span>`;
-    $('dmMomYoyDetail').textContent=`${yoyMonth} ${fmt(yoyAmt)}원`;
+    const monthVal=$('dmMomMonth').value||today().slice(0,7);
+    const cur=damageStatsForMonth(all,monthVal);
+    const prevMonth=shiftMonth(monthVal,-1),prev=damageStatsForMonth(all,prevMonth);
+    const yoyMonth=shiftMonth(monthVal,-12),yoy=damageStatsForMonth(all,yoyMonth);
+    $('dmMomCurTitle').textContent=`${monthVal} 파손 현황`;
+    $('dmMomCurAmount').textContent=fmt(cur.amount)+'원';
+    $('dmMomCurCount').textContent=fmt(cur.count)+'건';
+    $('dmMomPrevTitle').textContent=`전월대비 (${prevMonth})`;
+    $('dmMomPrevAmountPct').innerHTML=pctBadge(pct(cur.amount,prev.amount));
+    $('dmMomPrevAmountDetail').textContent=`${prevMonth} ${fmt(prev.amount)}원`;
+    $('dmMomPrevCountPct').innerHTML=pctBadge(pct(cur.count,prev.count));
+    $('dmMomPrevCountDetail').textContent=`${prevMonth} ${fmt(prev.count)}건`;
+    $('dmMomYoyTitle').textContent=`전년동월대비 (${yoyMonth})`;
+    $('dmMomYoyAmountPct').innerHTML=pctBadge(pct(cur.amount,yoy.amount));
+    $('dmMomYoyAmountDetail').textContent=`${yoyMonth} ${fmt(yoy.amount)}원`;
+    $('dmMomYoyCountPct').innerHTML=pctBadge(pct(cur.count,yoy.count));
+    $('dmMomYoyCountDetail').textContent=`${yoyMonth} ${fmt(yoy.count)}건`;
   }
   function renderDamage(){renderDamageFY();renderDamageRecords();renderDamageMoM()}
   function boxRows(){return read().box?.rows||[]}
