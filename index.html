@@ -1994,6 +1994,17 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   .mobile-menu-btn{display:inline-flex!important;position:static!important;margin-left:auto!important;background:transparent!important;border:1px solid #383c42!important;color:#fff!important;width:34px!important;height:34px!important;box-shadow:none!important;}
   .app.mobile-nav-open .mobile-menu-btn{background:#fff!important;color:#111!important;border-color:#fff!important;}
 }
+
+/* ===== 특이도 보강: 이전 버전의 색상 규칙보다 우선하도록 .sidebar 접두사로 재지정 ===== */
+.sidebar .nav-root{background:transparent!important;font-family:"Pretendard","Noto Sans KR",Arial,sans-serif!important;font-size:14px!important;font-weight:800!important;letter-spacing:-.01em!important;}
+.sidebar .nav-root:hover{background:rgba(255,255,255,.06)!important;color:var(--v70-text)!important;}
+.sidebar .nav-group.open>.nav-root{background:rgba(255,255,255,.08)!important;color:#fff!important;}
+.sidebar .brand b{font-size:15px!important;}
+.sidebar .nav-item{background:transparent!important;}
+.sidebar .nav-item:hover{background:rgba(255,255,255,.08)!important;color:#fff!important;}
+.sidebar .nav-item.active,.sidebar .nav-subitem.active{background:rgba(55,168,102,.16)!important;color:#5fd58c!important;}
+.sidebar .profile b{color:var(--v70-text)!important;}
+.sidebar .avatar{background:#242830!important;color:#fff!important;}
 </style>
 </head>
 <body>
@@ -2360,7 +2371,7 @@ const USER_KEY="lush-logistics-v4-users";
 const HIST_KEY="lush-logistics-upload-history";
 const ROLE_LABEL={admin:"관리자",leader:"팀 리더",editor:"팀원",restricted:"제한 열람"};
 const GROUPS=[
- {id:"dashboard",label:"Dashboard",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"upload",label:"데이터 업로드",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
 ];
 const DEFAULT_MENUS=[
  {id:"dashboard-main",group:"dashboard",label:"메인 대시보드",kind:"view",target:"dashboard",visible:true,roles:["admin","leader","editor","restricted"],protected:true},
@@ -2757,8 +2768,8 @@ function renderMenusTable(){menuRows.innerHTML=menus.map((m,i)=>{const g=GROUPS.
 addMenuBtn.onclick=()=>{const name=newMenuName.value.trim();if(!name){toastMsg("메뉴 이름을 입력해주세요.");return}const id="custom-"+Date.now();const group=newMenuGroup.value,kind=newMenuType.value;const m={id,group,label:name,kind:kind==="sheet"?"sheet":kind==="inventoryOwner"?"inventoryOwner":"blank",visible:true,roles:["admin","leader","editor"]};if(kind==="sheet"){m.cat=group;m.sheet=name;if(!db[group])db[group]={};db[group][name]={cols:["항목","내용","비고"],rows:[]};localStorage.setItem(DATA_KEY,JSON.stringify(db))}else if(kind==="inventoryOwner"){m.group="inventory";m.owner=name;if(!inventoryDb.owners[name])inventoryDb.owners[name]={label:name,snapshots:{}};saveInventoryDb()}menus.push(m);saveMenus();newMenuName.value="";renderNav();renderMenusTable();renderPermissions();toastMsg("새 메뉴를 추가했습니다.")};
 function renderPermissions(){permissionRows.innerHTML=menus.filter(m=>m.group!=="admin").map((m,i)=>{const idx=menus.indexOf(m);return `<tr><td><b>${esc(m.label)}</b></td><td><span class="badge">항상 허용</span></td>${["leader","editor","restricted"].map(r=>`<td><button class="role-pill ${m.roles.includes(r)?"on":""}" data-pidx="${idx}" data-role="${r}">${m.roles.includes(r)?"허용":"차단"}</button></td>`).join("")}</tr>`}).join("");document.querySelectorAll("[data-pidx]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.pidx],r=b.dataset.role;if(m.roles.includes(r))m.roles=m.roles.filter(x=>x!==r);else m.roles.push(r);if(!m.roles.includes("admin"))m.roles.push("admin");saveMenus();renderPermissions();renderNav();toastMsg(`${ROLE_LABEL[r]} 권한을 변경했습니다.`)})}
 document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active")});
-rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","Dashboard",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
-homeBrand.onclick=()=>showView("dashboard","Dashboard",document.querySelector('[data-menu-id="dashboard-main"]'));
+rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","메인",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
+homeBrand.onclick=()=>showView("dashboard","메인",document.querySelector('[data-menu-id="dashboard-main"]'));
 
 const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{if(isMobile()){appShell.classList.toggle("mobile-nav-open");return}appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 </script>
