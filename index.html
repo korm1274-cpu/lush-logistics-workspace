@@ -1889,6 +1889,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 </style>
 
 <style id="v68-box-grid-css">
+.box-grid-total-row th,.box-grid-total-row td{background:#eef4f8!important;font-weight:900!important;color:#243746!important;position:sticky!important;top:38px!important;z-index:2!important;border-bottom:2px solid #c7d6e0!important;}
 .box-grid-wrap{overflow:auto;max-height:620px;border:1px solid var(--line);border-radius:12px;background:#fff;margin-top:4px}
 .box-grid-table{border-collapse:separate;border-spacing:0;min-width:100%;font-size:11px}
 .box-grid-table th,.box-grid-table td{border-bottom:1px solid #edf0f2;border-right:1px solid #eef1f3;padding:0 9px;height:38px;white-space:nowrap}
@@ -2040,6 +2041,20 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   .nav-group:hover>.nav-children{display:flex!important;}
   .nav-folder:hover>.nav-folder-children{display:block!important;}
 }
+
+/* 절대 뚫리지 않도록 ID 기반으로 한 번 더 강하게 고정 */
+#appShell .topbar{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;height:35px!important;min-height:35px!important;max-height:35px!important;padding:0!important;overflow:visible!important;}
+#appShell .top-actions{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;height:100%!important;}
+#appShell .base-tools{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;height:100%!important;margin:0!important;}
+
+/* 알림 숫자 배지: 채움 없이 글자 색으로만 */
+#appShell .base-count{background:transparent!important;color:#c0392b!important;font-weight:900!important;padding:0!important;min-width:0!important;height:auto!important;border-radius:0!important;}
+#desktopSidebarBtn{display:none!important;}
+
+/* '메인' 처럼 하위 메뉴 없이 바로 이동하는 그룹의 활성 표시 */
+.nav-group-direct .nav-root em{display:none!important;}
+.nav-root.active{color:#fff!important;}
+.nav-root.active:after{background:var(--v70-accent)!important;}
 </style>
 </head>
 <body>
@@ -2370,7 +2385,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   <div class="box-grid-empty" id="boxGridEmpty">출고일을 선택하고 "불러오기"를 누르면 해당 요일의 매장 입력 표가 나타납니다.</div>
 
   <div class="data-filter-row" style="margin-top:14px"><div class="field"><label>시작일</label><input type="date" id="boxStart"></div><div class="field"><label>종료일</label><input type="date" id="boxEnd"></div><div class="field"><label>담당자</label><input type="text" id="boxManagerFilter" list="boxManagerDatalist" placeholder="담당자 검색 (예: bl)" autocomplete="off"><datalist id="boxManagerDatalist"></datalist></div><div class="field"><label>매장</label><input type="text" id="boxStoreFilter" list="boxStoreDatalist" placeholder="매장 검색 (예: 신)" autocomplete="off"><datalist id="boxStoreDatalist"></datalist></div><button class="btn primary" id="boxRun">조회</button><button class="btn" id="exportBoxCsv">CSV 내보내기</button></div>
-  <div class="kpis data-kpis" id="boxResultKpis" style="margin-bottom:10px"><div class="kpi"><span>조회 기간 총 박스</span><b id="boxSumQty">-</b><small>BOX</small></div><div class="kpi"><span>담당자 수</span><b id="boxSumManagers">-</b><small>명</small></div><div class="kpi"><span>매장 수</span><b id="boxSumStores">-</b><small>곳</small></div></div>
+  <div class="kpis data-kpis" id="boxResultKpis" style="margin-bottom:10px"><div class="kpi"><span>조회 기간 총 박스</span><b id="boxSumQty">-</b><small>BOX</small></div><div class="kpi"><span>담당자 수</span><b id="boxSumManagers">-</b><small>명</small></div><div class="kpi"><span>월 평균 박스 수량</span><b id="boxSumMonthlyAvg">-</b><small>BOX/월</small></div></div>
   <div class="panel" id="boxResultPanel"><div class="panel-head"><div><small>SEARCH RESULT</small><h3>조회 결과</h3></div><span class="badge" id="boxResultSummary">-</span></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th style="width:130px">날짜</th><th style="width:56px">요일</th><th>담당자</th><th>매장</th><th class="num" style="width:100px">수량</th></tr></thead><tbody id="boxBody"><tr><td colspan="5" class="data-empty">기간·담당자·매장 중 하나 이상 선택한 뒤 "조회"를 눌러주세요.</td></tr></tbody></table></div></div>
 </div></section>
 
@@ -2392,12 +2407,12 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div id="admin-menus" class="admin-section"><div class="admin-grid"><div class="admin-card"><h3>메뉴 구성</h3><p>메뉴명 수정, 표시/숨김, 신규 메뉴 추가를 Admin에서 직접 관리합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>그룹</th><th>메뉴명</th><th>유형</th><th>표시</th><th>관리</th></tr></thead><tbody id="menuRows"></tbody></table></div></div><div class="admin-card"><h3>새 메뉴 추가</h3><p>별도 코드 수정 없이 기본 메뉴를 추가할 수 있는 구조입니다.</p><div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div><div class="hint" style="margin-top:13px">Dashboard와 Admin은 운영 안전을 위해 삭제할 수 없고, 나머지 사용자 추가 메뉴는 자유롭게 삭제할 수 있습니다.</div></div></div></div>
       <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
     </section>
+    <footer class="bottom-toolbar" id="bottomToolbar">
+      <button type="button" class="base-tool" id="baseExportBtn" title="현재 화면 데이터 내보내기">CSV</button>
+      <select id="rolePreview" class="role-preview" title="권한 미리보기"><option value="admin">권한 미리보기: 관리자</option><option value="leader">권한 미리보기: 팀 리더</option><option value="editor">권한 미리보기: 팀원</option><option value="restricted">권한 미리보기: 제한 열람</option></select>
+      <button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
+    </footer>
   </main>
-  <footer class="bottom-toolbar" id="bottomToolbar">
-    <button type="button" class="base-tool" id="baseExportBtn" title="현재 화면 데이터 내보내기">CSV</button>
-    <select id="rolePreview" class="role-preview" title="권한 미리보기"><option value="admin">권한 미리보기: 관리자</option><option value="leader">권한 미리보기: 팀 리더</option><option value="editor">권한 미리보기: 팀원</option><option value="restricted">권한 미리보기: 제한 열람</option></select>
-    <button class="btn" id="exportBackup">전체 백업</button><button class="btn" id="importBackup">백업 불러오기</button><input type="file" id="backupInput" accept=".json" hidden>
-  </footer>
 </div><div class="toast" id="toast"></div>
 <script>
 const DATA_KEY="lush-logistics-v4-data";
@@ -2547,8 +2562,8 @@ function saveMenus(){localStorage.setItem(MENU_KEY,JSON.stringify(menus))} funct
 function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll('"','&quot;')}
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
-function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
-function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
+function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;if(g.id==="dashboard"&&list.length===1){box.classList.add("nav-group-direct");box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span></button>`;const only=list[0];box.querySelector(".nav-root").onclick=()=>activateMenu(only,box.querySelector(".nav-root"));box.querySelector(".nav-root").dataset.menuId=only.id;navContainer.appendChild(box);return}box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
+function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item,.nav-group-direct .nav-root").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
@@ -3188,10 +3203,10 @@ setTimeout(initInventoryColumnResize,0);
     const sorted=rows.slice().sort((a,b)=>normDate(b[0]||'').localeCompare(normDate(a[0]||'')));
     const totalQty=sorted.reduce((a,r)=>a+num(r[4]),0);
     const managerCount=new Set(sorted.map(r=>r[2]).filter(Boolean)).size;
-    const storeCount=new Set(sorted.map(r=>r[3]).filter(Boolean)).size;
+    const monthCount=new Set(sorted.map(r=>normDate(r[0]||'').slice(0,7)).filter(Boolean)).size||1;
     $('boxSumQty').textContent=fmt(totalQty);
     $('boxSumManagers').textContent=fmt(managerCount);
-    $('boxSumStores').textContent=fmt(storeCount);
+    $('boxSumMonthlyAvg').textContent=fmt(Math.round(totalQty/monthCount));
     $('boxResultSummary').textContent=`${fmt(sorted.length)}건`;
     $('boxBody').innerHTML=sorted.length?sorted.map(r=>`<tr>
       <td>${esc(normDate(r[0]||''))}</td>
@@ -3258,13 +3273,27 @@ setTimeout(initInventoryColumnResize,0);
     wrap.hidden=false;
     const qtyMap=boxQtyLookup(date);
     head.innerHTML='<th>담당자</th>'+stores.map(s=>`<th>${esc(s)}</th>`).join('');
-    body.innerHTML=BOX_MANAGERS.map(mgr=>`<tr><th>${esc(mgr)}</th>${stores.map(store=>{
+    const totalRow=`<tr class="box-grid-total-row"><th>합계</th>${stores.map(store=>{
+      const sum=BOX_MANAGERS.reduce((a,mgr)=>a+num(qtyMap[`${mgr}|${store}`]),0);
+      return `<td data-box-total-store="${esc(store)}">${fmt(sum)}</td>`;
+    }).join('')}</tr>`;
+    const managerRows=BOX_MANAGERS.map(mgr=>`<tr><th>${esc(mgr)}</th>${stores.map(store=>{
       const v=qtyMap[`${mgr}|${store}`];
       return `<td><input type="number" min="0" data-box-grid-manager="${esc(mgr)}" data-box-grid-store="${esc(store)}" value="${v!=null&&v!==''?v:''}" placeholder="0"></td>`;
     }).join('')}</tr>`).join('');
+    body.innerHTML=totalRow+managerRows;
+    function refreshBoxGridTotals(){
+      stores.forEach(store=>{
+        let sum=0;
+        body.querySelectorAll(`input[data-box-grid-store="${CSS.escape(store)}"]`).forEach(i=>sum+=num(i.value));
+        const cell=body.querySelector(`[data-box-total-store="${CSS.escape(store)}"]`);
+        if(cell)cell.textContent=fmt(sum);
+      });
+    }
     body.querySelectorAll('input[data-box-grid-manager]').forEach(inp=>{
       inp.oninput=()=>{
         upsertBoxQty(date,dow,inp.dataset.boxGridManager,inp.dataset.boxGridStore,num(inp.value));
+        refreshBoxGridTotals();
         renderBox();
       };
       inp.addEventListener('keydown',e=>{
