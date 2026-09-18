@@ -2568,7 +2568,7 @@ function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
 function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;if(g.id==="dashboard"&&list.length===1){box.classList.add("nav-group-direct");box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span></button>`;const only=list[0];box.querySelector(".nav-root").onclick=()=>activateMenu(only,box.querySelector(".nav-root"));box.querySelector(".nav-root").dataset.menuId=only.id;navContainer.appendChild(box);return}box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item,.nav-group-direct .nav-root").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
-function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
+function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}window.flushBoxPendingSave?.();navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 addRow.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];s.rows.push(Array(s.cols.length).fill(""));saveDb();renderSheet();toastMsg("새 행을 추가했습니다.")};exportCsv.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];const csv=[s.cols,...s.rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(currentSheet.name+".csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
@@ -3260,8 +3260,18 @@ setTimeout(initInventoryColumnResize,0);
     if(isNaN(d))return'';
     return ['일','월','화','수','목','금','토'][d.getDay()];
   }
+  let __boxPendingRows=null;
+  let __boxSaveTimer=null;
+  function flushBoxPendingSave(){
+    if(__boxSaveTimer){clearTimeout(__boxSaveTimer);__boxSaveTimer=null}
+    if(__boxPendingRows){saveBoxRows(__boxPendingRows);__boxPendingRows=null}
+  }
+  window.flushBoxPendingSave=flushBoxPendingSave;
+  window.addEventListener('beforeunload',flushBoxPendingSave);
+  document.addEventListener('visibilitychange',()=>{if(document.hidden)flushBoxPendingSave()});
   function upsertBoxQty(date,dow,manager,store,qty){
-    const rows=boxRows();
+    if(!__boxPendingRows)__boxPendingRows=boxRows();
+    const rows=__boxPendingRows;
     const idx=rows.findIndex(r=>r[0]===date&&r[2]===manager&&r[3]===store);
     if(qty>0){
       if(idx>=0)rows[idx]=[date,dow,manager,store,qty];
@@ -3269,8 +3279,9 @@ setTimeout(initInventoryColumnResize,0);
     }else if(idx>=0){
       rows.splice(idx,1);
     }
-    saveBoxRows(rows);
     boxAutoSaveTick();
+    clearTimeout(__boxSaveTimer);
+    __boxSaveTimer=setTimeout(flushBoxPendingSave,600);
   }
   function boxQtyLookup(date){
     const map={};
@@ -3307,11 +3318,13 @@ setTimeout(initInventoryColumnResize,0);
         if(cell)cell.textContent=fmt(sum);
       });
     }
+    let __boxResultsRenderTimer=null;
     body.querySelectorAll('input[data-box-grid-manager]').forEach(inp=>{
       inp.oninput=()=>{
         upsertBoxQty(date,dow,inp.dataset.boxGridManager,inp.dataset.boxGridStore,num(inp.value));
         refreshBoxGridTotals();
-        renderBox();
+        clearTimeout(__boxResultsRenderTimer);
+        __boxResultsRenderTimer=setTimeout(renderBox,500);
       };
       inp.addEventListener('keydown',e=>{
         const key=e.key;
@@ -3332,6 +3345,7 @@ setTimeout(initInventoryColumnResize,0);
     });
   }
   function loadBoxGrid(){
+    flushBoxPendingSave();
     const date=$('boxGridDate')?.value||'';
     if(!date){toastMsg('출고일을 선택해주세요.');return}
     const dow=dowOf(date);
