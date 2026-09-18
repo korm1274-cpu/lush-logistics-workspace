@@ -2051,6 +2051,10 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 #appShell .base-count{background:transparent!important;color:#c0392b!important;font-weight:900!important;padding:0!important;min-width:0!important;height:auto!important;border-radius:0!important;}
 #desktopSidebarBtn{display:none!important;}
 
+/* 상단바 버튼이 min-height:40px 규칙 때문에 놓치는 문제 해결 */
+#appShell .topbar .base-tool{min-height:0!important;height:24px!important;padding:0 8px!important;font-size:10px!important;display:inline-flex!important;align-items:center!important;align-self:center!important;}
+#appShell .topbar .top-actions,#appShell .topbar .base-tools{align-items:center!important;}
+
 /* '메인' 처럼 하위 메뉴 없이 바로 이동하는 그룹의 활성 표시 */
 .nav-group-direct .nav-root em{display:none!important;}
 .nav-root.active{color:#fff!important;}
