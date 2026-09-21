@@ -2295,12 +2295,14 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
     <section id="inboundBasicView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND</div><h2>입고</h2><p>기본적으로 이번 달 기준으로 조회되며, 시작일·종료일을 바꿔서 원하는 기간을 다시 조회할 수 있습니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="ibStart"></div><div class="field"><label>종료일</label><input type="date" id="ibEnd"></div><div class="field"><label>차수</label><input id="ibBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="ibQuery" placeholder="PLU 또는 제품명"></div><button class="btn primary" id="ibRun">조회</button><button class="btn" id="ibReset">전체</button></div>
-  <div class="kpis data-kpis"><div class="kpi"><span>조회 수량</span><b id="ibQty">0</b><small>EA</small></div><div class="kpi"><span>SKU</span><b id="ibSku">0</b><small>SKU</small></div><div class="kpi"><span>입고 차수</span><b id="ibBatch">0</b><small>차수</small></div></div>
+  <div class="kpis data-kpis"><div class="kpi"><span>조회 수량 (G)</span><b id="ibQtyG">0</b><small>G</small></div><div class="kpi"><span>조회 수량 (EA)</span><b id="ibQtyEA">0</b><small>EA</small></div><div class="kpi"><span>SKU (G)</span><b id="ibSkuG">0</b><small>SKU</small></div><div class="kpi"><span>SKU (EA)</span><b id="ibSkuEA">0</b><small>SKU</small></div><div class="kpi"><span>입고 차수</span><b id="ibBatch">0</b><small>차수</small></div></div>
+  <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>날짜별 입고 현황</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>입고차수</th><th class="num">SKU</th><th class="num">수량(G)</th><th class="num">수량(EA)</th></tr></thead><tbody id="ibBody"></tbody></table></div></div>
 </div></section>
 
     <section id="inboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND ANALYTICS</div><h2>입고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 입고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
-  <div class="data-split"><div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div><div id="inAnaTrend" class="mini-bars"></div></div><div class="panel"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>PLU</th><th>제품명</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div></div>
+  <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="PLU 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button><button class="btn" id="inAnaReset">전체</button></div>
+  <div class="data-split"><div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">차수</th><th class="num">수량(G)</th><th class="num">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div></div><div class="panel"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>PLU</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div></div>
 </div></section>
 <section id="outboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 분석</h2><p>업로드 누적 데이터를 기준으로 일자·제품·월별 출고 실적을 조회합니다.</p></div></div>
@@ -3243,8 +3245,9 @@ setTimeout(initInventoryColumnResize,0);
   function monthStats(rows){const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+num(r[4]),0),rows:a.length,ym:cur}}
   function renderDashboard(){const d=read(),i=monthStats(d.inbound?.rows),o=monthStats(d.outbound?.rows);if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
+  function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   function renderInboundBasic(){
-    if(!$('ibQty'))return;
+    if(!$('ibQtyG'))return;
     const d=read(),all=d.inbound?.rows||[];
     const start=$('ibStart')?.value||'',end=$('ibEnd')?.value||'';
     const batchQ=($('ibBatchQuery')?.value||'').trim().toLowerCase();
@@ -3253,13 +3256,51 @@ setTimeout(initInventoryColumnResize,0);
       const rd=normDate(r[0]);
       return(!start||rd>=start)&&(!end||rd<=end)
         &&(!batchQ||String(r[1]||'').toLowerCase().includes(batchQ))
-        &&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q));
+        &&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[4]||'').toLowerCase().includes(q));
     });
-    $('ibQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[4]),0));
-    $('ibSku').textContent=fmt(new Set(rows.map(r=>String(r[2]||'')).filter(Boolean)).size);
+    const gRows=rows.filter(r=>inboundUnit(r)==='G'),eaRows=rows.filter(r=>inboundUnit(r)==='EA');
+    $('ibQtyG').textContent=fmt(gRows.reduce((a,r)=>a+num(r[6]),0));
+    $('ibQtyEA').textContent=fmt(eaRows.reduce((a,r)=>a+num(r[6]),0));
+    $('ibSkuG').textContent=fmt(new Set(gRows.map(r=>String(r[2]||'')).filter(Boolean)).size);
+    $('ibSkuEA').textContent=fmt(new Set(eaRows.map(r=>String(r[2]||'')).filter(Boolean)).size);
     $('ibBatch').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);
+    const map={};
+    rows.forEach(r=>{
+      const key=normDate(r[0])+'|'+String(r[1]||'');
+      if(!map[key])map[key]={date:normDate(r[0]),batch:r[1]||'',skus:new Set(),qtyG:0,qtyEA:0};
+      if(r[2])map[key].skus.add(String(r[2]));
+      const u=inboundUnit(r);
+      if(u==='G')map[key].qtyG+=num(r[6]);
+      else if(u==='EA')map[key].qtyEA+=num(r[6]);
+    });
+    const entries=Object.values(map).sort((a,b)=>b.date.localeCompare(a.date));
+    $('ibBody').innerHTML=entries.length?entries.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.batch)}</td><td class="num">${fmt(e.skus.size)}</td><td class="num">${fmt(e.qtyG)}</td><td class="num">${fmt(e.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">데이터가 없습니다.</td></tr>';
   }
-  function renderInbound(){if(!$('inAnaBody'))return;const d=read(),all=d.inbound?.rows||[];const rows=all.slice();$('inAnaTrend').innerHTML=trendHtml(all,4);$('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="num">${fmt(r[4])}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">데이터가 없습니다.</td></tr>'}
+  function renderInbound(){
+    if(!$('inAnaBody'))return;
+    const d=read(),all=d.inbound?.rows||[];
+    const start=$('inAnaStart')?.value||'',end=$('inAnaEnd')?.value||'';
+    const batchQ=($('inAnaBatchQuery')?.value||'').trim().toLowerCase();
+    const q=($('inAnaQuery')?.value||'').trim().toLowerCase();
+    const rows=all.filter(r=>{
+      const rd=normDate(r[0]);
+      return(!start||rd>=start)&&(!end||rd<=end)
+        &&(!batchQ||String(r[1]||'').toLowerCase().includes(batchQ))
+        &&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[4]||'').toLowerCase().includes(q));
+    });
+    const monthMap={};
+    rows.forEach(r=>{
+      const m=ym(r[0]);if(!m)return;
+      if(!monthMap[m])monthMap[m]={batches:new Set(),qtyG:0,qtyEA:0};
+      if(r[1])monthMap[m].batches.add(String(r[1]));
+      const u=inboundUnit(r);
+      if(u==='G')monthMap[m].qtyG+=num(r[6]);
+      else if(u==='EA')monthMap[m].qtyEA+=num(r[6]);
+    });
+    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
+    $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="4" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="num">${fmt(r[6])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
+  }
   function renderOutbound(){if(!$('outAnaBody'))return;const d=read(),all=d.outbound?.rows||[],date=$('outAnaDate')?.value||'',q=($('outAnaQuery')?.value||'').trim().toLowerCase();const rows=all.filter(r=>(!date||normDate(r[0])===date)&&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q)));$('outAnaQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[4]),0));$('outAnaSku').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);$('outAnaDays').textContent=fmt(new Set(rows.map(r=>normDate(r[0])).filter(Boolean)).size);$('outAnaRows').textContent=fmt(rows.length);$('outAnaCaption').textContent=date||q?'필터 적용':'전체';$('outAnaTrend').innerHTML=trendHtml(all,4);$('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="num">${fmt(r[4])}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">조회 결과가 없습니다.</td></tr>'}
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
   function renderMisship(){if(!$('msBody'))return;const all=read().misship?.rows||[],st=$('msStart').value,en=$('msEnd').value,q=$('msQuery').value.trim().toLowerCase(),group=$('msGroup').value;let rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return(!st||d>=st)&&(!en||d<=en)&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q))) });const done=rows.filter(r=>String(r[9]??'').includes('완료')).length;$('msCount').textContent=fmt(rows.length);$('msDone').textContent=fmt(done);$('msPending').textContent=fmt(rows.length-done);const cur=today().slice(0,7),prev=String(Number(cur.slice(0,4))-1)+cur.slice(4),curCnt=all.filter(r=>ym(r[1]??r[0])===cur).length,prevCnt=all.filter(r=>ym(r[1]??r[0])===prev).length,py=pct(curCnt,prevCnt);$('msYoy').textContent=py===null?'-':(py>0?'+':'')+py.toFixed(1);const idx=group==='store'?2:group==='reason'?8:7,map={};rows.forEach(r=>{const k=String(r[idx]||'(미지정)').trim();map[k]=(map[k]||0)+1});$('msBreakdown').innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v],i)=>`<div class="rank-row"><em>${i+1}</em><span>${esc(k)}</span><b>${fmt(v)}건</b></div>`).join('')||'<div class="data-empty">집계 데이터가 없습니다.</div>';$('msBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(normDate(r[1]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[7])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>'}
