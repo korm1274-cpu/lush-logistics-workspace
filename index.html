@@ -2412,18 +2412,18 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
     <div style="padding:0 2px 12px;font-size:11px;color:#8a949e">담당자 구분 없이 월 전체 파손금액·건수 기준입니다.</div>
     <div class="analysis-grid" style="grid-template-columns:repeat(3,1fr)">
       <div class="analysis-box">
-        <div class="eyebrow" id="dmMomCurTitle">조회월</div>
+        <div class="eyebrow" id="dmMomCurTitle" style="font-size:15px;font-weight:800;color:#374753">조회월</div>
         <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomCurAmount">-</div></div>
         <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomCurCount" style="font-size:22px">-</div></div>
       </div>
       <div class="analysis-box">
-        <div class="eyebrow" id="dmMomPrevTitle">전월대비</div>
-        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomPrevAmountPct" style="font-size:20px;font-weight:900">-</span><span id="dmMomPrevCountPct" style="font-size:20px;font-weight:900">-</span></div>
+        <div class="eyebrow" id="dmMomPrevTitle" style="font-size:15px;font-weight:800;color:#374753">전월대비</div>
+        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomPrevAmountPct" style="font-size:26px;font-weight:900">-</span></div>
         <div class="muted mt14" id="dmMomPrevDetailLine" style="font-size:11px"></div>
       </div>
       <div class="analysis-box">
-        <div class="eyebrow" id="dmMomYoyTitle">전년동월대비</div>
-        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomYoyAmountPct" style="font-size:20px;font-weight:900">-</span><span id="dmMomYoyCountPct" style="font-size:20px;font-weight:900">-</span></div>
+        <div class="eyebrow" id="dmMomYoyTitle" style="font-size:15px;font-weight:800;color:#374753">전년동월대비</div>
+        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomYoyAmountPct" style="font-size:26px;font-weight:900">-</span></div>
         <div class="muted mt14" id="dmMomYoyDetailLine" style="font-size:11px"></div>
       </div>
     </div>
@@ -3337,9 +3337,16 @@ setTimeout(initInventoryColumnResize,0);
     fill('dmCategoryDatalist',8);
     fill('dmMethodDatalist',3);
   }
+  let __damageHasSearched=false;
+  function runDamageSearch(){__damageHasSearched=true;renderDamageRecords()}
   function renderDamageRecords(){
     if(!$('dmBody'))return;
     populateDamageDatalists();
+    if(!__damageHasSearched){
+      $('dmRecordSummary').textContent='기간·조건을 확인한 뒤 "조회"를 눌러주세요.';
+      $('dmBody').innerHTML='<tr><td colspan="8" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
+      return;
+    }
     const all=read().damage?.rows||[];
     const st=$('dmStart').value,en=$('dmEnd').value;
     const storeQ=($('dmStoreQuery').value||'').trim().toLowerCase();
@@ -3382,11 +3389,9 @@ setTimeout(initInventoryColumnResize,0);
     $('dmMomCurCount').textContent=fmt(cur.count)+'건';
     $('dmMomPrevTitle').textContent=`전월대비`;
     $('dmMomPrevAmountPct').innerHTML=pctBadge(pct(cur.amount,prev.amount));
-    $('dmMomPrevCountPct').innerHTML=pctBadge(pct(cur.count,prev.count));
     $('dmMomPrevDetailLine').textContent=`${prevMonth} · ${fmt(prev.count)}건 · ${fmt(prev.amount)}원`;
     $('dmMomYoyTitle').textContent=`전년동월대비`;
     $('dmMomYoyAmountPct').innerHTML=pctBadge(pct(cur.amount,yoy.amount));
-    $('dmMomYoyCountPct').innerHTML=pctBadge(pct(cur.count,yoy.count));
     $('dmMomYoyDetailLine').textContent=`${yoyMonth} · ${fmt(yoy.count)}건 · ${fmt(yoy.amount)}원`;
   }
   function renderDamage(){renderDamageFY();renderDamageRecords();renderDamageMoM()}
@@ -3628,7 +3633,12 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',renderDamageRecords],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();
+if($('dmStart')&&!$('dmStart').value){
+  const fy=damageFY();
+  $('dmStart').value=fy.start;
+  $('dmEnd').value=today();
+}
 $('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});
 $('ibRun')?.addEventListener('click',renderInboundBasic);
 $('ibReset')?.addEventListener('click',()=>{$('ibBatchQuery').value='';$('ibQuery').value='';const now=new Date();const first=new Date(now.getFullYear(),now.getMonth(),1);const last=new Date(now.getFullYear(),now.getMonth()+1,0);const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('ibStart').value=fmtD(first);$('ibEnd').value=fmtD(last);renderInboundBasic()});
