@@ -3557,7 +3557,7 @@ setTimeout(initInventoryColumnResize,0);
   }
   function fixDateCell(v){
     if(v instanceof Date&&!isNaN(v)){
-      return `${v.getFullYear()}-${String(v.getMonth()+1).padStart(2,'0')}-${String(v.getDate()).padStart(2,'0')}`;
+      return `${v.getUTCFullYear()}-${String(v.getUTCMonth()+1).padStart(2,'0')}-${String(v.getUTCDate()).padStart(2,'0')}`;
     }
     if(typeof v==='number'&&v>15000&&v<80000){
       return excelSerialToLocalStr(v);
