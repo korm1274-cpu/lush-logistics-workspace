@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LUSH Logistics Workspace</title>
-<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-<script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script defer src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css">
 <style>
-@import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
 :root{
   --bg:#f4f6f8; --panel:#ffffff; --panel2:#f8fafb; --ink:#17212b; --muted:#6f7b87; --line:#e1e6eb;
   --nav:#19232d; --nav2:#222f3a; --navText:#c8d0d7; --accent:#315a7d; --accentSoft:#eaf0f5;
@@ -3105,7 +3105,7 @@ setTimeout(initInventoryColumnResize,0);
     if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='수입 일정을 불러오는 중입니다.';
     if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 불러오는 중';
     try{
-      const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default'});
+      const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000);const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default',signal:ctrl.signal}).finally(()=>clearTimeout(timer));
       if(!res.ok)throw new Error(`HTTP ${res.status}`);
       const data=await res.json();
       if(!data.success||!Array.isArray(data.events))throw new Error('응답 형식 오류');
