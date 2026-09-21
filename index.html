@@ -2416,13 +2416,13 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       </div>
       <div class="analysis-box">
         <div class="eyebrow" id="dmMomPrevTitle">전월대비</div>
-        <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomPrevAmountPct" style="font-size:22px">-</div><small class="muted" id="dmMomPrevAmountDetail"></small></div>
-        <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomPrevCountPct" style="font-size:22px">-</div><small class="muted" id="dmMomPrevCountDetail"></small></div>
+        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomPrevAmountPct" style="font-size:20px;font-weight:900">-</span><span id="dmMomPrevCountPct" style="font-size:20px;font-weight:900">-</span></div>
+        <div class="muted mt14" id="dmMomPrevDetailLine" style="font-size:11px"></div>
       </div>
       <div class="analysis-box">
         <div class="eyebrow" id="dmMomYoyTitle">전년동월대비</div>
-        <div class="mt14"><small class="muted">파손 금액</small><div class="big-number" id="dmMomYoyAmountPct" style="font-size:22px">-</div><small class="muted" id="dmMomYoyAmountDetail"></small></div>
-        <div class="mt14"><small class="muted">파손 건수</small><div class="big-number" id="dmMomYoyCountPct" style="font-size:22px">-</div><small class="muted" id="dmMomYoyCountDetail"></small></div>
+        <div class="mt14" style="display:flex;gap:14px;align-items:baseline"><span id="dmMomYoyAmountPct" style="font-size:20px;font-weight:900">-</span><span id="dmMomYoyCountPct" style="font-size:20px;font-weight:900">-</span></div>
+        <div class="muted mt14" id="dmMomYoyDetailLine" style="font-size:11px"></div>
       </div>
     </div>
   </div>
@@ -3327,7 +3327,7 @@ setTimeout(initInventoryColumnResize,0);
   }
   function pctBadge(v){
     if(v===null)return'-';
-    return`<span class="badge ${v<0?'danger':''}">${v<0?'▼':'▲'} ${Math.abs(v).toFixed(1)}%</span>`;
+    return`<span class="badge ${v<0?'danger':''}" style="font-size:15px;padding:7px 11px">${v<0?'▼':'▲'} ${Math.abs(v).toFixed(1)}%</span>`;
   }
   function renderDamageMoM(){
     if(!$('dmMomCurAmount'))return;
@@ -3339,16 +3339,14 @@ setTimeout(initInventoryColumnResize,0);
     $('dmMomCurTitle').textContent=`${monthVal} 파손 현황`;
     $('dmMomCurAmount').textContent=fmt(cur.amount)+'원';
     $('dmMomCurCount').textContent=fmt(cur.count)+'건';
-    $('dmMomPrevTitle').textContent=`전월대비 (${prevMonth})`;
+    $('dmMomPrevTitle').textContent=`전월대비`;
     $('dmMomPrevAmountPct').innerHTML=pctBadge(pct(cur.amount,prev.amount));
-    $('dmMomPrevAmountDetail').textContent=`${prevMonth} ${fmt(prev.amount)}원`;
     $('dmMomPrevCountPct').innerHTML=pctBadge(pct(cur.count,prev.count));
-    $('dmMomPrevCountDetail').textContent=`${prevMonth} ${fmt(prev.count)}건`;
-    $('dmMomYoyTitle').textContent=`전년동월대비 (${yoyMonth})`;
+    $('dmMomPrevDetailLine').textContent=`${prevMonth} · ${fmt(prev.count)}건 · ${fmt(prev.amount)}원`;
+    $('dmMomYoyTitle').textContent=`전년동월대비`;
     $('dmMomYoyAmountPct').innerHTML=pctBadge(pct(cur.amount,yoy.amount));
-    $('dmMomYoyAmountDetail').textContent=`${yoyMonth} ${fmt(yoy.amount)}원`;
     $('dmMomYoyCountPct').innerHTML=pctBadge(pct(cur.count,yoy.count));
-    $('dmMomYoyCountDetail').textContent=`${yoyMonth} ${fmt(yoy.count)}건`;
+    $('dmMomYoyDetailLine').textContent=`${yoyMonth} · ${fmt(yoy.count)}건 · ${fmt(yoy.amount)}원`;
   }
   function renderDamage(){renderDamageFY();renderDamageRecords();renderDamageMoM()}
   function boxRows(){return read().box?.rows||[]}
@@ -3585,7 +3583,7 @@ setTimeout(initInventoryColumnResize,0);
     const dataRowCount=values.length-1;
     const rawDateCol=(dateColIdx!=null)?readRawColumn(ws,dateColIdx,dataRowCount,2):null;
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
-    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box'})[type];const data=read();if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'||key==='outbound'||key==='box')rows=upsertByDate(data[key]?.rows||[],rows,key==='box'?0:0);data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:(key==='inbound'||key==='outbound'||key==='box')?'날짜 기준 누적/교체':'최신 파일 전체 교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box'})[type];const data=read();if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);const dateMergeIdx=({'입고':0,'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
@@ -3643,7 +3641,8 @@ if($('ibStart')&&!$('ibStart').value){
  window.BASE_EXPORT_CURRENT=exportCurrent;
 })();
 </script>
-<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>\n
+<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>
+
 <script id="v67-inbound-daily-monthly">
 (function(){
   const LABOR_KEY='lush-logistics-inbound-labor-v1';
