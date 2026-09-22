@@ -2066,7 +2066,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 /* 캘린더 출처별 색상: 연차(물류연차일정)=파랑, 수입(수입일정)=주황, 출고(출고일정)=초록 */
 .master-event.import-leave,.dash-two-week-event.import-leave{background:#eaf1ff!important;color:#2455b0!important;}
 .master-event.import-leave .event-type{color:#2455b0!important;}
-.master-event.import-src,.dash-two-week-event.import-src{background:#fff!important;color:#a94d00!important;}
+.master-event.import-src,.dash-two-week-event.import-src{background:#fff4e8!important;color:#a94d00!important;}
 .master-event.import-src .event-type{color:#c35a00!important;}
 .master-event.import-outbound,.dash-two-week-event.import-outbound{background:#e9f7ee!important;color:#1f7a45!important;}
 .master-event.import-outbound .event-type{color:#1f7a45!important;}
@@ -3478,14 +3478,16 @@ setTimeout(initInventoryColumnResize,0);
   const PRODUCT_EA_CONVERSION={"T0017390":5,"T0017344":10,"T0017345":10,"T0017391":10,"T0015387":15,"T0015388":15,"T0015389":15,"T0017343":20,"T0012651":50,"T0011245":50,"T0013136":100,"T0004870":100,"T0000157":100,"T0000156":200,"T0002618":250,"T0015067":250,"T0000827":500,"T0000823":500,"T0015619":650,"T0017034":650,"T0017035":650,"T0017323":650,"T0018229":1100,"T0017030":1250,"T0016938":1500,"T0015446":1500,"T0016855":1500,"T0016849":1500,"T0016853":1500,"T0016851":1500,"T0017584":1500,"T0018237":1500,"T0016660":1500,"T0016659":1500,"T0017216":1500,"T0017217":1500,"T0017218":1500,"T0017211":1500,"T0017219":1500,"T0017205":1500,"T0013867":1500,"T0017220":1500,"T0017221":1500,"T0017877":1500,"T0017222":1500,"T0017441":1500,"T0017223":1500,"T0017324":1500,"T0014806":1550,"T0017413":1800,"T0016357":2000,"T0018231":2100,"T0017724":2600,"T0016471":2700,"T0016472":3000,"T0015839":3200,"T0017440":3200,"T0015445":3400,"T0017033":3400,"T0017032":3400,"T0017206":3400,"T0017208":3400,"T0017210":3400,"T0017214":3400,"T0017215":4200,"T0017325":4200,"T0017207":4500,"T0017213":5100,"T0018158":5800,"T0017212":6100,"T0017233":8500,"T0017234":8500,"T0017643":8500,"T0017646":8500,"T0017439":8500,"T0017645":8500,"T0017642":8500,"T0017641":8500,"T0017644":8500,"T0018801":1500,"T0018775":10,"T0017791":10,"T0019180":1400,"T0019314":2000};
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
-  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH']);
+  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리']);
   const CATEGORY_EXCLUDE_PATTERN=/^(19|20)?\d{2}년/;
+  const CATEGORY_EXCLUDE_KEYWORDS=['SPA','ACCESSOR','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','악세','엑세','액세'];
   function categoryDisplay(raw){
     const v=String(raw||'').trim().toUpperCase();
     if(!v)return null;
     if(CATEGORY_EXCLUDE_SET.has(v))return null;
     if(CATEGORY_EXCLUDE_PATTERN.test(v))return null;
     if(v.includes('XMAS')||v.includes('크리스마스'))return null;
+    if(CATEGORY_EXCLUDE_KEYWORDS.some(k=>v.includes(k)))return null;
     if(NAKED_MERGE_SET.has(v))return 'NAKED';
     return String(raw).trim();
   }
