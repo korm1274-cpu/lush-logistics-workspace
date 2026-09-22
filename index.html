@@ -2339,9 +2339,9 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND</div><h2>입고</h2><p>기본적으로 이번 달 기준으로 조회되며, 시작일·종료일을 바꿔서 원하는 기간을 다시 조회할 수 있습니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="ibStart"></div><div class="field"><label>종료일</label><input type="date" id="ibEnd"></div><div class="field"><label>차수</label><input id="ibBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="ibQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="ibRun">조회</button><button class="btn" id="ibReset">전체</button></div>
   <div class="kpis data-kpis">
-    <div class="kpi"><span>조회 수량</span><div style="display:flex;gap:44px;margin-top:8px"><div><b id="ibQtyG">0</b><small>G</small></div><div><b id="ibQtyEA">0</b><small>EA</small></div></div></div>
-    <div class="kpi"><span>SKU</span><div style="display:flex;gap:44px;margin-top:8px"><div><b id="ibSkuG">0</b><small>SKU(G)</small></div><div><b id="ibSkuEA">0</b><small>SKU(EA)</small></div></div></div>
-    <div class="kpi"><span>입고 차수</span><b id="ibBatch">0</b><small>차수</small></div>
+    <div class="kpi"><span>조회 수량</span><div style="display:flex;gap:44px;margin-top:8px"><div><b id="ibQtyTotal">0</b><small style="font-size:13px">총 입고수량(EA환산)</small></div><div><b id="ibQtyG">0</b><small style="font-size:13px">G</small></div><div><b id="ibQtyEA">0</b><small style="font-size:13px">EA</small></div></div></div>
+    <div class="kpi"><span>SKU</span><div style="display:flex;gap:44px;margin-top:8px"><div><b id="ibSkuG">0</b><small style="font-size:13px">SKU(G)</small></div><div><b id="ibSkuEA">0</b><small style="font-size:13px">SKU(EA)</small></div></div></div>
+    <div class="kpi"><span>입고 차수</span><b id="ibBatch">0</b><small style="font-size:13px">차수</small></div>
   </div>
   <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>날짜별 입고 현황</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>입고차수</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th></tr></thead><tbody id="ibBody"></tbody></table></div></div>
 </div></section>
@@ -3321,8 +3321,12 @@ setTimeout(initInventoryColumnResize,0);
         &&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[4]||'').toLowerCase().includes(q));
     });
     const gRows=rows.filter(r=>inboundUnit(r)==='G'),eaRows=rows.filter(r=>inboundUnit(r)==='EA');
-    $('ibQtyG').textContent=fmt(gRows.reduce((a,r)=>a+num(r[6]),0));
-    $('ibQtyEA').textContent=fmt(eaRows.reduce((a,r)=>a+num(r[6]),0));
+    const gTotal=gRows.reduce((a,r)=>a+num(r[6]),0);
+    const eaTotal=eaRows.reduce((a,r)=>a+num(r[6]),0);
+    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[2]||'').trim()];return factor?a+num(r[6])/factor:a},0);
+    $('ibQtyTotal').textContent=fmt(Math.round(eaTotal+gConvertedToEA));
+    $('ibQtyG').textContent=fmt(gTotal);
+    $('ibQtyEA').textContent=fmt(eaTotal);
     $('ibSkuG').textContent=fmt(new Set(gRows.map(r=>String(r[2]||'')).filter(Boolean)).size);
     $('ibSkuEA').textContent=fmt(new Set(eaRows.map(r=>String(r[2]||'')).filter(Boolean)).size);
     $('ibBatch').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);
