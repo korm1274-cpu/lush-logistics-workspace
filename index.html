@@ -3234,7 +3234,12 @@ setTimeout(initInventoryColumnResize,0);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${y}년 ${m+1}월`;
     const grid=$('dashboardTwoWeekCalendar');
     if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
-    const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey(),todayAbs=attendance.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();
+    const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey();
+    const importedLeaveToday=(importEvents||[]).filter(e=>e.type==='import'&&String(e.source||'').includes('연차')&&eventCovers(e,today)).map(e=>{
+      const m=String(e.title||'').match(/^(.*?)\s*연차\s*$/);
+      return m&&m[1].trim()?{...e,person:m[1].trim(),type:'annual'}:null;
+    }).filter(Boolean);
+    const todayAbs=attendance.filter(e=>eventCovers(e,today)&&e.person).concat(importedLeaveToday),perPerson=new Map();
     todayAbs.forEach(e=>{const factor=fullAbsence.has(e.type)?1:.5;perPerson.set(e.person,Math.max(perPerson.get(e.person)||0,factor))});
     const excluded=[...perPerson.values()].reduce((a,b)=>a+b,0),available=Math.max(0,TEAM_SIZE-excluded);
     if($('todayOperatingCount'))$('todayOperatingCount').textContent=Number.isInteger(available)?available:available.toFixed(1);
