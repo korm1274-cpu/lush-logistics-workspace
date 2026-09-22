@@ -2117,6 +2117,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 .master-event.import-src .event-type{color:#c35a00!important;}
 .master-event.import-outbound,.dash-two-week-event.import-outbound{background:#e9f7ee!important;color:#1f7a45!important;}
 .master-event.import-outbound .event-type{color:#1f7a45!important;}
+#appShell #todayAbsenceCount{font-size:11px!important;font-weight:700!important;}
 </style>
 </head>
 <body>
@@ -2145,14 +2146,14 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="dash-section dashboard-first-section">
         <div class="dashboard-notice-todo-grid">
           <div class="dashboard-info-panel notice-panel">
-            <div class="dashboard-panel-title"><div><span class="panel-kicker">TEAM NOTICE</span><h3>팀 공지사항</h3></div><span class="badge info">공지</span></div>
+            <div class="dashboard-panel-title"><div><span class="panel-kicker">TEAM NOTICE</span><h3>팀 공지사항</h3></div></div>
             <div class="notice-board">
               <div class="notice-main"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
               <div class="notice-side"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div>
             </div>
           </div>
           <div class="dashboard-info-panel todo-panel">
-            <div class="dashboard-panel-title"><div><span class="panel-kicker">TODAY'S TASK</span><h3>TO DO</h3></div><span class="badge todo-badge">업무</span></div>
+            <div class="dashboard-panel-title"><div><span class="panel-kicker">TODAY'S TASK</span><h3>TO DO</h3></div></div>
             <div class="ops-todo-head"><div><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
             <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 할 일이 없습니다.</div></div>
           </div>
@@ -2262,9 +2263,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
         <p>연차 일정 · 수입 일정 · 휴일 일정을 하나의 월간 달력에서 확인합니다.</p>
       </div>
       <div class="schedule-head-actions">
-        <button class="btn" id="refreshImportScheduleBtn" type="button">↻ 수입 일정 새로고침</button>
-        <button class="btn add" id="newScheduleBtn" type="button">＋ 연차 일정 등록</button>
-      </div>
+        <button class="btn" id="refreshImportScheduleBtn" type="button">↻ 일정 새로고침</button>
+              </div>
     </div>
 
     <div id="scheduleBoardPanel">
