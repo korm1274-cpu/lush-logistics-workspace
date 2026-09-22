@@ -2397,7 +2397,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
               <select id="requestManagerStatusFilter"><option value="">전체 상태</option><option value="미처리">미처리</option><option value="처리완료">처리완료</option></select>
               <input id="requestManagerSearch" placeholder="매장명 / 특이사항 검색">
             </div>
-            <div class="request-manager-list-head"><span>요청일자</span><span>매장명</span><span>구분</span><span>상태</span><span>처리 / 원본</span></div>
+            <div class="request-manager-list-head" style="display:grid;grid-template-columns:120px minmax(0,1fr) 90px 90px 130px;gap:10px;align-items:center"><span>요청일자</span><span>매장명</span><span>구분</span><span>처리상태</span><span>관리</span></div>
             <div id="requestManagerList" class="request-manager-list"></div>
           </div>
         </div>
@@ -3092,10 +3092,10 @@ setTimeout(initInventoryColumnResize,0);
   function openOriginal(r){if(r?.url)window.open(r.url,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
   function renderType(type){
     const today=todayKey();
-    const all=getRequests().filter(r=>r&&r.type===type&&((Array.isArray(r.requestDates)&&r.requestDates.includes(today))||r.requestDate===today)).sort((a,b)=>(a.status==="처리완료"||a.status==="완료"?1:0)-(b.status==="처리완료"||b.status==="완료"?1:0));
+    const all=getRequests().filter(r=>r&&r.type===type&&(r.status||"미처리")!=="처리완료"&&((Array.isArray(r.requestDates)&&r.requestDates.includes(today))||r.requestDate===today));
     const list=document.querySelector(`[data-request-list="${type}"]`),count=document.querySelector(`[data-request-count="${type}"]`);if(count)count.textContent=`${all.length}건`;if(!list)return;
-    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>';return}
-    list.innerHTML=all.slice(0,4).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명 또는 요청일자를 클릭하면 Amaranth 원본 문서가 열립니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(today.slice(5).replace("-","/"))}</button><span class="status-cell">${r.status==="처리완료"||r.status==="완료"?`<span class="request-status done">✓ 처리완료</span>`:`<button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button>`}</span></div>`).join("");
+    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 미처리 요청이 없습니다.</button>';return}
+    list.innerHTML=all.slice(0,4).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명을 클릭하면 등록된 URL로 이동합니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(today.slice(5).replace("-","/"))}</button><span class="status-cell"><button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button></span></div>`).join("");
     list.querySelectorAll("[data-open-original]").forEach(b=>b.onclick=e=>{e.stopPropagation();openOriginal(all.find(r=>r.id===b.dataset.openOriginal))});
     list.querySelectorAll("[data-complete-request]").forEach(b=>b.onclick=e=>{e.stopPropagation();completeRequest(b.dataset.completeRequest)});
   }
@@ -3908,7 +3908,7 @@ if($('ibStart')&&!$('ibStart').value){
  function exportCurrent(){const view=document.querySelector('.view.active'),table=view?.querySelector('table');if(!table){toast('현재 화면에 내보낼 표가 없습니다.');return}const rows=[...table.querySelectorAll('tr')].map(tr=>[...tr.children].map(c=>c.innerText.trim()));const csv='\ufeff'+rows.map(r=>r.map(x=>`"${x.replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=(view.id||'export')+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
  window.BASE_MENU_REORDER=function(index,dir){if(typeof menus==='undefined')return;const m=menus[index],same=menus.map((x,i)=>({x,i})).filter(o=>o.x.group===m.group),pos=same.findIndex(o=>o.i===index),target=same[pos+dir];if(!target)return;[menus[index],menus[target.i]]=[menus[target.i],menus[index]];saveMenus();renderNav();renderMenusTable()}
  function patchMenuTable(){if(typeof renderMenusTable!=='function'||renderMenusTable.__basePatched)return;const original=renderMenusTable;window.renderMenusTable=function(){original();document.querySelectorAll('#menuRows tr').forEach((tr,i)=>{const cell=tr.firstElementChild;if(!cell||cell.querySelector('.base-menu-order'))return;const order=document.createElement('div');order.className='base-menu-order';order.innerHTML='<span class="base-drag">⋮⋮</span><button type="button" class="base-order-btn">↑</button><button type="button" class="base-order-btn">↓</button>';order.querySelectorAll('button')[0].onclick=()=>BASE_MENU_REORDER(i,-1);order.querySelectorAll('button')[1].onclick=()=>BASE_MENU_REORDER(i,1);cell.prepend(order)})};window.renderMenusTable.__basePatched=true;window.renderMenusTable()}
- document.addEventListener('DOMContentLoaded',()=>{$('baseNoticeBtn')?.addEventListener('click',noticePanel);$('baseExportBtn')?.addEventListener('click',exportCurrent);$('baseSyncBtn')?.addEventListener('click',()=>window.pullSharedData&&window.pullSharedData(false));document.querySelectorAll('[data-base-close]').forEach(x=>x.addEventListener('click',()=>{$('baseDrawer')?.classList.remove('open')}));renderCounts();setTimeout(patchMenuTable,500);setTimeout(patchMenuTable,1200)});
+ document.addEventListener('DOMContentLoaded',()=>{$('baseNoticeBtn')?.addEventListener('click',noticePanel);$('baseExportBtn')?.addEventListener('click',exportCurrent);$('baseSyncBtn')?.addEventListener('click',()=>{window.pullSharedData&&window.pullSharedData(false);window.pullTeamData&&window.pullTeamData(false)});document.querySelectorAll('[data-base-close]').forEach(x=>x.addEventListener('click',()=>{$('baseDrawer')?.classList.remove('open')}));renderCounts();setTimeout(patchMenuTable,500);setTimeout(patchMenuTable,1200)});
  window.BASE_NOTIFY=function(title,text){notes.unshift({title,text,time:new Date().toLocaleString('ko-KR'),read:false});notes=notes.slice(0,50);save(notes);renderCounts();showPopup(title,text)};
  window.BASE_EXPORT_CURRENT=exportCurrent;
 })();
@@ -4072,11 +4072,59 @@ if($('ibStart')&&!$('ibStart').value){
  function reset(){if($('requestRecordId'))$('requestRecordId').value='';if($('requestUrl'))$('requestUrl').value='';if($('requestStoreName'))$('requestStoreName').value='';if($('requestType'))$('requestType').value='bulk';if($('requestNote'))$('requestNote').value='';dates=[];renderDates();if($('requestFormTitle'))$('requestFormTitle').textContent='신규 요청 등록';if($('requestEditBadge'))$('requestEditBadge').textContent='신규'}
  function renderDates(){const c=$('requestDateChips');if(!c)return;c.innerHTML=dates.map(d=>`<span class="request-date-chip">${d}<button type="button" data-rd="${d}">×</button></span>`).join('');c.querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{dates=dates.filter(x=>x!==b.dataset.rd);renderDates()})}
  function load(id){const r=read().find(x=>x.id===id);if(!r)return;$('requestRecordId').value=r.id;$('requestUrl').value=r.url||'';$('requestStoreName').value=r.storeName||'';$('requestType').value=r.type||'bulk';$('requestNote').value=r.note||'';dates=[...(r.requestDates||[])];renderDates();$('requestFormTitle').textContent='출고 요청 수정';$('requestEditBadge').textContent='수정'}
- function render(){const all=read(),type=$('requestManagerTypeFilter')?.value||'',status=$('requestManagerStatusFilter')?.value||'',q=($('requestManagerSearch')?.value||'').trim().toLowerCase(),a=all.filter(r=>(!type||r.type===type)&&(!status||(r.status||'미처리')===status)&&(!q||String(r.storeName||'').toLowerCase().includes(q)||String(r.note||'').toLowerCase().includes(q)));if($('requestManagerCount'))$('requestManagerCount').textContent=a.length+'건';const list=$('requestManagerList');if(list){list.innerHTML=a.length?a.map(r=>`<div class="request-manager-item"><div class="request-item-main"><div><b>${esc(r.storeName||'-')}</b><span class="request-type-badge">${esc(typeLabel(r.type))}</span></div><p>${esc((r.requestDates||[]).join(' · ')||'요청일자 없음')}</p><small>${esc(r.note||'특이사항 없음')}</small></div><div class="request-item-actions"><span class="request-status ${r.status==='처리완료'?'done':'pending'}">${esc(r.status||'미처리')}</span>${r.url?`<button class="btn" data-open="${r.id}">원본</button>`:''}<button class="btn" data-edit="${r.id}">수정</button><button class="btn" data-toggle="${r.id}">${r.status==='처리완료'?'미처리':'완료'}</button><button class="btn" data-del="${r.id}">삭제</button></div></div>`).join(''):'<div class="request-manager-empty">등록된 출고 요청이 없습니다.</div>';list.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>{const r=all.find(x=>x.id===b.dataset.open);if(r?.url)window.open(r.url,'_blank','noopener')});list.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>load(b.dataset.edit));list.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const x=all.find(v=>v.id===b.dataset.toggle);if(x)x.status=x.status==='처리완료'?'미처리':'처리완료';save(all)});list.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('이 출고 요청을 삭제하시겠습니까?'))save(all.filter(x=>x.id!==b.dataset.del))})}renderPeriod()}
- function renderPeriod(){const all=read(),st=$('requestPeriodStart')?.value||'',en=$('requestPeriodEnd')?.value||'',a=all.filter(r=>(r.requestDates||[]).some(d=>(!st||d>=st)&&(!en||d<=en)));if($('requestPeriodTotal'))$('requestPeriodTotal').textContent=a.length;if($('requestPeriodBulk'))$('requestPeriodBulk').textContent=a.filter(x=>x.type==='bulk').length;if($('requestPeriodTraffic'))$('requestPeriodTraffic').textContent=a.filter(x=>x.type==='traffic').length;if($('requestPeriodHq'))$('requestPeriodHq').textContent=a.filter(x=>x.type==='hq').length;if($('requestPeriodCaption'))$('requestPeriodCaption').textContent=st||en?`${st||'처음'} ~ ${en||'현재'}`:'전체 기간'}
+ function render(){const all=read(),type=$('requestManagerTypeFilter')?.value||'',status=$('requestManagerStatusFilter')?.value||'',q=($('requestManagerSearch')?.value||'').trim().toLowerCase(),a=all.filter(r=>(!type||r.type===type)&&(!status||(r.status||'미처리')===status)&&(!q||String(r.storeName||'').toLowerCase().includes(q)||String(r.note||'').toLowerCase().includes(q)));if($('requestManagerCount'))$('requestManagerCount').textContent=a.length+'건';const list=$('requestManagerList');if(list){list.innerHTML=a.length?a.map(r=>{const done=r.status==='처리완료';return `<div class="request-manager-item" style="display:grid;grid-template-columns:120px minmax(0,1fr) 90px 90px 130px;gap:10px;align-items:center;padding:12px 13px;border-bottom:1px solid #eef1f2">
+        <span>${esc((r.requestDates||[]).join(' · ')||'-')}</span>
+        <span>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener" style="font-weight:800;color:#2b5fb0;text-decoration:underline">${esc(r.storeName||'-')}</a>`:`<b>${esc(r.storeName||'-')}</b>`}<br><small style="color:#8a949e">${esc(r.note||'')}</small></span>
+        <span class="request-type-badge">${esc(typeLabel(r.type))}</span>
+        <button class="btn" data-toggle="${r.id}" style="${done?'background:#eef8f1;color:#23834b;border-color:#cdeadb':'background:#fff5ea;color:#a05a00;border-color:#f3ddb8'}">${done?'처리':'미처리'}</button>
+        <span style="display:flex;gap:5px"><button class="btn" data-edit="${r.id}">수정</button><button class="btn" data-del="${r.id}">삭제</button></span>
+      </div>`}).join(''):'<div class="request-manager-empty">등록된 출고 요청이 없습니다.</div>';list.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>load(b.dataset.edit));list.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const x=all.find(v=>v.id===b.dataset.toggle);if(x)x.status=x.status==='처리완료'?'미처리':'처리완료';save(all)});list.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('이 출고 요청을 삭제하시겠습니까?'))save(all.filter(x=>x.id!==b.dataset.del))})}renderPeriod()}
+ function renderPeriod(){const all=read().filter(r=>(r.status||'미처리')!=='처리완료'),st=$('requestPeriodStart')?.value||'',en=$('requestPeriodEnd')?.value||'',a=all.filter(r=>(r.requestDates||[]).some(d=>(!st||d>=st)&&(!en||d<=en)));if($('requestPeriodTotal'))$('requestPeriodTotal').textContent=a.length;if($('requestPeriodBulk'))$('requestPeriodBulk').textContent=a.filter(x=>x.type==='bulk').length;if($('requestPeriodTraffic'))$('requestPeriodTraffic').textContent=a.filter(x=>x.type==='traffic').length;if($('requestPeriodHq'))$('requestPeriodHq').textContent=a.filter(x=>x.type==='hq').length;if($('requestPeriodCaption'))$('requestPeriodCaption').textContent=st||en?`${st||'처음'} ~ ${en||'현재'}`:'전체 기간(미처리 기준)'}
  function submit(){const store=$('requestStoreName').value.trim();if(!store){toastMsg('매장명을 입력해주세요.');return}if(!dates.length){toastMsg('요청일자를 1개 이상 추가해주세요.');return}const all=read(),id=$('requestRecordId').value||('req_'+Date.now()),old=all.find(x=>x.id===id),rec={...old,id,url:$('requestUrl').value.trim(),storeName:store,type:$('requestType').value,requestDates:[...dates],note:$('requestNote').value.trim(),status:old?.status||'미처리',createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()},i=all.findIndex(x=>x.id===id);if(i>=0)all[i]=rec;else all.unshift(rec);save(all);reset();toastMsg('출고 요청을 저장했습니다.')}
  window.openOutboundRequestManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('outboundRequestManager').classList.add('active');pageTitle.textContent=label||'출고 요청 관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;render()};window.refreshOutboundRequestManager=render;
  document.addEventListener('DOMContentLoaded',()=>{$('addRequestDateBtn')?.addEventListener('click',()=>{const d=$('requestDateInput').value;if(d&&!dates.includes(d)){dates.push(d);dates.sort();renderDates()}});$('requestPeriodApplyBtn')?.addEventListener('click',renderPeriod);$('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManagerStatusFilter')?.addEventListener('change',render);$('requestManagerSearch')?.addEventListener('input',render);$('newOutboundRequestBtn')?.addEventListener('click',reset);const form=$('requestRecordId')?.closest('.request-form-card');if(form){let saveBtn=form.querySelector('#saveOutboundRequestBtn')||form.querySelector('[data-request-save]');if(!saveBtn){saveBtn=document.createElement('button');saveBtn.type='button';saveBtn.id='saveOutboundRequestBtn';saveBtn.className='btn primary';saveBtn.textContent='요청 저장';form.appendChild(saveBtn)}saveBtn.addEventListener('click',submit)}render()});
+})();
+</script>
+<script id="v75-team-data-sync">
+(function(){
+  const TEAM_API='/api/team-data';
+  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1'};
+  function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests)}}
+  let pushTimer=null,pulling=false;
+  function pushTeamData(){
+    clearTimeout(pushTimer);
+    pushTimer=setTimeout(()=>{
+      fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())}).catch(()=>{});
+    },900);
+  }
+  async function pullTeamData(silent){
+    if(pulling)return;pulling=true;
+    try{
+      const res=await fetch(TEAM_API);
+      const j=await res.json();
+      if(!j||!j.success||!j.data){pulling=false;return}
+      const cur=JSON.stringify(snapshot());
+      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[]});
+      if(cur!==incoming){
+        localStorage.setItem(KEYS.notices,JSON.stringify(j.data.notices||[]));
+        localStorage.setItem(KEYS.todos,JSON.stringify(j.data.todos||[]));
+        localStorage.setItem(KEYS.requests,JSON.stringify(j.data.requests||[]));
+        window.renderTodayOutboundRequests?.();
+        window.refreshOutboundRequestManager?.();
+        document.dispatchEvent(new CustomEvent('team-data-updated'));
+        if(typeof window.renderDashboard==='function')window.renderDashboard();
+      }
+    }catch(e){console.error('team-data pull failed',e)}
+    pulling=false;
+  }
+  const origSetItem=localStorage.setItem.bind(localStorage);
+  localStorage.setItem=function(k,v){
+    origSetItem(k,v);
+    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests)pushTeamData();
+  };
+  window.pullTeamData=pullTeamData;
+  pullTeamData(true);
 })();
 </script>
 <div id="globalHoverTip"></div>
