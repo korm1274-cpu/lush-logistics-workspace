@@ -2185,8 +2185,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="dash-section">
         <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
         <div class="monthly-grid">
-          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small></div></div><div class="muted" style="font-size:10px;margin-top:6px">G단위를 EA로 환산한 수량입니다.</div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
-          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="muted" style="font-size:10px;margin-top:6px">G단위를 EA로 환산한 수량입니다.</div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
         </div>
       </div>
     </section>
@@ -3297,7 +3297,7 @@ setTimeout(initInventoryColumnResize,0);
     const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
     return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+qtyFn(r),0),rows:a.length,ym:cur};
   }
-  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[4]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[4]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   window.inboundUnit=inboundUnit;
@@ -4009,9 +4009,9 @@ if($('ibStart')&&!$('ibStart').value){
     if(!agg.length){tbody.innerHTML='<tr><td colspan="7" class="data-empty">업로드된 입고 데이터가 없습니다.</td></tr>';return}
     tbody.innerHTML=agg.map(r=>`<tr>
       <td>${esc(r.month)}</td>
-      <td class="num">${nf(r.qty)}</td>
-      <td class="num">${nf(r.qtyG)}</td>
-      <td class="num">${nf(r.qtyEA)}</td>
+      <td class="num">${nf(Math.round(r.qty))}</td>
+      <td class="num">${nf(Math.round(r.qtyG))}</td>
+      <td class="num">${nf(Math.round(r.qtyEA))}</td>
       <td class="num">${r.batchCount}</td>
       <td class="num">${r.avgStaff!==null?r.avgStaff.toFixed(1):'-'}</td>
       <td class="num">${r.avgProd!==null?nf(Math.round(r.avgProd)):'-'}</td>
