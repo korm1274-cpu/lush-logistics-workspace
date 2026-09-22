@@ -2029,7 +2029,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   }
   .app.mobile-nav-open #appShell #navContainer,.app.mobile-nav-open #navContainer{display:flex!important;}
   #appShell .nav-group,#appShell .nav-group-direct{width:100%!important;position:relative!important;}
-  #appShell .nav-root{width:100%!important;justify-content:space-between!important;height:auto!important;min-height:0!important;padding:9px 3px!important;border-bottom:1px solid #232323!important;font-size:12px!important;line-height:1!important;}
+  #appShell .nav-root{width:100%!important;justify-content:space-between!important;height:auto!important;min-height:0!important;padding:14px 3px!important;border-bottom:1px solid #232323!important;font-size:12px!important;line-height:1!important;}
   #appShell .nav-children,#appShell .nav-folder-children{
     display:none!important;position:absolute!important;top:0!important;right:100%!important;left:auto!important;
     width:max-content!important;max-width:60vw!important;
@@ -2047,9 +2047,11 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   #appShell .topbar{position:static!important;margin-top:6px!important;}
   #appShell .sidebar-overlay{
     display:none!important;position:fixed!important;top:56px!important;left:0!important;right:0!important;bottom:0!important;
-    background:rgba(0,0,0,.32)!important;z-index:65!important;
+    background:rgba(0,0,0,.32)!important;z-index:9998!important;
   }
   .app.mobile-nav-open #appShell .sidebar-overlay{display:block!important;}
+  #appShell #navContainer{z-index:9999!important;}
+  .app #desktopSidebarBtn{z-index:10000!important;}
 }
 
 /* 상단바 버튼이 min-height:40px 규칙 때문에 놓치는 문제 해결 */
@@ -2928,7 +2930,14 @@ document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.query
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","메인",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","메인",document.querySelector('[data-menu-id="dashboard-main"]'));
 
-const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open");navContainer.style.removeProperty("display")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{if(isMobile()){const willOpen=!appShell.classList.contains("mobile-nav-open");appShell.classList.toggle("mobile-nav-open",willOpen);if(willOpen){navContainer.style.setProperty("display","flex","important")}else{navContainer.style.removeProperty("display")}return}appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};sidebarOverlay.onclick=closeMobileNav;window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
+const SIDEBAR_STATE_KEY="lush-logistics-sidebar-collapsed";function isMobile(){return window.matchMedia("(max-width:900px)").matches}function closeMobileNav(){appShell.classList.remove("mobile-nav-open");navContainer.style.removeProperty("display")}function initResponsiveNav(){if(!isMobile()&&localStorage.getItem(SIDEBAR_STATE_KEY)==="1")appShell.classList.add("sidebar-collapsed");desktopSidebarBtn.onclick=()=>{if(isMobile()){const willOpen=!appShell.classList.contains("mobile-nav-open");appShell.classList.toggle("mobile-nav-open",willOpen);if(willOpen){navContainer.style.setProperty("display","flex","important")}else{navContainer.style.removeProperty("display")}return}appShell.classList.toggle("sidebar-collapsed");localStorage.setItem(SIDEBAR_STATE_KEY,appShell.classList.contains("sidebar-collapsed")?"1":"0")};sidebarOverlay.onclick=closeMobileNav;
+document.addEventListener("click",e=>{
+  if(!isMobile())return;
+  if(!appShell.classList.contains("mobile-nav-open"))return;
+  if(navContainer.contains(e.target)||desktopSidebarBtn.contains(e.target))return;
+  closeMobileNav();
+},true);
+window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 </script>
 
 <div id="inventoryContextMenu" class="inventory-context-menu">
