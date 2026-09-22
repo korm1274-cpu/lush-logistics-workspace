@@ -2020,16 +2020,16 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
   #appShell .workspace-badge,#appShell .profile{display:none!important;}
   #appShell #navContainer{
     display:none!important;
-    position:fixed!important;top:56px!important;right:0!important;left:auto!important;bottom:0!important;
-    width:22vw!important;min-width:98px!important;max-width:150px!important;height:auto!important;
+    position:fixed!important;top:56px!important;right:0!important;left:auto!important;bottom:auto!important;
+    width:22vw!important;min-width:98px!important;max-width:150px!important;height:auto!important;max-height:calc(100vh - 56px)!important;
     background:#0d0d0d!important;flex-direction:column!important;align-items:stretch!important;
-    padding:6px 5px calc(20px + env(safe-area-inset-bottom))!important;
+    padding:4px 5px 8px!important;
     overflow:visible!important;
     z-index:69!important;gap:0!important;box-shadow:-8px 0 20px rgba(0,0,0,.35)!important;
   }
   .app.mobile-nav-open #appShell #navContainer,.app.mobile-nav-open #navContainer{display:flex!important;}
   #appShell .nav-group,#appShell .nav-group-direct{width:100%!important;position:relative!important;}
-  #appShell .nav-root{width:100%!important;justify-content:space-between!important;height:auto!important;min-height:0!important;padding:8px 3px!important;border-bottom:1px solid #232323!important;font-size:12px!important;line-height:1.2!important;}
+  #appShell .nav-root{width:100%!important;justify-content:space-between!important;height:auto!important;min-height:0!important;padding:9px 3px!important;border-bottom:1px solid #232323!important;font-size:12px!important;line-height:1!important;}
   #appShell .nav-children,#appShell .nav-folder-children{
     display:none!important;position:absolute!important;top:0!important;right:100%!important;left:auto!important;
     width:max-content!important;max-width:60vw!important;
