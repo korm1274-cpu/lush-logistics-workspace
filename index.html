@@ -2101,7 +2101,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 #appShell .outbound-month .monthly-stats{grid-template-columns:1fr!important;}
 #appShell .outbound-month .monthly-stats>div+div{border-left:0!important;padding-left:0!important;}
 .hover-tip-target{cursor:default!important;}
-#globalHoverTip{position:fixed!important;z-index:9999!important;background:#1c2833!important;color:#fff!important;padding:9px 12px!important;border-radius:9px!important;font-size:11px!important;line-height:1.6!important;white-space:pre-line!important;box-shadow:0 10px 26px rgba(0,0,0,.25)!important;pointer-events:none!important;max-width:280px!important;display:none;}
+#globalHoverTip{position:fixed!important;z-index:9999!important;background:#fff!important;color:#22303a!important;padding:10px 13px!important;border-radius:10px!important;border:1px solid #e3e7ea!important;font-size:12px!important;line-height:1.75!important;box-shadow:0 12px 30px rgba(20,30,40,.18)!important;pointer-events:none!important;max-width:300px!important;display:none;}
+#globalHoverTip div{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-weight:700!important;}
 </style>
 </head>
 <body>
@@ -3184,6 +3185,16 @@ setTimeout(initInventoryColumnResize,0);
     const holidays=years.flatMap(y=>holidayEvents(y));
     return attendance.concat(importEvents,holidays);
   }
+  function eventColor(e){
+    if(e.type==='import'){
+      const s=String(e.source||'');
+      if(s.includes('연차'))return'#2455b0';
+      if(s.includes('출고'))return'#1f7a45';
+      return'#c35a00';
+    }
+    if(e.type==='holiday')return'#667278';
+    return'#2455b0';
+  }
   function importSourceClass(e){
     if(e.type!=='import')return'';
     const s=String(e.source||'');
@@ -3202,7 +3213,7 @@ setTimeout(initInventoryColumnResize,0);
     for(let i=0;i<42;i++){
       const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort);
       const visible=list.slice(0,5);
-      html+=`<div class="master-calendar-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [tag,title]=eventLabel(e);const inner=`<span class="event-type">${escHtml(tag)}</span><span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}${importSourceClass(e)}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}${importSourceClass(e)}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more hover-tip-target" data-tip="${escHtml(list.slice(5).map(e=>eventLabel(e)[1]).join('\n'))}">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
+      html+=`<div class="master-calendar-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [tag,title]=eventLabel(e);const inner=`<span class="event-type">${escHtml(tag)}</span><span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}${importSourceClass(e)}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}${importSourceClass(e)}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
     }
     $('masterCalendarGrid').innerHTML=html;
     $('masterCalendarGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
@@ -3217,7 +3228,7 @@ setTimeout(initInventoryColumnResize,0);
     const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${y}년 ${m+1}월`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(list.slice(2).map(e=>eventLabel(e)[1]).join('\n'))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey();
     const importedLeaveToday=(importEvents||[]).filter(e=>e.type==='import'&&String(e.source||'').includes('연차')&&eventCovers(e,today)).map(e=>{
       const m=String(e.title||'').match(/^(.*?)\s*연차\s*$/);
@@ -4046,8 +4057,11 @@ if($('ibStart')&&!$('ibStart').value){
 (function(){
   const tip=document.createElement.bind(document);
   let box=document.getElementById('globalHoverTip');
+  function escTip(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
   function show(el,x,y){
-    box.textContent=el.dataset.tip||'';
+    let items=[];
+    try{items=JSON.parse(el.dataset.tip||'[]')}catch(e){items=[]}
+    box.innerHTML=items.map(it=>`<div style="color:${it.c}">${escTip(it.t)}</div>`).join('')||'';
     box.style.display='block';
     const r=box.getBoundingClientRect();
     let left=x+12,top=y+12;
