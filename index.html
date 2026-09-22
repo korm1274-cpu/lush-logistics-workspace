@@ -4091,15 +4091,31 @@ if($('ibStart')&&!$('ibStart').value){
   const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1'};
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests)}}
+  const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false;
+  function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
+  function recentlySavedLocally(){
+    try{
+      const t=Number(sessionStorage.getItem(LAST_SAVE_KEY)||0);
+      return t&&(Date.now()-t<6000);
+    }catch(e){return false}
+  }
   function pushTeamData(){
     clearTimeout(pushTimer);
+    markLocalSave();
     pushTimer=setTimeout(()=>{
-      fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())}).catch(()=>{});
+      fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())})
+        .then(r=>r.json()).then(j=>{
+          if(!j||!j.success)console.error('team-data 저장 실패:',j&&j.error);
+          else markLocalSave();
+        })
+        .catch(err=>console.error('team-data 저장 실패:',err));
     },900);
   }
   async function pullTeamData(silent){
-    if(pulling)return;pulling=true;
+    if(pulling)return;
+    if(recentlySavedLocally()){setTimeout(()=>pullTeamData(silent),2000);return}
+    pulling=true;
     try{
       const res=await fetch(TEAM_API);
       const j=await res.json();
