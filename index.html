@@ -2121,9 +2121,9 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #appShell .kpi span,#appShell .monthly-head small,#appShell .monthly-stats span,#appShell .request-period-stat span,
 #appShell .panel-kicker,#appShell small,#appShell .muted{color:var(--v77-muted)!important;}
 #appShell .kpi b,#appShell #todayOperatingCount,#appShell .notice-side b,#appShell .monthly-stats b,#appShell .analysis-kpi b,#appShell .inventory-summary b{
-  color:var(--v77-blue)!important;font-size:1.35em!important;
+  color:var(--v77-ink)!important;font-size:1.35em!important;
 }
-#appShell .badge{background:var(--v77-blue-soft)!important;color:var(--v77-blue)!important;border-color:transparent!important;border-radius:8px!important;}
+#appShell .badge{background:#f4f5f6!important;color:var(--v77-ink)!important;border-color:transparent!important;border-radius:8px!important;}
 #appShell .badge.danger{background:var(--v77-red-soft)!important;color:var(--v77-red)!important;}
 #appShell .badge.warn,#appShell .badge.todo-badge{background:#f4f5f6!important;color:var(--v77-muted)!important;}
 #appShell .request-type-badge{background:#f4f5f6!important;color:var(--v77-muted)!important;border-radius:8px!important;}
@@ -2132,7 +2132,7 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #appShell .nav-root.active:after,.nav-root.active:after{background:var(--v77-blue)!important;}
 #appShell .request-status.done,#appShell .master-event.import-outbound{color:var(--v77-mint)!important;}
 #appShell .master-event.import-src{color:var(--v77-amber)!important;}
-#appShell .master-event.import-leave{color:var(--v77-blue)!important;}
+#appShell .master-event.import-leave{color:var(--v77-ink)!important;}
 #appShell .dashboard-info-panel.notice-panel .notice-pin{background:var(--v77-blue)!important;color:#fff!important;border-radius:8px!important;}
 #appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel,#dashboard .dashboard-info-panel.notice-panel,#dashboard .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;background:var(--v77-card)!important;}
 #appShell .dashboard-panel-title,#appShell .dashboard-panel-title *,#appShell .notice-board,#appShell .ops-todo-head{background:transparent!important;}
@@ -2154,9 +2154,10 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 
 /* ============ V78: 타이포 위계 / 카드 여백 / 사이드바 / 테이블 폴리싱 ============ */
 #appShell .dash-section-head h3,#appShell .dashboard-panel-title h3,#appShell .schedule-title-line h3{font-size:20px!important;font-weight:800!important;}
-#appShell .kpi b,#appShell .monthly-stats b,#appShell .notice-side b,#appShell .staff-total-main b,#appShell .analysis-kpi b,#appShell .inventory-summary b,#appShell .request-period-stat b,#appShell #todayOperatingCount{
+#appShell .monthly-stats b,#appShell .notice-side b,#appShell .staff-total-main b,#appShell .analysis-kpi b,#appShell .inventory-summary b,#appShell .request-period-stat b,#appShell #todayOperatingCount{
   font-size:34px!important;font-weight:800!important;line-height:1.1!important;
 }
+#appShell .kpi b{font-size:24px!important;font-weight:800!important;line-height:1.1!important;}
 #appShell .kpi span,#appShell .monthly-head small,#appShell .monthly-stats span,#appShell .request-period-stat span,#appShell .panel-kicker{
   font-size:12px!important;font-weight:600!important;color:var(--v77-muted)!important;letter-spacing:0!important;text-transform:none!important;
 }
@@ -2413,7 +2414,7 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND</div><h2>입고</h2><p>기본적으로 이번 달 기준으로 조회되며, 시작일·종료일을 바꿔서 원하는 기간을 다시 조회할 수 있습니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="ibStart"></div><div class="field"><label>종료일</label><input type="date" id="ibEnd"></div><div class="field"><label>차수</label><input id="ibBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="ibQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="ibRun">조회</button><button class="btn" id="ibReset">전체</button></div>
   <div class="kpis data-kpis">
-    <div class="kpi"><span>조회 수량</span><div style="display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:8px"><div><b id="ibQtyTotal">0</b><small style="font-size:13px">총 입고수량(EA환산)</small></div><div><b id="ibQtyG">0</b><small style="font-size:13px">G</small></div><div><b id="ibQtyEA">0</b><small style="font-size:13px">EA</small></div></div></div>
+    <div class="kpi"><span>조회 수량</span><div style="margin-top:8px"><div><b id="ibQtyTotal">0</b><small style="font-size:13px">총 입고수량(EA환산)</small></div><div style="display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:10px"><div><b id="ibQtyG">0</b><small style="font-size:13px">G</small></div><div><b id="ibQtyEA">0</b><small style="font-size:13px">EA</small></div></div></div></div>
     <div class="kpi"><span>SKU</span><div style="display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:8px"><div><b id="ibSkuG">0</b><small style="font-size:13px">SKU(G)</small></div><div><b id="ibSkuEA">0</b><small style="font-size:13px">SKU(EA)</small></div></div></div>
     <div class="kpi"><span>입고 차수</span><b id="ibBatch">0</b><small style="font-size:13px">차수</small></div>
   </div>
@@ -3477,11 +3478,14 @@ setTimeout(initInventoryColumnResize,0);
   const PRODUCT_EA_CONVERSION={"T0017390":5,"T0017344":10,"T0017345":10,"T0017391":10,"T0015387":15,"T0015388":15,"T0015389":15,"T0017343":20,"T0012651":50,"T0011245":50,"T0013136":100,"T0004870":100,"T0000157":100,"T0000156":200,"T0002618":250,"T0015067":250,"T0000827":500,"T0000823":500,"T0015619":650,"T0017034":650,"T0017035":650,"T0017323":650,"T0018229":1100,"T0017030":1250,"T0016938":1500,"T0015446":1500,"T0016855":1500,"T0016849":1500,"T0016853":1500,"T0016851":1500,"T0017584":1500,"T0018237":1500,"T0016660":1500,"T0016659":1500,"T0017216":1500,"T0017217":1500,"T0017218":1500,"T0017211":1500,"T0017219":1500,"T0017205":1500,"T0013867":1500,"T0017220":1500,"T0017221":1500,"T0017877":1500,"T0017222":1500,"T0017441":1500,"T0017223":1500,"T0017324":1500,"T0014806":1550,"T0017413":1800,"T0016357":2000,"T0018231":2100,"T0017724":2600,"T0016471":2700,"T0016472":3000,"T0015839":3200,"T0017440":3200,"T0015445":3400,"T0017033":3400,"T0017032":3400,"T0017206":3400,"T0017208":3400,"T0017210":3400,"T0017214":3400,"T0017215":4200,"T0017325":4200,"T0017207":4500,"T0017213":5100,"T0018158":5800,"T0017212":6100,"T0017233":8500,"T0017234":8500,"T0017643":8500,"T0017646":8500,"T0017439":8500,"T0017645":8500,"T0017642":8500,"T0017641":8500,"T0017644":8500,"T0018801":1500,"T0018775":10,"T0017791":10,"T0019180":1400,"T0019314":2000};
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
-  const CATEGORY_EXCLUDE_SET=new Set(['26년','25년','리미티드','SPA','ACCESSORIES','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH']);
+  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH']);
+  const CATEGORY_EXCLUDE_PATTERN=/^(19|20)?\d{2}년/;
   function categoryDisplay(raw){
     const v=String(raw||'').trim().toUpperCase();
     if(!v)return null;
     if(CATEGORY_EXCLUDE_SET.has(v))return null;
+    if(CATEGORY_EXCLUDE_PATTERN.test(v))return null;
+    if(v.includes('XMAS')||v.includes('크리스마스'))return null;
     if(NAKED_MERGE_SET.has(v))return 'NAKED';
     return String(raw).trim();
   }
@@ -4185,7 +4189,7 @@ if($('ibStart')&&!$('ibStart').value){
  function load(id){const r=read().find(x=>x.id===id);if(!r)return;$('requestRecordId').value=r.id;$('requestUrl').value=r.url||'';$('requestStoreName').value=r.storeName||'';$('requestType').value=r.type||'bulk';$('requestNote').value=r.note||'';dates=[...(r.requestDates||[])];renderDates();$('requestFormTitle').textContent='출고 요청 수정';$('requestEditBadge').textContent='수정'}
  function render(){const all=read(),type=$('requestManagerTypeFilter')?.value||'',status=$('requestManagerStatusFilter')?.value||'',q=($('requestManagerSearch')?.value||'').trim().toLowerCase(),a=all.filter(r=>(!type||r.type===type)&&(!status||(r.status||'미처리')===status)&&(!q||String(r.storeName||'').toLowerCase().includes(q)||String(r.note||'').toLowerCase().includes(q)));if($('requestManagerCount'))$('requestManagerCount').textContent=a.length+'건';const list=$('requestManagerList');if(list){list.innerHTML=a.length?a.map(r=>{const done=r.status==='처리완료';return `<div class="request-manager-item" style="display:grid;grid-template-columns:120px minmax(0,1fr) 90px 90px 130px;gap:10px;align-items:center;padding:14px 13px;border-bottom:1px solid #eef1f2;font-size:13px">
         <span>${esc((r.requestDates||[]).join(' · ')||'-')}</span>
-        <span>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener" style="font-weight:800;font-size:13px;color:#2b5fb0;text-decoration:underline">${esc(r.storeName||'-')}</a>`:`<b style="font-size:13px">${esc(r.storeName||'-')}</b>`}<br><small style="color:#8a949e;font-size:12px">${esc(r.note||'')}</small></span>
+        <span>${r.url?`<a href="${esc(r.url)}" target="_blank" rel="noopener" style="font-weight:800;font-size:13px;color:#191f28;text-decoration:underline">${esc(r.storeName||'-')}</a>`:`<b style="font-size:13px">${esc(r.storeName||'-')}</b>`}<br><small style="color:#8a949e;font-size:12px">${esc(r.note||'')}</small></span>
         <span class="request-type-badge" style="font-size:13px">${esc(typeLabel(r.type))}</span>
         <button class="btn" data-toggle="${r.id}" style="font-size:13px;${done?'background:#eef8f1;color:#23834b;border-color:#cdeadb':'background:#fff5ea;color:#a05a00;border-color:#f3ddb8'}">${done?'처리':'미처리'}</button>
         <span style="display:flex;gap:5px"><button class="btn" data-edit="${r.id}" style="font-size:12px">수정</button><button class="btn" data-del="${r.id}" style="font-size:12px">삭제</button></span>
