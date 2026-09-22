@@ -1797,38 +1797,7 @@ html, body, .app, .main, .content, .dashboard-shell, .dashboard-grid { backgroun
 </style>
 
 <style id="v65-mobile-single-toggle-fix">
-/* V65: one mobile navigation control only — the edge toggle bar. */
-@media (max-width:900px){
-  .mobile-menu-btn{display:none !important;}
-  .topbar{padding-left:0 !important;}
-  .mobile-title-wrap{padding-left:0 !important;}
-  #desktopSidebarBtn{
-    display:flex !important;
-    position:fixed !important;
-    z-index:85 !important;
-    top:50vh !important;
-    left:8px !important;
-    width:28px !important;
-    height:50px !important;
-    transform:translateY(-50%) !important;
-    border-radius:0 15px 15px 0 !important;
-    border-left:0 !important;
-    background:#fff !important;
-    border-color:#cfd2d4 !important;
-    box-shadow:2px 3px 10px rgba(20,20,20,.07) !important;
-  }
-  .app.mobile-nav-open #desktopSidebarBtn{
-    left:min(82vw,300px) !important;
-    transform:translate(-50%,-50%) !important;
-    border:1px solid #cfd2d4 !important;
-    border-radius:15px !important;
-  }
-  .app.sidebar-collapsed #desktopSidebarBtn{display:flex !important;}
-}
-@media (max-width:560px){
-  #desktopSidebarBtn{left:6px !important;}
-  .app.mobile-nav-open #desktopSidebarBtn{left:min(88vw,294px) !important;}
-}
+/* V65는 예전 세로 사이드바 시절 규칙이라 지금 구조와 안 맞아 전부 무력화함(아래 V74가 최종 버전) */
 </style>
 
 <style id="v66-white-nav-active-gradient">
