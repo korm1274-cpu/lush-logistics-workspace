@@ -2348,21 +2348,19 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 
     <section id="inboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND ANALYTICS</div><h2>입고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 입고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
-  <div class="data-split" style="grid-template-columns:3fr 2fr">
-    <div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div><div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:15%">월</th><th class="num" style="width:12%">차수</th><th class="num" style="width:14%">SKU(G)</th><th class="num" style="width:14%">SKU(EA)</th><th class="num" style="width:22%">수량(G)</th><th class="num" style="width:23%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div></div>
-    <div class="panel">
-      <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
-      <div class="data-filter-row" style="margin-bottom:10px">
-        <div class="field"><label>시작일</label><input type="date" id="inCatStart"></div>
-        <div class="field"><label>종료일</label><input type="date" id="inCatEnd"></div>
-        <div class="field grow"><label>제품군</label><select id="inCatSelect"><option value="">전체</option></select></div>
-        <button class="btn primary" id="inCatRun">조회</button>
-      </div>
-      <div id="inCatTrendChart"></div><div id="inCatTrendLegend" style="margin-top:10px;font-size:12px"></div>
-      <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
+  <div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div><div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:15%">월</th><th class="num" style="width:12%">차수</th><th class="num" style="width:14%">SKU(G)</th><th class="num" style="width:14%">SKU(EA)</th><th class="num" style="width:22%">수량(G)</th><th class="num" style="width:23%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div></div>
+  <div class="panel mt14">
+    <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
+    <div class="data-filter-row" style="margin-bottom:10px">
+      <div class="field"><label>시작일</label><input type="date" id="inCatStart"></div>
+      <div class="field"><label>종료일</label><input type="date" id="inCatEnd"></div>
+      <div class="field grow"><label>제품군</label><select id="inCatSelect"><option value="">전체</option></select></div>
+      <button class="btn primary" id="inCatRun">조회</button>
     </div>
+    <div id="inCatTrendChart"></div><div id="inCatTrendLegend" style="margin-top:10px;font-size:12px"></div>
+    <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
   </div>
-  <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button><button class="btn" id="inAnaReset">전체</button></div>
+  <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button></div>
   <div class="panel"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
 </div></section>
 <section id="outboundAnalysis" class="view"><div class="data-workbench">
@@ -3405,37 +3403,51 @@ setTimeout(initInventoryColumnResize,0);
       $('inCatTrendLegend').innerHTML='';
       return;
     }
-    const W=560,H=300,padL=46,padR=14,padT=24,padB=30;
+    const W=1080,H=380,padL=56,padR=20,padT=28,padB=34;
     const plotW=W-padL-padR,plotH=H-padT-padB;
     const maxVal=Math.max(1,...months.flatMap(m=>catList.map(c=>monthCatQty[m]?.[c]||0)));
     const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085'];
     const xFor=i=>padL+(months.length<=1?plotW/2:i/(months.length-1)*plotW);
     const yFor=v=>padT+plotH-(v/maxVal*plotH);
     let svg=`<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;font-family:inherit">`;
-    svg+=`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="#e3e1db"/>`;
-    svg+=`<line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="#e3e1db"/>`;
+    for(let gy=0;gy<=4;gy++){
+      const yy=padT+plotH-(gy/4*plotH);
+      svg+=`<line x1="${padL}" y1="${yy}" x2="${padL+plotW}" y2="${yy}" stroke="#f0eee8"/>`;
+      svg+=`<text x="${padL-8}" y="${yy+3}" font-size="9" fill="#a9b2ba" text-anchor="end">${fmt(Math.round(maxVal*gy/4))}</text>`;
+    }
+    svg+=`<line x1="${padL}" y1="${padT}" x2="${padL}" y2="${padT+plotH}" stroke="#dcd9d0"/>`;
+    svg+=`<line x1="${padL}" y1="${padT+plotH}" x2="${padL+plotW}" y2="${padT+plotH}" stroke="#dcd9d0"/>`;
     months.forEach((m,i)=>{
-      svg+=`<text x="${xFor(i)}" y="${H-8}" font-size="9" fill="#8a949e" text-anchor="middle">${esc(m.slice(5))}</text>`;
+      svg+=`<text x="${xFor(i)}" y="${H-10}" font-size="10" fill="#8a949e" text-anchor="middle">${esc(m.slice(5))}</text>`;
     });
+    const usedLabelPos=[];
+    const labelFits=(x,y)=>usedLabelPos.every(p=>Math.abs(p.x-x)>34||Math.abs(p.y-y)>13);
     catList.forEach((cat,ci)=>{
       const vals=months.map(m=>monthCatQty[m]?.[cat]||0);
       const pts=vals.map((v,i)=>`${xFor(i)},${yFor(v)}`).join(' ');
       const color=colors[ci%colors.length];
-      svg+=`<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2"/>`;
+      svg+=`<polyline points="${pts}" fill="none" stroke="${color}" stroke-width="2.5"/>`;
       const maxIdx=vals.indexOf(Math.max(...vals));
       const minIdx=vals.indexOf(Math.min(...vals));
       [maxIdx,minIdx].forEach((idx,k)=>{
         if(idx<0)return;
         if(k===1&&minIdx===maxIdx)return;
         const v=vals[idx];
-        svg+=`<circle cx="${xFor(idx)}" cy="${yFor(v)}" r="3" fill="${color}"/>`;
-        svg+=`<text x="${xFor(idx)}" y="${yFor(v)-7}" font-size="9" fill="${color}" font-weight="700" text-anchor="middle">${fmt(Math.round(v))}</text>`;
+        const px=xFor(idx);
+        let py=yFor(v)-10;
+        let tries=0;
+        while(!labelFits(px,py)&&tries<6){py-=13;tries++}
+        usedLabelPos.push({x:px,y:py});
+        svg+=`<circle cx="${px}" cy="${yFor(v)}" r="3.5" fill="${color}"/>`;
+        svg+=`<text x="${px}" y="${py}" font-size="10" fill="${color}" font-weight="700" text-anchor="middle">${fmt(Math.round(v))}</text>`;
       });
     });
     svg+='</svg>';
     $('inCatTrendChart').innerHTML=svg;
     $('inCatTrendLegend').innerHTML=catList.map((cat,ci)=>`<span style="display:inline-flex;align-items:center;gap:5px;margin-right:14px;font-size:13px;font-weight:700;color:#374753"><span style="width:10px;height:10px;border-radius:2px;background:${colors[ci%colors.length]};display:inline-block"></span>${esc(cat)}</span>`).join('');
   }
+  let __inAnaDetailSearched=false;
+  function runInAnaSearch(){__inAnaDetailSearched=true;renderInbound()}
   function renderInbound(){
     if(!$('inAnaBody'))return;
     const d=read(),all=d.inbound?.rows||[];
@@ -3461,7 +3473,11 @@ setTimeout(initInventoryColumnResize,0);
     });
     const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
     $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">데이터가 없습니다.</td></tr>';
-    $('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="num">${fmt(r[6])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
+    if(!__inAnaDetailSearched){
+      $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
+    }else{
+      $('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="num">${fmt(r[6])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    }
     renderCategoryTrend();
   }
   function renderOutbound(){if(!$('outAnaBody'))return;const d=read(),all=d.outbound?.rows||[],date=$('outAnaDate')?.value||'',q=($('outAnaQuery')?.value||'').trim().toLowerCase();const rows=all.filter(r=>(!date||normDate(r[0])===date)&&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q)));$('outAnaQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[4]),0));$('outAnaSku').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);$('outAnaDays').textContent=fmt(new Set(rows.map(r=>normDate(r[0])).filter(Boolean)).size);$('outAnaRows').textContent=fmt(rows.length);$('outAnaCaption').textContent=date||q?'필터 적용':'전체';$('outAnaTrend').innerHTML=trendHtml(all,4);$('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="num">${fmt(r[4])}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">조회 결과가 없습니다.</td></tr>'}
@@ -3796,14 +3812,21 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',renderInbound],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['inCatRun',renderCategoryTrend]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['inCatRun',renderCategoryTrend]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
+if($('inAnaStart')&&!$('inAnaStart').value){
+  const now=new Date();
+  const first=new Date(now.getFullYear(),now.getMonth(),1);
+  const last=new Date(now.getFullYear(),now.getMonth()+1,0);
+  const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  $('inAnaStart').value=fmtD(first);
+  $('inAnaEnd').value=fmtD(last);
+}$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();
 if($('inCatStart')&&!$('inCatStart').value){$('inCatStart').value='2026-07-01';$('inCatEnd').value=today();}
 if($('dmStart')&&!$('dmStart').value){
   const fy=damageFY();
   $('dmStart').value=fy.start;
   $('dmEnd').value=today();
 }
-$('inAnaReset')?.addEventListener('click',()=>{$('inAnaStart').value='';$('inAnaEnd').value='';$('inAnaBatchQuery').value='';$('inAnaQuery').value='';renderInbound()});
 $('ibRun')?.addEventListener('click',renderInboundBasic);
 $('ibReset')?.addEventListener('click',()=>{$('ibBatchQuery').value='';$('ibQuery').value='';const now=new Date();const first=new Date(now.getFullYear(),now.getMonth(),1);const last=new Date(now.getFullYear(),now.getMonth()+1,0);const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('ibStart').value=fmtD(first);$('ibEnd').value=fmtD(last);renderInboundBasic()});
 if($('ibStart')&&!$('ibStart').value){
