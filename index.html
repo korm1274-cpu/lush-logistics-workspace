@@ -2145,6 +2145,12 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #dashboard .schedule-unified-head{min-height:0!important;padding:14px 22px!important;background:var(--v77-card)!important;border-bottom:1px solid var(--v77-line)!important;}
 #dashboard .dashboard-first-section{margin-top:0!important;}
 #appShell .view{padding-top:4px!important;}
+#appShell .dash-section-head h3:after{display:none!important;}
+#dashboard .dash-section:nth-of-type(2){background:var(--v77-card)!important;border:1px solid var(--v77-line)!important;padding:22px!important;}
+#appShell .monthly-card.inbound-month,#appShell .monthly-card.outbound-month{background:var(--v77-card)!important;background-image:none!important;border-top:1px solid var(--v77-line)!important;}
+#appShell .monthly-card:after{display:none!important;}
+#appShell .monthly-head h4{font-size:19px!important;font-weight:800!important;}
+#appShell .monthly-card.inbound-month .monthly-stats b,#appShell .monthly-card.outbound-month .monthly-stats b{color:var(--v77-ink)!important;}
 </style>
 </head>
 <body>
@@ -2257,8 +2263,8 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
       <div class="dash-section">
         <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
         <div class="monthly-grid">
-          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
-          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card inbound-month"><div class="monthly-head"><div><h4>입고</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card outbound-month"><div class="monthly-head"><div><h4>출고</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
         </div>
       </div>
     </section>
