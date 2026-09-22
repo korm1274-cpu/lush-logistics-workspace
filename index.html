@@ -3951,6 +3951,7 @@ if($('ibStart')&&!$('ibStart').value){
  function renderNoticeManager(){const body=$('noticeMgrBody');if(!body)return;const a=read(NOTICE,[]);body.innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.date||'')}</td><td><b>${esc(x.title||'')}</b></td><td>${esc(x.content||'')}</td><td>${esc(x.author||'')}</td><td><button class="btn" data-notice-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 공지가 없습니다.</td></tr>';body.querySelectorAll('[data-notice-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 공지를 삭제하시겠습니까?'))return;save(NOTICE,a.filter(x=>x.id!==b.dataset.noticeDel));renderAll()})}
  function renderTodoManager(){const body=$('todoMgrBody');if(!body)return;const a=read(TODO,[]).sort((x,y)=>Number(x.done)-Number(y.done)||String(y.date).localeCompare(String(x.date)));body.innerHTML=a.length?a.map(x=>`<tr><td>${esc((x.date||'').slice(0,10))}</td><td><b>${esc(x.manager||'미지정')}</b></td><td>${esc(x.content||'')}</td><td><button class="btn" data-todo-toggle="${x.id}">${x.done?'완료':'미완료'}</button></td><td><button class="btn" data-todo-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 할 일이 없습니다.</td></tr>';body.querySelectorAll('[data-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.todoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()});body.querySelectorAll('[data-todo-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 할 일을 삭제하시겠습니까?'))return;save(TODO,read(TODO,[]).filter(x=>x.id!==b.dataset.todoDel));renderAll()})}
  function renderAll(){renderDashboard();renderNoticeManager();renderTodoManager()}
+ window.renderOpsDashboard=renderAll;
  document.addEventListener('DOMContentLoaded',()=>{
    $('noticeMgrAdd')?.addEventListener('click',()=>{const title=$('noticeMgrTitle').value.trim(),content=$('noticeMgrContent').value.trim(),author=$('noticeMgrAuthor').value.trim()||'Time';if(!title||!content){toastMsg('제목과 내용을 입력해주세요.');return}const a=read(NOTICE,[]);a.unshift({id:'n_'+Date.now(),date:new Date().toLocaleString('ko-KR'),author,title,content});save(NOTICE,a.slice(0,50));$('noticeMgrTitle').value='';$('noticeMgrContent').value='';renderAll();window.BASE_NOTIFY?.('새 팀 공지',title)});
    $('todoMgrAdd')?.addEventListener('click',()=>{const manager=$('todoMgrManager').value.trim(),content=$('todoMgrContent').value.trim();if(!content){toastMsg('할 일을 입력해주세요.');return}const a=read(TODO,[]);a.unshift({id:'t_'+Date.now(),date:new Date().toISOString(),manager,content,done:false});save(TODO,a);$('todoMgrContent').value='';renderAll();window.BASE_NOTIFY?.('새 할 일',`${manager||'미지정'} · ${content}`)});
@@ -4208,7 +4209,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
         document.dispatchEvent(new CustomEvent('team-data-updated'));
-        if(typeof window.renderDashboard==='function')window.renderDashboard();
+        if(typeof window.renderOpsDashboard==='function')window.renderOpsDashboard();
       }
     }catch(e){console.error('team-data pull failed',e)}
     pulling=false;
