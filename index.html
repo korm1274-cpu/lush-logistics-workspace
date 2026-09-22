@@ -2080,6 +2080,68 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 #globalHoverTip{position:fixed!important;z-index:9999!important;background:#fff!important;color:#22303a!important;padding:10px 13px!important;border-radius:10px!important;border:1px solid #e3e7ea!important;font-size:12px!important;line-height:1.75!important;box-shadow:0 12px 30px rgba(20,30,40,.18)!important;pointer-events:none!important;max-width:300px!important;display:none;}
 #globalHoverTip div{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-weight:700!important;}
 #appShell #dashNoticeCount{font-size:19px!important;font-weight:900!important;}
+
+/* ============ V77: 토스 감성 디자인 시스템 ============ */
+:root{
+  --v77-bg:#f2f4f6;--v77-card:#ffffff;--v77-line:#eef0f2;
+  --v77-ink:#191f28;--v77-muted:#8b95a1;--v77-muted2:#b0b8c1;
+  --v77-blue:#3182f6;--v77-blue-dark:#1b64da;--v77-blue-soft:#eaf2ff;
+  --v77-mint:#17c1a3;--v77-mint-soft:#e7f9f5;
+  --v77-red:#f04452;--v77-red-soft:#feecee;
+  --v77-amber:#ff9800;--v77-amber-soft:#fff4e5;
+  --v77-violet:#8b5cf6;--v77-violet-soft:#f2edfe;
+}
+html,body{background:var(--v77-bg)!important;color:var(--v77-ink)!important;font-family:"Pretendard","Noto Sans KR",sans-serif!important;}
+#appShell .main{background:var(--v77-bg)!important;}
+h1,h2,h3,h4,.eyebrow,.dashboard-panel-title h3,.dash-section-head h3,.data-workbench-head h2,.inventory-head h2,.schedule-head h2,.request-manager-head h2,.analysis-head h2,.sheet-title h2{
+  font-family:"Pretendard","Noto Sans KR",sans-serif!important;font-weight:800!important;letter-spacing:-.02em!important;color:var(--v77-ink)!important;
+}
+#appShell .dash-section-head h3{background:transparent!important;color:var(--v77-ink)!important;box-shadow:none!important;transform:none!important;padding:0!important;}
+b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,.analysis-kpi b,.inventory-summary b,.request-period-stat b,#todayOperatingCount,#todayAbsenceCount{
+  font-family:"Pretendard",sans-serif!important;font-weight:800!important;letter-spacing:-.02em!important;font-variant-numeric:tabular-nums!important;
+}
+#appShell .dash-section,#appShell .panel,#appShell .data-table-wrap,#appShell .kpi,#appShell .monthly-card,#appShell .dashboard-info-panel,
+#appShell .schedule-card,#appShell .inventory-card,#appShell .inventory-grid-card,#appShell .sheet-card,#appShell .analysis-card,
+#appShell .analysis-box,#appShell .request-manager-card,#appShell .request-mini-card,#appShell .request-period-stat,
+#appShell .dashboard-two-week-calendar,#appShell .schedule-form-card,#appShell .schedule-list-card,#appShell .box-entry-card,
+#appShell .data-filter-row,#appShell .dialog-card,#appShell .request-manager-list-head,#appShell .data-workbench,
+#appShell .notice-main,#appShell .notice-side,#appShell .ops-todo-item,#appShell .rank-row{
+  background:var(--v77-card)!important;border:1px solid var(--v77-line)!important;color:var(--v77-ink)!important;
+  border-radius:20px!important;box-shadow:0 2px 12px rgba(25,31,40,.04)!important;background-image:none!important;
+}
+#appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;}
+#appShell .request-manager-list-head,#appShell .data-table-wrap{box-shadow:none!important;}
+#appShell .btn{background:#f4f6f8!important;border:1px solid var(--v77-line)!important;color:var(--v77-ink)!important;border-radius:12px!important;font-weight:700!important;}
+#appShell .btn:hover{background:#eceff2!important;}
+#appShell .btn.primary{background:var(--v77-blue)!important;border-color:var(--v77-blue)!important;color:#fff!important;font-weight:800!important;}
+#appShell .btn.primary:hover{background:var(--v77-blue-dark)!important;}
+#appShell input,#appShell select,#appShell textarea{
+  background:#f7f9fa!important;border:1px solid var(--v77-line)!important;color:var(--v77-ink)!important;border-radius:12px!important;
+}
+#appShell .kpi span,#appShell .monthly-head small,#appShell .monthly-stats span,#appShell .request-period-stat span,
+#appShell .panel-kicker,#appShell small,#appShell .muted{color:var(--v77-muted)!important;}
+#appShell .kpi b,#appShell #todayOperatingCount,#appShell .notice-side b,#appShell .monthly-card.inbound-month .monthly-stats b{
+  color:var(--v77-blue)!important;font-size:1.35em!important;
+}
+#appShell .monthly-card.outbound-month .monthly-stats b,#appShell .analysis-kpi b{color:var(--v77-violet)!important;font-size:1.35em!important;}
+#appShell .badge{background:var(--v77-blue-soft)!important;color:var(--v77-blue)!important;border-color:transparent!important;border-radius:8px!important;}
+#appShell .badge.danger{background:var(--v77-red-soft)!important;color:var(--v77-red)!important;}
+#appShell .badge.warn,#appShell .badge.todo-badge{background:var(--v77-amber-soft)!important;color:var(--v77-amber)!important;}
+#appShell .request-type-badge{background:var(--v77-violet-soft)!important;color:var(--v77-violet)!important;border-radius:8px!important;}
+#appShell .todo-badge{background:var(--v77-violet-soft)!important;color:var(--v77-violet)!important;border-color:transparent!important;}
+#appShell .nav-item.active,#appShell .nav-root.active,#appShell .nav-group.open>.nav-root{color:var(--v77-blue)!important;}
+#appShell .nav-root.active:after,.nav-root.active:after{background:var(--v77-blue)!important;}
+#appShell .request-status.done,#appShell .master-event.import-outbound{color:var(--v77-mint)!important;}
+#appShell .master-event.import-src{color:var(--v77-amber)!important;}
+#appShell .master-event.import-leave{color:var(--v77-violet)!important;}
+#appShell .dashboard-info-panel.notice-panel .notice-pin{background:var(--v77-blue)!important;color:#fff!important;border-radius:8px!important;}
+#appShell .dashboard-panel-title,#appShell .dashboard-panel-title *,#appShell .notice-board,#appShell .ops-todo-head{background:transparent!important;}
+#appShell .dashboard-panel-title h3,#appShell .notice-main b,#appShell .notice-main p,#appShell .ops-todo-item,#appShell .todo-content{color:var(--v77-ink)!important;}
+#appShell .dash-section-head:after{display:none!important;}
+#appShell ::-webkit-scrollbar{width:9px;height:9px;}
+#appShell ::-webkit-scrollbar-track{background:transparent!important;}
+#appShell ::-webkit-scrollbar-thumb{background:var(--v77-muted2)!important;border-radius:9px;}
+#globalHoverTip{border-radius:14px!important;}
 </style>
 </head>
 <body>
@@ -2128,7 +2190,6 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
           <div class="request-mini-card" data-request-type="bulk">
             <div class="request-mini-head">
               <div>
-                <span class="request-type-icon"><i data-lucide="boxes"></i></span>
                 <b>대량 주문 출고 요청 현황</b>
               </div>
               <span class="request-badge" data-request-count="bulk">0건</span>
@@ -2144,7 +2205,6 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
           <div class="request-mini-card" data-request-type="traffic">
             <div class="request-mini-head">
               <div>
-                <span class="request-type-icon"><i data-lucide="activity"></i></span>
                 <b>트래픽 요청 현황</b>
               </div>
               <span class="request-badge" data-request-count="traffic">0건</span>
@@ -2160,7 +2220,6 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
           <div class="request-mini-card" data-request-type="hq">
             <div class="request-mini-head">
               <div>
-                <span class="request-type-icon"><i data-lucide="building-2"></i></span>
                 <b>본사 출고 요청 현황</b>
               </div>
               <span class="request-badge" data-request-count="hq">0건</span>
@@ -2178,8 +2237,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="dash-section schedule-card schedule-full-card">
         <div class="schedule-unified-head">
           <div class="schedule-title-group">
-            <button class="btn" id="dashRefreshImportScheduleBtn" type="button" title="일정 새로고침" style="margin-bottom:8px">↻</button>
-            <div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span></div>
+            <div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span><button class="btn" id="dashRefreshImportScheduleBtn" type="button" title="일정 새로고침" style="margin-left:6px">↻</button></div>
           </div>
           <div class="schedule-staff-summary" aria-label="금일 운영 인원">
             <div class="schedule-staff-primary"><span>TODAY STAFF</span><strong id="todayOperatingCount">14</strong><em>/ 14명</em></div>
@@ -3156,7 +3214,7 @@ setTimeout(initInventoryColumnResize,0);
     if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='수입 일정을 불러오는 중입니다.';
     if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 불러오는 중';
     try{
-      const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),5000);const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default',signal:ctrl.signal}).finally(()=>clearTimeout(timer));
+      const res=await fetch(IMPORT_API,{method:'GET',redirect:'follow',cache:force?'no-store':'default'});
       if(!res.ok)throw new Error(`HTTP ${res.status}`);
       const data=await res.json();
       if(!data.success||!Array.isArray(data.events))throw new Error('응답 형식 오류');
