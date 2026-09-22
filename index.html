@@ -2349,20 +2349,18 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 
     <section id="inboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND ANALYTICS</div><h2>입고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 입고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
-  <div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div><div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:15%">월</th><th class="num" style="width:12%">차수</th><th class="num" style="width:14%">SKU(G)</th><th class="num" style="width:14%">SKU(EA)</th><th class="num" style="width:22%">수량(G)</th><th class="num" style="width:23%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div></div>
+  <div class="panel">
+    <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div>
+    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button></div>
+    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:15%">월</th><th class="num" style="width:12%">차수</th><th class="num" style="width:14%">SKU(G)</th><th class="num" style="width:14%">SKU(EA)</th><th class="num" style="width:22%">수량(G)</th><th class="num" style="width:23%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
+  </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
-    <div class="data-filter-row" style="margin-bottom:10px">
-      <div class="field"><label>시작일</label><input type="date" id="inCatStart"></div>
-      <div class="field"><label>종료일</label><input type="date" id="inCatEnd"></div>
-      <div class="field grow"><label>제품군</label><select id="inCatSelect"><option value="">전체</option></select></div>
-      <button class="btn primary" id="inCatRun">조회</button>
-    </div>
+    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><select id="inCatSelect"><option value="">전체</option></select></div></div>
     <div style="position:relative;height:380px"><canvas id="inCatTrendCanvas"></canvas></div>
     <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
   </div>
-  <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button></div>
-  <div class="panel"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
+  <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
 </div></section>
 <section id="outboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 분석</h2><p>업로드 누적 데이터를 기준으로 일자·제품·월별 출고 실적을 조회합니다.</p></div></div>
@@ -3148,7 +3146,7 @@ setTimeout(initInventoryColumnResize,0);
   function migrateLegacy(){if(localStorage.getItem(KEY)!==null)return;const rows=(typeof db!=='undefined'&&db.schedule?.['통합 일정']?.rows)||[];const mapped=rows.filter(r=>r&&r[0]).map(r=>({id:uid(),startDate:r[0],endDate:r[0],type:({외근:'field',연차:'annual',오전반차:'half_am',오후반차:'half_pm'}[r[1]]||'annual'),person:r[3]||'',createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()})).filter(e=>e.person);localStorage.setItem(KEY,JSON.stringify(mapped))}
   function eventCovers(e,date){return date>=(e.startDate||'')&&date<=(e.endDate||e.startDate||'')}
   function isoToSeoulDate(iso){if(!iso)return'';const d=new Date(iso);return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
-  function normalizeImport(raw){return (raw||[]).map(e=>({id:e.id||'',title:String(e.title||'').trim(),startDate:isoToSeoulDate(e.start),endDate:isoToSeoulDate(e.end),type:'import'})).filter(e=>e.startDate&&e.title)}
+  function normalizeImport(raw){return (raw||[]).map(e=>({id:e.id||'',title:String(e.title||'').trim(),startDate:isoToSeoulDate(e.start),endDate:isoToSeoulDate(e.end),type:'import',source:String(e.source||'수입일정')})).filter(e=>e.startDate&&e.title)}
 
   function holidayEvents(year){
     const fixed=[
@@ -3196,7 +3194,7 @@ setTimeout(initInventoryColumnResize,0);
     const holidays=years.flatMap(y=>holidayEvents(y));
     return attendance.concat(importEvents,holidays);
   }
-  function eventLabel(e){if(e.type==='import')return['수입',e.title];if(e.type==='holiday')return['휴일',e.title];return[types[e.type]||'일정',e.person||e.title||''];}
+  function eventLabel(e){if(e.type==='import')return[e.source||'수입',e.title];if(e.type==='holiday')return['휴일',e.title];return[types[e.type]||'일정',e.person||e.title||''];}
   function eventSort(a,b){const order={annual:0,half_am:1,half_pm:1,field:2,import:3,holiday:4};return (order[a.type]??9)-(order[b.type]??9)||(a.title||'').localeCompare(b.title||'ko')}
 
   function renderMasterCalendar(){
@@ -3365,7 +3363,7 @@ setTimeout(initInventoryColumnResize,0);
     if(!$('inCatTrendCanvas'))return;
     populateCategorySelect();
     const all=read().inbound?.rows||[];
-    const start=$('inCatStart')?.value||'',end=$('inCatEnd')?.value||'';
+    const start=$('inAnaStart')?.value||'',end=$('inAnaEnd')?.value||'';
     const catFilter=$('inCatSelect')?.value||'';
     const monthCatQty={};
     const cats=new Set();
@@ -3823,7 +3821,8 @@ setTimeout(initInventoryColumnResize,0);
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['inCatRun',renderCategoryTrend]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
+$('inCatSelect')?.addEventListener('change',renderCategoryTrend);
 if($('inAnaStart')&&!$('inAnaStart').value){
   const now=new Date();
   const first=new Date(now.getFullYear(),now.getMonth(),1);
@@ -3832,7 +3831,7 @@ if($('inAnaStart')&&!$('inAnaStart').value){
   $('inAnaStart').value=fmtD(first);
   $('inAnaEnd').value=fmtD(last);
 }$('dmFyGroup')?.addEventListener('change',renderDamageFY);if($('dmMomMonth')&&!$('dmMomMonth').value)$('dmMomMonth').value=today().slice(0,7);populateBoxFilterDropdowns();
-if($('inCatStart')&&!$('inCatStart').value){$('inCatStart').value='2026-07-01';$('inCatEnd').value=today();}
+
 if($('dmStart')&&!$('dmStart').value){
   const fy=damageFY();
   $('dmStart').value=fy.start;
