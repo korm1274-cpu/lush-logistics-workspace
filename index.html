@@ -2121,6 +2121,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 #appShell .schedule-staff-summary{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:6px!important;}
 #appShell .schedule-staff-primary,#appShell .schedule-staff-secondary{display:flex!important;align-items:center!important;gap:7px!important;justify-content:flex-end!important;width:100%!important;}
 #appShell .schedule-staff-primary span,#appShell .schedule-staff-secondary span{min-width:92px!important;text-align:left!important;display:inline-block!important;}
+#appShell .outbound-month .monthly-stats{grid-template-columns:1fr!important;}
+#appShell .outbound-month .monthly-stats>div+div{border-left:0!important;padding-left:0!important;}
 </style>
 </head>
 <body>
@@ -2235,7 +2237,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
         <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
         <div class="monthly-grid">
           <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
-          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 건수</span><b id="fileOutboundCount">0</b><small>건</small></div><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
         </div>
       </div>
     </section>
@@ -3322,8 +3324,12 @@ setTimeout(initInventoryColumnResize,0);
   const upsertByDate=(existing,incoming,dateIndex=0)=>{const dates=new Set(incoming.map(r=>normDate(r[dateIndex])));return (existing||[]).filter(r=>!dates.has(normDate(r[dateIndex]))).concat(incoming)};
   const upsertByKey=(existing,incoming,keyFn)=>{const keys=new Set(incoming.map(r=>keyFn(r)).filter(k=>k!==''&&k!=null));return (existing||[]).filter(r=>{const k=keyFn(r);return !(k!==''&&k!=null&&keys.has(k))}).concat(incoming)};
   const fmt=n=>num(n).toLocaleString('ko-KR'); const ym=d=>normDate(d).slice(0,7); const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  function monthStats(rows){const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+num(r[4]),0),rows:a.length,ym:cur}}
-  function renderDashboard(){const d=read(),i=monthStats(d.inbound?.rows),o=monthStats(d.outbound?.rows);if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  function monthStats(rows,qtyIdx=4,unitFilter=null){
+    const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
+    const qtyRows=unitFilter?a.filter(r=>inboundUnit(r)===unitFilter):a;
+    return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:qtyRows.reduce((z,r)=>z+num(r[qtyIdx]),0),rows:a.length,ym:cur};
+  }
+  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,6,'EA'),o=monthStats(d.outbound?.rows,4);if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   function renderInboundBasic(){
