@@ -2151,6 +2151,37 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #appShell .monthly-card:after{display:none!important;}
 #appShell .monthly-head h4{font-size:19px!important;font-weight:800!important;}
 #appShell .monthly-card.inbound-month .monthly-stats b,#appShell .monthly-card.outbound-month .monthly-stats b{color:var(--v77-ink)!important;}
+
+/* ============ V78: 타이포 위계 / 카드 여백 / 사이드바 / 테이블 폴리싱 ============ */
+#appShell .dash-section-head h3,#appShell .dashboard-panel-title h3{font-size:20px!important;font-weight:800!important;}
+#appShell .kpi b,#appShell .monthly-stats b,#appShell .notice-side b,#appShell .staff-total-main b,#appShell .analysis-kpi b,#appShell .inventory-summary b,#appShell .request-period-stat b,#appShell #todayOperatingCount{
+  font-size:34px!important;font-weight:800!important;line-height:1.1!important;
+}
+#appShell .kpi span,#appShell .monthly-head small,#appShell .monthly-stats span,#appShell .request-period-stat span,#appShell .panel-kicker{
+  font-size:12px!important;font-weight:600!important;color:var(--v77-muted)!important;letter-spacing:0!important;text-transform:none!important;
+}
+#appShell .kpi small,#appShell .monthly-stats small{font-size:13px!important;color:var(--v77-muted)!important;font-weight:600!important;}
+#appShell p,#appShell .notice-main p{font-size:14px!important;line-height:1.6!important;color:var(--v77-muted)!important;}
+
+#appShell .dash-section,#appShell .dashboard-info-panel,#appShell .monthly-card,#appShell .schedule-card,#appShell .inventory-card,
+#appShell .analysis-card,#appShell .request-manager-card,#appShell .request-mini-card,#appShell .sheet-card{padding:24px!important;}
+#appShell .dashboard-notice-todo-grid,#appShell .monthly-grid,#appShell .request-card-grid,#appShell .dash-two-col{gap:20px!important;}
+#appShell .dash-section-head{margin-bottom:20px!important;padding-bottom:0!important;border-bottom:0!important;background:transparent!important;}
+#appShell .kpi{padding:20px!important;}
+
+#appShell .nav-item{border-radius:10px!important;margin:2px 8px!important;transition:background .15s ease,color .15s ease!important;}
+#appShell .nav-item:hover{background:rgba(255,255,255,.08)!important;color:#fff!important;}
+#appShell .nav-item.active{background:var(--v77-blue)!important;color:#fff!important;font-weight:700!important;}
+#appShell .nav-root{transition:background .15s ease!important;}
+#appShell .nav-root:hover{background:rgba(255,255,255,.06)!important;}
+
+#appShell .data-table{border-collapse:separate!important;border-spacing:0!important;}
+#appShell .data-table th{background:#f7f9fa!important;color:var(--v77-muted)!important;font-weight:700!important;font-size:12px!important;padding:12px 14px!important;border-bottom:1px solid var(--v77-line)!important;}
+#appShell .data-table td{padding:12px 14px!important;font-size:13px!important;border-bottom:1px solid var(--v77-line)!important;}
+#appShell .data-table tr:last-child td{border-bottom:0!important;}
+#appShell .data-table tr:hover td{background:#f7f9fa!important;}
+#appShell .request-manager-list-head{font-size:12px!important;font-weight:700!important;color:var(--v77-muted)!important;padding:12px 14px!important;background:#f7f9fa!important;}
+#appShell .request-manager-item{padding:14px!important;}
 </style>
 </head>
 <body>
