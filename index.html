@@ -2109,6 +2109,14 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 .nav-group-direct .nav-root em{display:none!important;}
 .nav-root.active{color:#fff!important;}
 .nav-root.active:after{background:var(--v70-accent)!important;}
+
+/* 캘린더 출처별 색상: 연차(물류연차일정)=파랑, 수입(수입일정)=주황, 출고(출고일정)=초록 */
+.master-event.import-leave,.dash-two-week-event.import-leave{background:#eaf1ff!important;color:#2455b0!important;}
+.master-event.import-leave .event-type{color:#2455b0!important;}
+.master-event.import-src,.dash-two-week-event.import-src{background:#fff0e4!important;color:#a94d00!important;}
+.master-event.import-src .event-type{color:#c35a00!important;}
+.master-event.import-outbound,.dash-two-week-event.import-outbound{background:#e9f7ee!important;color:#1f7a45!important;}
+.master-event.import-outbound .event-type{color:#1f7a45!important;}
 </style>
 </head>
 <body>
@@ -2269,11 +2277,9 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
             <button class="btn" id="calendarTodayBtn" type="button">오늘</button>
           </div>
           <div class="master-calendar-legend">
-            <span><i class="legend-dot annual"></i>연차</span>
-            <span><i class="legend-dot half"></i>반차</span>
-            <span><i class="legend-dot field"></i>외근</span>
-            <span><i class="legend-dot import"></i>수입</span>
-            <span><i class="legend-dot holiday"></i>휴일</span>
+            <span><i class="legend-dot" style="background:#2f6fed"></i>연차</span>
+            <span><i class="legend-dot" style="background:#f28b22"></i>수입</span>
+            <span><i class="legend-dot" style="background:#2f9b59"></i>출고</span>
           </div>
         </div>
         <div class="calendar-sync-bar">
@@ -3194,6 +3200,13 @@ setTimeout(initInventoryColumnResize,0);
     const holidays=years.flatMap(y=>holidayEvents(y));
     return attendance.concat(importEvents,holidays);
   }
+  function importSourceClass(e){
+    if(e.type!=='import')return'';
+    const s=String(e.source||'');
+    if(s.includes('연차'))return' import-leave';
+    if(s.includes('출고'))return' import-outbound';
+    return' import-src';
+  }
   function eventLabel(e){if(e.type==='import')return[e.source||'수입',e.title];if(e.type==='holiday')return['휴일',e.title];return[types[e.type]||'일정',e.person||e.title||''];}
   function eventSort(a,b){const order={annual:0,half_am:1,half_pm:1,field:2,import:3,holiday:4};return (order[a.type]??9)-(order[b.type]??9)||(a.title||'').localeCompare(b.title||'ko')}
 
@@ -3205,7 +3218,7 @@ setTimeout(initInventoryColumnResize,0);
     for(let i=0;i<42;i++){
       const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort);
       const visible=list.slice(0,5);
-      html+=`<div class="master-calendar-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [tag,title]=eventLabel(e);const inner=`<span class="event-type">${escHtml(tag)}</span><span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
+      html+=`<div class="master-calendar-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [tag,title]=eventLabel(e);const inner=`<span class="event-type">${escHtml(tag)}</span><span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}${importSourceClass(e)}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}${importSourceClass(e)}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
     }
     $('masterCalendarGrid').innerHTML=html;
     $('masterCalendarGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
@@ -3220,7 +3233,7 @@ setTimeout(initInventoryColumnResize,0);
     const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${y}년 ${m+1}월`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<42;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${key===todayKey()?'today':''} ${d.getMonth()!==m?'outside':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}"><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${d.getMonth()!==m?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [tag,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}" title="${escHtml(title)}"><b>${escHtml(tag)}</b><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey(),todayAbs=attendance.filter(e=>eventCovers(e,today)&&e.person),perPerson=new Map();
     todayAbs.forEach(e=>{const factor=fullAbsence.has(e.type)?1:.5;perPerson.set(e.person,Math.max(perPerson.get(e.person)||0,factor))});
     const excluded=[...perPerson.values()].reduce((a,b)=>a+b,0),available=Math.max(0,TEAM_SIZE-excluded);
