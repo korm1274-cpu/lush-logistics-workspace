@@ -2109,7 +2109,7 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
   background:var(--v77-card)!important;border:1px solid var(--v77-line)!important;color:var(--v77-ink)!important;
   border-radius:20px!important;box-shadow:0 2px 12px rgba(25,31,40,.04)!important;background-image:none!important;
 }
-#appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;}
+#appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel,#dashboard .dashboard-info-panel.notice-panel,#dashboard .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;background:var(--v77-card)!important;}
 #appShell .request-manager-list-head,#appShell .data-table-wrap{box-shadow:none!important;}
 #appShell .btn{background:#f4f6f8!important;border:1px solid var(--v77-line)!important;color:var(--v77-ink)!important;border-radius:12px!important;font-weight:700!important;}
 #appShell .btn:hover{background:#eceff2!important;}
@@ -2134,7 +2134,7 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #appShell .master-event.import-src{color:var(--v77-amber)!important;}
 #appShell .master-event.import-leave{color:var(--v77-blue)!important;}
 #appShell .dashboard-info-panel.notice-panel .notice-pin{background:var(--v77-blue)!important;color:#fff!important;border-radius:8px!important;}
-#appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;}
+#appShell .dashboard-info-panel.notice-panel,#appShell .dashboard-info-panel.todo-panel,#dashboard .dashboard-info-panel.notice-panel,#dashboard .dashboard-info-panel.todo-panel{border-top:1px solid var(--v77-line)!important;background:var(--v77-card)!important;}
 #appShell .dashboard-panel-title,#appShell .dashboard-panel-title *,#appShell .notice-board,#appShell .ops-todo-head{background:transparent!important;}
 #appShell .dashboard-panel-title h3,#appShell .notice-main b,#appShell .notice-main p,#appShell .ops-todo-item,#appShell .todo-content{color:var(--v77-ink)!important;}
 #appShell .dash-section-head:after{display:none!important;}
@@ -2142,6 +2142,9 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
 #appShell ::-webkit-scrollbar-track{background:transparent!important;}
 #appShell ::-webkit-scrollbar-thumb{background:var(--v77-muted2)!important;border-radius:9px;}
 #globalHoverTip{border-radius:14px!important;}
+#dashboard .schedule-unified-head{min-height:0!important;padding:14px 22px!important;background:var(--v77-card)!important;border-bottom:1px solid var(--v77-line)!important;}
+#dashboard .dashboard-first-section{margin-top:0!important;}
+#appShell .view{padding-top:4px!important;}
 </style>
 </head>
 <body>
@@ -2170,14 +2173,14 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
       <div class="dash-section dashboard-first-section">
         <div class="dashboard-notice-todo-grid">
           <div class="dashboard-info-panel notice-panel">
-            <div class="dashboard-panel-title"><div><h3>팀 공지사항</h3></div></div>
+            <div class="dashboard-panel-title"><div><h3>📢 팀 공지사항</h3></div></div>
             <div class="notice-board">
               <div class="notice-main"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
               <div class="notice-side"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div>
             </div>
           </div>
           <div class="dashboard-info-panel todo-panel">
-            <div class="dashboard-panel-title"><div><h3>TO DO</h3></div></div>
+            <div class="dashboard-panel-title"><div><h3>✅ TO DO</h3></div></div>
             <div class="ops-todo-head"><div><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
             <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 할 일이 없습니다.</div></div>
           </div>
@@ -2237,7 +2240,7 @@ b,strong,.kpi b,.monthly-stats b,.big-number,.notice-side b,.staff-total-main b,
       <div class="dash-section schedule-card schedule-full-card">
         <div class="schedule-unified-head">
           <div class="schedule-title-group">
-            <div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span><button class="btn" id="dashRefreshImportScheduleBtn" type="button" title="일정 새로고침" style="margin-left:6px">↻</button></div>
+            <div class="schedule-title-line"><h3>📅 스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span><button class="btn" id="dashRefreshImportScheduleBtn" type="button" title="일정 새로고침" style="margin-left:6px">↻</button></div>
           </div>
           <div class="schedule-staff-summary" aria-label="금일 운영 인원">
             <div class="schedule-staff-primary"><span>TODAY STAFF</span><strong id="todayOperatingCount">14</strong><em>/ 14명</em></div>
