@@ -3258,10 +3258,12 @@ setTimeout(initInventoryColumnResize,0);
       .finally(()=>{__suppressPullUntil=Date.now()+2000});
   }
   async function pullSharedData(silent){
-    if(__sharedSyncing||Date.now()<__suppressPullUntil)return;
+    if(__sharedSyncing)return;
+    if(Date.now()<__suppressPullUntil){if(!silent)toastMsg('방금 저장한 내용이 서버에 반영되는 중입니다. 잠시 후 다시 시도해주세요.');return}
     __sharedSyncing=true;
     try{
       const res=await fetch(SHARED_API);
+      if(!res.ok){if(!silent)toastMsg(`동기화 실패: 서버 응답 오류 (HTTP ${res.status})`);return}
       const j=await res.json();
       if(j&&j.success&&j.data){
         const current=JSON.stringify(read());
@@ -3270,10 +3272,15 @@ setTimeout(initInventoryColumnResize,0);
           localStorage.setItem(STORE_KEY,incoming);
           renderAll();
           if(!silent)toastMsg('팀 공유 데이터를 최신 상태로 불러왔습니다.');
+        }else{
+          if(!silent)toastMsg('이미 최신 상태입니다. (서버에 저장된 데이터와 동일)');
         }
+      }else{
+        if(!silent)toastMsg('동기화 실패: 서버에 공유 데이터가 없습니다.');
       }
     }catch(err){
       console.error('공유 데이터 불러오기 실패:',err);
+      if(!silent)toastMsg('동기화 실패: '+(err?.message||'네트워크 오류'));
     }finally{
       __sharedSyncing=false;
     }
