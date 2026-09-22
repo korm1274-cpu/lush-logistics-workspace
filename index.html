@@ -2118,6 +2118,9 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 .master-event.import-outbound,.dash-two-week-event.import-outbound{background:#e9f7ee!important;color:#1f7a45!important;}
 .master-event.import-outbound .event-type{color:#1f7a45!important;}
 #appShell #todayAbsenceCount{font-size:11px!important;font-weight:700!important;}
+#appShell .schedule-staff-summary{display:flex!important;flex-direction:column!important;align-items:flex-end!important;gap:6px!important;}
+#appShell .schedule-staff-primary,#appShell .schedule-staff-secondary{display:flex!important;align-items:center!important;gap:7px!important;justify-content:flex-end!important;width:100%!important;}
+#appShell .schedule-staff-primary span,#appShell .schedule-staff-secondary span{min-width:92px!important;text-align:left!important;display:inline-block!important;}
 </style>
 </head>
 <body>
@@ -2146,14 +2149,14 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="dash-section dashboard-first-section">
         <div class="dashboard-notice-todo-grid">
           <div class="dashboard-info-panel notice-panel">
-            <div class="dashboard-panel-title"><div><span class="panel-kicker">TEAM NOTICE</span><h3>팀 공지사항</h3></div></div>
+            <div class="dashboard-panel-title"><div><h3>팀 공지사항</h3></div></div>
             <div class="notice-board">
               <div class="notice-main"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
               <div class="notice-side"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div>
             </div>
           </div>
           <div class="dashboard-info-panel todo-panel">
-            <div class="dashboard-panel-title"><div><span class="panel-kicker">TODAY'S TASK</span><h3>TO DO</h3></div></div>
+            <div class="dashboard-panel-title"><div><h3>TO DO</h3></div></div>
             <div class="ops-todo-head"><div><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
             <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 할 일이 없습니다.</div></div>
           </div>
@@ -2215,7 +2218,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 
       <div class="dash-section schedule-card schedule-full-card">
         <div class="schedule-unified-head">
-          <div class="schedule-title-group"><span class="panel-kicker">MONTHLY SCHEDULE</span><div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span></div></div>
+          <div class="schedule-title-group"><div class="schedule-title-line"><h3>스케줄</h3><span id="dashboardWeekRange" class="dash-month"></span></div></div>
           <div class="schedule-staff-summary" aria-label="금일 운영 인원">
             <div class="schedule-staff-primary"><span>TODAY STAFF</span><strong id="todayOperatingCount">14</strong><em>/ 14명</em></div>
             <div class="schedule-staff-secondary"><span>금일 제외 인원</span><b id="todayAbsenceCount">0명</b></div>
@@ -2229,7 +2232,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       </div>
 
       <div class="dash-section">
-        <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3></div><span class="dash-month" id="dashboardMonth"></span></div>
+        <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
         <div class="monthly-grid">
           <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
           <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 건수</span><b id="fileOutboundCount">0</b><small>건</small></div><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
