@@ -2185,8 +2185,8 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       <div class="dash-section">
         <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
         <div class="monthly-grid">
-          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
-          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card inbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="package-plus"></i></div><div><h4>이번 달 입고 현황</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small></div></div><div class="muted" style="font-size:10px;margin-top:6px">G단위를 EA로 환산한 수량입니다.</div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
+          <div class="monthly-card outbound-month"><div class="monthly-head"><div class="monthly-icon"><i data-lucide="truck"></i></div><div><h4>이번 달 출고 현황</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small></div></div><div class="muted" style="font-size:10px;margin-top:6px">G단위를 EA로 환산한 수량입니다.</div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
         </div>
       </div>
     </section>
@@ -2294,7 +2294,11 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
 
 <section id="inboundMonthlyView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">MONTHLY INBOUND</div><h2>월별 입고현황</h2><p>일자별 입고 데이터를 월 단위로 합산하고, 일일 입고관리에 입력된 투입인원을 기준으로 평균 투입인원·평균 생산성을 자동 계산합니다.</p></div><button class="btn" id="exportInboundMonthlyCsv">CSV 내보내기</button></div>
-  <div class="panel"><div class="panel-head"><div><small>MONTHLY INBOUND</small><h3>월별 입고 현황</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">입고수량</th><th class="num">입고차수</th><th class="num">평균 투입인원</th><th class="num">평균 생산성</th></tr></thead><tbody id="inboundMonthlyBody"></tbody></table></div></div>
+  <div class="panel">
+    <div class="panel-head"><div><small>MONTHLY INBOUND</small><h3>월별 입고 현황</h3></div></div>
+    <div class="data-filter-row"><div class="field"><label>연도</label><select id="inboundMonthlyYear"></select></div><button class="btn primary" id="inboundMonthlyYearRun">조회</button></div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">입고수량(EA환산)</th><th class="num">입고수량(G)</th><th class="num">입고수량(EA)</th><th class="num">입고차수</th><th class="num">평균 투입인원</th><th class="num">평균 생산성</th></tr></thead><tbody id="inboundMonthlyBody"></tbody></table></div>
+  </div>
 </div></section>
     <section id="inboundBasicView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND</div><h2>입고</h2><p>기본적으로 이번 달 기준으로 조회되며, 시작일·종료일을 바꿔서 원하는 기간을 다시 조회할 수 있습니다.</p></div></div>
@@ -3283,12 +3287,17 @@ setTimeout(initInventoryColumnResize,0);
   const upsertByDate=(existing,incoming,dateIndex=0)=>{const dates=new Set(incoming.map(r=>normDate(r[dateIndex])));return (existing||[]).filter(r=>!dates.has(normDate(r[dateIndex]))).concat(incoming)};
   const upsertByKey=(existing,incoming,keyFn)=>{const keys=new Set(incoming.map(r=>keyFn(r)).filter(k=>k!==''&&k!=null));return (existing||[]).filter(r=>{const k=keyFn(r);return !(k!==''&&k!=null&&keys.has(k))}).concat(incoming)};
   const fmt=n=>num(n).toLocaleString('ko-KR'); const ym=d=>normDate(d).slice(0,7); const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
-  function monthStats(rows,qtyIdx=4,unitFilter=null){
-    const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
-    const qtyRows=unitFilter?a.filter(r=>inboundUnit(r)===unitFilter):a;
-    return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:qtyRows.reduce((z,r)=>z+num(r[qtyIdx]),0),rows:a.length,ym:cur};
+  function eaEquivQty(r){
+    const u=inboundUnit(r);
+    if(u==='EA')return num(r[6]);
+    if(u==='G'){const f=PRODUCT_EA_CONVERSION[String(r[2]||'').trim()];return f?num(r[6])/f:0;}
+    return 0;
   }
-  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,6,'EA'),o=monthStats(d.outbound?.rows,4);if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  function monthStats(rows,qtyFn){
+    const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
+    return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+qtyFn(r),0),rows:a.length,ym:cur};
+  }
+  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[4]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(i?.qty);if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(o?.qty);if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   window.inboundUnit=inboundUnit;
@@ -3919,16 +3928,31 @@ if($('ibStart')&&!$('ibStart').value){
     });
     return Object.values(map).map(x=>({date:x.date,qty:x.qty,sku:x.skus.size,batch:x.batches.size})).sort((a,b)=>b.date.localeCompare(a.date));
   }
-  function monthlyAgg(){
+  function availableInboundYears(){
+    const rows=inboundRows();
+    const years=new Set(rows.map(r=>normInboundDate(r[0]).slice(0,4)).filter(y=>/^\d{4}$/.test(y)));
+    return[...years].sort((a,b)=>b.localeCompare(a));
+  }
+  function monthlyAgg(year){
     const rows=inboundRows(),labor=getLabor(),dailyQty=dailyQtyMap(rows),map={};
     rows.forEach(r=>{
       const date=normInboundDate(r[0]),month=date.slice(0,7);
       if(!/^\d{4}-\d{2}$/.test(month))return;
-      if(!map[month])map[month]={month,qty:0,batches:new Set(),days:new Set()};
+      if(year&&!month.startsWith(year+'-'))return;
+      if(!map[month])map[month]={month,qty:0,qtyG:0,qtyEA:0,batches:new Set(),days:new Set()};
+      const u=window.inboundUnit?window.inboundUnit(r):String(r[5]||'').trim().toUpperCase();
       map[month].qty+=eaEquivQty(r);
+      if(u==='G')map[month].qtyG+=num(r[6]);
+      else if(u==='EA')map[month].qtyEA+=num(r[6]);
       if(r[1])map[month].batches.add(String(r[1]));
       map[month].days.add(date);
     });
+    if(year){
+      for(let m=1;m<=12;m++){
+        const key=`${year}-${String(m).padStart(2,'0')}`;
+        if(!map[key])map[key]={month:key,qty:0,qtyG:0,qtyEA:0,batches:new Set(),days:new Set()};
+      }
+    }
     return Object.values(map).map(x=>{
       let staffSum=0,staffCnt=0,prodSum=0,prodCnt=0;
       x.days.forEach(d=>{
@@ -3937,8 +3961,8 @@ if($('ibStart')&&!$('ibStart').value){
         if(staff>0){staffSum+=staff;staffCnt++}
         if(staff>0&&hours>0){prodSum+=(dailyQty[d]||0)/(staff*hours);prodCnt++}
       });
-      return{month:x.month,qty:x.qty,batchCount:x.batches.size,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
-    }).sort((a,b)=>b.month.localeCompare(a.month));
+      return{month:x.month,qty:x.qty,qtyG:x.qtyG,qtyEA:x.qtyEA,batchCount:x.batches.size,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
+    }).sort((a,b)=>year?a.month.localeCompare(b.month):b.month.localeCompare(a.month));
   }
   function renderInboundDailyView(){
     const tbody=$('inboundDailyBody');if(!tbody)return;
@@ -3973,11 +3997,21 @@ if($('ibStart')&&!$('ibStart').value){
   }
   function renderInboundMonthlyView(){
     const tbody=$('inboundMonthlyBody');if(!tbody)return;
-    const agg=monthlyAgg();
-    if(!agg.length){tbody.innerHTML='<tr><td colspan="5" class="data-empty">업로드된 입고 데이터가 없습니다.</td></tr>';return}
+    const yearSel=$('inboundMonthlyYear');
+    if(yearSel){
+      const years=availableInboundYears();
+      const cur=yearSel.value;
+      yearSel.innerHTML=years.map(y=>`<option value="${y}">${y}년</option>`).join('')||`<option value="">데이터 없음</option>`;
+      if(years.includes(cur))yearSel.value=cur;
+    }
+    const year=yearSel?.value||'';
+    const agg=monthlyAgg(year);
+    if(!agg.length){tbody.innerHTML='<tr><td colspan="7" class="data-empty">업로드된 입고 데이터가 없습니다.</td></tr>';return}
     tbody.innerHTML=agg.map(r=>`<tr>
       <td>${esc(r.month)}</td>
       <td class="num">${nf(r.qty)}</td>
+      <td class="num">${nf(r.qtyG)}</td>
+      <td class="num">${nf(r.qtyEA)}</td>
       <td class="num">${r.batchCount}</td>
       <td class="num">${r.avgStaff!==null?r.avgStaff.toFixed(1):'-'}</td>
       <td class="num">${r.avgProd!==null?nf(Math.round(r.avgProd)):'-'}</td>
@@ -3991,9 +4025,10 @@ if($('ibStart')&&!$('ibStart').value){
     download('일일_입고관리.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   }
   function exportMonthlyCsv(){
-    const agg=monthlyAgg();
-    const rows=[['월','입고수량','입고차수','평균 투입인원','평균 생산성']];
-    agg.forEach(r=>rows.push([r.month,r.qty,r.batchCount,r.avgStaff!==null?r.avgStaff.toFixed(1):'',r.avgProd!==null?Math.round(r.avgProd):'']));
+    const year=$('inboundMonthlyYear')?.value||'';
+    const agg=monthlyAgg(year);
+    const rows=[['월','입고수량(EA환산)','입고수량(G)','입고수량(EA)','입고차수','평균 투입인원','평균 생산성']];
+    agg.forEach(r=>rows.push([r.month,r.qty,r.qtyG,r.qtyEA,r.batchCount,r.avgStaff!==null?r.avgStaff.toFixed(1):'',r.avgProd!==null?Math.round(r.avgProd):'']));
     download('월별_입고현황.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   }
   window.openInboundDailyView=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('inboundDailyView').classList.add('active');pageTitle.textContent=label||'일일 입고관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;renderInboundDailyView()};
@@ -4002,6 +4037,7 @@ if($('ibStart')&&!$('ibStart').value){
   document.addEventListener('DOMContentLoaded',()=>{
     $('exportInboundDailyCsv')?.addEventListener('click',exportDailyCsv);
     $('exportInboundMonthlyCsv')?.addEventListener('click',exportMonthlyCsv);
+    $('inboundMonthlyYearRun')?.addEventListener('click',renderInboundMonthlyView);
     $('inboundDailyFilterRun')?.addEventListener('click',renderInboundDailyView);
     $('inboundDailyFilterReset')?.addEventListener('click',()=>{$('inboundDailyStart').value='';$('inboundDailyEnd').value='';renderInboundDailyView()});
   });
