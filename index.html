@@ -2123,7 +2123,7 @@ html,body,.app,.main,#dashboard{background:#fff!important;background-image:none!
       </div>
 
       <div class="dash-section">
-        <div class="dash-section-head"><div><h3>금일 출고 요청</h3></div></div>
+        <div class="dash-section-head"><div><h3>금주 출고 요청</h3></div></div>
         <div class="request-card-grid" id="todayRequestGrid">
           <div class="request-mini-card" data-request-type="bulk">
             <div class="request-mini-head">
@@ -3078,6 +3078,13 @@ setTimeout(initInventoryColumnResize,0);
   const STORAGE_KEY="lush_outbound_requests_v1";
   const pad=n=>String(n).padStart(2,"0");
   const todayKey=()=>{const d=new Date();return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`};
+  const dateKeyOf=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  function thisWeekRange(){
+    const now=new Date();
+    const start=new Date(now);start.setDate(now.getDate()-now.getDay());
+    const end=new Date(start);end.setDate(start.getDate()+6);
+    return{start:dateKeyOf(start),end:dateKeyOf(end)};
+  }
   const safeText=v=>String(v??"");
   const escText=v=>safeText(v).replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
   function getRequests(){try{const data=JSON.parse(localStorage.getItem(STORAGE_KEY)||"[]");return Array.isArray(data)?data.map(r=>({...r,status:r?.status==="완료"?"처리완료":(r?.status||"미처리")})):[]}catch{return []}}
@@ -3091,11 +3098,13 @@ setTimeout(initInventoryColumnResize,0);
   }
   function openOriginal(r){if(r?.url)window.open(r.url,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
   function renderType(type){
-    const today=todayKey();
-    const all=getRequests().filter(r=>r&&r.type===type&&(r.status||"미처리")!=="처리완료"&&((Array.isArray(r.requestDates)&&r.requestDates.includes(today))||r.requestDate===today));
+    const{start,end}=thisWeekRange();
+    const all=getRequests().filter(r=>r&&r.type===type&&(r.status||"미처리")!=="처리완료"&&(Array.isArray(r.requestDates)&&r.requestDates.some(d=>d>=start&&d<=end)))
+      .map(r=>({...r,__weekDate:(r.requestDates||[]).filter(d=>d>=start&&d<=end).sort()[0]}))
+      .sort((a,b)=>String(a.__weekDate).localeCompare(String(b.__weekDate)));
     const list=document.querySelector(`[data-request-list="${type}"]`),count=document.querySelector(`[data-request-count="${type}"]`);if(count)count.textContent=`${all.length}건`;if(!list)return;
-    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>오늘 등록된 미처리 요청이 없습니다.</button>';return}
-    list.innerHTML=all.slice(0,4).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명을 클릭하면 등록된 URL로 이동합니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(today.slice(5).replace("-","/"))}</button><span class="status-cell"><button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button></span></div>`).join("");
+    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>이번 주 등록된 미처리 요청이 없습니다.</button>';return}
+    list.innerHTML=all.slice(0,6).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명을 클릭하면 등록된 URL로 이동합니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(String(r.__weekDate||"").slice(5).replace("-","/"))}</button><span class="status-cell"><button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button></span></div>`).join("");
     list.querySelectorAll("[data-open-original]").forEach(b=>b.onclick=e=>{e.stopPropagation();openOriginal(all.find(r=>r.id===b.dataset.openOriginal))});
     list.querySelectorAll("[data-complete-request]").forEach(b=>b.onclick=e=>{e.stopPropagation();completeRequest(b.dataset.completeRequest)});
   }
@@ -4082,7 +4091,16 @@ if($('ibStart')&&!$('ibStart').value){
  function renderPeriod(){const all=read().filter(r=>(r.status||'미처리')!=='처리완료'),st=$('requestPeriodStart')?.value||'',en=$('requestPeriodEnd')?.value||'',a=all.filter(r=>(r.requestDates||[]).some(d=>(!st||d>=st)&&(!en||d<=en)));if($('requestPeriodTotal'))$('requestPeriodTotal').textContent=a.length;if($('requestPeriodBulk'))$('requestPeriodBulk').textContent=a.filter(x=>x.type==='bulk').length;if($('requestPeriodTraffic'))$('requestPeriodTraffic').textContent=a.filter(x=>x.type==='traffic').length;if($('requestPeriodHq'))$('requestPeriodHq').textContent=a.filter(x=>x.type==='hq').length;if($('requestPeriodCaption'))$('requestPeriodCaption').textContent=st||en?`${st||'처음'} ~ ${en||'현재'}`:'전체 기간(미처리 기준)'}
  function submit(){const store=$('requestStoreName').value.trim();if(!store){toastMsg('매장명을 입력해주세요.');return}if(!dates.length){toastMsg('요청일자를 1개 이상 추가해주세요.');return}const all=read(),id=$('requestRecordId').value||('req_'+Date.now()),old=all.find(x=>x.id===id),rec={...old,id,url:$('requestUrl').value.trim(),storeName:store,type:$('requestType').value,requestDates:[...dates],note:$('requestNote').value.trim(),status:old?.status||'미처리',createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()},i=all.findIndex(x=>x.id===id);if(i>=0)all[i]=rec;else all.unshift(rec);save(all);reset();toastMsg('출고 요청을 저장했습니다.')}
  window.openOutboundRequestManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('outboundRequestManager').classList.add('active');pageTitle.textContent=label||'출고 요청 관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;render()};window.refreshOutboundRequestManager=render;
- document.addEventListener('DOMContentLoaded',()=>{$('addRequestDateBtn')?.addEventListener('click',()=>{const d=$('requestDateInput').value;if(d&&!dates.includes(d)){dates.push(d);dates.sort();renderDates()}});$('requestPeriodApplyBtn')?.addEventListener('click',renderPeriod);$('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManagerStatusFilter')?.addEventListener('change',render);$('requestManagerSearch')?.addEventListener('input',render);$('newOutboundRequestBtn')?.addEventListener('click',reset);const form=$('requestRecordId')?.closest('.request-form-card');if(form){let saveBtn=form.querySelector('#saveOutboundRequestBtn')||form.querySelector('[data-request-save]');if(!saveBtn){saveBtn=document.createElement('button');saveBtn.type='button';saveBtn.id='saveOutboundRequestBtn';saveBtn.className='btn primary';saveBtn.textContent='요청 저장';form.appendChild(saveBtn)}saveBtn.addEventListener('click',submit)}render()});
+ document.addEventListener('DOMContentLoaded',()=>{$('addRequestDateBtn')?.addEventListener('click',()=>{const d=$('requestDateInput').value;if(d&&!dates.includes(d)){dates.push(d);dates.sort();renderDates()}});$('requestPeriodApplyBtn')?.addEventListener('click',renderPeriod);
+if($('requestPeriodStart')&&!$('requestPeriodStart').value){
+  const now=new Date(),pad=n=>String(n).padStart(2,'0');
+  const start=new Date(now);start.setDate(now.getDate()-now.getDay());
+  const end=new Date(start);end.setDate(start.getDate()+6);
+  const fmtD=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  $('requestPeriodStart').value=fmtD(start);
+  $('requestPeriodEnd').value=fmtD(end);
+}
+$('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManagerStatusFilter')?.addEventListener('change',render);$('requestManagerSearch')?.addEventListener('input',render);$('newOutboundRequestBtn')?.addEventListener('click',reset);const form=$('requestRecordId')?.closest('.request-form-card');if(form){let saveBtn=form.querySelector('#saveOutboundRequestBtn')||form.querySelector('[data-request-save]');if(!saveBtn){saveBtn=document.createElement('button');saveBtn.type='button';saveBtn.id='saveOutboundRequestBtn';saveBtn.className='btn primary';saveBtn.textContent='요청 저장';form.appendChild(saveBtn)}saveBtn.addEventListener('click',submit)}render()});
 })();
 </script>
 <script id="v75-team-data-sync">
