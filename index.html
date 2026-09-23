@@ -2474,12 +2474,12 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND ANALYTICS</div><h2>입고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 입고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div>
-    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button></div>
+    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" list="inAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="inAnaProductList"></datalist></div><button class="btn primary" id="inAnaRun">조회</button></div>
     <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:13%">월</th><th class="num" style="width:10%">차수</th><th class="num" style="width:15%">총 수량(EA전환)</th><th class="num" style="width:12%">SKU(G)</th><th class="num" style="width:12%">SKU(EA)</th><th class="num" style="width:19%">수량(G)</th><th class="num" style="width:19%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
-    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><select id="inCatSelect"><option value="">전체</option></select></div></div>
+    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><input id="inCatSelect" list="inCatSelectList" placeholder="제품군 입력 또는 선택 (전체는 비워두기)" autocomplete="off"><datalist id="inCatSelectList"></datalist></div></div>
     <div style="position:relative;height:380px"><canvas id="inCatTrendCanvas"></canvas></div>
     <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
   </div>
@@ -2498,12 +2498,12 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 출고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div>
-    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><select id="outAnaCatQuery"><option value="">전체</option></select></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="outAnaRun">조회</button></div>
+    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><input id="outAnaCatQuery" list="outAnaCatQueryList" placeholder="제품군 입력 또는 선택" autocomplete="off"><datalist id="outAnaCatQueryList"></datalist></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" list="outAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="outAnaProductList"></datalist></div><button class="btn primary" id="outAnaRun">조회</button></div>
     <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:16%">월</th><th class="num" style="width:18%">총 수량(EA전환)</th><th class="num" style="width:16%">SKU(G)</th><th class="num" style="width:16%">SKU(EA)</th><th class="num" style="width:17%">수량(G)</th><th class="num" style="width:17%">수량(EA)</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 출고 추이</h3></div></div>
-    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><select id="outCatSelect"><option value="">전체</option></select></div></div>
+    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><input id="outCatSelect" list="outCatSelectList" placeholder="제품군 입력 또는 선택 (전체는 비워두기)" autocomplete="off"><datalist id="outCatSelectList"></datalist></div></div>
     <div style="position:relative;height:380px"><canvas id="outCatTrendCanvas"></canvas></div>
     <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
   </div>
@@ -3561,7 +3561,7 @@ setTimeout(initInventoryColumnResize,0);
     const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
     return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+qtyFn(r),0),rows:a.length,ym:cur};
   }
-  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[5]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[outboundColIndex().qty]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   window.inboundUnit=inboundUnit;
@@ -3609,41 +3609,66 @@ setTimeout(initInventoryColumnResize,0);
   const OUT_LABOR_KEY='lush-logistics-outbound-labor-v1';
   function getOutLabor(){try{return JSON.parse(localStorage.getItem(OUT_LABOR_KEY)||'{}')||{}}catch{return{}}}
   function setOutLabor(v){localStorage.setItem(OUT_LABOR_KEY,JSON.stringify(v))}
-  function outboundUnit(r){return String(r[4]||'').trim().toUpperCase()}
+  function outboundColIndex(){
+    const header=(read().outbound?.header)||[];
+    const find=(...labels)=>{
+      for(const lbl of labels){
+        const i=header.findIndex(h=>String(h||'').trim()===lbl);
+        if(i>=0)return i;
+      }
+      return -1;
+    };
+    const date=find('출고일','일자','날짜');
+    const code=find('제품코드','코드','PLU');
+    const category=find('제품군','카테고리','제품분류');
+    const name=find('제품명');
+    const unit=find('단위');
+    const qty=find('수량');
+    return{
+      date:date>=0?date:0,
+      code:code>=0?code:1,
+      category:category>=0?category:2,
+      name:name>=0?name:3,
+      unit:unit>=0?unit:4,
+      qty:qty>=0?qty:5
+    };
+  }
+  function outboundUnit(r,cols){return String(r[(cols||outboundColIndex()).unit]||'').trim().toUpperCase()}
   function renderOutboundBasic(){
     if(!$('obQtyG'))return;
     const d=read(),all=d.outbound?.rows||[];
+    const cols=outboundColIndex();
     const start=$('obStart')?.value||'',end=$('obEnd')?.value||'';
     const q=($('obQuery')?.value||'').trim().toLowerCase();
     const rows=all.filter(r=>{
-      const rd=normDate(r[0]);
+      const rd=normDate(r[cols.date]);
       return(!start||rd>=start)&&(!end||rd<=end)
-        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q));
+        &&(!q||String(r[cols.code]||'').toLowerCase().includes(q)||String(r[cols.name]||'').toLowerCase().includes(q));
     });
-    const gRows=rows.filter(r=>outboundUnit(r)==='G'),eaRows=rows.filter(r=>outboundUnit(r)==='EA');
-    const gTotal=gRows.reduce((a,r)=>a+num(r[5]),0);
-    const eaTotal=eaRows.reduce((a,r)=>a+num(r[5]),0);
-    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];return factor?a+num(r[5])/factor:a},0);
+    const gRows=rows.filter(r=>outboundUnit(r,cols)==='G'),eaRows=rows.filter(r=>outboundUnit(r,cols)==='EA');
+    const gTotal=gRows.reduce((a,r)=>a+num(r[cols.qty]),0);
+    const eaTotal=eaRows.reduce((a,r)=>a+num(r[cols.qty]),0);
+    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[cols.code]||'').trim()];return factor?a+num(r[cols.qty])/factor:a},0);
     $('obQtyTotal').textContent=fmt(Math.round(eaTotal+gConvertedToEA));
     $('obQtyG').textContent=fmt(gTotal);
     $('obQtyEA').textContent=fmt(eaTotal);
-    $('obSkuG').textContent=fmt(new Set(gRows.map(r=>String(r[1]||'')).filter(Boolean)).size);
-    $('obSkuEA').textContent=fmt(new Set(eaRows.map(r=>String(r[1]||'')).filter(Boolean)).size);
+    $('obSkuG').textContent=fmt(new Set(gRows.map(r=>String(r[cols.code]||'')).filter(Boolean)).size);
+    $('obSkuEA').textContent=fmt(new Set(eaRows.map(r=>String(r[cols.code]||'')).filter(Boolean)).size);
     const map={};
     rows.forEach(r=>{
-      const key=normDate(r[0]);
+      const key=normDate(r[cols.date]);
       if(!key)return;
       if(!map[key])map[key]={date:key,skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
-      const u=outboundUnit(r);
-      if(r[1]&&u==='G')map[key].skusG.add(String(r[1]));
-      if(r[1]&&u==='EA')map[key].skusEA.add(String(r[1]));
+      const u=outboundUnit(r,cols);
+      if(r[cols.code]&&u==='G')map[key].skusG.add(String(r[cols.code]));
+      if(r[cols.code]&&u==='EA')map[key].skusEA.add(String(r[cols.code]));
       if(u==='G'){
-        map[key].qtyG+=num(r[5]);
-        const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];
-        if(factor)map[key].qtyTotalEA+=num(r[5])/factor;
+        map[key].qtyG+=num(r[cols.qty]);
+        const factor=PRODUCT_EA_CONVERSION[String(r[cols.code]||'').trim()];
+        if(factor)map[key].qtyTotalEA+=num(r[cols.qty])/factor;
       }else if(u==='EA'){
-        map[key].qtyEA+=num(r[5]);
-        map[key].qtyTotalEA+=num(r[5]);
+        map[key].qtyEA+=num(r[cols.qty]);
+        map[key].qtyTotalEA+=num(r[cols.qty]);
       }
     });
     const labor=getOutLabor();
@@ -3692,20 +3717,27 @@ setTimeout(initInventoryColumnResize,0);
     return String(raw).trim();
   }
   function populateCategorySelect(){
-    const sel=$('inCatSelect');if(!sel)return;
+    const dl=$('inCatSelectList');if(!dl)return new Set();
     const all=read().inbound?.rows||[];
     const cats=new Set();
     all.forEach(r=>{const cat=categoryDisplay(r[3]);if(cat)cats.add(cat)});
-    const cur=sel.value;
-    sel.innerHTML='<option value="">전체</option>'+[...cats].sort((a,b)=>a.localeCompare(b,'ko')).map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-    if([...cats].includes(cur))sel.value=cur;
+    dl.innerHTML=[...cats].sort((a,b)=>a.localeCompare(b,'ko')).map(c=>`<option value="${esc(c)}">`).join('');
+    return cats;
+  }
+  function populateInProductList(){
+    const dl=$('inAnaProductList');if(!dl)return;
+    const all=read().inbound?.rows||[];
+    const names=new Set();
+    all.forEach(r=>{const n=String(r[4]||'').trim();if(n)names.add(n)});
+    dl.innerHTML=[...names].sort((a,b)=>a.localeCompare(b,'ko')).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
   }
   function renderCategoryTrend(){
     if(!$('inCatTrendCanvas'))return;
-    populateCategorySelect();
+    const knownCats=populateCategorySelect();
     const all=read().inbound?.rows||[];
     const start=$('inAnaStart')?.value||'',end=$('inAnaEnd')?.value||'';
-    const catFilter=$('inCatSelect')?.value||'';
+    const catFilterRaw=($('inCatSelect')?.value||'').trim();
+    const catFilter=knownCats.has(catFilterRaw)?catFilterRaw:'';
     const monthCatQty={};
     const cats=new Set();
     all.forEach(r=>{
@@ -3737,14 +3769,14 @@ setTimeout(initInventoryColumnResize,0);
       const ta=months.reduce((s,m)=>s+(monthCatQty[m]?.[a]||0),0);
       const tb=months.reduce((s,m)=>s+(monthCatQty[m]?.[b]||0),0);
       return tb-ta;
-    }).slice(0,8);
+    }).slice(0,10);
     const canvas=$('inCatTrendCanvas');
     if(!canvas)return;
     if(!months.length||!catList.length||typeof Chart==='undefined'){
       if(window.__inCatChart){window.__inCatChart.destroy();window.__inCatChart=null}
       return;
     }
-    const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085'];
+    const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085','#8c6d31','#4d5b6a'];
     const datasets=catList.map((cat,ci)=>{
       const color=colors[ci%colors.length];
       const vals=months.map(m=>Math.round(monthCatQty[m]?.[cat]||0));
@@ -3800,6 +3832,7 @@ setTimeout(initInventoryColumnResize,0);
   function runInAnaSearch(){__inAnaDetailSearched=true;renderInbound()}
   function renderInbound(){
     if(!$('inAnaBody'))return;
+    populateInProductList();
     const d=read(),all=d.inbound?.rows||[];
     const start=$('inAnaStart')?.value||'',end=$('inAnaEnd')?.value||'';
     const batchQ=($('inAnaBatchQuery')?.value||'').trim().toLowerCase();
@@ -3838,44 +3871,58 @@ setTimeout(initInventoryColumnResize,0);
   }
   function populateOutCategorySelect(){
     const all=read().outbound?.rows||[];
+    const cols=outboundColIndex();
     const cats=new Set();
-    all.forEach(r=>{const cat=categoryDisplay(r[2]);if(cat)cats.add(cat)});
+    all.forEach(r=>{const cat=categoryDisplay(r[cols.category]);if(cat)cats.add(cat)});
     const sortedCats=[...cats].sort((a,b)=>a.localeCompare(b,'ko'));
-    [$('outCatSelect'),$('outAnaCatQuery')].forEach(sel=>{
-      if(!sel)return;
-      const cur=sel.value;
-      sel.innerHTML='<option value="">전체</option>'+sortedCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
-      if(cats.has(cur))sel.value=cur;
-    });
+    const outCatSel=$('outCatSelect');
+    if(outCatSel){
+      // outCatSelect is now an autocomplete text input paired with a datalist; keep its typed value as-is.
+    }
+    const outCatDl=$('outCatSelectList');
+    if(outCatDl)outCatDl.innerHTML=sortedCats.map(c=>`<option value="${esc(c)}">`).join('');
+    const catDl=$('outAnaCatQueryList');
+    if(catDl)catDl.innerHTML=sortedCats.map(c=>`<option value="${esc(c)}">`).join('');
+    return cats;
+  }
+  function populateOutProductList(){
+    const all=read().outbound?.rows||[];
+    const cols=outboundColIndex();
+    const names=new Set();
+    all.forEach(r=>{const n=String(r[cols.name]||'').trim();if(n)names.add(n)});
+    const dl=$('outAnaProductList');
+    if(dl)dl.innerHTML=[...names].sort((a,b)=>a.localeCompare(b,'ko')).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
   }
   function renderOutCategoryTrend(){
     if(!$('outCatTrendCanvas'))return;
-    populateOutCategorySelect();
+    const knownCats=populateOutCategorySelect();
     const all=read().outbound?.rows||[];
+    const cols=outboundColIndex();
     const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
-    const catFilter=$('outCatSelect')?.value||'';
+    const catFilterRaw=($('outCatSelect')?.value||'').trim();
+    const catFilter=knownCats.has(catFilterRaw)?catFilterRaw:'';
     const monthCatQty={};
     const cats=new Set();
     all.forEach(r=>{
-      const cat=categoryDisplay(r[2]);
+      const cat=categoryDisplay(r[cols.category]);
       if(!cat)return;
       if(catFilter&&cat!==catFilter)return;
-      const rd=normDate(r[0]);
+      const rd=normDate(r[cols.date]);
       if(start&&rd<start)return;
       if(end&&rd>end)return;
-      const u=outboundUnit(r);
+      const u=outboundUnit(r,cols);
       let eaQty=0;
       if(u==='EA'){
-        eaQty=num(r[5]);
+        eaQty=num(r[cols.qty]);
       }else if(u==='G'){
-        const code=String(r[1]||'').trim();
+        const code=String(r[cols.code]||'').trim();
         const factor=PRODUCT_EA_CONVERSION[code];
         if(!factor)return;
-        eaQty=num(r[5])/factor;
+        eaQty=num(r[cols.qty])/factor;
       }else{
         return;
       }
-      const m=ym(r[0]);if(!m)return;
+      const m=ym(r[cols.date]);if(!m)return;
       if(!monthCatQty[m])monthCatQty[m]={};
       monthCatQty[m][cat]=(monthCatQty[m][cat]||0)+eaQty;
       cats.add(cat);
@@ -3885,14 +3932,14 @@ setTimeout(initInventoryColumnResize,0);
       const ta=months.reduce((s,m)=>s+(monthCatQty[m]?.[a]||0),0);
       const tb=months.reduce((s,m)=>s+(monthCatQty[m]?.[b]||0),0);
       return tb-ta;
-    }).slice(0,8);
+    }).slice(0,10);
     const canvas=$('outCatTrendCanvas');
     if(!canvas)return;
     if(!months.length||!catList.length||typeof Chart==='undefined'){
       if(window.__outCatChart){window.__outCatChart.destroy();window.__outCatChart=null}
       return;
     }
-    const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085'];
+    const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085','#8c6d31','#4d5b6a'];
     const datasets=catList.map((cat,ci)=>{
       const color=colors[ci%colors.length];
       const vals=months.map(m=>Math.round(monthCatQty[m]?.[cat]||0));
@@ -3947,35 +3994,39 @@ setTimeout(initInventoryColumnResize,0);
   function renderOutbound(){
     if(!$('outAnaBody'))return;
     const d=read(),all=d.outbound?.rows||[];
+    const cols=outboundColIndex();
+    const knownCats=populateOutCategorySelect();
+    populateOutProductList();
     const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
-    const catQ=$('outAnaCatQuery')?.value||'';
+    const catQRaw=($('outAnaCatQuery')?.value||'').trim();
+    const catQ=knownCats.has(catQRaw)?catQRaw:'';
     const q=($('outAnaQuery')?.value||'').trim().toLowerCase();
     const rows=all.filter(r=>{
-      const rd=normDate(r[0]);
-      const cat=categoryDisplay(r[2]);
+      const rd=normDate(r[cols.date]);
+      const cat=categoryDisplay(r[cols.category]);
       return(!start||rd>=start)&&(!end||rd<=end)
         &&(!catQ||cat===catQ)
-        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q));
+        &&(!q||String(r[cols.code]||'').toLowerCase().includes(q)||String(r[cols.name]||'').toLowerCase().includes(q));
     });
     const monthMap={};
     rows.forEach(r=>{
-      const m=ym(r[0]);if(!m)return;
+      const m=ym(r[cols.date]);if(!m)return;
       if(!monthMap[m])monthMap[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
-      const u=outboundUnit(r);
-      if(r[1]&&u==='G')monthMap[m].skusG.add(String(r[1]));
-      if(r[1]&&u==='EA')monthMap[m].skusEA.add(String(r[1]));
+      const u=outboundUnit(r,cols);
+      if(r[cols.code]&&u==='G')monthMap[m].skusG.add(String(r[cols.code]));
+      if(r[cols.code]&&u==='EA')monthMap[m].skusEA.add(String(r[cols.code]));
       if(u==='G'){
-        monthMap[m].qtyG+=num(r[5]);
-        const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];
-        if(factor)monthMap[m].qtyTotalEA+=num(r[5])/factor;
+        monthMap[m].qtyG+=num(r[cols.qty]);
+        const factor=PRODUCT_EA_CONVERSION[String(r[cols.code]||'').trim()];
+        if(factor)monthMap[m].qtyTotalEA+=num(r[cols.qty])/factor;
       }else if(u==='EA'){
-        monthMap[m].qtyEA+=num(r[5]);
-        monthMap[m].qtyTotalEA+=num(r[5]);
+        monthMap[m].qtyEA+=num(r[cols.qty]);
+        monthMap[m].qtyTotalEA+=num(r[cols.qty]);
       }
     });
     const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
     $('outAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">데이터가 없습니다.</td></tr>';
-    $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td class="num">${fmt(r[5])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[cols.date]).localeCompare(normDate(a[cols.date]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
     renderOutCategoryTrend();
   }
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
