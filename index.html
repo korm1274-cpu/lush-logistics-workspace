@@ -2486,10 +2486,19 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>날짜별 출고 현황</h3></div><button class="btn" id="exportOutboundDailyCsv">CSV 내보내기</button></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>출고일</th><th class="num">총 출고수량(EA환산)</th><th style="width:90px">인원</th><th style="width:90px">소요시간</th><th class="num">생산성</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th></tr></thead><tbody id="obBody"></tbody></table></div></div>
 </div></section>
 <section id="outboundAnalysis" class="view"><div class="data-workbench">
-  <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 분석</h2><p>업로드 누적 데이터를 기준으로 일자·제품·월별 출고 실적을 조회합니다.</p></div></div>
-  <div class="data-filter-row"><div class="field"><label>조회일</label><input type="date" id="outAnaDate"></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="outAnaRun">조회</button><button class="btn" id="outAnaReset">전체</button></div>
-  <div class="kpis data-kpis"><div class="kpi"><span>조회 수량</span><b id="outAnaQty">0</b><small>EA</small></div><div class="kpi"><span>SKU</span><b id="outAnaSku">0</b><small>SKU</small></div><div class="kpi"><span>조회 일수</span><b id="outAnaDays">0</b><small>일</small></div><div class="kpi"><span>데이터 행</span><b id="outAnaRows">0</b><small>행</small></div></div>
-  <div class="data-split"><div class="panel"><div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div><div id="outAnaTrend" class="mini-bars"></div></div><div class="panel"><div class="panel-head"><div><small>DETAIL</small><h3>출고 상세</h3></div><span id="outAnaCaption" class="badge">전체</span></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>출고일</th><th>제품코드</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="outAnaBody"></tbody></table></div></div></div>
+  <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 상세조회</h2><p>업로드 누적 데이터를 기준으로 월별 출고 추이와 전체 상세 내역을 확인합니다.</p></div></div>
+  <div class="panel">
+    <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div>
+    <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><select id="outAnaCatQuery"><option value="">전체</option></select></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="outAnaRun">조회</button></div>
+    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:20%">월</th><th class="num" style="width:20%">SKU(G)</th><th class="num" style="width:20%">SKU(EA)</th><th class="num" style="width:20%">수량(G)</th><th class="num" style="width:20%">수량(EA)</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
+  </div>
+  <div class="panel mt14">
+    <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 출고 추이</h3></div></div>
+    <div class="data-filter-row" style="margin-bottom:10px"><div class="field grow"><label>제품군</label><select id="outCatSelect"><option value="">전체</option></select></div></div>
+    <div style="position:relative;height:380px"><canvas id="outCatTrendCanvas"></canvas></div>
+    <div class="muted" style="font-size:10px;margin-top:10px">※ NAKED는 BATH BOMB · BUBBLE BAR · SHAMPOO BAR · MASSAGE BAR · SOAP을 합산한 값입니다.</div>
+  </div>
+  <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>출고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>출고일</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="outAnaBody"></tbody></table></div></div>
 </div></section>
 
     <section id="outboundRequestManager" class="view">
@@ -2713,7 +2722,7 @@ const DEFAULT_MENUS=[
  {id:"out-request",group:"outbound",label:"출고 요청 관리",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
  {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-season",group:"outbound",label:"FS / 시즌 출고",kind:"sheet",cat:"outbound",sheet:"FS / 시즌 출고",visible:true,roles:["admin","leader","editor"]},
- {id:"out-analysis",group:"outbound",label:"출고 분석",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"out-analysis",group:"outbound",label:"출고 상세조회",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-box",group:"outbound",label:"출고 박스 관리",kind:"view",target:"outboundBoxView",visible:true,roles:["admin","leader","editor"]},
  {id:"schedule-main",group:"schedule",label:"통합 일정",kind:"scheduleManager",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"schedule-notice",group:"schedule",label:"공지 등록",kind:"view",target:"noticeManagerView",visible:true,roles:["admin","leader","editor"]},
@@ -2841,6 +2850,10 @@ function normalizeMenus(){
     outDailyMenu.visible=true; outDailyMenu.roles=["admin","leader","editor","restricted"];
     delete outDailyMenu.cat; delete outDailyMenu.sheet;
   }
+
+  /* V-out2: '출고 분석' -> '출고 상세조회'로 이름 변경 (기존 사용자에게도 반영) */
+  const outAnalysisMenu2=cleaned.find(m=>m.id==="out-analysis");
+  if(outAnalysisMenu2){outAnalysisMenu2.label="출고 상세조회"}
 
   /* 출고 요청 관리는 출고 그룹의 첫 번째 메뉴로 고정 */
   const reqIndex=cleaned.findIndex(m=>m.id==="out-request");
@@ -3520,7 +3533,7 @@ setTimeout(initInventoryColumnResize,0);
     const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
     return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+qtyFn(r),0),rows:a.length,ym:cur};
   }
-  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[4]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),o=monthStats(d.outbound?.rows,r=>num(r[5]));if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[5]||'').trim().toUpperCase()}
   window.inboundUnit=inboundUnit;
@@ -3568,7 +3581,7 @@ setTimeout(initInventoryColumnResize,0);
   const OUT_LABOR_KEY='lush-logistics-outbound-labor-v1';
   function getOutLabor(){try{return JSON.parse(localStorage.getItem(OUT_LABOR_KEY)||'{}')||{}}catch{return{}}}
   function setOutLabor(v){localStorage.setItem(OUT_LABOR_KEY,JSON.stringify(v))}
-  function outboundUnit(r){return String(r[3]||'').trim().toUpperCase()}
+  function outboundUnit(r){return String(r[4]||'').trim().toUpperCase()}
   function renderOutboundBasic(){
     if(!$('obQtyG'))return;
     const d=read(),all=d.outbound?.rows||[];
@@ -3577,12 +3590,12 @@ setTimeout(initInventoryColumnResize,0);
     const rows=all.filter(r=>{
       const rd=normDate(r[0]);
       return(!start||rd>=start)&&(!end||rd<=end)
-        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q));
+        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q));
     });
     const gRows=rows.filter(r=>outboundUnit(r)==='G'),eaRows=rows.filter(r=>outboundUnit(r)==='EA');
-    const gTotal=gRows.reduce((a,r)=>a+num(r[4]),0);
-    const eaTotal=eaRows.reduce((a,r)=>a+num(r[4]),0);
-    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];return factor?a+num(r[4])/factor:a},0);
+    const gTotal=gRows.reduce((a,r)=>a+num(r[5]),0);
+    const eaTotal=eaRows.reduce((a,r)=>a+num(r[5]),0);
+    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];return factor?a+num(r[5])/factor:a},0);
     $('obQtyTotal').textContent=fmt(Math.round(eaTotal+gConvertedToEA));
     $('obQtyG').textContent=fmt(gTotal);
     $('obQtyEA').textContent=fmt(eaTotal);
@@ -3597,12 +3610,12 @@ setTimeout(initInventoryColumnResize,0);
       if(r[1]&&u==='G')map[key].skusG.add(String(r[1]));
       if(r[1]&&u==='EA')map[key].skusEA.add(String(r[1]));
       if(u==='G'){
-        map[key].qtyG+=num(r[4]);
+        map[key].qtyG+=num(r[5]);
         const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];
-        if(factor)map[key].qtyTotalEA+=num(r[4])/factor;
+        if(factor)map[key].qtyTotalEA+=num(r[5])/factor;
       }else if(u==='EA'){
-        map[key].qtyEA+=num(r[4]);
-        map[key].qtyTotalEA+=num(r[4]);
+        map[key].qtyEA+=num(r[5]);
+        map[key].qtyTotalEA+=num(r[5]);
       }
     });
     const labor=getOutLabor();
@@ -3789,7 +3802,142 @@ setTimeout(initInventoryColumnResize,0);
     }
     renderCategoryTrend();
   }
-  function renderOutbound(){if(!$('outAnaBody'))return;const d=read(),all=d.outbound?.rows||[],date=$('outAnaDate')?.value||'',q=($('outAnaQuery')?.value||'').trim().toLowerCase();const rows=all.filter(r=>(!date||normDate(r[0])===date)&&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q)));$('outAnaQty').textContent=fmt(rows.reduce((a,r)=>a+num(r[4]),0));$('outAnaSku').textContent=fmt(new Set(rows.map(r=>String(r[1]||'')).filter(Boolean)).size);$('outAnaDays').textContent=fmt(new Set(rows.map(r=>normDate(r[0])).filter(Boolean)).size);$('outAnaRows').textContent=fmt(rows.length);$('outAnaCaption').textContent=date||q?'필터 적용':'전체';$('outAnaTrend').innerHTML=trendHtml(all,4);$('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td class="num">${fmt(r[4])}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">조회 결과가 없습니다.</td></tr>'}
+  function populateOutCategorySelect(){
+    const all=read().outbound?.rows||[];
+    const cats=new Set();
+    all.forEach(r=>{const cat=categoryDisplay(r[2]);if(cat)cats.add(cat)});
+    const sortedCats=[...cats].sort((a,b)=>a.localeCompare(b,'ko'));
+    [$('outCatSelect'),$('outAnaCatQuery')].forEach(sel=>{
+      if(!sel)return;
+      const cur=sel.value;
+      sel.innerHTML='<option value="">전체</option>'+sortedCats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('');
+      if(cats.has(cur))sel.value=cur;
+    });
+  }
+  function renderOutCategoryTrend(){
+    if(!$('outCatTrendCanvas'))return;
+    populateOutCategorySelect();
+    const all=read().outbound?.rows||[];
+    const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
+    const catFilter=$('outCatSelect')?.value||'';
+    const monthCatQty={};
+    const cats=new Set();
+    all.forEach(r=>{
+      const cat=categoryDisplay(r[2]);
+      if(!cat)return;
+      if(catFilter&&cat!==catFilter)return;
+      const rd=normDate(r[0]);
+      if(start&&rd<start)return;
+      if(end&&rd>end)return;
+      const u=outboundUnit(r);
+      let eaQty=0;
+      if(u==='EA'){
+        eaQty=num(r[5]);
+      }else if(u==='G'){
+        const code=String(r[1]||'').trim();
+        const factor=PRODUCT_EA_CONVERSION[code];
+        if(!factor)return;
+        eaQty=num(r[5])/factor;
+      }else{
+        return;
+      }
+      const m=ym(r[0]);if(!m)return;
+      if(!monthCatQty[m])monthCatQty[m]={};
+      monthCatQty[m][cat]=(monthCatQty[m][cat]||0)+eaQty;
+      cats.add(cat);
+    });
+    const months=Object.keys(monthCatQty).sort();
+    const catList=[...cats].sort((a,b)=>{
+      const ta=months.reduce((s,m)=>s+(monthCatQty[m]?.[a]||0),0);
+      const tb=months.reduce((s,m)=>s+(monthCatQty[m]?.[b]||0),0);
+      return tb-ta;
+    }).slice(0,8);
+    const canvas=$('outCatTrendCanvas');
+    if(!canvas)return;
+    if(!months.length||!catList.length||typeof Chart==='undefined'){
+      if(window.__outCatChart){window.__outCatChart.destroy();window.__outCatChart=null}
+      return;
+    }
+    const colors=['#2f6fed','#e0446b','#2f9b59','#f28b22','#7651b6','#3978c5','#c0392b','#16a085'];
+    const datasets=catList.map((cat,ci)=>{
+      const color=colors[ci%colors.length];
+      const vals=months.map(m=>Math.round(monthCatQty[m]?.[cat]||0));
+      return{
+        label:cat,data:vals,borderColor:color,backgroundColor:color,
+        borderWidth:2.5,tension:0.25,pointRadius:3,pointHoverRadius:5,fill:false
+      };
+    });
+    const pointLabelPlugin={
+      id:'pointLabelPluginOut',
+      afterDatasetsDraw(chart){
+        const ctx=chart.ctx;
+        chart.data.datasets.forEach((ds,di)=>{
+          const meta=chart.getDatasetMeta(di);
+          if(meta.hidden)return;
+          const vals=ds.data;
+          const maxV=Math.max(...vals),minV=Math.min(...vals);
+          const maxIdx=vals.indexOf(maxV),minIdx=vals.indexOf(minV);
+          [maxIdx,minIdx].forEach((idx,k)=>{
+            if(idx<0)return;
+            if(k===1&&minIdx===maxIdx)return;
+            const pt=meta.data[idx];if(!pt)return;
+            ctx.save();
+            ctx.font='bold 11px inherit';
+            ctx.fillStyle=ds.borderColor;
+            ctx.textAlign='center';
+            ctx.fillText(fmt(vals[idx]),pt.x,pt.y-10);
+            ctx.restore();
+          });
+        });
+      }
+    };
+    if(window.__outCatChart){window.__outCatChart.destroy()}
+    window.__outCatChart=new Chart(canvas.getContext('2d'),{
+      type:'line',
+      data:{labels:months.map(m=>m.slice(5)+'월'),datasets},
+      plugins:[pointLabelPlugin],
+      options:{
+        responsive:true,maintainAspectRatio:false,
+        interaction:{mode:'index',intersect:false},
+        plugins:{
+          legend:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14}},
+          tooltip:{enabled:true}
+        },
+        scales:{
+          y:{beginAtZero:true,ticks:{font:{size:10}}},
+          x:{ticks:{font:{size:11}}}
+        }
+      }
+    });
+  }
+  function renderOutbound(){
+    if(!$('outAnaBody'))return;
+    const d=read(),all=d.outbound?.rows||[];
+    const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
+    const catQ=$('outAnaCatQuery')?.value||'';
+    const q=($('outAnaQuery')?.value||'').trim().toLowerCase();
+    const rows=all.filter(r=>{
+      const rd=normDate(r[0]);
+      const cat=categoryDisplay(r[2]);
+      return(!start||rd>=start)&&(!end||rd<=end)
+        &&(!catQ||cat===catQ)
+        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[3]||'').toLowerCase().includes(q));
+    });
+    const monthMap={};
+    rows.forEach(r=>{
+      const m=ym(r[0]);if(!m)return;
+      if(!monthMap[m])monthMap[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0};
+      const u=outboundUnit(r);
+      if(r[1]&&u==='G')monthMap[m].skusG.add(String(r[1]));
+      if(r[1]&&u==='EA')monthMap[m].skusEA.add(String(r[1]));
+      if(u==='G')monthMap[m].qtyG+=num(r[5]);
+      else if(u==='EA')monthMap[m].qtyEA+=num(r[5]);
+    });
+    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
+    $('outAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td class="num">${fmt(r[5])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    renderOutCategoryTrend();
+  }
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
   function renderMisship(){if(!$('msBody'))return;const all=read().misship?.rows||[],st=$('msStart').value,en=$('msEnd').value,q=$('msQuery').value.trim().toLowerCase(),group=$('msGroup').value;let rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return(!st||d>=st)&&(!en||d<=en)&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q))) });const done=rows.filter(r=>String(r[9]??'').includes('완료')).length;$('msCount').textContent=fmt(rows.length);$('msDone').textContent=fmt(done);$('msPending').textContent=fmt(rows.length-done);const cur=today().slice(0,7),prev=String(Number(cur.slice(0,4))-1)+cur.slice(4),curCnt=all.filter(r=>ym(r[1]??r[0])===cur).length,prevCnt=all.filter(r=>ym(r[1]??r[0])===prev).length,py=pct(curCnt,prevCnt);$('msYoy').textContent=py===null?'-':(py>0?'+':'')+py.toFixed(1);const idx=group==='store'?2:group==='reason'?8:7,map={};rows.forEach(r=>{const k=String(r[idx]||'(미지정)').trim();map[k]=(map[k]||0)+1});$('msBreakdown').innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v],i)=>`<div class="rank-row"><em>${i+1}</em><span>${esc(k)}</span><b>${fmt(v)}건</b></div>`).join('')||'<div class="data-empty">집계 데이터가 없습니다.</div>';$('msBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(normDate(r[1]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[7])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>'}
   function damageFY(baseDate){
@@ -4123,6 +4271,7 @@ setTimeout(initInventoryColumnResize,0);
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
 $('inCatSelect')?.addEventListener('change',renderCategoryTrend);
+$('outCatSelect')?.addEventListener('change',renderOutCategoryTrend);
 if($('inAnaStart')&&!$('inAnaStart').value){
   const now=new Date();
   const first=new Date(now.getFullYear()-1,now.getMonth(),1);
@@ -4156,7 +4305,14 @@ if($('ibStart')&&!$('ibStart').value){
   const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
   $('ibStart').value=fmtD(first);
   $('ibEnd').value=fmtD(last);
-}$('outAnaReset')?.addEventListener('click',()=>{$('outAnaDate').value='';$('outAnaQuery').value='';renderOutbound()});$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();const addDays=tmr.getDay()===5?3:1;tmr.setDate(tmr.getDate()+addDays);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});$('exportBoxExcel')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);if(!rows.length){toastMsg('내려받을 조회 결과가 없습니다. 먼저 조회를 실행해주세요.');return}const aoa=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:12},{wch:6},{wch:10},{wch:14},{wch:8}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'출고박스');XLSX.writeFile(wb,'출고박스_조회결과.xlsx')});renderAll();pullSharedData(true);setInterval(()=>{if(!document.hidden)pullSharedData(true)},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pullSharedData(true)});});setTimeout(renderAll,600);
+}if($('outAnaStart')&&!$('outAnaStart').value){
+  const now=new Date();
+  const first=new Date(now.getFullYear()-1,now.getMonth(),1);
+  const fmtD2=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  $('outAnaStart').value=fmtD2(first);
+  $('outAnaEnd').value=today();
+}
+$('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEventListener('click',loadBoxGrid);$('boxStoreMapBtn')?.addEventListener('click',openBoxStoreMapDialog);$('boxStoreMapCancel')?.addEventListener('click',closeBoxStoreMapDialog);$('boxStoreMapSave')?.addEventListener('click',saveBoxStoreMapDialog);if($('boxGridDate')&&!$('boxGridDate').value){const tmr=new Date();const addDays=tmr.getDay()===5?3:1;tmr.setDate(tmr.getDate()+addDays);$('boxGridDate').value=`${tmr.getFullYear()}-${String(tmr.getMonth()+1).padStart(2,'0')}-${String(tmr.getDate()).padStart(2,'0')}`;}$('exportBoxCsv')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);const csvRows=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='출고박스_기록.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)});$('exportBoxExcel')?.addEventListener('click',()=>{const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);if(!rows.length){toastMsg('내려받을 조회 결과가 없습니다. 먼저 조회를 실행해주세요.');return}const aoa=[['날짜','요일','담당자','매장','수량'],...rows.map(r=>[normDate(r[0]||''),r[1]||(r[0]?weekday(normDate(r[0])):''),r[2]||'',r[3]||'',r[4]||0])];const ws=XLSX.utils.aoa_to_sheet(aoa);ws['!cols']=[{wch:12},{wch:6},{wch:10},{wch:14},{wch:8}];const wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'출고박스');XLSX.writeFile(wb,'출고박스_조회결과.xlsx')});renderAll();pullSharedData(true);setInterval(()=>{if(!document.hidden)pullSharedData(true)},60000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)pullSharedData(true)});});setTimeout(renderAll,600);
 })();
 </script>
 <script id="v52-dashboard-ops">
