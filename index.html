@@ -2719,7 +2719,7 @@ const USER_KEY="lush-logistics-v4-users";
 const HIST_KEY="lush-logistics-upload-history";
 const ROLE_LABEL={admin:"관리자",leader:"팀 리더",editor:"팀원",restricted:"제한 열람"};
 const GROUPS=[
- {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"traffic",label:"트래픽",icon:"signpost"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
 ];
 const DEFAULT_MENUS=[
  {id:"dashboard-main",group:"dashboard",label:"메인 대시보드",kind:"view",target:"dashboard",visible:true,roles:["admin","leader","editor","restricted"],protected:true},
@@ -2729,11 +2729,11 @@ const DEFAULT_MENUS=[
  {id:"in-basic",group:"inbound",label:"입고",kind:"view",target:"inboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-month",group:"inbound",label:"월별 입고현황",kind:"inboundMonthly",visible:true,roles:["admin","leader","editor"]},
  {id:"in-analysis",group:"inbound",label:"입고 상세조회",kind:"view",target:"inboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
- {id:"out-request",group:"outbound",label:"출고 요청 관리",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
+ {id:"out-request",group:"traffic",label:"출고 요청 관리",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
  {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
- {id:"out-season",group:"outbound",label:"FS / 시즌 출고",kind:"sheet",cat:"outbound",sheet:"FS / 시즌 출고",visible:true,roles:["admin","leader","editor"]},
  {id:"out-analysis",group:"outbound",label:"출고 상세조회",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-box",group:"outbound",label:"출고 박스 관리",kind:"view",target:"outboundBoxView",visible:true,roles:["admin","leader","editor"]},
+ {id:"out-season",group:"outbound",label:"FS / 시즌 출고",kind:"sheet",cat:"outbound",sheet:"FS / 시즌 출고",visible:true,roles:["admin","leader","editor"]},
  {id:"schedule-main",group:"schedule",label:"통합 일정",kind:"scheduleManager",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"schedule-notice",group:"schedule",label:"공지 등록",kind:"view",target:"noticeManagerView",visible:true,roles:["admin","leader","editor"]},
  {id:"schedule-todo",group:"schedule",label:"할 일 등록",kind:"view",target:"todoManagerView",visible:true,roles:["admin","leader","editor"]},
@@ -2865,14 +2865,22 @@ function normalizeMenus(){
   const outAnalysisMenu2=cleaned.find(m=>m.id==="out-analysis");
   if(outAnalysisMenu2){outAnalysisMenu2.label="출고 상세조회"}
 
-  /* 출고 요청 관리는 출고 그룹의 첫 번째 메뉴로 고정 */
+  /* V-out3: 'FS / 시즌 출고'를 '출고 박스 관리' 바로 오른쪽(다음)으로 이동 (기존 사용자에게도 반영) */
+  const seasonIndex=cleaned.findIndex(m=>m.id==="out-season");
+  if(seasonIndex>=0){
+    const season=cleaned.splice(seasonIndex,1)[0];
+    const boxIndex=cleaned.findIndex(m=>m.id==="out-box");
+    cleaned.splice(boxIndex<0?cleaned.length:boxIndex+1,0,season);
+  }
+
+  /* 출고 요청 관리는 새 '트래픽' 주항목의 첫 번째 메뉴로 이동 (기존 사용자에게도 반영) */
   const reqIndex=cleaned.findIndex(m=>m.id==="out-request");
   if(reqIndex>=0){
     const req=cleaned.splice(reqIndex,1)[0];
-    req.group="outbound"; req.label="출고 요청 관리"; req.kind="requestManager";
+    req.group="traffic"; req.label="출고 요청 관리"; req.kind="requestManager";
     req.visible=true; req.roles=["admin","leader","editor"];
-    const firstOutbound=cleaned.findIndex(m=>m.group==="outbound");
-    cleaned.splice(firstOutbound<0?cleaned.length:firstOutbound,0,req);
+    const firstTraffic=cleaned.findIndex(m=>m.group==="traffic");
+    cleaned.splice(firstTraffic<0?cleaned.length:firstTraffic,0,req);
   }
 
   menus=cleaned;
