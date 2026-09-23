@@ -4738,18 +4738,38 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function pushTeamData(){
     clearTimeout(pushTimer);
     markLocalSave();
-    pushTimer=setTimeout(()=>{
-      fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())})
-        .then(r=>r.json()).then(j=>{
-          if(!j||!j.success)console.error('team-data 저장 실패:',j&&j.error);
-          else markLocalSave();
-        })
-        .catch(err=>console.error('team-data 저장 실패:',err));
-    },900);
+    pushTimer=setTimeout(()=>attemptPush(0),900);
+  }
+  function attemptPush(attempt){
+    fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())})
+      .then(r=>r.json()).then(j=>{
+        if(!j||!j.success){
+          console.error('team-data 저장 실패:',j&&j.error);
+          retryPush(attempt);
+        }else{
+          markLocalSave();
+          window.__teamPushFailed=false;
+        }
+      })
+      .catch(err=>{
+        console.error('team-data 저장 실패:',err);
+        retryPush(attempt);
+      });
+  }
+  function retryPush(attempt){
+    const delays=[3000,8000,20000];
+    if(attempt<delays.length){
+      window.__teamPushFailed=true;
+      setTimeout(()=>attemptPush(attempt+1),delays[attempt]);
+    }else{
+      window.__teamPushFailed=true;
+      if(typeof window.toastMsg==='function')window.toastMsg('공지·할 일·출고 요청 서버 동기화에 실패했습니다. 잠시 후 다시 저장해주세요.');
+    }
   }
   async function pullTeamData(silent){
     if(pulling)return;
     if(recentlySavedLocally()){setTimeout(()=>pullTeamData(silent),2000);return}
+    if(window.__teamPushFailed){return}
     pulling=true;
     try{
       const res=await fetch(TEAM_API);
