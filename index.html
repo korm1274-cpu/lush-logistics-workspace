@@ -2224,6 +2224,15 @@ html,body{max-width:100%;overflow-x:hidden}
 .prod-worktype.wt-외근{background:#eaf2fb;color:#2f6a9f;border-color:#d3e3f4}
 .prod-table input[type=time]{width:100%;min-width:82px;box-sizing:border-box}
 .prod-table input[type=time]:disabled{background:#f7f8f8;color:#b5bcc2}
+.prod-table thead tr:first-child th:nth-child(4),
+.prod-table thead tr:first-child th:nth-child(5),
+.prod-table thead tr:first-child th:nth-child(6){border-left:2px solid #ccd3d8}
+.prod-table thead tr:nth-child(2) th:nth-child(1),
+.prod-table thead tr:nth-child(2) th:nth-child(5),
+.prod-table thead tr:nth-child(2) th:nth-child(9){border-left:2px solid #ccd3d8}
+.prod-table tbody td:nth-child(4),
+.prod-table tbody td:nth-child(8),
+.prod-table tbody td:nth-child(12){border-left:2px solid #ccd3d8}
 </style>
 </head>
 <body>
@@ -2466,7 +2475,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="inAnaRun">조회</button></div>
-    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:15%">월</th><th class="num" style="width:12%">차수</th><th class="num" style="width:14%">SKU(G)</th><th class="num" style="width:14%">SKU(EA)</th><th class="num" style="width:22%">수량(G)</th><th class="num" style="width:23%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:13%">월</th><th class="num" style="width:10%">차수</th><th class="num" style="width:15%">총 수량(EA전환)</th><th class="num" style="width:12%">SKU(G)</th><th class="num" style="width:12%">SKU(EA)</th><th class="num" style="width:19%">수량(G)</th><th class="num" style="width:19%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
@@ -2490,7 +2499,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><select id="outAnaCatQuery"><option value="">전체</option></select></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="outAnaRun">조회</button></div>
-    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:20%">월</th><th class="num" style="width:20%">SKU(G)</th><th class="num" style="width:20%">SKU(EA)</th><th class="num" style="width:20%">수량(G)</th><th class="num" style="width:20%">수량(EA)</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:16%">월</th><th class="num" style="width:18%">총 수량(EA전환)</th><th class="num" style="width:16%">SKU(G)</th><th class="num" style="width:16%">SKU(EA)</th><th class="num" style="width:17%">수량(G)</th><th class="num" style="width:17%">수량(EA)</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 출고 추이</h3></div></div>
@@ -2654,12 +2663,13 @@ html,body{max-width:100%;overflow-x:hidden}
 </div>
 
     <section id="productivityView" class="view"><div class="data-workbench">
-  <div class="data-workbench-head"><div><div class="eyebrow">PRODUCTIVITY</div><h2>근무시간 입력</h2><p>담당자별로 날짜마다 근무형태와 출고·입고·반품 작업시간을 입력합니다. 주말·공휴일은 자동으로 휴일로 표시되며, 출고 소요시간은 출고 탭의 날짜별 출고현황에 자동으로 반영됩니다.</p></div></div>
+  <div class="data-workbench-head"><div><div class="eyebrow">PRODUCTIVITY</div><h2>근무시간 입력</h2><p>담당자별로 날짜마다 근무형태와 출고·입고·반품 작업시간을 입력합니다. 주말·공휴일은 자동으로 휴일로 표시되며, 출고 소요시간은 출고 탭의 날짜별 출고현황에 자동으로 반영됩니다.</p></div><span class="auto-save-state" id="prodAutoSaveState">자동 저장</span></div>
   <div class="data-filter-row">
     <div class="field"><label>월</label><input type="month" id="prodMonth"></div>
-    <div class="field grow"><label>담당자</label><select id="prodPerson"></select></div>
-    <div class="field"><label>담당자 추가</label><input id="prodNewPerson" placeholder="이름 입력 후 추가"></div>
+    <div class="field grow"><label>담당자</label><input id="prodPerson" list="prodPersonSelectList" placeholder="담당자 이름 입력 또는 선택" autocomplete="off"><datalist id="prodPersonSelectList"></datalist></div>
+    <div class="field"><label>담당자 추가</label><input id="prodNewPerson" list="prodPersonList" placeholder="이름 입력 후 추가"><datalist id="prodPersonList"></datalist></div>
     <button class="btn" id="prodAddPersonBtn">＋ 추가</button>
+    <button class="btn" id="prodRemovePersonBtn">－ 삭제</button>
     <button class="btn primary" id="prodRun">조회</button>
   </div>
   <div class="panel mt14">
@@ -3476,6 +3486,16 @@ setTimeout(initInventoryColumnResize,0);
     localStorage.setItem(STORE_KEY,JSON.stringify(d));
     pushSharedData(d);
   }
+  /* 출고 데이터에 '제품군' 컬럼이 새로 추가되어 기존 5컬럼 형식의 출고 데이터는 더 이상 맞지 않으므로 자동으로 비웁니다. */
+  (function migrateOutboundSchema(){
+    try{
+      const d=read();
+      if(d&&d.outbound&&Array.isArray(d.outbound.header)&&d.outbound.header.length<6){
+        delete d.outbound;
+        save(d);
+      }
+    }catch(e){}
+  })();
   let __sharedSyncing=false;
   let __suppressPullUntil=0;
   function pushSharedData(d){
@@ -3785,16 +3805,22 @@ setTimeout(initInventoryColumnResize,0);
     const monthMap={};
     rows.forEach(r=>{
       const m=ym(r[0]);if(!m)return;
-      if(!monthMap[m])monthMap[m]={batches:new Set(),skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0};
+      if(!monthMap[m])monthMap[m]={batches:new Set(),skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
       if(r[1])monthMap[m].batches.add(String(r[1]));
       const u=inboundUnit(r);
       if(r[2]&&u==='G')monthMap[m].skusG.add(String(r[2]));
       if(r[2]&&u==='EA')monthMap[m].skusEA.add(String(r[2]));
-      if(u==='G')monthMap[m].qtyG+=num(r[6]);
-      else if(u==='EA')monthMap[m].qtyEA+=num(r[6]);
+      if(u==='G'){
+        monthMap[m].qtyG+=num(r[6]);
+        const factor=PRODUCT_EA_CONVERSION[String(r[2]||'').trim()];
+        if(factor)monthMap[m].qtyTotalEA+=num(r[6])/factor;
+      }else if(u==='EA'){
+        monthMap[m].qtyEA+=num(r[6]);
+        monthMap[m].qtyTotalEA+=num(r[6]);
+      }
     });
     const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
-    $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
     if(!__inAnaDetailSearched){
       $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
     }else{
@@ -3926,15 +3952,21 @@ setTimeout(initInventoryColumnResize,0);
     const monthMap={};
     rows.forEach(r=>{
       const m=ym(r[0]);if(!m)return;
-      if(!monthMap[m])monthMap[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0};
+      if(!monthMap[m])monthMap[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
       const u=outboundUnit(r);
       if(r[1]&&u==='G')monthMap[m].skusG.add(String(r[1]));
       if(r[1]&&u==='EA')monthMap[m].skusEA.add(String(r[1]));
-      if(u==='G')monthMap[m].qtyG+=num(r[5]);
-      else if(u==='EA')monthMap[m].qtyEA+=num(r[5]);
+      if(u==='G'){
+        monthMap[m].qtyG+=num(r[5]);
+        const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];
+        if(factor)monthMap[m].qtyTotalEA+=num(r[5])/factor;
+      }else if(u==='EA'){
+        monthMap[m].qtyEA+=num(r[5]);
+        monthMap[m].qtyTotalEA+=num(r[5]);
+      }
     });
     const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
-    $('outAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('outAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">데이터가 없습니다.</td></tr>';
     $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td class="num">${fmt(r[5])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
     renderOutCategoryTrend();
   }
@@ -4537,11 +4569,16 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
   function getEntry(prod,person,date){return prod.entries[entryKey(person,date)]||{workType:defaultWorkType(date),out:{},in:{},ret:{}}}
   function saveEntry(person,date,entry){const prod=getProd();prod.entries[entryKey(person,date)]=entry;setProd(prod)}
 
+  function sortedPeople(prod){return[...prod.people].sort((a,b)=>a.localeCompare(b,'ko'))}
   function populatePersonSelect(){
-    const prod=getProd(),sel=$('prodPerson');if(!sel)return;
-    const cur=sel.value;
-    sel.innerHTML=prod.people.length?prod.people.map(p=>`<option value="${esc(p)}">${esc(p)}</option>`).join(''):`<option value="">담당자를 추가해주세요</option>`;
-    if(prod.people.includes(cur))sel.value=cur;
+    const prod=getProd(),inp=$('prodPerson');if(!inp)return;
+    const people=sortedPeople(prod);
+    const sel=$('prodPersonSelectList');
+    if(sel)sel.innerHTML=people.map(p=>`<option value="${esc(p)}">`).join('');
+    const dl=$('prodPersonList');
+    if(dl)dl.innerHTML=people.map(p=>`<option value="${esc(p)}">`).join('');
+    inp.placeholder=people.length?'담당자 이름 입력 또는 선택':'먼저 담당자를 추가해주세요';
+    if(inp.value&&!people.includes(inp.value))inp.value='';
   }
   function addPerson(){
     const inp=$('prodNewPerson'),name=(inp?.value||'').trim();if(!name)return;
@@ -4551,6 +4588,24 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     populatePersonSelect();
     $('prodPerson').value=name;
     renderProductivity();
+  }
+  function removePerson(){
+    const inp=$('prodPerson'),name=(inp?.value||'').trim();if(!name)return;
+    const prod=getProd();
+    if(!prod.people.includes(name)){toastMsg2(`"${name}" 담당자를 찾을 수 없습니다.`);return}
+    if(!confirm(`"${name}" 담당자를 목록에서 삭제할까요? (입력했던 기록은 남아있습니다)`))return;
+    prod.people=prod.people.filter(p=>p!==name);
+    setProd(prod);
+    inp.value='';
+    populatePersonSelect();
+    renderProductivity();
+  }
+  function toastMsg2(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
+  function prodAutoSaveTick(){
+    const el=$('prodAutoSaveState');if(!el)return;
+    el.textContent='자동 저장 완료';
+    clearTimeout(window.__prodSaveTimer);
+    window.__prodSaveTimer=setTimeout(()=>el.textContent='자동 저장',900);
   }
   function syncOutboundLabor(date){
     const prod=getProd(),hoursList=[];
@@ -4570,17 +4625,18 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     const s=rec.s||'',b=rec.b||'',e=rec.e||'';
     const mins=disabled?null:calcElapsed(rec);
     const dis=disabled?'disabled':'';
-    return `<td><input class="cell" type="time" ${dis} data-prod-time data-rec="${recPrefix}" data-field="s" data-date="${esc(date)}" value="${esc(s)}"></td>`+
-           `<td><input class="cell" type="time" ${dis} data-prod-time data-rec="${recPrefix}" data-field="b" data-date="${esc(date)}" value="${esc(b)}"></td>`+
-           `<td><input class="cell" type="time" ${dis} data-prod-time data-rec="${recPrefix}" data-field="e" data-date="${esc(date)}" value="${esc(e)}"></td>`+
+    return `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="s" data-date="${esc(date)}" value="${esc(s)}"></td>`+
+           `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="b" data-date="${esc(date)}" value="${esc(b)}"></td>`+
+           `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="e" data-date="${esc(date)}" value="${esc(e)}"></td>`+
            `<td class="num">${disabled?'미체크':minutesToLabel(mins)}</td>`;
   }
   function renderProductivity(){
     const tbody=$('prodBody');if(!tbody)return;
     const ym=$('prodMonth')?.value||todayYM();
     const person=$('prodPerson')?.value||'';
-    if(!person){tbody.innerHTML='<tr><td colspan="15" class="data-empty">담당자를 먼저 추가/선택해주세요.</td></tr>';return}
-    const dates=monthDates(ym),prod=getProd();
+    const prod=getProd();
+    if(!person||!prod.people.includes(person)){tbody.innerHTML='<tr><td colspan="15" class="data-empty">담당자를 먼저 추가하거나, 목록에 있는 이름을 선택해주세요.</td></tr>';return}
+    const dates=monthDates(ym);
     tbody.innerHTML=dates.map(date=>{
       const entry=getEntry(prod,person,date);
       const disabled=NO_WORK_TYPES.has(entry.workType);
@@ -4598,6 +4654,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
         const date=sel.dataset.date,prod=getProd(),entry=getEntry(prod,person,date);
         entry.workType=sel.value;
         saveEntry(person,date,entry);
+        prodAutoSaveTick();
         renderProductivity();
         syncOutboundLabor(date);
       };
@@ -4609,6 +4666,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
         if(!entry[rec])entry[rec]={};
         entry[rec][field]=inp.value;
         saveEntry(person,date,entry);
+        prodAutoSaveTick();
         renderProductivity();
         if(rec==='out')syncOutboundLabor(date);
       };
@@ -4619,6 +4677,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     if($('prodMonth')&&!$('prodMonth').value)$('prodMonth').value=todayYM();
     $('prodRun')?.addEventListener('click',renderProductivity);
     $('prodAddPersonBtn')?.addEventListener('click',addPerson);
+    $('prodRemovePersonBtn')?.addEventListener('click',removePerson);
     $('prodPerson')?.addEventListener('change',renderProductivity);
     renderProductivity();
   });
