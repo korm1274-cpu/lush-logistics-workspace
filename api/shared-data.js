@@ -1,6 +1,13 @@
 // api/shared-data.js
 // Vercel KV(Upstash Redis) 기반 팀 공유 저장소 — 입고/출고/오출고/파손/출고박스 데이터를 저장합니다.
 const KEY = 'lush_shared_file_data_v1';
+const KV_TIMEOUT_MS = 8000;
+
+function fetchWithTimeout(url, options) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), KV_TIMEOUT_MS);
+  return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
 
 module.exports = async (req, res) => {
   const KV_URL = process.env.KV_REST_API_URL;
@@ -12,7 +19,7 @@ module.exports = async (req, res) => {
 
   try {
     if (req.method === 'GET') {
-      const r = await fetch(`${KV_URL}/get/${KEY}`, {
+      const r = await fetchWithTimeout(`${KV_URL}/get/${KEY}`, {
         headers: { Authorization: `Bearer ${KV_TOKEN}` }
       });
       const j = await r.json();
@@ -29,7 +36,7 @@ module.exports = async (req, res) => {
         try { body = JSON.parse(body); } catch {}
       }
       const value = JSON.stringify(body || {});
-      const r = await fetch(`${KV_URL}/set/${KEY}`, {
+      const r = await fetchWithTimeout(`${KV_URL}/set/${KEY}`, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${KV_TOKEN}`,
