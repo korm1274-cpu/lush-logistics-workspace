@@ -2464,6 +2464,15 @@ html,body{max-width:100%;overflow-x:hidden}
   </div>
   <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
 </div></section>
+<section id="outboundBasicView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND</div><h2>출고</h2><p>기본적으로 이번 달 기준으로 조회되며, 시작일·종료일을 바꿔서 원하는 기간을 다시 조회할 수 있습니다. 날짜별로 인원과 소요시간을 입력하면 생산성이 자동 계산되어 저장됩니다.</p></div></div>
+  <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="obStart"></div><div class="field"><label>종료일</label><input type="date" id="obEnd"></div><div class="field grow"><label>제품 검색</label><input id="obQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="obRun">조회</button><button class="btn" id="obReset">전체</button></div>
+  <div class="kpis data-kpis">
+    <div class="kpi"><span>조회 수량</span><div style="margin-top:8px"><div><b id="obQtyTotal">0</b><small style="font-size:13px">총 출고수량(EA환산)</small></div><div style="display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:10px"><div><b id="obQtyG">0</b><small style="font-size:13px">G</small></div><div><b id="obQtyEA">0</b><small style="font-size:13px">EA</small></div></div></div></div>
+    <div class="kpi"><span>SKU</span><div style="display:flex;flex-wrap:wrap;gap:12px 28px;margin-top:8px"><div><b id="obSkuG">0</b><small style="font-size:13px">SKU(G)</small></div><div><b id="obSkuEA">0</b><small style="font-size:13px">SKU(EA)</small></div></div></div>
+  </div>
+  <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>날짜별 출고 현황</h3></div><button class="btn" id="exportOutboundDailyCsv">CSV 내보내기</button></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>출고일</th><th class="num">총 출고수량(EA환산)</th><th style="width:90px">인원</th><th style="width:90px">소요시간</th><th class="num">생산성</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th></tr></thead><tbody id="obBody"></tbody></table></div></div>
+</div></section>
 <section id="outboundAnalysis" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND ANALYTICS</div><h2>출고 분석</h2><p>업로드 누적 데이터를 기준으로 일자·제품·월별 출고 실적을 조회합니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>조회일</label><input type="date" id="outAnaDate"></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="outAnaRun">조회</button><button class="btn" id="outAnaReset">전체</button></div>
@@ -2659,7 +2668,7 @@ const DEFAULT_MENUS=[
  {id:"in-month",group:"inbound",label:"월별 입고현황",kind:"inboundMonthly",visible:true,roles:["admin","leader","editor"]},
  {id:"in-analysis",group:"inbound",label:"입고 상세조회",kind:"view",target:"inboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-request",group:"outbound",label:"출고 요청 관리",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
- {id:"out-daily",group:"outbound",label:"일일 출고관리",kind:"sheet",cat:"outbound",sheet:"일일 출고관리",visible:true,roles:["admin","leader","editor"]},
+ {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-season",group:"outbound",label:"FS / 시즌 출고",kind:"sheet",cat:"outbound",sheet:"FS / 시즌 출고",visible:true,roles:["admin","leader","editor"]},
  {id:"out-analysis",group:"outbound",label:"출고 분석",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-box",group:"outbound",label:"출고 박스 관리",kind:"view",target:"outboundBoxView",visible:true,roles:["admin","leader","editor"]},
@@ -2779,6 +2788,14 @@ function normalizeMenus(){
   if(inMonthMenu){
     inMonthMenu.group="inbound"; inMonthMenu.kind="inboundMonthly"; inMonthMenu.label=inMonthMenu.label||"월별 입고현황";
     inMonthMenu.visible=true; delete inMonthMenu.cat; delete inMonthMenu.sheet; delete inMonthMenu.target;
+  }
+
+  /* V-out: '일일 출고관리' 시트 메뉴를 차수 없는 '출고' 상세화면으로 전환 (기존 사용자에게도 반영) */
+  const outDailyMenu=cleaned.find(m=>m.id==="out-daily");
+  if(outDailyMenu){
+    outDailyMenu.label="출고"; outDailyMenu.kind="view"; outDailyMenu.target="outboundBasicView";
+    outDailyMenu.visible=true; outDailyMenu.roles=["admin","leader","editor","restricted"];
+    delete outDailyMenu.cat; delete outDailyMenu.sheet;
   }
 
   /* 출고 요청 관리는 출고 그룹의 첫 번째 메뉴로 고정 */
@@ -3503,6 +3520,74 @@ setTimeout(initInventoryColumnResize,0);
     const entries=Object.values(map).sort((a,b)=>b.date.localeCompare(a.date));
     $('ibBody').innerHTML=entries.length?entries.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.batch)}</td><td class="num">${fmt(Math.round(e.qtyTotalEA))}</td><td class="num">${fmt(e.skusG.size)}</td><td class="num">${fmt(e.skusEA.size)}</td><td class="num">${fmt(e.qtyG)}</td><td class="num">${fmt(e.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
   }
+  const OUT_LABOR_KEY='lush-logistics-outbound-labor-v1';
+  function getOutLabor(){try{return JSON.parse(localStorage.getItem(OUT_LABOR_KEY)||'{}')||{}}catch{return{}}}
+  function setOutLabor(v){localStorage.setItem(OUT_LABOR_KEY,JSON.stringify(v))}
+  function outboundUnit(r){return String(r[3]||'').trim().toUpperCase()}
+  function renderOutboundBasic(){
+    if(!$('obQtyG'))return;
+    const d=read(),all=d.outbound?.rows||[];
+    const start=$('obStart')?.value||'',end=$('obEnd')?.value||'';
+    const q=($('obQuery')?.value||'').trim().toLowerCase();
+    const rows=all.filter(r=>{
+      const rd=normDate(r[0]);
+      return(!start||rd>=start)&&(!end||rd<=end)
+        &&(!q||String(r[1]||'').toLowerCase().includes(q)||String(r[2]||'').toLowerCase().includes(q));
+    });
+    const gRows=rows.filter(r=>outboundUnit(r)==='G'),eaRows=rows.filter(r=>outboundUnit(r)==='EA');
+    const gTotal=gRows.reduce((a,r)=>a+num(r[4]),0);
+    const eaTotal=eaRows.reduce((a,r)=>a+num(r[4]),0);
+    const gConvertedToEA=gRows.reduce((a,r)=>{const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];return factor?a+num(r[4])/factor:a},0);
+    $('obQtyTotal').textContent=fmt(Math.round(eaTotal+gConvertedToEA));
+    $('obQtyG').textContent=fmt(gTotal);
+    $('obQtyEA').textContent=fmt(eaTotal);
+    $('obSkuG').textContent=fmt(new Set(gRows.map(r=>String(r[1]||'')).filter(Boolean)).size);
+    $('obSkuEA').textContent=fmt(new Set(eaRows.map(r=>String(r[1]||'')).filter(Boolean)).size);
+    const map={};
+    rows.forEach(r=>{
+      const key=normDate(r[0]);
+      if(!key)return;
+      if(!map[key])map[key]={date:key,skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
+      const u=outboundUnit(r);
+      if(r[1]&&u==='G')map[key].skusG.add(String(r[1]));
+      if(r[1]&&u==='EA')map[key].skusEA.add(String(r[1]));
+      if(u==='G'){
+        map[key].qtyG+=num(r[4]);
+        const factor=PRODUCT_EA_CONVERSION[String(r[1]||'').trim()];
+        if(factor)map[key].qtyTotalEA+=num(r[4])/factor;
+      }else if(u==='EA'){
+        map[key].qtyEA+=num(r[4]);
+        map[key].qtyTotalEA+=num(r[4]);
+      }
+    });
+    const labor=getOutLabor();
+    const entries=Object.values(map).sort((a,b)=>b.date.localeCompare(a.date));
+    $('obBody').innerHTML=entries.length?entries.map(e=>{
+      const lab=labor[e.date]||{};
+      const staff=num(lab.staff),hours=num(lab.hours);
+      const totalEA=Math.round(e.qtyTotalEA);
+      const prod=(staff>0&&hours>0)?Math.round(totalEA/(staff*hours)):null;
+      return `<tr><td>${esc(e.date)}</td><td class="num">${fmt(totalEA)}</td><td><input class="cell" type="number" min="0" data-ob-staff="${esc(e.date)}" value="${lab.staff??''}"></td><td><input class="cell" type="number" min="0" step="0.1" data-ob-hours="${esc(e.date)}" value="${lab.hours??''}"></td><td class="num">${prod!==null?fmt(prod):'-'}</td><td class="num">${fmt(e.skusG.size)}</td><td class="num">${fmt(e.skusEA.size)}</td><td class="num">${fmt(e.qtyG)}</td><td class="num">${fmt(e.qtyEA)}</td></tr>`;
+    }).join(''):'<tr><td colspan="9" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('obBody').querySelectorAll('[data-ob-staff],[data-ob-hours]').forEach(inp=>{
+      inp.onchange=()=>{
+        const dt=inp.dataset.obStaff||inp.dataset.obHours;
+        const lab2=getOutLabor();if(!lab2[dt])lab2[dt]={staff:'',hours:''};
+        if(inp.dataset.obStaff!==undefined)lab2[dt].staff=inp.value;
+        if(inp.dataset.obHours!==undefined)lab2[dt].hours=inp.value;
+        setOutLabor(lab2);renderOutboundBasic();
+      };
+    });
+  }
+  function exportOutboundDailyCsv(){
+    const rows=[['출고일','총 출고수량(EA환산)','인원','소요시간','생산성','SKU(G)','SKU(EA)','수량(G)','수량(EA)']];
+    document.querySelectorAll('#obBody tr').forEach(tr=>{
+      const tds=tr.querySelectorAll('td');if(!tds.length||tds.length<9)return;
+      const staffInput=tr.querySelector('[data-ob-staff]'),hoursInput=tr.querySelector('[data-ob-hours]');
+      rows.push([tds[0].textContent,tds[1].textContent,staffInput?staffInput.value:'',hoursInput?hoursInput.value:'',tds[4].textContent,tds[5].textContent,tds[6].textContent,tds[7].textContent,tds[8].textContent]);
+    });
+    download('날짜별_출고현황.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
+  }
   const PRODUCT_EA_CONVERSION={"T0017390":5,"T0017344":10,"T0017345":10,"T0017391":10,"T0015387":15,"T0015388":15,"T0015389":15,"T0017343":20,"T0012651":50,"T0011245":50,"T0013136":100,"T0004870":100,"T0000157":100,"T0000156":200,"T0002618":250,"T0015067":250,"T0000827":500,"T0000823":500,"T0015619":650,"T0017034":650,"T0017035":650,"T0017323":650,"T0018229":1100,"T0017030":1250,"T0016938":1500,"T0015446":1500,"T0016855":1500,"T0016849":1500,"T0016853":1500,"T0016851":1500,"T0017584":1500,"T0018237":1500,"T0016660":1500,"T0016659":1500,"T0017216":1500,"T0017217":1500,"T0017218":1500,"T0017211":1500,"T0017219":1500,"T0017205":1500,"T0013867":1500,"T0017220":1500,"T0017221":1500,"T0017877":1500,"T0017222":1500,"T0017441":1500,"T0017223":1500,"T0017324":1500,"T0014806":1550,"T0017413":1800,"T0016357":2000,"T0018231":2100,"T0017724":2600,"T0016471":2700,"T0016472":3000,"T0015839":3200,"T0017440":3200,"T0015445":3400,"T0017033":3400,"T0017032":3400,"T0017206":3400,"T0017208":3400,"T0017210":3400,"T0017214":3400,"T0017215":4200,"T0017325":4200,"T0017207":4500,"T0017213":5100,"T0018158":5800,"T0017212":6100,"T0017233":8500,"T0017234":8500,"T0017643":8500,"T0017646":8500,"T0017439":8500,"T0017645":8500,"T0017642":8500,"T0017641":8500,"T0017644":8500,"T0018801":1500,"T0018775":10,"T0017791":10,"T0019180":1400,"T0019314":2000};
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
@@ -3988,7 +4073,7 @@ setTimeout(initInventoryColumnResize,0);
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
     const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box'})[type];const data=read();if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
-  function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
+  function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderOutboundBasic();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
 $('inCatSelect')?.addEventListener('change',renderCategoryTrend);
@@ -4007,6 +4092,17 @@ if($('dmStart')&&!$('dmStart').value){
 }
 $('ibRun')?.addEventListener('click',renderInboundBasic);
 $('ibReset')?.addEventListener('click',()=>{$('ibBatchQuery').value='';$('ibQuery').value='';const now=new Date();const first=new Date(now.getFullYear(),now.getMonth(),1);const last=new Date(now.getFullYear(),now.getMonth()+1,0);const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('ibStart').value=fmtD(first);$('ibEnd').value=fmtD(last);renderInboundBasic()});
+$('obRun')?.addEventListener('click',renderOutboundBasic);
+$('obReset')?.addEventListener('click',()=>{$('obQuery').value='';const now=new Date();const first=new Date(now.getFullYear(),now.getMonth(),1);const last=new Date(now.getFullYear(),now.getMonth()+1,0);const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;$('obStart').value=fmtD(first);$('obEnd').value=fmtD(last);renderOutboundBasic()});
+$('exportOutboundDailyCsv')?.addEventListener('click',exportOutboundDailyCsv);
+if($('obStart')&&!$('obStart').value){
+  const now=new Date();
+  const first=new Date(now.getFullYear(),now.getMonth(),1);
+  const last=new Date(now.getFullYear(),now.getMonth()+1,0);
+  const fmtD=d=>`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  $('obStart').value=fmtD(first);
+  $('obEnd').value=fmtD(last);
+}
 if($('ibStart')&&!$('ibStart').value){
   const now=new Date();
   const first=new Date(now.getFullYear(),now.getMonth(),1);
