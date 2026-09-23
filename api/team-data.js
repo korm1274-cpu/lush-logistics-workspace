@@ -7,9 +7,16 @@
 const KV_URL = process.env.KV_REST_API_URL;
 const KV_TOKEN = process.env.KV_REST_API_TOKEN;
 const KEY = 'lush_team_data_v1';
+const KV_TIMEOUT_MS = 8000;
+
+function fetchWithTimeout(url, options) {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), KV_TIMEOUT_MS);
+  return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
+}
 
 async function kvGet() {
-  const res = await fetch(`${KV_URL}/get/${KEY}`, {
+  const res = await fetchWithTimeout(`${KV_URL}/get/${KEY}`, {
     headers: { Authorization: `Bearer ${KV_TOKEN}` },
   });
   const json = await res.json();
@@ -17,7 +24,7 @@ async function kvGet() {
 }
 
 async function kvSet(value) {
-  const res = await fetch(`${KV_URL}/set/${KEY}`, {
+  const res = await fetchWithTimeout(`${KV_URL}/set/${KEY}`, {
     method: 'POST',
     headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'application/json' },
     body: JSON.stringify(JSON.stringify(value)),
