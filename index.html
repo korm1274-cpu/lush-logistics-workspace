@@ -4150,7 +4150,7 @@ setTimeout(initInventoryColumnResize,0);
     if(!__inAnaDetailSearched){
       $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
     }else{
-      $('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="num">${fmt(r[6])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>';
+      $('inAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>{const A=normDate(a[0]),B=normDate(b[0]);return B>A?1:B<A?-1:0}).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td class="num">${fmt(r[6])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>';
     }
     renderCategoryTrend();
   }
@@ -4163,7 +4163,10 @@ setTimeout(initInventoryColumnResize,0);
       window.__catDebugShown=true;
       const header=(read().outbound?.header)||[];
       const sample=all[0]||[];
-      alert(`[진단] 저장된 헤더: [${header.map((h,i)=>`${i}:${h||'(빈칸)'}`).join(', ')}]\n제품군으로 인식한 칸 번호: ${cols.category}\n첫 행에서 그 칸의 실제 값: "${sample[cols.category]}"\n첫 행 전체: [${sample.join(' | ')}]`);
+      const box=document.createElement('div');
+      box.style.cssText='position:fixed;left:12px;bottom:12px;z-index:99999;max-width:520px;background:#fff;border:1px solid #d8dde1;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.18);padding:14px 16px;font-size:12px;line-height:1.6;color:#22303a;white-space:pre-wrap;word-break:break-all';
+      box.innerHTML=`<b>[진단] 출고 데이터 확인</b><br>저장된 헤더: [${esc(header.map((h,i)=>`${i}:${h||'(빈칸)'}`).join(', '))}]<br>제품군으로 인식한 칸 번호: ${cols.category}<br>첫 행에서 그 칸의 실제 값: "${esc(sample[cols.category])}"<br>첫 행 전체: [${esc(sample.join(' | '))}]<br><button style="margin-top:8px;padding:5px 10px;border:1px solid #ccc;border-radius:6px;background:#f5f5f5;cursor:pointer" onclick="this.closest('div').remove()">닫기</button>`;
+      document.body.appendChild(box);
     }
     const sortedCats=[...cats].sort(KO_COLLATOR.compare);
     const outCatSel=$('outCatSelect');
@@ -4367,7 +4370,7 @@ setTimeout(initInventoryColumnResize,0);
       const amtYoy=yoy?pct(amountTotal,yoy.amountEA+yoy.amountG):null;
       return `<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num">${pctLabel(qtyMoM)}</td><td class="num">${pctLabel(amtMoM)}</td><td class="num">${pctLabel(qtyYoy)}</td><td class="num">${pctLabel(amtYoy)}</td></tr>`;
     }).join(''):'<tr><td colspan="13" class="data-empty">데이터가 없습니다.</td></tr>';
-    $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[cols.date]).localeCompare(normDate(a[cols.date]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>{const A=normDate(a[cols.date]),B=normDate(b[cols.date]);return B>A?1:B<A?-1:0}).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
     renderOutCategoryTrend(knownCats);
   }
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
@@ -4791,7 +4794,7 @@ setTimeout(initInventoryColumnResize,0);
       return(!start||!rd||rd>=start)&&(!end||!rd||rd<=end);
     });
     $('archiveTableHead').innerHTML=header.length?`<tr>${header.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>`:'';
-    $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[dateIdx]).localeCompare(normDate(a[dateIdx]))).slice(0,2000).map(r=>`<tr>${header.map((_,i)=>`<td>${esc(r[i])}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${Math.max(1,header.length)}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
+    $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>{const A=normDate(a[dateIdx]),B=normDate(b[dateIdx]);return B>A?1:B<A?-1:0}).slice(0,2000).map(r=>`<tr>${header.map((_,i)=>`<td>${esc(r[i])}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${Math.max(1,header.length)}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
     $('archiveRowCount').textContent=`${fmt(rows.length)}행`;
   }
   function exportArchiveCsv(){
