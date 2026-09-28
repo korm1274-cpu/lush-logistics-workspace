@@ -4831,13 +4831,23 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       const res=await fetch(TEAM_API);
       const j=await res.json();
       if(!j||!j.success||!j.data){pulling=false;return}
+      const localProd=normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}}));
+      const serverProd=normalizeProd(j.data.productivity);
+      const localProdEmpty=localProd.people.length===0&&Object.keys(localProd.entries).length===0;
+      const serverProdEmpty=serverProd.people.length===0&&Object.keys(serverProd.entries).length===0;
+      if(serverProdEmpty&&!localProdEmpty){
+        // 서버에는 아직 생산성 데이터가 없는데 이 기기에는 있는 경우: 예전 데이터를 지우지 않고 서버로 올려줍니다.
+        pulling=false;
+        pushTeamData();
+        return;
+      }
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:normalizeProd(j.data.productivity)});
+      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd});
       if(cur!==incoming){
         localStorage.setItem(KEYS.notices,JSON.stringify(j.data.notices||[]));
         localStorage.setItem(KEYS.todos,JSON.stringify(j.data.todos||[]));
         localStorage.setItem(KEYS.requests,JSON.stringify(j.data.requests||[]));
-        localStorage.setItem(KEYS.productivity,JSON.stringify(normalizeProd(j.data.productivity)));
+        localStorage.setItem(KEYS.productivity,JSON.stringify(serverProd));
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
         window.populatePersonSelect?.();
