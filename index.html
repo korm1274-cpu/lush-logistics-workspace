@@ -2694,7 +2694,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
   </div>
 </div></section>
-    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="tag"></i></div><h3>단가표 Excel</h3><p>제품코드별 단가표입니다. 출고금액 계산에 사용되며, 새로 업로드하면 이전 단가표 전체를 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="단가표" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
+    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="tag"></i></div><h3>단가표 Excel</h3><p>제품코드별 단가표입니다. 출고금액 계산에 사용되며, 새로 업로드하면 이전 단가표 전체를 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="단가표" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="history"></i></div><h3>출고 요약 (과거 데이터) Excel</h3><p>원본 출고 데이터가 없는 과거 달을 월별 요약값(SKU·출고량·출고금액)만으로 채워 넣습니다. 컬럼: 월, SKU(EA), SKU(G), 출고량(EA), 출고량(G), 출고량합계, 출고금액(EA), 출고금액(G), 출고금액합계. 같은 달이 원본 출고 데이터로 나중에 채워지면 그쪽이 우선합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고요약" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
     <section id="dataArchiveView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">ARCHIVE</div><h2>지난 데이터 보관함</h2><p>18개월이 지난 오래된 입고·출고·오출고·파손·출고박스 데이터는 평소 화면 속도를 위해 이곳으로 자동 보관됩니다. 데이터는 삭제되지 않고 그대로 남아있으며, 필요할 때 조회·다운로드할 수 있습니다.</p></div></div>
   <div class="data-filter-row">
@@ -3808,6 +3808,56 @@ setTimeout(initInventoryColumnResize,0);
     d.outboundMonthlySummary={...(d.outboundMonthlySummary||{}),...freshSummary};
     localStorage.setItem(STORE_KEY,JSON.stringify(d));
   }
+  /* 원본 출고 데이터 없이 '요약값'만으로 과거 달을 채워 넣는 기능입니다.
+     같은 달에 실제 출고 원본이 나중에 업로드되면 rebuildOutboundMonthlySummary()가
+     그 달을 다시 계산해 덮어쓰므로, 가져온 요약값보다 원본 데이터가 항상 우선합니다. */
+  function summaryColIndex(header){
+    const norm=s=>String(s||'').replace(/\s+/g,'');
+    const find=(...labels)=>{
+      for(const lbl of labels){const i=(header||[]).findIndex(h=>norm(h)===norm(lbl));if(i>=0)return i}
+      for(const lbl of labels){const i=(header||[]).findIndex(h=>norm(h).includes(norm(lbl)));if(i>=0)return i}
+      return -1;
+    };
+    return{
+      month:find('월'),
+      skuEA:find('SKU(EA)'),
+      skuG:find('SKU(G)'),
+      qtyEA:find('출고량(EA)'),
+      qtyG:find('출고량(G)'),
+      qtyTotal:find('출고량합계'),
+      amountEA:find('출고금액(EA)'),
+      amountG:find('출고금액(G)'),
+      amountTotal:find('출고금액합계')
+    };
+  }
+  function normalizeMonthLabel(v){
+    const s=String(v||'').trim();
+    const m=s.match(/(\d{4})[.\-\/년]?\s*(\d{1,2})/);
+    if(!m)return'';
+    return`${m[1]}-${String(+m[2]).padStart(2,'0')}`;
+  }
+  function importOutboundMonthlySummary(header,rows){
+    const cols=summaryColIndex(header);
+    const d=read();
+    const summary=d.outboundMonthlySummary||{};
+    const outCols=outboundColIndex(d.outbound?.header);
+    const rawMonths=new Set((d.outbound?.rows||[]).map(r=>ym(r[outCols.date])).filter(Boolean));
+    let count=0,skipped=0;
+    rows.forEach(r=>{
+      const m=normalizeMonthLabel(r[cols.month]);
+      if(!m)return;
+      if(rawMonths.has(m)){skipped++;return} // 실제 출고 원본이 이미 있는 달은 그쪽 계산이 우선이라 덮어쓰지 않습니다.
+      const skuEA=num(r[cols.skuEA]),skuG=num(r[cols.skuG]);
+      const qtyEA=num(r[cols.qtyEA]),qtyG=num(r[cols.qtyG]);
+      const amountEA=num(r[cols.amountEA]),amountG=num(r[cols.amountG]);
+      const qtyTotalEA=cols.qtyTotal>=0&&r[cols.qtyTotal]!==''?num(r[cols.qtyTotal]):qtyEA+qtyG;
+      summary[m]={skuG,skuEA,qtyG,qtyEA,qtyTotalEA,amountEA,amountG};
+      count++;
+    });
+    d.outboundMonthlySummary=summary;
+    localStorage.setItem(STORE_KEY,JSON.stringify(d));
+    return{count,skipped};
+  }
   document.addEventListener('DOMContentLoaded',()=>{
     try{
       const d=read();
@@ -4575,9 +4625,15 @@ setTimeout(initInventoryColumnResize,0);
     const dataRowCount=values.length-1;
     const rawDateCol=(dateColIdx!=null)?readRawColumn(ws,dateColIdx,dataRowCount,2):null;
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
-    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList'})[type];const data=read();if(key==='priceList'){
+    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList','출고요약':'summaryImport'})[type];const data=read();if(key==='priceList'){
       data.priceList={header,rows:raw,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'전체 교체'};save(data);
       rebuildOutboundMonthlySummary();
+    }else if(key==='summaryImport'){
+      const{count,skipped}=importOutboundMonthlySummary(header,raw);
+      window.renderOutbound?.();
+      if(typeof toastMsg==='function')toastMsg(`출고 요약 ${fmt(count)}개월치를 반영했습니다.${skipped?` (원본 데이터가 이미 있는 ${fmt(skipped)}개월은 건너뜀)`:''}`);
+      inp.value='';
+      return;
     }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
     const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
     rows=archiveOldRows(key,header,rows,archiveDateIdx);
@@ -4747,7 +4803,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
  window.BASE_EXPORT_CURRENT=exportCurrent;
 })();
 </script>
-<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스','단가표'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>
+<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스','단가표','출고요약'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>
 
 <script id="v67-inbound-daily-monthly">
 (function(){
