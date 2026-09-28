@@ -3590,7 +3590,7 @@ setTimeout(initInventoryColumnResize,0);
      출고 원본 데이터만 깨끗하게 비웁니다. (전에 업로드해주신 과거 요약 데이터나 다른 데이터는
      그대로 두며, 출고 엑셀 파일을 다시 업로드하시면 이번에 고친 방식으로 다시 정확하게 채워집니다.)*/
   (function resetOutboundDataOnce(){
-    const DONE_KEY='lush-outbound-data-reset-v2';
+    const DONE_KEY='lush-outbound-data-reset-v3';
     try{
       if(localStorage.getItem(DONE_KEY))return;
       const d=read();
@@ -4721,6 +4721,9 @@ setTimeout(initInventoryColumnResize,0);
             const catMap={};
             catRows.slice(1).forEach(r=>{const code=String(r[ci]??'').trim();if(code)catMap[code]=String(r[cg]??'').trim()});
             const codeIdx=outboundColIndex(header).code;
+            // 원본 Sheet1에 이미 '제품군'이라는 이름표가 있으면(값이 안 맞을 수 있어서) 이름표만 바꿔서
+            // 헤더에 '제품군'이 중복으로 남지 않게 하고, 방금 매핑한 새 칸이 확실히 쓰이도록 합니다.
+            header.forEach((h,i)=>{if(String(h||'').trim()==='제품군')header[i]='제품군(원본,미사용)'});
             header.push('제품군');
             let matched=0;
             raw.forEach(r=>{const code=String(r[codeIdx]??'').trim();const c=catMap[code]||'';if(c)matched++;r.push(c)});
