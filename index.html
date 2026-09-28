@@ -3554,6 +3554,9 @@ setTimeout(initInventoryColumnResize,0);
 <script id="file-data-engine">
 (function(){
   const STORE_KEY='lush-logistics-file-datasets-v2';
+  /* 제품군/제품명 목록이 수천 개일 때 매번 a.localeCompare(b,'ko')로 정렬하면 비교마다 로케일 객체를
+     새로 만들어서 눈에 띄게 느려집니다. 하나만 만들어 재사용하면 훨씬 빠릅니다. */
+  const KO_COLLATOR=new Intl.Collator('ko');
   const LEGACY_KEY='lush-logistics-file-datasets-v1';
   const ARCHIVE_KEY='lush-logistics-data-archive-v1';
   const HIST_KEY_LOCAL=(typeof HIST_KEY!=='undefined'?HIST_KEY:'lush-logistics-upload-history');
@@ -3999,7 +4002,7 @@ setTimeout(initInventoryColumnResize,0);
     const all=read().inbound?.rows||[];
     const cats=new Set();
     all.forEach(r=>{const cat=categoryDisplay(r[3]);if(cat)cats.add(cat)});
-    dl.innerHTML=[...cats].sort((a,b)=>a.localeCompare(b,'ko')).map(c=>`<option value="${esc(c)}">`).join('');
+    dl.innerHTML=[...cats].sort(KO_COLLATOR.compare).map(c=>`<option value="${esc(c)}">`).join('');
     return cats;
   }
   function populateInProductList(){
@@ -4007,7 +4010,7 @@ setTimeout(initInventoryColumnResize,0);
     const all=read().inbound?.rows||[];
     const names=new Set();
     all.forEach(r=>{const n=String(r[4]||'').trim();if(n)names.add(n)});
-    dl.innerHTML=[...names].sort((a,b)=>a.localeCompare(b,'ko')).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
+    dl.innerHTML=[...names].sort(KO_COLLATOR.compare).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
   }
   function renderCategoryTrend(){
     if(!$('inCatTrendCanvas'))return;
@@ -4156,7 +4159,7 @@ setTimeout(initInventoryColumnResize,0);
     const cols=outboundColIndex();
     const cats=new Set();
     all.forEach(r=>{const cat=categoryDisplay(r[cols.category]);if(cat)cats.add(cat)});
-    const sortedCats=[...cats].sort((a,b)=>a.localeCompare(b,'ko'));
+    const sortedCats=[...cats].sort(KO_COLLATOR.compare);
     const outCatSel=$('outCatSelect');
     if(outCatSel){
       // outCatSelect is now an autocomplete text input paired with a datalist; keep its typed value as-is.
@@ -4173,11 +4176,11 @@ setTimeout(initInventoryColumnResize,0);
     const names=new Set();
     all.forEach(r=>{const n=String(r[cols.name]||'').trim();if(n)names.add(n)});
     const dl=$('outAnaProductList');
-    if(dl)dl.innerHTML=[...names].sort((a,b)=>a.localeCompare(b,'ko')).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
+    if(dl)dl.innerHTML=[...names].sort(KO_COLLATOR.compare).slice(0,500).map(n=>`<option value="${esc(n)}">`).join('');
   }
-  function renderOutCategoryTrend(){
+  function renderOutCategoryTrend(precomputedCats){
     if(!$('outCatTrendCanvas'))return;
-    const knownCats=populateOutCategorySelect();
+    const knownCats=(precomputedCats instanceof Set)?precomputedCats:populateOutCategorySelect();
     const all=read().outbound?.rows||[];
     const cols=outboundColIndex();
     const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
@@ -4359,7 +4362,7 @@ setTimeout(initInventoryColumnResize,0);
       return `<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num">${pctLabel(qtyMoM)}</td><td class="num">${pctLabel(amtMoM)}</td><td class="num">${pctLabel(qtyYoy)}</td><td class="num">${pctLabel(amtYoy)}</td></tr>`;
     }).join(''):'<tr><td colspan="13" class="data-empty">데이터가 없습니다.</td></tr>';
     $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[cols.date]).localeCompare(normDate(a[cols.date]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
-    renderOutCategoryTrend();
+    renderOutCategoryTrend(knownCats);
   }
   const pct=(cur,prev)=>prev===0?(cur===0?0:null):((cur-prev)/prev*100);
   function renderMisship(){if(!$('msBody'))return;const all=read().misship?.rows||[],st=$('msStart').value,en=$('msEnd').value,q=$('msQuery').value.trim().toLowerCase(),group=$('msGroup').value;let rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return(!st||d>=st)&&(!en||d<=en)&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q))) });const done=rows.filter(r=>String(r[9]??'').includes('완료')).length;$('msCount').textContent=fmt(rows.length);$('msDone').textContent=fmt(done);$('msPending').textContent=fmt(rows.length-done);const cur=today().slice(0,7),prev=String(Number(cur.slice(0,4))-1)+cur.slice(4),curCnt=all.filter(r=>ym(r[1]??r[0])===cur).length,prevCnt=all.filter(r=>ym(r[1]??r[0])===prev).length,py=pct(curCnt,prevCnt);$('msYoy').textContent=py===null?'-':(py>0?'+':'')+py.toFixed(1);const idx=group==='store'?2:group==='reason'?8:7,map={};rows.forEach(r=>{const k=String(r[idx]||'(미지정)').trim();map[k]=(map[k]||0)+1});$('msBreakdown').innerHTML=Object.entries(map).sort((a,b)=>b[1]-a[1]).slice(0,20).map(([k,v],i)=>`<div class="rank-row"><em>${i+1}</em><span>${esc(k)}</span><b>${fmt(v)}건</b></div>`).join('')||'<div class="data-empty">집계 데이터가 없습니다.</div>';$('msBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(r[0])}</td><td>${esc(normDate(r[1]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[7])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">조회 결과가 없습니다.</td></tr>'}
@@ -4388,7 +4391,7 @@ setTimeout(initInventoryColumnResize,0);
     const all=read().damage?.rows||[];
     const fill=(id,idx)=>{
       const el=$(id);if(!el)return;
-      const vals=[...new Set(all.map(r=>String(r[idx]||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'ko'));
+      const vals=[...new Set(all.map(r=>String(r[idx]||'').trim()).filter(Boolean))].sort(KO_COLLATOR.compare);
       el.innerHTML=vals.map(v=>`<option value="${esc(v)}">`).join('');
     };
     fill('dmStoreDatalist',2);
@@ -4479,7 +4482,7 @@ setTimeout(initInventoryColumnResize,0);
     }
     if(storeList){
       const map=getBoxStoreMap();
-      const allStores=[...new Set(Object.values(map).flat())].sort((a,b)=>a.localeCompare(b,'ko'));
+      const allStores=[...new Set(Object.values(map).flat())].sort(KO_COLLATOR.compare);
       storeList.innerHTML=allStores.map(s=>`<option value="${esc(s)}">`).join('');
     }
   }
@@ -4742,7 +4745,7 @@ setTimeout(initInventoryColumnResize,0);
     }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
     const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
     rows=archiveOldRows(key,header,rows,archiveDateIdx);
-    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();window.renderOutbound?.();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
   const INVENTORY_ARCHIVE_HEADER=['담당자','날짜','제품코드','제품명','제품군','시스템재고','실사재고'];
