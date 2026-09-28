@@ -4740,6 +4740,9 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     $('prodPerson')?.addEventListener('change',renderProductivity);
     renderProductivity();
   });
+  window.renderProductivity=renderProductivity;
+  window.populatePersonSelect=populatePersonSelect;
+  window.syncOutboundLabor=syncOutboundLabor;
 })();
 </script>
 <script id="v52-outbound-request-manager">
@@ -4774,9 +4777,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 <script id="v75-team-data-sync">
 (function(){
   const TEAM_API='/api/team-data';
-  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1'};
+  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1'};
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
-  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests)}}
+  function readLocalObj(k,def){try{const v=JSON.parse(localStorage.getItem(k)||'null');return(v&&typeof v==='object'&&!Array.isArray(v))?v:def}catch{return def}}
+  function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}}))}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
@@ -4827,13 +4832,17 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       const j=await res.json();
       if(!j||!j.success||!j.data){pulling=false;return}
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[]});
+      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:normalizeProd(j.data.productivity)});
       if(cur!==incoming){
         localStorage.setItem(KEYS.notices,JSON.stringify(j.data.notices||[]));
         localStorage.setItem(KEYS.todos,JSON.stringify(j.data.todos||[]));
         localStorage.setItem(KEYS.requests,JSON.stringify(j.data.requests||[]));
+        localStorage.setItem(KEYS.productivity,JSON.stringify(normalizeProd(j.data.productivity)));
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
+        window.populatePersonSelect?.();
+        window.renderProductivity?.();
+        window.renderOutboundBasic?.();
         document.dispatchEvent(new CustomEvent('team-data-updated'));
         if(typeof window.renderOpsDashboard==='function')window.renderOpsDashboard();
       }
@@ -4843,7 +4852,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   const origSetItem=localStorage.setItem.bind(localStorage);
   localStorage.setItem=function(k,v){
     origSetItem(k,v);
-    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests)pushTeamData();
+    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity)pushTeamData();
   };
   window.pullTeamData=pullTeamData;
   pullTeamData(true);
