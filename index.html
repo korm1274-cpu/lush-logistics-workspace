@@ -2499,7 +2499,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><input id="outAnaCatQuery" list="outAnaCatQueryList" placeholder="제품군 입력 또는 선택" autocomplete="off"><datalist id="outAnaCatQueryList"></datalist></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" list="outAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="outAnaProductList"></datalist></div><button class="btn primary" id="outAnaRun">조회</button></div>
-    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:16%">월</th><th class="num" style="width:18%">총 수량(EA전환)</th><th class="num" style="width:16%">SKU(G)</th><th class="num" style="width:16%">SKU(EA)</th><th class="num" style="width:17%">수량(G)</th><th class="num" style="width:17%">수량(EA)</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap"><table class="data-table" style="min-width:1400px"><thead><tr><th>월</th><th class="num">총 수량(EA전환)</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">출고금액(EA)</th><th class="num">출고금액(G)</th><th class="num">출고금액 합계</th><th class="num">전월대비 출고량</th><th class="num">전월대비 출고금액</th><th class="num">전년동월대비 출고량</th><th class="num">전년동월대비 출고금액</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 출고 추이</h3></div></div>
@@ -2694,7 +2694,18 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
   </div>
 </div></section>
-    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
+    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="tag"></i></div><h3>단가표 Excel</h3><p>제품코드별 단가표입니다. 출고금액 계산에 사용되며, 새로 업로드하면 이전 단가표 전체를 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="단가표" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
+    <section id="dataArchiveView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">ARCHIVE</div><h2>지난 데이터 보관함</h2><p>18개월이 지난 오래된 입고·출고·오출고·파손·출고박스 데이터는 평소 화면 속도를 위해 이곳으로 자동 보관됩니다. 데이터는 삭제되지 않고 그대로 남아있으며, 필요할 때 조회·다운로드할 수 있습니다.</p></div></div>
+  <div class="data-filter-row">
+    <div class="field"><label>데이터 종류</label><select id="archiveType"><option value="inbound">입고</option><option value="outbound">출고</option><option value="misship">오출고</option><option value="damage">파손</option><option value="box">출고박스</option></select></div>
+    <div class="field"><label>시작일</label><input type="date" id="archiveStart"></div>
+    <div class="field"><label>종료일</label><input type="date" id="archiveEnd"></div>
+    <button class="btn primary" id="archiveRun">조회</button>
+    <button class="btn" id="archiveExportCsv">CSV 내보내기</button>
+  </div>
+  <div class="panel mt14"><div class="panel-head"><div><small>ARCHIVED ROWS</small><h3 id="archiveResultTitle">보관된 데이터</h3></div><span id="archiveRowCount" class="badge">0행</span></div><div class="data-table-wrap"><table class="data-table"><thead id="archiveTableHead"></thead><tbody id="archiveBody"></tbody></table></div></div>
+</div></section>
 
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
@@ -2742,6 +2753,7 @@ const DEFAULT_MENUS=[
  {id:"issue-misship-analysis",group:"issues",label:"오출고 분석",kind:"view",target:"misshipAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
+ {id:"data-archive",group:"upload",label:"지난 데이터 보관함",kind:"view",target:"dataArchiveView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"admin-main",group:"admin",label:"사용자 / 메뉴 / 권한 설정",kind:"view",target:"settings",visible:true,roles:["admin"],protected:true}
 ];
 const INVENTORY_SEED={"owners":{"TIME (SOILD)":{"label":"TIME (SOILD)","snapshots":{"2026-08-26":{"categories":["SOLID PERFUME","LIP SCRUB","LIP BALM","LIP GLOSS JELLY","FACIAL CLEANSER","MASCARA","BUBBLE BAR","디지털 전용"],"products":[{"id":"T0017200","name":"AMERICAN CREAM (SOLID PERFUME)","category":"SOLID PERFUME","system":86,"lots":[{"date":"2026-06-26","qty":86}]},{"id":"T0017199","name":"DIRTY (SOLID PERFUME)","category":"SOLID PERFUME","system":104,"lots":[{"date":"2026-06-25","qty":33},{"date":"2026-07-07","qty":71}]},{"id":"T0017197","name":"KARMA (SOLID PERFUME)","category":"SOLID PERFUME","system":83,"lots":[{"date":"2026-06-23","qty":83}]},{"id":"T0017201","name":"LORD OF MISRULE (SOLID PERFUME)","category":"SOLID PERFUME","system":4,"lots":[{"date":"2026-06-24","qty":4}]},{"id":"T0017196","name":"LUST (SOLID PERFUME)","category":"SOLID PERFUME","system":16,"lots":[{"date":"2026-06-12","qty":16}]},{"id":"T0017204","name":"PANSY (SOLID PERFUME)","category":"SOLID PERFUME","system":263,"lots":[{"date":"2026-06-23","qty":120},{"date":"2026-07-10","qty":143}]},{"id":"T0017195","name":"ROSE JAM (SOLID PERFUME)","category":"SOLID PERFUME","system":177,"lots":[{"date":"2026-06-30","qty":42},{"date":"2026-07-14","qty":135}]},{"id":"T0017202","name":"VANILLARY (SOLID PERFUME)","category":"SOLID PERFUME","system":30,"lots":[{"date":"2026-06-24","qty":30}]},{"id":"T0017203","name":"SHADE (SOLID PERFUME)","category":"SOLID PERFUME","system":43,"lots":[{"date":"2026-05-29","qty":40},{"date":"2026-07-08","qty":3}]},{"id":"T0017198","name":"ALINA (SOLID PERFUME)","category":"SOLID PERFUME","system":133,"lots":[{"date":"2026-04-23","qty":26},{"date":"2026-06-01","qty":71},{"date":"2026-07-01","qty":36}]},{"id":"T0017190","name":"CHELSEA MORNING (SOLID PERFUME)","category":"SOLID PERFUME","system":115,"lots":[{"date":"2026-06-05","qty":67},{"date":"2026-07-03","qty":48}]},{"id":"T0017194","name":"FRESH AS (SOLID PERFUME)","category":"SOLID PERFUME","system":75,"lots":[{"date":"2026-07-01","qty":35},{"date":"2026-07-16","qty":40}]},{"id":"T0017192","name":"NO WAY TO SAY GOODBYE (SOLID PERFUME)","category":"SOLID PERFUME","system":184,"lots":[{"date":"2026-07-03","qty":66},{"date":"2026-07-13","qty":118}]},{"id":"T0017191","name":"THE BEE`S KNEES (SOLID PERFUME)","category":"SOLID PERFUME","system":160,"lots":[{"date":"2026-04-24","qty":21},{"date":"2026-06-05","qty":71},{"date":"2026-07-01","qty":68}]},{"id":"T0017193","name":"VEGAN LEATHER JACKET (SOLID PERFUME)","category":"SOLID PERFUME","system":107,"lots":[{"date":"2026-06-05","qty":48},{"date":"2026-07-03","qty":59}]},{"id":"T0011620","name":"BUBBLE GUM (LIP SCRUB)","category":"LIP SCRUB","system":68,"lots":[{"date":"2026-06-30","qty":68}]},{"id":"T0014594","name":"CHERRY (LIP SCRUB)","category":"LIP SCRUB","system":36,"lots":[{"date":"2026-06-22","qty":36}]},{"id":"T0010686","name":"HONEY (LIP SCRUB)","category":"LIP SCRUB","system":89,"lots":[{"date":"2026-06-22","qty":44},{"date":"2026-06-22","qty":45}]},{"id":"T0001371","name":"MINT JULIPS (LIP SCRUB)","category":"LIP SCRUB","system":76,"lots":[{"date":"2026-06-02","qty":76}]},{"id":"T0014494","name":"WATERMELON SUGAR (LIP SCRUB)","category":"LIP SCRUB","system":0,"lots":[]},{"id":"T0016964","name":"STICKY DATES (LIP SCRUB)","category":"LIP SCRUB","system":66,"lots":[{"date":"2026-06-23","qty":21},{"date":"2026-06-23","qty":45}]},{"id":"T0006321","name":"HONEY TRAP (LIP BALM)","category":"LIP BALM","system":12,"lots":[{"date":"2026-07-01","qty":12}]},{"id":"T0018105","name":"KEY LIME PIE 12G (LIP BALM)","category":"LIP BALM","system":58,"lots":[{"date":"2026-06-02","qty":58}]},{"id":"T0006323","name":"LIP SERVICE (LIP BALM)","category":"LIP BALM","system":51,"lots":[{"date":"2026-05-25","qty":22},{"date":"2026-06-22","qty":29}]},{"id":"T0006326","name":"ROSE LOLLIPOP (LIP BALM)","category":"LIP BALM","system":0,"lots":[]},{"id":"T0017480","name":"THE KISS (LIP GLOSS JELLY)","category":"LIP GLOSS JELLY","system":197,"lots":[{"date":"2026-05-29","qty":175},{"date":"2026-06-26","qty":22}]},{"id":"T0017481","name":"SHIMMY SHIMMY (LIP GLOSS JELLY)","category":"LIP GLOSS JELLY","system":12,"lots":[{"date":"2026-05-28","qty":12}]},{"id":"T0017482","name":"SEX BOMB (LIP GLOSS JELLY)","category":"LIP GLOSS JELLY","system":41,"lots":[{"date":"2026-05-29","qty":27},{"date":"2026-06-24","qty":14}]},{"id":"T0019102","name":"ACAI & SACHA INCHI 60G (FACIAL CLEANSER)","category":"FACIAL CLEANSER","system":0,"lots":[]},{"id":"T0019104","name":"HONEY, BEESWAX & ALMOND OIL 60G (FACIAL CLEANSER)","category":"FACIAL CLEANSER","system":0,"lots":[]},{"id":"T0019103","name":"TURMERIC & ARGAN OIL 60G (FACIAL CLEANSER)","category":"FACIAL CLEANSER","system":0,"lots":[]},{"id":"T0019105","name":"OAT 60G (CLEANSING BALM)","category":"FACIAL CLEANSER","system":0,"lots":[]},{"id":"T0016436","name":"EARTH 12g (NAKED MASCARA)","category":"MASCARA","system":25,"lots":[{"date":"2026-03-24","qty":7},{"date":"2026-04-24","qty":2},{"date":"2026-05-18","qty":16}]},{"id":"T0016435","name":"OCEAN 12g (NAKED MASCARA)","category":"MASCARA","system":31,"lots":[{"date":"2026-03-24","qty":12},{"date":"2026-05-11","qty":19}]},{"id":"T0016434","name":"ORCA 12g (NAKED MASCARA)","category":"MASCARA","system":31,"lots":[{"date":"2026-04-17","qty":11},{"date":"2026-05-18","qty":20}]},{"id":"T0016437","name":"REEF 12g (NAKED MASCARA)","category":"MASCARA","system":37,"lots":[{"date":"2026-02-12","qty":7},{"date":"2026-03-12","qty":5},{"date":"2026-03-12","qty":16},{"date":"2026-05-11","qty":9}]},{"id":"T0013672","name":"BIG BOTTLE OF CALM (REUSABLE BUBBLE BAR)","category":"BUBBLE BAR","system":0,"lots":[]},{"id":"T0013665","name":"MILKY BATH BUBBLE BOTTLE (BUBBLE BAR)_NEW","category":"BUBBLE BAR","system":385,"lots":[{"date":"2026-07-02","qty":159},{"date":"2026-07-14","qty":226}]},{"id":"T0014048","name":"RAINBOW (BUBBLE BAR)","category":"BUBBLE BAR","system":228,"lots":[{"date":"2026-07-02","qty":228}]},{"id":"T0019101","name":"29 HIGH STREET (SOLID PERFUME)","category":"디지털 전용","system":0,"lots":[]}]}}}}};
@@ -3486,10 +3498,13 @@ setTimeout(initInventoryColumnResize,0);
 (function(){
   const STORE_KEY='lush-logistics-file-datasets-v2';
   const LEGACY_KEY='lush-logistics-file-datasets-v1';
+  const ARCHIVE_KEY='lush-logistics-data-archive-v1';
   const HIST_KEY_LOCAL=(typeof HIST_KEY!=='undefined'?HIST_KEY:'lush-logistics-upload-history');
   const $=id=>document.getElementById(id), esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const SHARED_API='/api/shared-data';
   const read=()=>{try{let x=JSON.parse(localStorage.getItem(STORE_KEY)||'null');if(!x){x=JSON.parse(localStorage.getItem(LEGACY_KEY)||'{}')||{};localStorage.setItem(STORE_KEY,JSON.stringify(x))}return x}catch{return{}}};
+  const readArchive=()=>{try{return JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'{}')||{}}catch{return{}}};
+  const saveArchive=a=>localStorage.setItem(ARCHIVE_KEY,JSON.stringify(a));
   function save(d){
     localStorage.setItem(STORE_KEY,JSON.stringify(d));
     pushSharedData(d);
@@ -3553,6 +3568,47 @@ setTimeout(initInventoryColumnResize,0);
   const cleanDamage=rows=>fillMerged(rows.map(r=>r.slice(0,10)),[0,1,2,3]).filter(r=>r[4]);
   const upsertByDate=(existing,incoming,dateIndex=0)=>{const dates=new Set(incoming.map(r=>normDate(r[dateIndex])));return (existing||[]).filter(r=>!dates.has(normDate(r[dateIndex]))).concat(incoming)};
   const upsertByKey=(existing,incoming,keyFn)=>{const keys=new Set(incoming.map(r=>keyFn(r)).filter(k=>k!==''&&k!=null));return (existing||[]).filter(r=>{const k=keyFn(r);return !(k!==''&&k!=null&&keys.has(k))}).concat(incoming)};
+  /* 18개월보다 오래된 행은 지우지 않고 별도 보관함으로 옮겨서, 평소 화면은 최근 데이터만 빠르게 처리하도록 합니다. */
+  function splitByRetention(rows,dateIdx,months=18){
+    if(dateIdx==null||!Array.isArray(rows)||!rows.length)return{recent:rows,old:[]};
+    const cutoff=new Date();cutoff.setMonth(cutoff.getMonth()-months);
+    const cutoffStr=`${cutoff.getFullYear()}-${String(cutoff.getMonth()+1).padStart(2,'0')}-${String(cutoff.getDate()).padStart(2,'0')}`;
+    const recent=[],old=[];
+    rows.forEach(r=>{
+      const d=normDate(r[dateIdx]);
+      if(!d||d>=cutoffStr)recent.push(r);else old.push(r);
+    });
+    return{recent,old};
+  }
+  function archiveOldRows(key,header,mergedRows,dateIdx){
+    const{recent,old}=splitByRetention(mergedRows,dateIdx);
+    if(old.length){
+      const archive=readArchive();
+      if(!archive[key])archive[key]={header,rows:[]};
+      archive[key].header=header;
+      archive[key].rows=upsertByDate(archive[key].rows||[],old,dateIdx);
+      saveArchive(archive);
+    }
+    return recent;
+  }
+  /* 이미 쌓여있던 18개월 이전 데이터도 한 번만 보관함으로 옮겨서, 지금 당장 화면 속도를 개선합니다. (삭제 아님) */
+  (function archiveExistingOldDataOnce(){
+    const DONE_KEY='lush-data-archive-migrated-v1';
+    try{
+      if(localStorage.getItem(DONE_KEY))return;
+      const d=read();
+      const dateIdxByKey={inbound:0,outbound:0,box:0,misship:1,damage:1};
+      let changed=false;
+      Object.entries(dateIdxByKey).forEach(([key,dateIdx])=>{
+        const entry=d[key];
+        if(!entry||!Array.isArray(entry.rows)||!entry.rows.length)return;
+        const recent=archiveOldRows(key,entry.header,entry.rows,dateIdx);
+        if(recent.length!==entry.rows.length){entry.rows=recent;changed=true}
+      });
+      if(changed)save(d);
+      localStorage.setItem(DONE_KEY,'1');
+    }catch(e){}
+  })();
   const fmt=n=>num(n).toLocaleString('ko-KR'); const ym=d=>normDate(d).slice(0,7); const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   function eaEquivQty(r){
     const u=inboundUnit(r);
@@ -3637,6 +3693,35 @@ setTimeout(initInventoryColumnResize,0);
     };
   }
   function outboundUnit(r,cols){return String(r[(cols||outboundColIndex()).unit]||'').trim().toUpperCase()}
+  function priceColIndex(header){
+    const find=(...labels)=>{
+      for(const lbl of labels){
+        const i=(header||[]).findIndex(h=>String(h||'').trim()===lbl);
+        if(i>=0)return i;
+      }
+      return -1;
+    };
+    const code=find('제품코드','코드','PLU');
+    const price=find('단가');
+    return{code:code>=0?code:0,price:price>=0?price:10};
+  }
+  function getPriceMap(){
+    const pl=read().priceList;
+    if(!pl||!Array.isArray(pl.rows))return{};
+    const cols=priceColIndex(pl.header||[]);
+    const map={};
+    pl.rows.forEach(r=>{
+      const code=String(r[cols.code]||'').trim();
+      if(!code)return;
+      map[code]=num(r[cols.price]);
+    });
+    return map;
+  }
+  function shiftMonth(m,delta){
+    const parts=m.split('-').map(Number);
+    const d=new Date(parts[0],parts[1]-1+delta,1);
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+  }
   function renderOutboundBasic(){
     if(!$('obQtyG'))return;
     const d=read(),all=d.outbound?.rows||[];
@@ -3998,37 +4083,59 @@ setTimeout(initInventoryColumnResize,0);
     if(!$('outAnaBody'))return;
     const d=read(),all=d.outbound?.rows||[];
     const cols=outboundColIndex();
+    const priceMap=getPriceMap();
     const knownCats=populateOutCategorySelect();
     populateOutProductList();
     const start=$('outAnaStart')?.value||'',end=$('outAnaEnd')?.value||'';
     const catQRaw=($('outAnaCatQuery')?.value||'').trim();
     const catQ=knownCats.has(catQRaw)?catQRaw:'';
     const q=($('outAnaQuery')?.value||'').trim().toLowerCase();
+    const catSearchMatch=r=>{
+      const cat=categoryDisplay(r[cols.category]);
+      return(!catQ||cat===catQ)&&(!q||String(r[cols.code]||'').toLowerCase().includes(q)||String(r[cols.name]||'').toLowerCase().includes(q));
+    };
     const rows=all.filter(r=>{
       const rd=normDate(r[cols.date]);
-      const cat=categoryDisplay(r[cols.category]);
-      return(!start||rd>=start)&&(!end||rd<=end)
-        &&(!catQ||cat===catQ)
-        &&(!q||String(r[cols.code]||'').toLowerCase().includes(q)||String(r[cols.name]||'').toLowerCase().includes(q));
+      return(!start||rd>=start)&&(!end||rd<=end)&&catSearchMatch(r);
     });
-    const monthMap={};
-    rows.forEach(r=>{
+    // 전월/전년 동월 대비 증감률을 구하려면 화면에 보이는 기간 밖의 달도 필요하므로,
+    // 월별 집계는 (제품군·검색 조건만 적용한) 전체 데이터를 기준으로 만듭니다.
+    const monthMapAll={};
+    all.filter(catSearchMatch).forEach(r=>{
       const m=ym(r[cols.date]);if(!m)return;
-      if(!monthMap[m])monthMap[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
+      if(!monthMapAll[m])monthMapAll[m]={skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0,amountEA:0,amountG:0};
       const u=outboundUnit(r,cols);
-      if(r[cols.code]&&u==='G')monthMap[m].skusG.add(String(r[cols.code]));
-      if(r[cols.code]&&u==='EA')monthMap[m].skusEA.add(String(r[cols.code]));
+      const code=String(r[cols.code]||'').trim();
+      const price=priceMap[code]||0;
+      if(code&&u==='G')monthMapAll[m].skusG.add(code);
+      if(code&&u==='EA')monthMapAll[m].skusEA.add(code);
       if(u==='G'){
-        monthMap[m].qtyG+=num(r[cols.qty]);
-        const factor=PRODUCT_EA_CONVERSION[String(r[cols.code]||'').trim()];
-        if(factor)monthMap[m].qtyTotalEA+=num(r[cols.qty])/factor;
+        monthMapAll[m].qtyG+=num(r[cols.qty]);
+        const factor=PRODUCT_EA_CONVERSION[code];
+        if(factor){
+          const eaEquiv=num(r[cols.qty])/factor;
+          monthMapAll[m].qtyTotalEA+=eaEquiv;
+          monthMapAll[m].amountG+=eaEquiv*price;
+        }
       }else if(u==='EA'){
-        monthMap[m].qtyEA+=num(r[cols.qty]);
-        monthMap[m].qtyTotalEA+=num(r[cols.qty]);
+        monthMapAll[m].qtyEA+=num(r[cols.qty]);
+        monthMapAll[m].qtyTotalEA+=num(r[cols.qty]);
+        monthMapAll[m].amountEA+=num(r[cols.qty])*price;
       }
     });
-    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
-    $('outAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">데이터가 없습니다.</td></tr>';
+    const displayMonths=[...new Set(rows.map(r=>ym(r[cols.date])).filter(Boolean))].sort().slice(-12);
+    const pctLabel=v=>v===null||v===undefined?'-':`${v>=0?'+':''}${v.toFixed(1)}%`;
+    $('outAnaTrendBody').innerHTML=displayMonths.length?displayMonths.map(m=>{
+      const v=monthMapAll[m];
+      const amountTotal=v.amountEA+v.amountG;
+      const prev=monthMapAll[shiftMonth(m,-1)];
+      const yoy=monthMapAll[shiftMonth(m,-12)];
+      const qtyMoM=prev?pct(v.qtyTotalEA,prev.qtyTotalEA):null;
+      const amtMoM=prev?pct(amountTotal,prev.amountEA+prev.amountG):null;
+      const qtyYoy=yoy?pct(v.qtyTotalEA,yoy.qtyTotalEA):null;
+      const amtYoy=yoy?pct(amountTotal,yoy.amountEA+yoy.amountG):null;
+      return `<tr><td>${esc(m)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num">${fmt(Math.round(amountTotal))}</td><td class="num">${pctLabel(qtyMoM)}</td><td class="num">${pctLabel(amtMoM)}</td><td class="num">${pctLabel(qtyYoy)}</td><td class="num">${pctLabel(amtYoy)}</td></tr>`;
+    }).join(''):'<tr><td colspan="13" class="data-empty">데이터가 없습니다.</td></tr>';
     $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[cols.date]).localeCompare(normDate(a[cols.date]))).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
     renderOutCategoryTrend();
   }
@@ -4359,11 +4466,49 @@ setTimeout(initInventoryColumnResize,0);
     const dataRowCount=values.length-1;
     const rawDateCol=(dateColIdx!=null)?readRawColumn(ws,dateColIdx,dataRowCount,2):null;
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
-    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box'})[type];const data=read();if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList'})[type];const data=read();if(key==='priceList'){
+      data.priceList={header,rows:raw,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'전체 교체'};save(data);
+    }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
+    const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
+    rows=archiveOldRows(key,header,rows,archiveDateIdx);
+    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();window.renderOutbound?.();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
+  const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
+  function renderDataArchive(){
+    if(!$('archiveBody'))return;
+    const type=$('archiveType')?.value||'inbound';
+    const archive=readArchive();
+    const entry=archive[type];
+    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
+    const dateIdx=ARCHIVE_DATE_IDX[type];
+    const header=entry?.header||[];
+    const rows=(entry?.rows||[]).filter(r=>{
+      const rd=normDate(r[dateIdx]);
+      return(!start||!rd||rd>=start)&&(!end||!rd||rd<=end);
+    });
+    $('archiveTableHead').innerHTML=header.length?`<tr>${header.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>`:'';
+    $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>normDate(b[dateIdx]).localeCompare(normDate(a[dateIdx]))).slice(0,2000).map(r=>`<tr>${header.map((_,i)=>`<td>${esc(r[i])}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${Math.max(1,header.length)}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
+    $('archiveRowCount').textContent=`${fmt(rows.length)}행`;
+  }
+  function exportArchiveCsv(){
+    const type=$('archiveType')?.value||'inbound';
+    const archive=readArchive();
+    const entry=archive[type];
+    if(!entry||!entry.rows?.length){if(typeof toastMsg==='function')toastMsg('내보낼 보관 데이터가 없습니다.');return}
+    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
+    const dateIdx=ARCHIVE_DATE_IDX[type];
+    const header=entry.header||[];
+    const rows=(entry.rows||[]).filter(r=>{const rd=normDate(r[dateIdx]);return(!start||!rd||rd>=start)&&(!end||!rd||rd<=end)});
+    const csvRows=[header,...rows.map(r=>header.map((_,i)=>r[i]??''))];
+    const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');
+    download(`보관함_${type}.csv`,new Blob([csv],{type:'text/csv;charset=utf-8'}));
+  }
   function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderOutboundBasic();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
-  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
+  document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
+    $('archiveType')?.addEventListener('change',renderDataArchive);
+    $('archiveExportCsv')?.addEventListener('click',exportArchiveCsv);
+    renderDataArchive();
 $('inCatSelect')?.addEventListener('change',renderCategoryTrend);
 $('outCatSelect')?.addEventListener('change',renderOutCategoryTrend);
 if($('inAnaStart')&&!$('inAnaStart').value){
@@ -4450,7 +4595,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
  window.BASE_EXPORT_CURRENT=exportCurrent;
 })();
 </script>
-<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>
+<script id="v51-upload-router">document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스','단가표'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});</script>
 
 <script id="v67-inbound-daily-monthly">
 (function(){
