@@ -4333,7 +4333,18 @@ setTimeout(initInventoryColumnResize,0);
         monthMapAll[m]={skuG:v.skusG.size,skuEA:v.skusEA.size,qtyG:v.qtyG,qtyEA:v.qtyEA,qtyTotalEA:v.qtyTotalEA,amountEA:v.amountEA,amountG:v.amountG};
       });
     }
-    const displayMonths=[...new Set(rows.map(r=>ym(r[cols.date])).filter(Boolean))].sort().slice(-12);
+    let displayMonths;
+    if(noFilter){
+      // 원본 행이 없는 달(요약값만 가져온 과거 달)도 함께 보여줍니다.
+      const rawMonths=rows.map(r=>ym(r[cols.date])).filter(Boolean);
+      const summaryMonths=Object.keys(monthMapAll);
+      const startYM=start?start.slice(0,7):'',endYM=end?end.slice(0,7):'';
+      displayMonths=[...new Set([...rawMonths,...summaryMonths])]
+        .filter(m=>(!startYM||m>=startYM)&&(!endYM||m<=endYM))
+        .sort().slice(-12);
+    }else{
+      displayMonths=[...new Set(rows.map(r=>ym(r[cols.date])).filter(Boolean))].sort().slice(-12);
+    }
     const pctLabel=v=>v===null||v===undefined?'-':`${v>=0?'+':''}${v.toFixed(1)}%`;
     $('outAnaTrendBody').innerHTML=displayMonths.length?displayMonths.map(m=>{
       const v=monthMapAll[m];
