@@ -3865,7 +3865,7 @@ setTimeout(initInventoryColumnResize,0);
   document.addEventListener('DOMContentLoaded',()=>{
     try{
       const d=read();
-      const FIX_KEY='lush-outbound-summary-colfix-v1';
+      const FIX_KEY='lush-outbound-summary-colfix-v2';
       if(d.outbound?.rows?.length&&(!d.outboundMonthlySummary||!localStorage.getItem(FIX_KEY))){
         rebuildOutboundMonthlySummary();
         localStorage.setItem(FIX_KEY,'1');
