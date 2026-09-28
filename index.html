@@ -5070,7 +5070,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     const mins=disabled?null:calcElapsed(rec);
     const dis=disabled?'disabled':'';
     return `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="s" data-date="${esc(date)}" value="${esc(s)}"></td>`+
-           `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="b" data-date="${esc(date)}" value="${esc(b)}"></td>`+
+           `<td><input class="cell" type="text" inputmode="numeric" placeholder="0:30" pattern="[0-9]{1,2}:[0-5][0-9]" ${dis} data-prod-time data-rec="${recPrefix}" data-field="b" data-date="${esc(date)}" value="${esc(b)}"></td>`+
            `<td><input class="cell" type="time" lang="en-GB" ${dis} data-prod-time data-rec="${recPrefix}" data-field="e" data-date="${esc(date)}" value="${esc(e)}"></td>`+
            `<td class="num">${disabled?'미체크':minutesToLabel(mins)}</td>`;
   }
