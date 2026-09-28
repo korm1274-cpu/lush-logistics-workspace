@@ -3494,14 +3494,17 @@ setTimeout(initInventoryColumnResize,0);
     localStorage.setItem(STORE_KEY,JSON.stringify(d));
     pushSharedData(d);
   }
-  /* 출고 데이터에 '제품군' 컬럼이 새로 추가되어 기존 5컬럼 형식의 출고 데이터는 더 이상 맞지 않으므로 자동으로 비웁니다. */
+  /* 출고 데이터에 '제품군' 컬럼이 새로 추가되어 기존 5컬럼 형식의 출고 데이터는 더 이상 맞지 않으므로 한 번만 자동으로 비웁니다. */
   (function migrateOutboundSchema(){
+    const DONE_KEY='lush-outbound-schema-migrated-v1';
     try{
+      if(localStorage.getItem(DONE_KEY))return;
       const d=read();
       if(d&&d.outbound&&Array.isArray(d.outbound.header)&&d.outbound.header.length<6){
         delete d.outbound;
         save(d);
       }
+      localStorage.setItem(DONE_KEY,'1');
     }catch(e){}
   })();
   let __sharedSyncing=false;
