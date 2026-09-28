@@ -4690,6 +4690,10 @@ setTimeout(initInventoryColumnResize,0);
     }else if(key==='summaryImport'){
       const{count,skipped}=importOutboundMonthlySummary(header,raw);
       window.renderOutbound?.();
+      const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');
+      hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:count,mode:`요약 반영${skipped?` (건너뜀 ${skipped}개월)`:''}`});
+      localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));
+      if(typeof renderHistory==='function')renderHistory();
       if(typeof toastMsg==='function')toastMsg(`출고 요약 ${fmt(count)}개월치를 반영했습니다.${skipped?` (원본 데이터가 이미 있는 ${fmt(skipped)}개월은 건너뜀)`:''}`);
       inp.value='';
       return;
