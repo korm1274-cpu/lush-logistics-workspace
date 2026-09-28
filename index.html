@@ -4710,10 +4710,21 @@ setTimeout(initInventoryColumnResize,0);
             catRows.slice(1).forEach(r=>{const code=String(r[ci]??'').trim();if(code)catMap[code]=String(r[cg]??'').trim()});
             const codeIdx=outboundColIndex(header).code;
             header.push('제품군');
-            raw.forEach(r=>{const code=String(r[codeIdx]??'').trim();r.push(catMap[code]||'')});
+            let matched=0;
+            raw.forEach(r=>{const code=String(r[codeIdx]??'').trim();const c=catMap[code]||'';if(c)matched++;r.push(c)});
+            window.__lastOutboundCatMapInfo=`2번째 시트(${wb.SheetNames[1]})에서 제품군 매핑 ${fmt(Object.keys(catMap).length)}건을 찾았고, 이번 업로드 ${fmt(raw.length)}행 중 ${fmt(matched)}행에 제품군을 붙였습니다.`;
+          }else{
+            window.__lastOutboundCatMapInfo=`2번째 시트(${wb.SheetNames[1]})에서 '제품코드'/'제품군' 컬럼을 찾지 못해 매핑을 적용하지 못했습니다. (헤더: ${catHeader.join(', ')})`;
           }
+        }else{
+          window.__lastOutboundCatMapInfo=`2번째 시트(${wb.SheetNames[1]})에 데이터가 없어 매핑을 적용하지 못했습니다.`;
         }
-      }catch(e){console.error('제품군 매핑 시트 처리 실패:',e)}
+      }catch(e){
+        console.error('제품군 매핑 시트 처리 실패:',e);
+        window.__lastOutboundCatMapInfo=`제품군 매핑 시트를 읽는 중 오류가 발생했습니다: ${e.message}`;
+      }
+    }else{
+      window.__lastOutboundCatMapInfo=type==='출고'?'이 파일에는 2번째 시트(제품군 매핑표)가 없습니다.':null;
     }
     const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList','출고요약':'summaryImport'})[type];const data=read();if(key==='priceList'){
       data.priceList={header,rows:raw,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'전체 교체'};save(data);
@@ -4731,7 +4742,7 @@ setTimeout(initInventoryColumnResize,0);
     }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
     const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
     rows=archiveOldRows(key,header,rows,archiveDateIdx);
-    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();window.renderOutbound?.();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();window.renderOutbound?.();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
   const INVENTORY_ARCHIVE_HEADER=['담당자','날짜','제품코드','제품명','제품군','시스템재고','실사재고'];
