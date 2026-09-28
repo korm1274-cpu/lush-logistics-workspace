@@ -3590,7 +3590,7 @@ setTimeout(initInventoryColumnResize,0);
      출고 원본 데이터만 깨끗하게 비웁니다. (전에 업로드해주신 과거 요약 데이터나 다른 데이터는
      그대로 두며, 출고 엑셀 파일을 다시 업로드하시면 이번에 고친 방식으로 다시 정확하게 채워집니다.)*/
   (function resetOutboundDataOnce(){
-    const DONE_KEY='lush-outbound-data-reset-v1';
+    const DONE_KEY='lush-outbound-data-reset-v2';
     try{
       if(localStorage.getItem(DONE_KEY))return;
       const d=read();
@@ -4159,6 +4159,12 @@ setTimeout(initInventoryColumnResize,0);
     const cols=outboundColIndex();
     const cats=new Set();
     all.forEach(r=>{const cat=categoryDisplay(r[cols.category]);if(cat)cats.add(cat)});
+    if(!window.__catDebugShown&&all.length){
+      window.__catDebugShown=true;
+      const header=(read().outbound?.header)||[];
+      const sample=all[0]||[];
+      alert(`[진단] 저장된 헤더: [${header.map((h,i)=>`${i}:${h||'(빈칸)'}`).join(', ')}]\n제품군으로 인식한 칸 번호: ${cols.category}\n첫 행에서 그 칸의 실제 값: "${sample[cols.category]}"\n첫 행 전체: [${sample.join(' | ')}]`);
+    }
     const sortedCats=[...cats].sort(KO_COLLATOR.compare);
     const outCatSel=$('outCatSelect');
     if(outCatSel){
