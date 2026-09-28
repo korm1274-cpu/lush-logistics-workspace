@@ -2932,7 +2932,7 @@ function esc(s){return String(s??"").replaceAll("&","&amp;").replaceAll("<","&lt
 function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(()=>toast.classList.remove("show"),1700)}
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
 function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;if(g.id==="dashboard"&&list.length===1){box.classList.add("nav-group-direct");box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span></button>`;const only=list[0];box.querySelector(".nav-root").onclick=()=>activateMenu(only,box.querySelector(".nav-root"));box.querySelector(".nav-root").dataset.menuId=only.id;navContainer.appendChild(box);return}box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
-function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item,.nav-group-direct .nav-root").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin()}
+function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item,.nav-group-direct .nav-root").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin();window.renderLazyViewIfNeeded?.(id)}
 function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}window.flushBoxPendingSave?.();navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
@@ -4706,7 +4706,32 @@ setTimeout(initInventoryColumnResize,0);
     const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');
     download(`보관함_${type}.csv`,new Blob([csv],{type:'text/csv;charset=utf-8'}));
   }
-  function renderAll(){renderDashboard();renderInbound();renderInboundBasic();renderOutbound();renderOutboundBasic();renderMisship();renderDamage();renderBox();renderOos();window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()}
+  const LAZY_VIEWS={
+    inboundBasicView:()=>renderInboundBasic(),
+    inboundAnalysis:()=>renderInbound(),
+    outboundBasicView:()=>renderOutboundBasic(),
+    outboundAnalysis:()=>renderOutbound(),
+    misshipAnalyticsView:()=>renderMisship(),
+    damageAnalyticsView:()=>renderDamage(),
+    outboundBoxView:()=>renderBox(),
+    inventoryOosView:()=>renderOos()
+  };
+  const lazyDirty=new Set(Object.keys(LAZY_VIEWS));
+  window.renderLazyViewIfNeeded=function(id){
+    if(LAZY_VIEWS[id]&&lazyDirty.has(id)){LAZY_VIEWS[id]();lazyDirty.delete(id)}
+  };
+  /* 처음 페이지를 열 때 보이지도 않는 다른 탭들(입고/출고/오출고/파손/출고박스/품절분석)까지
+     전부 미리 계산하느라 초기 로딩이 느려지는 문제가 있었습니다.
+     이제는 지금 실제로 보고 있는 탭만 바로 계산하고, 나머지는 그 탭을 열 때 그제서야 계산합니다. */
+  function renderAll(){
+    renderDashboard();
+    const activeId=document.querySelector('.view.active')?.id;
+    Object.keys(LAZY_VIEWS).forEach(id=>{
+      if(id===activeId){LAZY_VIEWS[id]();lazyDirty.delete(id)}
+      else lazyDirty.add(id);
+    });
+    window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()
+  }
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
     $('archiveType')?.addEventListener('change',renderDataArchive);
