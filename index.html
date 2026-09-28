@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>LUSH Logistics Workspace</title>
 <script defer src="/vendor/lucide.min.js"></script>
-<script defer src="/vendor/chart.umd.min.js"></script>
 <script>
 /* xlsx.full.min.js는 289KB로 크고 페이지를 열 때마다 항상 필요한 게 아니라
    (엑셀 업로드/내보내기를 할 때만 필요), 처음 로딩 속도를 위해 그때 가서 불러옵니다. */
@@ -20,6 +19,19 @@ window.ensureXLSX=function(){
     document.head.appendChild(s);
   });
   return window.__xlsxLoadPromise;
+};
+/* chart.umd.min.js(약 73KB)도 제품군별 추이 그래프를 그릴 때만 필요해서 그때 가서 불러옵니다. */
+window.ensureChart=function(){
+  if(window.Chart)return Promise.resolve(window.Chart);
+  if(window.__chartLoadPromise)return window.__chartLoadPromise;
+  window.__chartLoadPromise=new Promise((resolve,reject)=>{
+    const s=document.createElement('script');
+    s.src='/vendor/chart.umd.min.js';
+    s.onload=()=>resolve(window.Chart);
+    s.onerror=()=>reject(new Error('chart 라이브러리를 불러오지 못했습니다.'));
+    document.head.appendChild(s);
+  });
+  return window.__chartLoadPromise;
 };
 </script>
 <link rel="preconnect" href="https://cdn.jsdelivr.net">
@@ -4038,7 +4050,11 @@ setTimeout(initInventoryColumnResize,0);
     }).slice(0,10);
     const canvas=$('inCatTrendCanvas');
     if(!canvas)return;
-    if(!months.length||!catList.length||typeof Chart==='undefined'){
+    if(typeof Chart==='undefined'){
+      window.ensureChart?.().then(()=>renderCategoryTrend());
+      return;
+    }
+    if(!months.length||!catList.length){
       if(window.__inCatChart){window.__inCatChart.destroy();window.__inCatChart=null}
       return;
     }
@@ -4201,7 +4217,11 @@ setTimeout(initInventoryColumnResize,0);
     }).slice(0,10);
     const canvas=$('outCatTrendCanvas');
     if(!canvas)return;
-    if(!months.length||!catList.length||typeof Chart==='undefined'){
+    if(typeof Chart==='undefined'){
+      window.ensureChart?.().then(()=>renderOutCategoryTrend());
+      return;
+    }
+    if(!months.length||!catList.length){
       if(window.__outCatChart){window.__outCatChart.destroy();window.__outCatChart=null}
       return;
     }
