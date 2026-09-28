@@ -2698,7 +2698,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="dataArchiveView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">ARCHIVE</div><h2>지난 데이터 보관함</h2><p>18개월이 지난 오래된 입고·출고·오출고·파손·출고박스 데이터는 평소 화면 속도를 위해 이곳으로 자동 보관됩니다. 데이터는 삭제되지 않고 그대로 남아있으며, 필요할 때 조회·다운로드할 수 있습니다.</p></div></div>
   <div class="data-filter-row">
-    <div class="field"><label>데이터 종류</label><select id="archiveType"><option value="inbound">입고</option><option value="outbound">출고</option><option value="misship">오출고</option><option value="damage">파손</option><option value="box">출고박스</option></select></div>
+    <div class="field"><label>데이터 종류</label><select id="archiveType"><option value="inbound">입고</option><option value="outbound">출고</option><option value="misship">오출고</option><option value="damage">파손</option><option value="box">출고박스</option><option value="inventory">재고</option></select></div>
     <div class="field"><label>시작일</label><input type="date" id="archiveStart"></div>
     <div class="field"><label>종료일</label><input type="date" id="archiveEnd"></div>
     <button class="btn primary" id="archiveRun">조회</button>
@@ -2785,6 +2785,32 @@ function normalizeInventoryDb(){
   if(changed)localStorage.setItem(INVENTORY_KEY,JSON.stringify(inventoryDb));
 }
 normalizeInventoryDb();
+const INVENTORY_ARCHIVE_KEY="lush-logistics-v4-inventory-archive";
+const INVENTORY_RETENTION_DAYS=120;
+function readInventoryArchive(){try{return JSON.parse(localStorage.getItem(INVENTORY_ARCHIVE_KEY)||"null")||{owners:{}}}catch{return{owners:{}}}}
+function saveInventoryArchive(a){localStorage.setItem(INVENTORY_ARCHIVE_KEY,JSON.stringify(a))}
+window.readInventoryArchive=readInventoryArchive;
+/* 재고는 스냅샷을 매일 통째로 복제해서 저장하다 보니 오래 쓸수록 용량이 급격히 커집니다.
+   현재고 화면은 항상 "최신" 스냅샷만 사용하므로, 오래된 스냅샷은 지우지 않고 보관함으로 옮겨서
+   품절 분석 등 매번 자동으로 도는 계산이 최근 데이터만 훑도록 합니다. */
+function archiveOldInventorySnapshots(){
+  const cutoff=new Date();cutoff.setDate(cutoff.getDate()-INVENTORY_RETENTION_DAYS);
+  const cutoffStr=`${cutoff.getFullYear()}-${String(cutoff.getMonth()+1).padStart(2,"0")}-${String(cutoff.getDate()).padStart(2,"0")}`;
+  const archive=readInventoryArchive();
+  let changed=false;
+  for(const [owner,o] of Object.entries(inventoryDb.owners||{})){
+    const dates=Object.keys(o.snapshots||{}).sort();
+    if(dates.length<=1)continue;
+    const latest=dates[dates.length-1];
+    const toMove=dates.filter(d=>d<cutoffStr&&d!==latest);
+    if(!toMove.length)continue;
+    if(!archive.owners[owner])archive.owners[owner]={label:o.label||owner,snapshots:{}};
+    toMove.forEach(d=>{archive.owners[owner].snapshots[d]=o.snapshots[d];delete o.snapshots[d]});
+    changed=true;
+  }
+  if(changed){saveInventoryArchive(archive);localStorage.setItem(INVENTORY_KEY,JSON.stringify(inventoryDb))}
+}
+archiveOldInventorySnapshots();
 
 const DEFAULT_USERS=[
  {name:"Time",email:"time@company.com",role:"admin",active:true},{name:"Leader",email:"leader@company.com",role:"leader",active:true},{name:"Team Member",email:"member@company.com",role:"editor",active:true},{name:"Restricted",email:"viewer@company.com",role:"restricted",active:true}
@@ -4474,12 +4500,36 @@ setTimeout(initInventoryColumnResize,0);
     data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data)}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();window.renderOutbound?.();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
+  const INVENTORY_ARCHIVE_HEADER=['담당자','날짜','제품코드','제품명','제품군','시스템재고','실사재고'];
+  function inventoryArchiveRows(start,end){
+    const archive=window.readInventoryArchive?window.readInventoryArchive():{owners:{}};
+    const out=[];
+    Object.entries(archive.owners||{}).forEach(([owner,o])=>{
+      Object.entries(o.snapshots||{}).forEach(([d,snap])=>{
+        if(start&&d<start)return;
+        if(end&&d>end)return;
+        (snap.products||[]).forEach(p=>{
+          const actual=(p.lots||[]).reduce((a,l)=>a+num(l.qty),0);
+          out.push([owner,d,p.id||'',p.name||'',p.sourceCategory||p.category||'',p.system??'',actual]);
+        });
+      });
+    });
+    return out;
+  }
   function renderDataArchive(){
     if(!$('archiveBody'))return;
     const type=$('archiveType')?.value||'inbound';
+    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
+    if(type==='inventory'){
+      const header=INVENTORY_ARCHIVE_HEADER;
+      const rows=inventoryArchiveRows(start,end);
+      $('archiveTableHead').innerHTML=`<tr>${header.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>`;
+      $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>String(b[1]).localeCompare(String(a[1]))).slice(0,2000).map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${header.length}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
+      $('archiveRowCount').textContent=`${fmt(rows.length)}행`;
+      return;
+    }
     const archive=readArchive();
     const entry=archive[type];
-    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
     const dateIdx=ARCHIVE_DATE_IDX[type];
     const header=entry?.header||[];
     const rows=(entry?.rows||[]).filter(r=>{
@@ -4492,10 +4542,19 @@ setTimeout(initInventoryColumnResize,0);
   }
   function exportArchiveCsv(){
     const type=$('archiveType')?.value||'inbound';
+    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
+    if(type==='inventory'){
+      const header=INVENTORY_ARCHIVE_HEADER;
+      const rows=inventoryArchiveRows(start,end);
+      if(!rows.length){if(typeof toastMsg==='function')toastMsg('내보낼 보관 데이터가 없습니다.');return}
+      const csvRows=[header,...rows];
+      const csv='\ufeff'+csvRows.map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');
+      download(`보관함_재고.csv`,new Blob([csv],{type:'text/csv;charset=utf-8'}));
+      return;
+    }
     const archive=readArchive();
     const entry=archive[type];
     if(!entry||!entry.rows?.length){if(typeof toastMsg==='function')toastMsg('내보낼 보관 데이터가 없습니다.');return}
-    const start=$('archiveStart')?.value||'',end=$('archiveEnd')?.value||'';
     const dateIdx=ARCHIVE_DATE_IDX[type];
     const header=entry.header||[];
     const rows=(entry.rows||[]).filter(r=>{const rd=normDate(r[dateIdx]);return(!start||!rd||rd>=start)&&(!end||!rd||rd<=end)});
