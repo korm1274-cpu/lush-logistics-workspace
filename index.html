@@ -3570,6 +3570,19 @@ setTimeout(initInventoryColumnResize,0);
       localStorage.setItem(DONE_KEY,'1');
     }catch(e){}
   })();
+  /* 출고 원본의 '제품군' 칸 위치가 여러 번 바뀌면서, 예전에 잘못된 위치로 읽어들인 데이터가
+     계속 남아 제품군 자리에 제품명이 섞여 보이는 문제가 있었습니다. 이번에 한 번만,
+     출고 원본 데이터만 깨끗하게 비웁니다. (전에 업로드해주신 과거 요약 데이터나 다른 데이터는
+     그대로 두며, 출고 엑셀 파일을 다시 업로드하시면 이번에 고친 방식으로 다시 정확하게 채워집니다.)*/
+  (function resetOutboundDataOnce(){
+    const DONE_KEY='lush-outbound-data-reset-v1';
+    try{
+      if(localStorage.getItem(DONE_KEY))return;
+      const d=read();
+      if(d.outbound){delete d.outbound;save(d)}
+      localStorage.setItem(DONE_KEY,'1');
+    }catch(e){}
+  })();
   let __sharedSyncing=false;
   let __suppressPullUntil=0;
   function pushSharedData(d){
@@ -4644,7 +4657,34 @@ setTimeout(initInventoryColumnResize,0);
     const dataRowCount=values.length-1;
     const rawDateCol=(dateColIdx!=null)?readRawColumn(ws,dateColIdx,dataRowCount,2):null;
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
-    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList','출고요약':'summaryImport'})[type];const data=read();if(key==='priceList'){
+    const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;
+    /* 출고 원본 파일의 '제품군' 칸은 이름이 비어있거나 자리가 매번 달라져서 헤더 이름만으로는 찾을 수 없었습니다.
+       엑셀에 제품코드↔제품군 매핑표가 2번째 시트로 같이 들어있으면, 그걸로 제품코드마다 제품군을 정확히 찾아
+       '제품군'이라는 이름표를 붙인 새 칸으로 맨 뒤에 추가합니다. (Sheet1의 애매한 칸은 그대로 두고 건드리지 않습니다.) */
+    if(type==='출고'&&wb.SheetNames.length>1){
+      try{
+        const ws2=wb.Sheets[wb.SheetNames[1]];
+        const catRows=XLSX.utils.sheet_to_json(ws2,{header:1,defval:'',raw:true});
+        if(catRows.length>1){
+          const catHeader=catRows[0].map(x=>String(x??'').trim());
+          const normC=s=>String(s||'').replace(/\s+/g,'');
+          const findCatCol=(...labels)=>{
+            for(const lbl of labels){const i=catHeader.findIndex(h=>normC(h)===normC(lbl));if(i>=0)return i}
+            for(const lbl of labels){const i=catHeader.findIndex(h=>normC(h).includes(normC(lbl)));if(i>=0)return i}
+            return -1;
+          };
+          const ci=findCatCol('제품코드','코드'),cg=findCatCol('제품군','카테고리');
+          if(ci>=0&&cg>=0){
+            const catMap={};
+            catRows.slice(1).forEach(r=>{const code=String(r[ci]??'').trim();if(code)catMap[code]=String(r[cg]??'').trim()});
+            const codeIdx=outboundColIndex(header).code;
+            header.push('제품군');
+            raw.forEach(r=>{const code=String(r[codeIdx]??'').trim();r.push(catMap[code]||'')});
+          }
+        }
+      }catch(e){console.error('제품군 매핑 시트 처리 실패:',e)}
+    }
+    const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList','출고요약':'summaryImport'})[type];const data=read();if(key==='priceList'){
       data.priceList={header,rows:raw,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'전체 교체'};save(data);
       rebuildOutboundMonthlySummary();
     }else if(key==='summaryImport'){
