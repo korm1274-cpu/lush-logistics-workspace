@@ -2248,12 +2248,15 @@ html,body{max-width:100%;overflow-x:hidden}
 <style id="out-trend-table-css">
 /* 월별 출고 추이 표: 핵심 지표(월/총수량/출고금액합계)를 하나로 묶어서 테두리 표시,
    전월대비 두 칸, 전년동월대비 두 칸도 각각 별도로 묶어서 테두리 표시 */
-.out-trend-table th:nth-child(1),.out-trend-table td:nth-child(1){border-left:2px solid #ccd3d8}
-.out-trend-table th:nth-child(3),.out-trend-table td:nth-child(3){border-right:2px solid #ccd3d8}
-.out-trend-table th:nth-child(10),.out-trend-table td:nth-child(10){border-left:2px solid #ccd3d8}
-.out-trend-table th:nth-child(11),.out-trend-table td:nth-child(11){border-right:2px solid #ccd3d8}
-.out-trend-table th:nth-child(12),.out-trend-table td:nth-child(12){border-left:2px solid #ccd3d8}
-.out-trend-table th:nth-child(13),.out-trend-table td:nth-child(13){border-right:2px solid #ccd3d8}
+/* 월별 출고/입고 추이 표: 핵심 지표(월/총수량/총금액)를 하나로 묶어서 테두리 표시,
+   전월대비 두 칸, 전년동월대비 두 칸도 각각 별도로 묶어서 테두리 표시 (컬럼 개수가 표마다 달라도
+   안전하게 동작하도록 nth-child 대신 시작/끝 표시 클래스를 씁니다) */
+.out-trend-table th.grp-key-start,.out-trend-table td.grp-key-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-key-end,.out-trend-table td.grp-key-end{border-right:2px solid #ccd3d8}
+.out-trend-table th.grp-mom-start,.out-trend-table td.grp-mom-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-mom-end,.out-trend-table td.grp-mom-end{border-right:2px solid #ccd3d8}
+.out-trend-table th.grp-yoy-start,.out-trend-table td.grp-yoy-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-yoy-end,.out-trend-table td.grp-yoy-end{border-right:2px solid #ccd3d8}
 .out-trend-table .grp-key{background:#fbfcfd}
 .pct-up{color:#2f6fed;font-weight:700}
 .pct-down{color:#f28b22;font-weight:700}
@@ -2536,7 +2539,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" list="inAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="inAnaProductList"></datalist></div><button class="btn primary" id="inAnaRun">조회</button></div>
-    <div class="data-table-wrap" style="overflow-x:hidden"><table class="data-table" style="table-layout:fixed;width:100%"><thead><tr><th style="width:13%">월</th><th class="num" style="width:10%">차수</th><th class="num" style="width:15%">총 수량(EA전환)</th><th class="num" style="width:12%">SKU(G)</th><th class="num" style="width:12%">SKU(EA)</th><th class="num" style="width:19%">수량(G)</th><th class="num" style="width:19%">수량(EA)</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap"><table class="data-table out-trend-table" style="min-width:1450px"><thead><tr><th class="grp-key grp-key-start">월</th><th class="num grp-key">총 수량(EA전환)</th><th class="num grp-key grp-key-end">총 입고금액</th><th class="num">차수</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">입고금액(EA)</th><th class="num">입고금액(G)</th><th class="num grp-mom grp-mom-start">전월대비 입고량</th><th class="num grp-mom grp-mom-end">전월대비 입고금액</th><th class="num grp-yoy grp-yoy-start">전년동월대비 입고량</th><th class="num grp-yoy grp-yoy-end">전년동월대비 입고금액</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
@@ -2560,7 +2563,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 출고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="outAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="outAnaEnd"></div><div class="field"><label>제품군</label><input id="outAnaCatQuery" list="outAnaCatQueryList" placeholder="제품군 입력 또는 선택" autocomplete="off"><datalist id="outAnaCatQueryList"></datalist></div><div class="field grow"><label>제품 검색</label><input id="outAnaQuery" list="outAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="outAnaProductList"></datalist></div><button class="btn primary" id="outAnaRun">조회</button></div>
-    <div class="data-table-wrap"><table class="data-table out-trend-table" style="min-width:1400px"><thead><tr><th class="grp-key">월</th><th class="num grp-key">총 수량(EA전환)</th><th class="num grp-key">출고금액 합계</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">출고금액(EA)</th><th class="num">출고금액(G)</th><th class="num grp-mom">전월대비 출고량</th><th class="num grp-mom">전월대비 출고금액</th><th class="num grp-yoy">전년동월대비 출고량</th><th class="num grp-yoy">전년동월대비 출고금액</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap"><table class="data-table out-trend-table" style="min-width:1400px"><thead><tr><th class="grp-key grp-key-start">월</th><th class="num grp-key">총 수량(EA전환)</th><th class="num grp-key grp-key-end">출고금액 합계</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">출고금액(EA)</th><th class="num">출고금액(G)</th><th class="num grp-mom grp-mom-start">전월대비 출고량</th><th class="num grp-mom grp-mom-end">전월대비 출고금액</th><th class="num grp-yoy grp-yoy-start">전년동월대비 출고량</th><th class="num grp-yoy grp-yoy-end">전년동월대비 출고금액</th></tr></thead><tbody id="outAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 출고 추이</h3></div></div>
@@ -2756,7 +2759,7 @@ html,body{max-width:100%;overflow-x:hidden}
     </div>
   </div>
 </div></section>
-    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="tag"></i></div><h3>단가표 Excel</h3><p>제품코드별 단가표입니다. 출고금액 계산에 사용되며, 새로 업로드하면 이전 단가표 전체를 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="단가표" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="history"></i></div><h3>출고 요약 (과거 데이터) Excel</h3><p>원본 출고 데이터가 없는 과거 달을 월별 요약값(SKU·출고량·출고금액)만으로 채워 넣습니다. 컬럼: 월, SKU(EA), SKU(G), 출고량(EA), 출고량(G), 출고량합계, 출고금액(EA), 출고금액(G), 출고금액합계. 같은 달이 원본 출고 데이터로 나중에 채워지면 그쪽이 우선합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고요약" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
+    <section id="upload" class="view"><div class="upload-grid"><div class="upload-card"><div class="icon"><i data-lucide="file-spreadsheet"></i></div><h3>재고 Excel</h3><p>전일 데이터와 비교하여 재고 차이를 확인합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="재고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-plus"></i></div><h3>입고 Excel</h3><p>입고 데이터와 생산성 분석에 활용합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="입고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="truck"></i></div><h3>출고 Excel</h3><p>출고 현황과 대시보드를 갱신합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="triangle-alert"></i></div><h3>오출고 Excel</h3><p>오출고 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="오출고" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="package-x"></i></div><h3>파손 Excel</h3><p>파손 원본을 업로드하면 최신 파일 기준으로 교체·집계합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="파손" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="boxes"></i></div><h3>출고박스 Excel</h3><p>날짜·요일·담당자·매장·수량 데이터를 누적합니다. 같은 날짜 재업로드 시 해당 날짜만 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고박스" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="tag"></i></div><h3>단가표 Excel</h3><p>제품코드별 단가표입니다. 입고·출고 금액 계산에 사용되며, 새로 업로드하면 이전 단가표 전체를 교체합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="단가표" accept=".xlsx,.xls,.csv"></div></div><div class="upload-card"><div class="icon"><i data-lucide="history"></i></div><h3>출고 요약 (과거 데이터) Excel</h3><p>원본 출고 데이터가 없는 과거 달을 월별 요약값(SKU·출고량·출고금액)만으로 채워 넣습니다. 컬럼: 월, SKU(EA), SKU(G), 출고량(EA), 출고량(G), 출고량합계, 출고금액(EA), 출고금액(G), 출고금액합계. 같은 달이 원본 출고 데이터로 나중에 채워지면 그쪽이 우선합니다.</p><div class="filebox">Excel / CSV 선택<input type="file" class="dataFile" data-type="출고요약" accept=".xlsx,.xls,.csv"></div></div></div><div class="panel mt14"><div class="panel-head"><div><small>UPLOAD HISTORY</small><h3>최근 업로드 이력</h3></div></div><div id="uploadHistory"></div></div></section>
     <section id="dataArchiveView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">ARCHIVE</div><h2>지난 데이터 보관함</h2><p>18개월이 지난 오래된 입고·출고·오출고·파손·출고박스 데이터는 평소 화면 속도를 위해 이곳으로 자동 보관됩니다. 데이터는 삭제되지 않고 그대로 남아있으며, 필요할 때 조회·다운로드할 수 있습니다.</p></div></div>
   <div class="data-filter-row">
@@ -3904,6 +3907,56 @@ setTimeout(initInventoryColumnResize,0);
     d.outboundMonthlySummary={...(d.outboundMonthlySummary||{}),...freshSummary};
     save(d);
   }
+  /* 입고 쪽도 출고와 동일한 방식(단가 곱해서 금액, 월별 요약 미리 계산해서 저장)으로 처리합니다. */
+  function computeInboundMonthlySummary(rows,priceMap){
+    const map={};
+    rows.forEach(r=>{
+      const m=ym(r[0]);if(!m)return;
+      if(!map[m])map[m]={batches:new Set(),skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0,amountEA:0,amountG:0};
+      if(r[1])map[m].batches.add(String(r[1]));
+      const u=inboundUnit(r);
+      const code=String(r[2]||'').trim();
+      const price=priceMap[code]||0;
+      if(code&&u==='G')map[m].skusG.add(code);
+      if(code&&u==='EA')map[m].skusEA.add(code);
+      if(u==='G'){
+        map[m].qtyG+=num(r[6]);
+        const factor=PRODUCT_EA_CONVERSION[code];
+        if(factor){
+          const eaEquiv=num(r[6])/factor;
+          map[m].qtyTotalEA+=eaEquiv;
+          map[m].amountG+=eaEquiv*price;
+        }
+      }else if(u==='EA'){
+        map[m].qtyEA+=num(r[6]);
+        map[m].qtyTotalEA+=num(r[6]);
+        map[m].amountEA+=num(r[6])*price;
+      }
+    });
+    const out={};
+    Object.entries(map).forEach(([m,v])=>{
+      out[m]={batches:v.batches.size,skuG:v.skusG.size,skuEA:v.skusEA.size,qtyG:v.qtyG,qtyEA:v.qtyEA,qtyTotalEA:v.qtyTotalEA,amountEA:v.amountEA,amountG:v.amountG};
+    });
+    return out;
+  }
+  function rebuildInboundMonthlySummary(){
+    const d=read();
+    const rows=d.inbound?.rows||[];
+    const priceMap=getPriceMap();
+    const freshSummary=computeInboundMonthlySummary(rows,priceMap);
+    d.inboundMonthlySummary={...(d.inboundMonthlySummary||{}),...freshSummary};
+    save(d);
+  }
+  document.addEventListener('DOMContentLoaded',()=>{
+    try{
+      const d=read();
+      const FIX_KEY='lush-inbound-summary-init-v1';
+      if(d.inbound?.rows?.length&&(!d.inboundMonthlySummary||!localStorage.getItem(FIX_KEY))){
+        rebuildInboundMonthlySummary();
+        localStorage.setItem(FIX_KEY,'1');
+      }
+    }catch(e){}
+  });
   /* 원본 출고 데이터 없이 '요약값'만으로 과거 달을 채워 넣는 기능입니다.
      같은 달에 실제 출고 원본이 나중에 업로드되면 rebuildOutboundMonthlySummary()가
      그 달을 다시 계산해 덮어쓰므로, 가져온 요약값보다 원본 데이터가 항상 우선합니다. */
@@ -4169,34 +4222,79 @@ setTimeout(initInventoryColumnResize,0);
     if(!$('inAnaBody'))return;
     populateInProductList();
     const d=read(),all=d.inbound?.rows||[];
+    const priceMap=getPriceMap();
     const start=$('inAnaStart')?.value||'',end=$('inAnaEnd')?.value||'';
     const batchQ=($('inAnaBatchQuery')?.value||'').trim().toLowerCase();
     const q=($('inAnaQuery')?.value||'').trim().toLowerCase();
+    const noFilter=!batchQ&&!q;
     const rows=all.filter(r=>{
       const rd=normDate(r[0]);
       return(!start||rd>=start)&&(!end||rd<=end)
         &&(!batchQ||String(r[1]||'').toLowerCase().includes(batchQ))
         &&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[4]||'').toLowerCase().includes(q));
     });
-    const monthMap={};
-    rows.forEach(r=>{
-      const m=ym(r[0]);if(!m)return;
-      if(!monthMap[m])monthMap[m]={batches:new Set(),skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0};
-      if(r[1])monthMap[m].batches.add(String(r[1]));
-      const u=inboundUnit(r);
-      if(r[2]&&u==='G')monthMap[m].skusG.add(String(r[2]));
-      if(r[2]&&u==='EA')monthMap[m].skusEA.add(String(r[2]));
-      if(u==='G'){
-        monthMap[m].qtyG+=num(r[6]);
-        const factor=PRODUCT_EA_CONVERSION[String(r[2]||'').trim()];
-        if(factor)monthMap[m].qtyTotalEA+=num(r[6])/factor;
-      }else if(u==='EA'){
-        monthMap[m].qtyEA+=num(r[6]);
-        monthMap[m].qtyTotalEA+=num(r[6]);
-      }
-    });
-    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0]>b[0]?1:a[0]<b[0]?-1:0).slice(-12);
-    $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
+    // 필터가 없는 '전체' 조회일 때는 업로드 시점에 미리 계산해둔 요약을 그대로 써서 매번 다시 훑지 않습니다.
+    let monthMapAll;
+    if(noFilter&&d.inboundMonthlySummary){
+      monthMapAll=d.inboundMonthlySummary;
+    }else{
+      const raw={};
+      all.filter(r=>(!batchQ||String(r[1]||'').toLowerCase().includes(batchQ))&&(!q||String(r[2]||'').toLowerCase().includes(q)||String(r[4]||'').toLowerCase().includes(q))).forEach(r=>{
+        const m=ym(r[0]);if(!m)return;
+        if(!raw[m])raw[m]={batches:new Set(),skusG:new Set(),skusEA:new Set(),qtyG:0,qtyEA:0,qtyTotalEA:0,amountEA:0,amountG:0};
+        if(r[1])raw[m].batches.add(String(r[1]));
+        const u=inboundUnit(r);
+        const code=String(r[2]||'').trim();
+        const price=priceMap[code]||0;
+        if(code&&u==='G')raw[m].skusG.add(code);
+        if(code&&u==='EA')raw[m].skusEA.add(code);
+        if(u==='G'){
+          raw[m].qtyG+=num(r[6]);
+          const factor=PRODUCT_EA_CONVERSION[code];
+          if(factor){
+            const eaEquiv=num(r[6])/factor;
+            raw[m].qtyTotalEA+=eaEquiv;
+            raw[m].amountG+=eaEquiv*price;
+          }
+        }else if(u==='EA'){
+          raw[m].qtyEA+=num(r[6]);
+          raw[m].qtyTotalEA+=num(r[6]);
+          raw[m].amountEA+=num(r[6])*price;
+        }
+      });
+      monthMapAll={};
+      Object.entries(raw).forEach(([m,v])=>{
+        monthMapAll[m]={batches:v.batches.size,skuG:v.skusG.size,skuEA:v.skusEA.size,qtyG:v.qtyG,qtyEA:v.qtyEA,qtyTotalEA:v.qtyTotalEA,amountEA:v.amountEA,amountG:v.amountG};
+      });
+    }
+    let displayMonths;
+    if(noFilter){
+      const rawMonths=rows.map(r=>ym(r[0])).filter(Boolean);
+      const summaryMonths=Object.keys(monthMapAll);
+      const startYM=start?start.slice(0,7):'',endYM=end?end.slice(0,7):'';
+      displayMonths=[...new Set([...rawMonths,...summaryMonths])]
+        .filter(m=>(!startYM||m>=startYM)&&(!endYM||m<=endYM))
+        .sort();
+    }else{
+      displayMonths=[...new Set(rows.map(r=>ym(r[0])).filter(Boolean))].sort();
+    }
+    const pctLabel=v=>{
+      if(v===null||v===undefined)return '-';
+      const cls=v>=0?'pct-up':'pct-down';
+      return `<span class="${cls}">${v>=0?'+':''}${v.toFixed(1)}%</span>`;
+    };
+    $('inAnaTrendBody').innerHTML=displayMonths.length?displayMonths.map(m=>{
+      const v=monthMapAll[m];
+      if(!v)return `<tr><td class="grp-key">${esc(m)}</td><td colspan="13" class="data-empty">데이터가 없습니다.</td></tr>`;
+      const amountTotal=v.amountEA+v.amountG;
+      const prev=monthMapAll[shiftMonth(m,-1)];
+      const yoy=monthMapAll[shiftMonth(m,-12)];
+      const qtyMoM=prev?pct(v.qtyTotalEA,prev.qtyTotalEA):null;
+      const amtMoM=prev?pct(amountTotal,prev.amountEA+prev.amountG):null;
+      const qtyYoy=yoy?pct(v.qtyTotalEA,yoy.qtyTotalEA):null;
+      const amtYoy=yoy?pct(amountTotal,yoy.amountEA+yoy.amountG):null;
+      return `<tr><td class="grp-key grp-key-start">${esc(m)}</td><td class="num grp-key">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num grp-key grp-key-end">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(v.batches)}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num grp-mom grp-mom-start">${pctLabel(qtyMoM)}</td><td class="num grp-mom grp-mom-end">${pctLabel(amtMoM)}</td><td class="num grp-yoy grp-yoy-start">${pctLabel(qtyYoy)}</td><td class="num grp-yoy grp-yoy-end">${pctLabel(amtYoy)}</td></tr>`;
+    }).join(''):'<tr><td colspan="14" class="data-empty">데이터가 없습니다.</td></tr>';
     if(!__inAnaDetailSearched){
       $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
     }else{
@@ -4422,7 +4520,7 @@ setTimeout(initInventoryColumnResize,0);
       const amtMoM=prev?pct(amountTotal,prev.amountEA+prev.amountG):null;
       const qtyYoy=yoy?pct(v.qtyTotalEA,yoy.qtyTotalEA):null;
       const amtYoy=yoy?pct(amountTotal,yoy.amountEA+yoy.amountG):null;
-      return `<tr><td class="grp-key">${esc(m)}</td><td class="num grp-key">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num grp-key">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num grp-mom">${pctLabel(qtyMoM)}</td><td class="num grp-mom">${pctLabel(amtMoM)}</td><td class="num grp-yoy">${pctLabel(qtyYoy)}</td><td class="num grp-yoy">${pctLabel(amtYoy)}</td></tr>`;
+      return `<tr><td class="grp-key grp-key-start">${esc(m)}</td><td class="num grp-key">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num grp-key grp-key-end">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num grp-mom grp-mom-start">${pctLabel(qtyMoM)}</td><td class="num grp-mom grp-mom-end">${pctLabel(amtMoM)}</td><td class="num grp-yoy grp-yoy-start">${pctLabel(qtyYoy)}</td><td class="num grp-yoy grp-yoy-end">${pctLabel(amtYoy)}</td></tr>`;
     }).join(''):'<tr><td colspan="13" class="data-empty">데이터가 없습니다.</td></tr>';
     $('outAnaBody').innerHTML=rows.length?rows.slice().sort((a,b)=>{const A=normDate(a[cols.date]),B=normDate(b[cols.date]);return B>A?1:B<A?-1:0}).slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[cols.date]))}</td><td>${esc(r[cols.code])}</td><td>${esc(r[cols.category])}</td><td>${esc(r[cols.name])}</td><td>${esc(r[cols.unit])}</td><td class="num">${fmt(r[cols.qty])}</td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
     renderOutCategoryTrend(knownCats);
@@ -4801,6 +4899,7 @@ setTimeout(initInventoryColumnResize,0);
     const key=({'입고':'inbound','출고':'outbound','오출고':'misship','파손':'damage','출고박스':'box','단가표':'priceList','출고요약':'summaryImport'})[type];const data=read();if(key==='priceList'){
       data.priceList={header,rows:raw,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'전체 교체'};save(data);
       rebuildOutboundMonthlySummary();
+      rebuildInboundMonthlySummary();
     }else if(key==='summaryImport'){
       const{count,skipped}=importOutboundMonthlySummary(header,raw);
       window.renderOutbound?.();
@@ -4814,7 +4913,7 @@ setTimeout(initInventoryColumnResize,0);
     }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
     const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
     rows=archiveOldRows(key,header,rows,archiveDateIdx);
-    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();if(key==='inbound')rebuildInboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
   const INVENTORY_ARCHIVE_HEADER=['담당자','날짜','제품코드','제품명','제품군','시스템재고','실사재고'];
