@@ -3201,8 +3201,8 @@ if(printInventoryBtn)printInventoryBtn.onclick=()=>window.print();
 function openInventoryTotal(label,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));inventoryTotalView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;renderInventoryTotalFilters();renderInventoryTotal()}
 function totalRows(){const rows=[];for(const [owner,o] of Object.entries(inventoryDb.owners||{})){const date=ensureTodaySnapshot(owner);const snap=o.snapshots?.[date];for(const p of (snap?.products||[])){const actual=productActual(p),months={};for(const l of (p.lots||[])){if(!l.date)continue;const month=String(l.date).slice(0,7);if(/^\d{4}-\d{2}$/.test(month))months[month]=(months[month]||0)+invNum(l.qty)}rows.push({owner,date,category:p.sourceCategory||p.category||"",id:p.id,name:p.name,system:invNum(p.system),actual,diff:actual-invNum(p.system),months})}}return rows}
 function renderInventoryTotalFilters(){const owners=Object.keys(inventoryDb.owners||{});const cats=[...new Set(totalRows().map(r=>r.category).filter(Boolean))].sort();const prevOwner=totalInventoryOwner.value||"",prevCat=totalInventoryCategory.value||"";totalInventoryOwner.innerHTML='<option value="">전체 담당자</option>'+owners.map(o=>`<option value="${esc(o)}">${esc(o)}</option>`).join("");totalInventoryCategory.innerHTML='<option value="">전체 제품군</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");if(owners.includes(prevOwner))totalInventoryOwner.value=prevOwner;if(cats.includes(prevCat))totalInventoryCategory.value=prevCat}
-function monthlyQtyText(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?entries.map(([m,q])=>`${m.slice(5)}월 ${fmtNum(q)}개`).join(" · "):"-"}
-function monthlyQtyHtml(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a.localeCompare(b));return entries.length?`<div class="month-stock-wrap">${entries.map(([m,q])=>`<span class="month-stock-chip"><b>${esc(m.slice(5))}월</b><strong>${fmtNum(q)}개</strong></span>`).join("")}</div>`:`<span class="month-stock-empty">-</span>`}
+function monthlyQtyText(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a>b?1:a<b?-1:0);return entries.length?entries.map(([m,q])=>`${m.slice(5)}월 ${fmtNum(q)}개`).join(" · "):"-"}
+function monthlyQtyHtml(months){const entries=Object.entries(months||{}).sort(([a],[b])=>a>b?1:a<b?-1:0);return entries.length?`<div class="month-stock-wrap">${entries.map(([m,q])=>`<span class="month-stock-chip"><b>${esc(m.slice(5))}월</b><strong>${fmtNum(q)}개</strong></span>`).join("")}</div>`:`<span class="month-stock-empty">-</span>`}
 function renderInventoryTotal(){const of=totalInventoryOwner.value||"",cf=totalInventoryCategory.value||"",q=(totalInventorySearch?.value||"").trim().toLowerCase();const rows=totalRows().filter(r=>(!of||r.owner===of)&&(!cf||r.category===cf)&&(!q||String(r.id||"").toLowerCase().includes(q)||String(r.name||"").toLowerCase().includes(q)));inventoryTotalBody.innerHTML=rows.length?rows.map(r=>`<tr><td><span class="inventory-total-owner">${esc(r.owner)}</span></td><td>${esc(r.id)}</td><td class="product-name">${esc(r.name)}</td><td>${esc(r.category)}</td><td class="num">${fmtNum(r.system)}</td><td class="num">${fmtNum(r.actual)}</td><td class="num ${diffClass(r.diff)} ${r.diff!==0?"gap-cell":""}">${r.diff>0?"+":""}${fmtNum(r.diff)}</td><td>${monthlyQtyHtml(r.months)}</td></tr>`).join(""):'<tr><td colspan="8"><div class="inventory-empty">취합할 재고가 없습니다.</div></td></tr>';const sku=new Set(rows.map(r=>r.id)).size,actual=rows.reduce((a,r)=>a+invNum(r.actual),0),gap=rows.reduce((a,r)=>a+Math.abs(invNum(r.diff)),0);totalMetricSku.textContent=fmtNum(sku);totalMetricActual.textContent=fmtNum(actual);totalMetricGap.textContent=fmtNum(gap);const dates=[...new Set(rows.map(r=>r.date).filter(Boolean))].sort();const today=localToday();const label=dates.length===1?dates[0]:(dates.length>1?`${dates[0]} ~ ${dates[dates.length-1]}`:today);totalInventoryAsOf.textContent=label;totalInventoryDateHint.textContent=dates.length>1?"담당자별 기준일 상이":`${label} 기준`;totalInventoryFootDate.textContent=`현재 표시 재고 기준: ${label}`}
 totalInventoryOwner.onchange=renderInventoryTotal;totalInventoryCategory.onchange=renderInventoryTotal;totalInventorySearch.oninput=renderInventoryTotal;exportTotalCsv.onclick=()=>{const rows=[["담당자","기준일","제품군","제품코드","제품명","현재고","실사","차이","제조월별 재고"],...totalRows().map(r=>[r.owner,r.date,r.category,r.id,r.name,r.system,r.actual,r.diff,monthlyQtyText(r.months)])];const csv=rows.map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download("총재고파일.csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
 function renderHistory(){const hist=JSON.parse(localStorage.getItem(HIST_KEY)||"[]");uploadHistory.innerHTML=hist.length?hist.map(x=>`<div class="history-row"><span>${x.time}</span><b>${esc(x.name)}</b><span>${x.type}</span><span>${x.rows} rows</span></div>`).join(""):`<div class="muted" style="font-size:10px">아직 업로드 이력이 없습니다.</div>`}
@@ -3388,7 +3388,7 @@ setTimeout(initInventoryColumnResize,0);
     const{start,end}=thisWeekRange();
     const all=getRequests().filter(r=>r&&r.type===type&&(r.status||"미처리")!=="처리완료"&&(Array.isArray(r.requestDates)&&r.requestDates.some(d=>d>=start&&d<=end)))
       .map(r=>({...r,__weekDate:(r.requestDates||[]).filter(d=>d>=start&&d<=end).sort()[0]}))
-      .sort((a,b)=>String(a.__weekDate).localeCompare(String(b.__weekDate)));
+      .sort((a,b)=>{const A=String(a.__weekDate),B=String(b.__weekDate);return A>B?1:A<B?-1:0});
     const list=document.querySelector(`[data-request-list="${type}"]`),count=document.querySelector(`[data-request-count="${type}"]`);if(count)count.textContent=`${all.length}건`;if(!list)return;
     if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>이번 주 등록된 미처리 요청이 없습니다.</button>';return}
     list.innerHTML=all.slice(0,6).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명을 클릭하면 등록된 URL로 이동합니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(String(r.__weekDate||"").slice(5).replace("-","/"))}</button><span class="status-cell"><button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button></span></div>`).join("");
@@ -3562,7 +3562,21 @@ setTimeout(initInventoryColumnResize,0);
   const HIST_KEY_LOCAL=(typeof HIST_KEY!=='undefined'?HIST_KEY:'lush-logistics-upload-history');
   const $=id=>document.getElementById(id), esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
   const SHARED_API='/api/shared-data';
-  const read=()=>{try{let x=JSON.parse(localStorage.getItem(STORE_KEY)||'null');if(!x){x=JSON.parse(localStorage.getItem(LEGACY_KEY)||'{}')||{};localStorage.setItem(STORE_KEY,JSON.stringify(x))}return x}catch{return{}}};
+  /* read()가 화면 하나 여는 동안에도 여러 번 호출되는데, 그때마다 저장된 데이터 전체(입고·출고·오출고·파손·출고박스 등)를
+     처음부터 다시 JSON.parse 하고 있었습니다. 데이터가 2만 행 넘게 쌓인 지금은 이게 매번 상당한 시간을 잡아먹습니다.
+     localStorage에 실제로 새로 저장된 게 없으면 이전에 파싱해둔 결과를 그대로 재사용하도록 캐시를 둡니다. */
+  let __readCacheRaw=null,__readCacheObj=null;
+  const read=()=>{
+    const raw=localStorage.getItem(STORE_KEY);
+    if(raw===__readCacheRaw&&__readCacheObj)return __readCacheObj;
+    try{
+      let x=JSON.parse(raw||'null');
+      if(!x){x=JSON.parse(localStorage.getItem(LEGACY_KEY)||'{}')||{};localStorage.setItem(STORE_KEY,JSON.stringify(x))}
+      __readCacheRaw=localStorage.getItem(STORE_KEY);
+      __readCacheObj=x;
+      return x;
+    }catch{return{}}
+  };
   const readArchive=()=>{try{return JSON.parse(localStorage.getItem(ARCHIVE_KEY)||'{}')||{}}catch{return{}}};
   const saveArchive=a=>localStorage.setItem(ARCHIVE_KEY,JSON.stringify(a));
   function save(d){
@@ -3740,7 +3754,7 @@ setTimeout(initInventoryColumnResize,0);
         map[key].qtyTotalEA+=num(r[6]);
       }
     });
-    const entries=Object.values(map).sort((a,b)=>b.date.localeCompare(a.date));
+    const entries=Object.values(map).sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
     $('ibBody').innerHTML=entries.length?entries.map(e=>`<tr><td>${esc(e.date)}</td><td>${esc(e.batch)}</td><td class="num">${fmt(Math.round(e.qtyTotalEA))}</td><td class="num">${fmt(e.skusG.size)}</td><td class="num">${fmt(e.skusEA.size)}</td><td class="num">${fmt(e.qtyG)}</td><td class="num">${fmt(e.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
   }
   const OUT_LABOR_KEY='lush-logistics-outbound-labor-v1';
@@ -3953,7 +3967,7 @@ setTimeout(initInventoryColumnResize,0);
       }
     });
     const labor=getOutLabor();
-    const entries=Object.values(map).sort((a,b)=>b.date.localeCompare(a.date));
+    const entries=Object.values(map).sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
     $('obBody').innerHTML=entries.length?entries.map(e=>{
       const lab=labor[e.date]||{};
       const staff=num(lab.staff),hours=num(lab.hours);
@@ -4145,7 +4159,7 @@ setTimeout(initInventoryColumnResize,0);
         monthMap[m].qtyTotalEA+=num(r[6]);
       }
     });
-    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0].localeCompare(b[0])).slice(-12);
+    const monthEntries=Object.entries(monthMap).sort((a,b)=>a[0]>b[0]?1:a[0]<b[0]?-1:0).slice(-12);
     $('inAnaTrendBody').innerHTML=monthEntries.length?monthEntries.map(([m,v])=>`<tr><td>${esc(m)}</td><td class="num">${fmt(v.batches.size)}</td><td class="num">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num">${fmt(v.skusG.size)}</td><td class="num">${fmt(v.skusEA.size)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td></tr>`).join(''):'<tr><td colspan="7" class="data-empty">데이터가 없습니다.</td></tr>';
     if(!__inAnaDetailSearched){
       $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
@@ -4393,7 +4407,7 @@ setTimeout(initInventoryColumnResize,0);
     const idx=group==='store'?2:group==='method'?3:group==='manager'?9:null,map={};
     rows.forEach(r=>{const k=group==='month'?ym(r[1]??r[0]):String(r[idx]||'(미지정)').trim();if(!map[k])map[k]={c:0,a:0};map[k].c++;map[k].a+=num(r[7])});
     $('dmFyTableHead').innerHTML=group==='month'?'<th>월</th><th class="num">건수</th><th class="num">금액</th>':`<th>${group==='manager'?'담당자':group==='store'?'매장':'출고방식'}</th><th class="num">건수</th><th class="num">금액</th>`;
-    const entries=Object.entries(map).sort((a,b)=>group==='month'?a[0].localeCompare(b[0]):b[1].a-a[1].a);
+    const entries=Object.entries(map).sort((a,b)=>group==='month'?(a[0]>b[0]?1:a[0]<b[0]?-1:0):b[1].a-a[1].a);
     $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${fmt(v.c)}건</td><td class="num">${fmt(v.a)}원</td></tr>`).join(''):'<tr><td colspan="3" class="data-empty">데이터가 없습니다.</td></tr>';
   }
   function populateDamageDatalists(){
@@ -4509,7 +4523,7 @@ setTimeout(initInventoryColumnResize,0);
     }
     const st=$('boxStart').value,en=$('boxEnd').value,mgr=$('boxManagerFilter').value.trim().toLowerCase(),store=$('boxStoreFilter').value.trim().toLowerCase();
     const rows=boxRows().filter(r=>(!st||!r[0]||normDate(r[0])>=st)&&(!en||!r[0]||normDate(r[0])<=en)&&(!mgr||String(r[2]||'').toLowerCase().includes(mgr))&&(!store||String(r[3]||'').toLowerCase().includes(store))&&num(r[4])>0);
-    const sorted=rows.slice().sort((a,b)=>normDate(b[0]||'').localeCompare(normDate(a[0]||'')));
+    const sorted=rows.slice().sort((a,b)=>{const A=normDate(a[0]||''),B=normDate(b[0]||'');return B>A?1:B<A?-1:0});
     const totalQty=sorted.reduce((a,r)=>a+num(r[4]),0);
     const managerCount=new Set(sorted.map(r=>r[2]).filter(Boolean)).size;
     const monthCount=new Set(sorted.map(r=>normDate(r[0]||'').slice(0,7)).filter(Boolean)).size||1;
@@ -4787,7 +4801,7 @@ setTimeout(initInventoryColumnResize,0);
       const header=INVENTORY_ARCHIVE_HEADER;
       const rows=inventoryArchiveRows(start,end);
       $('archiveTableHead').innerHTML=`<tr>${header.map(h=>`<th>${esc(h)}</th>`).join('')}</tr>`;
-      $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>String(b[1]).localeCompare(String(a[1]))).slice(0,2000).map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${header.length}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
+      $('archiveBody').innerHTML=rows.length?rows.slice().sort((a,b)=>{const A=String(a[1]),B=String(b[1]);return B>A?1:B<A?-1:0}).slice(0,2000).map(r=>`<tr>${r.map(v=>`<td>${esc(v)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${header.length}" class="data-empty">보관된 데이터가 없습니다.</td></tr>`;
       $('archiveRowCount').textContent=`${fmt(rows.length)}행`;
       return;
     }
@@ -4914,9 +4928,9 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
 (function(){
  const NOTICE='lush-v51-notices',TODO='lush-v51-todos';
  const $=id=>document.getElementById(id),read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||d}catch{return d}},save=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort((a,b)=>Number(a.done)-Number(b.done)||String(b.date).localeCompare(String(a.date)));if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';if($('dashTodoList'))$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="ops-todo-manager">${esc(x.manager||'미지정')}</span><span class="todo-content">${esc(x.content)}</span><span class="badge ${x.done?'':'info'}">${x.done?'완료':'미완료'}</span></div>`).join(''):'<div class="data-empty">등록된 할 일이 없습니다.</div>'}
+ function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort((a,b)=>Number(a.done)-Number(b.done)||(String(b.date)>String(a.date)?1:String(b.date)<String(a.date)?-1:0));if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';if($('dashTodoList'))$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="ops-todo-manager">${esc(x.manager||'미지정')}</span><span class="todo-content">${esc(x.content)}</span><span class="badge ${x.done?'':'info'}">${x.done?'완료':'미완료'}</span></div>`).join(''):'<div class="data-empty">등록된 할 일이 없습니다.</div>'}
  function renderNoticeManager(){const body=$('noticeMgrBody');if(!body)return;const a=read(NOTICE,[]);body.innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.date||'')}</td><td><b>${esc(x.title||'')}</b></td><td>${esc(x.content||'')}</td><td>${esc(x.author||'')}</td><td><button class="btn" data-notice-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 공지가 없습니다.</td></tr>';body.querySelectorAll('[data-notice-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 공지를 삭제하시겠습니까?'))return;save(NOTICE,a.filter(x=>x.id!==b.dataset.noticeDel));renderAll()})}
- function renderTodoManager(){const body=$('todoMgrBody');if(!body)return;const a=read(TODO,[]).sort((x,y)=>Number(x.done)-Number(y.done)||String(y.date).localeCompare(String(x.date)));body.innerHTML=a.length?a.map(x=>`<tr><td>${esc((x.date||'').slice(0,10))}</td><td><b>${esc(x.manager||'미지정')}</b></td><td>${esc(x.content||'')}</td><td><button class="btn" data-todo-toggle="${x.id}">${x.done?'완료':'미완료'}</button></td><td><button class="btn" data-todo-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 할 일이 없습니다.</td></tr>';body.querySelectorAll('[data-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.todoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()});body.querySelectorAll('[data-todo-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 할 일을 삭제하시겠습니까?'))return;save(TODO,read(TODO,[]).filter(x=>x.id!==b.dataset.todoDel));renderAll()})}
+ function renderTodoManager(){const body=$('todoMgrBody');if(!body)return;const a=read(TODO,[]).sort((x,y)=>Number(x.done)-Number(y.done)||(String(y.date)>String(x.date)?1:String(y.date)<String(x.date)?-1:0));body.innerHTML=a.length?a.map(x=>`<tr><td>${esc((x.date||'').slice(0,10))}</td><td><b>${esc(x.manager||'미지정')}</b></td><td>${esc(x.content||'')}</td><td><button class="btn" data-todo-toggle="${x.id}">${x.done?'완료':'미완료'}</button></td><td><button class="btn" data-todo-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 할 일이 없습니다.</td></tr>';body.querySelectorAll('[data-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.todoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()});body.querySelectorAll('[data-todo-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 할 일을 삭제하시겠습니까?'))return;save(TODO,read(TODO,[]).filter(x=>x.id!==b.dataset.todoDel));renderAll()})}
  function renderAll(){renderDashboard();renderNoticeManager();renderTodoManager()}
  window.renderOpsDashboard=renderAll;
  document.addEventListener('DOMContentLoaded',()=>{
@@ -4986,12 +5000,12 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
       if(r[2])map[date].skus.add(String(r[2]));
       if(r[1])map[date].batches.add(String(r[1]));
     });
-    return Object.values(map).map(x=>({date:x.date,qty:x.qty,sku:x.skus.size,batch:x.batches.size})).sort((a,b)=>b.date.localeCompare(a.date));
+    return Object.values(map).map(x=>({date:x.date,qty:x.qty,sku:x.skus.size,batch:x.batches.size})).sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
   }
   function availableInboundYears(){
     const rows=inboundRows();
     const years=new Set(rows.map(r=>normInboundDate(r[0]).slice(0,4)).filter(y=>/^\d{4}$/.test(y)));
-    return[...years].sort((a,b)=>b.localeCompare(a));
+    return[...years].sort((a,b)=>b>a?1:b<a?-1:0);
   }
   function monthlyAgg(year){
     const rows=inboundRows(),labor=getLabor(),dailyQty=dailyQtyMap(rows),map={};
@@ -5022,7 +5036,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
         if(staff>0&&hours>0){prodSum+=(dailyQty[d]||0)/(staff*hours);prodCnt++}
       });
       return{month:x.month,qty:x.qty,qtyG:x.qtyG,qtyEA:x.qtyEA,batchCount:x.batches.size,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
-    }).sort((a,b)=>year?a.month.localeCompare(b.month):b.month.localeCompare(a.month));
+    }).sort((a,b)=>year?(a.month>b.month?1:a.month<b.month?-1:0):(b.month>a.month?1:b.month<a.month?-1:0));
   }
   function renderInboundDailyView(){
     const tbody=$('inboundDailyBody');if(!tbody)return;
