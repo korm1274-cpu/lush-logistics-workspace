@@ -3984,9 +3984,9 @@ setTimeout(initInventoryColumnResize,0);
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
   window.renderOutboundBasic=renderOutboundBasic;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
-  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리']);
+  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리','데모','DEMO','디지털부자재','디지털사은품']);
   const CATEGORY_EXCLUDE_PATTERN=/^(19|20)?\d{2}년/;
-  const CATEGORY_EXCLUDE_KEYWORDS=['SPA','ACCESSOR','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','악세','엑세','액세'];
+  const CATEGORY_EXCLUDE_KEYWORDS=['SPA','ACCESSOR','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','악세','엑세','액세','데모','DEMO','디지털부자재','디지털사은품'];
   function categoryDisplay(raw){
     const v=String(raw||'').trim().toUpperCase();
     if(!v)return null;
@@ -4353,9 +4353,9 @@ setTimeout(initInventoryColumnResize,0);
       const startYM=start?start.slice(0,7):'',endYM=end?end.slice(0,7):'';
       displayMonths=[...new Set([...rawMonths,...summaryMonths])]
         .filter(m=>(!startYM||m>=startYM)&&(!endYM||m<=endYM))
-        .sort().slice(-12);
+        .sort();
     }else{
-      displayMonths=[...new Set(rows.map(r=>ym(r[cols.date])).filter(Boolean))].sort().slice(-12);
+      displayMonths=[...new Set(rows.map(r=>ym(r[cols.date])).filter(Boolean))].sort();
     }
     const pctLabel=v=>v===null||v===undefined?'-':`${v>=0?'+':''}${v.toFixed(1)}%`;
     $('outAnaTrendBody').innerHTML=displayMonths.length?displayMonths.map(m=>{
@@ -4701,6 +4701,9 @@ setTimeout(initInventoryColumnResize,0);
     const rawDateCol=(dateColIdx!=null)?readRawColumn(ws,dateColIdx,dataRowCount,2):null;
     if(rawDateCol){for(let i=0;i<dataRowCount;i++){if(values[i+1])values[i+1][dateColIdx]=rawDateCol[i]}}
     const header=values[0].map(x=>String(x??'').trim()),raw=fixDateCellsToLocal(values.slice(1).filter(r=>r.some(x=>x!==''&&x!=null)),dateColIdx);const type=inp.dataset.type;
+    /* 엑셀에서 중간 칸이 비어있는 행은 그 칸을 건너뛰고 뒤 칸들이 한 칸씩 앞으로 당겨져서 읽히는 경우가 있습니다.
+       모든 행의 길이를 헤더 길이에 맞춰 채워서, 칸 위치가 행마다 어긋나지 않도록 합니다. */
+    raw.forEach(r=>{while(r.length<header.length)r.push('')});
     /* 출고 원본 파일의 '제품군' 칸은 이름이 비어있거나 자리가 매번 달라져서 헤더 이름만으로는 찾을 수 없었습니다.
        엑셀에 제품코드↔제품군 매핑표가 2번째 시트로 같이 들어있으면, 그걸로 제품코드마다 제품군을 정확히 찾아
        '제품군'이라는 이름표를 붙인 새 칸으로 맨 뒤에 추가합니다. (Sheet1의 애매한 칸은 그대로 두고 건드리지 않습니다.) */
