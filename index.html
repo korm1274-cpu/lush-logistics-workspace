@@ -1676,9 +1676,8 @@ body{letter-spacing:-.018em!important}
 #dashboard .schedule-full-card{overflow:hidden!important;}
 @media(max-width:900px){#dashboard .schedule-staff-primary span,#dashboard .schedule-staff-secondary span{font-size:10px!important}#dashboard .schedule-staff-primary strong{font-size:25px!important}#dashboard .schedule-staff-secondary b{font-size:15px!important}}
 </style>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Noto Sans KR 구글 폰트 5종 미리 불러오기 제거: Pretendard가 항상 우선 로딩되고, Noto Sans KR은 그게 실패할 때만 쓰는
+     대체(fallback) 폰트라 평소엔 거의 안 쓰이는데도 매번 5개 굵기를 다 받아오고 있었습니다. -->
 
 <style id="v62-cos-hierarchy-mobile">
 /* V62 — clearer menu hierarchy, soft dashboard color coding, simplified request columns, Noto Sans KR, mobile ratio tuning */
