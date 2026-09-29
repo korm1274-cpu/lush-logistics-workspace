@@ -2353,7 +2353,9 @@ html,body{max-width:100%;overflow-x:hidden}
 <style id="v81-dashboard-readability-symmetry">
 /* V81 — main dashboard readability + balanced spacing */
 #appShell #dashboard{
-  margin:0!important;
+  width:calc(100% - 24px)!important;
+  max-width:1680px!important;
+  margin:0 auto!important;
   padding:20px!important;
   box-sizing:border-box!important;
 }
@@ -2458,20 +2460,23 @@ html,body{max-width:100%;overflow-x:hidden}
   box-sizing:border-box!important;
 }
 #appShell #dashboard .request-mini-header{
-  grid-template-columns:minmax(0,1fr) 60px 64px!important;
-  gap:6px!important;
-  padding:10px 8px!important;
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
+  padding:10px 10px!important;
   font-size:10.5px!important;
 }
+#appShell #dashboard .request-mini-header span:first-child{text-align:left!important}
+#appShell #dashboard .request-mini-header span:nth-child(2),
+#appShell #dashboard .request-mini-header span:nth-child(3){text-align:center!important}
 #appShell #dashboard .request-mini-body{
   min-height:124px!important;
   padding-top:8px!important;
 }
 #appShell #dashboard .request-row{
-  grid-template-columns:minmax(0,1fr) 60px 64px!important;
-  gap:6px!important;
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
   min-height:42px!important;
-  padding:10px 8px!important;
+  padding:10px 10px!important;
   box-sizing:border-box!important;
 }
 #appShell #dashboard .request-row .store-name,
@@ -2479,11 +2484,21 @@ html,body{max-width:100%;overflow-x:hidden}
   font-size:11.5px!important;
   font-weight:650!important;
 }
+#appShell #dashboard .request-row .status-cell{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  text-align:center!important;
+}
+#appShell #dashboard .request-row .doc-no{text-align:center!important}
 #appShell #dashboard .request-row .request-state-btn{
   width:64px!important;
   min-width:64px!important;
+  margin:0 auto!important;
   padding:6px 4px!important;
   font-size:10.5px!important;
+  text-align:center!important;
 }
 #appShell #dashboard .request-empty-card{
   min-height:124px!important;
@@ -2547,7 +2562,7 @@ html,body{max-width:100%;overflow-x:hidden}
   #appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:900px){
-  #appShell #dashboard{padding:14px!important}
+  #appShell #dashboard{width:100%!important;padding:14px!important}
   #appShell #dashboard .dashboard-notice-todo-grid,
   #appShell #dashboard .request-card-grid,
   #appShell #dashboard .monthly-grid{grid-template-columns:1fr!important}
