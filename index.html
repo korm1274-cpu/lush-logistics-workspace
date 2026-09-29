@@ -2349,6 +2349,213 @@ html,body{max-width:100%;overflow-x:hidden}
 .status-bottom-table{margin-top:14px}
 @media(max-width:980px){.ship-progress-grid,.prod-layout,.cum-layout,.detail-layout{grid-template-columns:1fr}.status-summary-grid{grid-template-columns:1fr}.chart-wrap{height:250px}}
 </style>
+
+<style id="v81-dashboard-readability-symmetry">
+/* V81 — main dashboard readability + balanced spacing */
+#appShell #dashboard{
+  margin:0!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard>.dash-section{
+  margin:0 0 20px!important;
+  border-radius:10px!important;
+}
+#appShell #dashboard>.dash-section:last-child{margin-bottom:0!important}
+
+/* Notice / TO DO: same outer geometry and larger readable type */
+#appShell #dashboard .dashboard-notice-todo-grid{
+  gap:20px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .dashboard-info-panel{
+  padding:22px!important;
+  min-height:250px!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dashboard-panel-title{
+  margin:0 0 16px!important;
+  min-height:32px!important;
+  align-items:center!important;
+}
+#appShell #dashboard .dashboard-panel-title h3,
+#appShell #dashboard .dash-section-head h3,
+#appShell #dashboard .schedule-title-line h3{
+  font-size:20px!important;
+  line-height:1.3!important;
+  letter-spacing:-.02em!important;
+}
+#appShell #dashboard .notice-side{font-size:12px!important}
+#appShell #dashboard .notice-side b{font-size:15px!important;margin-left:7px!important}
+#appShell #dashboard .notice-main{
+  min-height:158px!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .notice-main b{font-size:15px!important;line-height:1.5!important}
+#appShell #dashboard .notice-main p{font-size:13px!important;line-height:1.65!important;margin-top:8px!important}
+#appShell #dashboard .notice-pin{font-size:11px!important;padding:5px 8px!important}
+#appShell #dashboard .ops-todo-head{
+  margin:0 0 10px!important;
+  font-size:12px!important;
+}
+#appShell #dashboard .ops-todo-list{max-height:190px!important}
+#appShell #dashboard .ops-todo-item{
+  min-height:40px!important;
+  padding:9px 10px!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .ops-todo-manager,
+#appShell #dashboard .todo-content{font-size:13px!important}
+#appShell #dashboard .ops-todo-item .badge{
+  font-size:11px!important;
+  min-height:27px!important;
+}
+
+/* Section headers: equal left/right padding */
+#appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card){
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dash-section-head{
+  padding:0!important;
+  margin:0 0 16px!important;
+  min-height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+
+/* Weekly outbound requests: four equal cards and one request per single horizontal row */
+#appShell #dashboard .request-card-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .request-mini-card{
+  height:100%!important;
+  border-radius:8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#appShell #dashboard .request-mini-head{
+  min-height:54px!important;
+  padding:14px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-head b{
+  font-size:14px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .request-badge{
+  font-size:11px!important;
+  padding:5px 7px!important;
+}
+#appShell #dashboard .request-mini-table{
+  padding:0 12px 12px!important;
+  flex:1 1 auto!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-header{
+  grid-template-columns:minmax(0,1fr) 60px 64px!important;
+  gap:6px!important;
+  padding:10px 8px!important;
+  font-size:10.5px!important;
+}
+#appShell #dashboard .request-mini-body{
+  min-height:124px!important;
+  padding-top:8px!important;
+}
+#appShell #dashboard .request-row{
+  grid-template-columns:minmax(0,1fr) 60px 64px!important;
+  gap:6px!important;
+  min-height:42px!important;
+  padding:10px 8px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-row .store-name,
+#appShell #dashboard .request-row .doc-no{
+  font-size:11.5px!important;
+  font-weight:650!important;
+}
+#appShell #dashboard .request-row .request-state-btn{
+  width:64px!important;
+  min-width:64px!important;
+  padding:6px 4px!important;
+  font-size:10.5px!important;
+}
+#appShell #dashboard .request-empty-card{
+  min-height:124px!important;
+  font-size:11px!important;
+}
+
+/* Schedule: increase small text and keep header/calendar padding visually balanced */
+#appShell #dashboard .schedule-full-card{
+  margin:0 0 20px!important;
+  padding:0!important;
+}
+#appShell #dashboard .schedule-unified-head{
+  min-height:82px!important;
+  padding:18px 20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .schedule-title-line{gap:12px!important}
+#appShell #dashboard .schedule-title-line .dash-month{font-size:12px!important}
+#appShell #dashboard .schedule-staff-primary span,
+#appShell #dashboard .schedule-staff-secondary span{font-size:11px!important}
+#appShell #dashboard .schedule-staff-primary strong{font-size:28px!important}
+#appShell #dashboard .schedule-staff-primary em{font-size:12px!important}
+#appShell #dashboard .schedule-staff-secondary b{font-size:14px!important}
+#appShell #dashboard .dashboard-two-week-weekhead span{
+  font-size:12px!important;
+  padding:11px 6px!important;
+}
+#appShell #dashboard .dash-two-week-day{
+  min-height:108px!important;
+  padding:9px!important;
+}
+#appShell #dashboard .dash-two-week-date b{font-size:15px!important}
+#appShell #dashboard .dash-two-week-date span{font-size:10px!important}
+#appShell #dashboard .dash-two-week-event{
+  font-size:10px!important;
+  padding:5px 6px!important;
+}
+#appShell #dashboard .dash-two-week-event b{font-size:9.5px!important}
+#appShell #dashboard .dash-more{font-size:10px!important}
+
+/* Monthly cards: matching inner padding and readable labels */
+#appShell #dashboard .monthly-grid{
+  gap:16px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .monthly-card{
+  min-height:178px!important;
+  padding:20px!important;
+  border-radius:8px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .monthly-head h4{font-size:15px!important}
+#appShell #dashboard .monthly-stats{margin-top:16px!important}
+#appShell #dashboard .monthly-stats span{font-size:12px!important}
+#appShell #dashboard .monthly-stats b{font-size:32px!important}
+#appShell #dashboard .monthly-stats small{font-size:11px!important}
+#appShell #dashboard .monthly-foot{font-size:11px!important}
+
+/* Responsive symmetry */
+@media(max-width:1180px){
+  #appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+  #appShell #dashboard{padding:14px!important}
+  #appShell #dashboard .dashboard-notice-todo-grid,
+  #appShell #dashboard .request-card-grid,
+  #appShell #dashboard .monthly-grid{grid-template-columns:1fr!important}
+  #appShell #dashboard .dashboard-info-panel,
+  #appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card),
+  #appShell #dashboard .monthly-card{padding:16px!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
