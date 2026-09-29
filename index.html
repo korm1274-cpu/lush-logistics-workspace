@@ -3998,16 +3998,17 @@ setTimeout(initInventoryColumnResize,0);
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
   window.renderOutboundBasic=renderOutboundBasic;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
-  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리','데모','DEMO','디지털부자재','디지털사은품']);
+  const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','스파','VM','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리','데모','DEMO','디지털부자재','디지털사은품']);
   const CATEGORY_EXCLUDE_PATTERN=/^(19|20)?\d{2}년/;
-  const CATEGORY_EXCLUDE_KEYWORDS=['SPA','ACCESSOR','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','악세','엑세','액세','데모','DEMO','디지털부자재','디지털사은품'];
+  const CATEGORY_EXCLUDE_KEYWORDS=['SPA','스파','VM','ACCESSOR','RAWMAT','KNOTWRAP','LOKTAWRAP','MERCH','악세','엑세','액세','데모','DEMO','디지털부자재','디지털사은품','부자재','사은품'];
   function categoryDisplay(raw){
     const v=String(raw||'').trim().toUpperCase();
     if(!v)return null;
-    if(CATEGORY_EXCLUDE_SET.has(v))return null;
+    const vNorm=v.replace(/\s+/g,'');
+    if(CATEGORY_EXCLUDE_SET.has(v)||CATEGORY_EXCLUDE_SET.has(vNorm))return null;
     if(CATEGORY_EXCLUDE_PATTERN.test(v))return null;
     if(v.includes('XMAS')||v.includes('크리스마스'))return null;
-    if(CATEGORY_EXCLUDE_KEYWORDS.some(k=>v.includes(k)))return null;
+    if(CATEGORY_EXCLUDE_KEYWORDS.some(k=>vNorm.includes(k)))return null;
     if(NAKED_MERGE_SET.has(v))return 'NAKED';
     return String(raw).trim();
   }
