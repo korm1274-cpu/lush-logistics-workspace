@@ -2261,6 +2261,13 @@ html,body{max-width:100%;overflow-x:hidden}
 .pct-up{color:#2f6fed;font-weight:700}
 .pct-down{color:#f28b22;font-weight:700}
 #appShell .request-period-stat:first-child{border:2px solid #a9d8f0!important;background:#f3fafd!important}
+/* 파손 분석: 상단 요약 카드·표 글자가 너무 작다는 피드백으로 확대 */
+#damageAnalyticsView .kpi span{font-size:13px!important}
+#damageAnalyticsView .kpi b{font-size:30px!important}
+#damageAnalyticsView .kpi small{font-size:12px!important}
+#damageAnalyticsView #dmFyTitle{font-size:19px!important}
+#damageAnalyticsView table th{font-size:13px!important}
+#damageAnalyticsView table td{font-size:14px!important}
 </style>
 <style id="productivity-view-css">
 .prod-table th{white-space:nowrap;text-align:center}
@@ -2539,7 +2546,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY TREND</small><h3>월별 입고 추이</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="inAnaStart"></div><div class="field"><label>종료일</label><input type="date" id="inAnaEnd"></div><div class="field"><label>차수</label><input id="inAnaBatchQuery" placeholder="예: 71차"></div><div class="field grow"><label>제품 검색</label><input id="inAnaQuery" list="inAnaProductList" placeholder="제품코드 또는 제품명" autocomplete="off"><datalist id="inAnaProductList"></datalist></div><button class="btn primary" id="inAnaRun">조회</button></div>
-    <div class="data-table-wrap"><table class="data-table out-trend-table" style="min-width:1450px"><thead><tr><th class="grp-key grp-key-start">월</th><th class="num grp-key">총 수량(EA전환)</th><th class="num grp-key grp-key-end">총 입고금액</th><th class="num">차수</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">입고금액(EA)</th><th class="num">입고금액(G)</th><th class="num grp-mom grp-mom-start">전월대비 입고량</th><th class="num grp-mom grp-mom-end">전월대비 입고금액</th><th class="num grp-yoy grp-yoy-start">전년동월대비 입고량</th><th class="num grp-yoy grp-yoy-end">전년동월대비 입고금액</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
+    <div class="data-table-wrap"><table class="data-table out-trend-table" style="min-width:1450px"><thead><tr><th class="grp-key grp-key-start">월</th><th class="num grp-key">차수</th><th class="num grp-key">총 수량(EA전환)</th><th class="num grp-key grp-key-end">총 입고금액</th><th class="num">SKU(G)</th><th class="num">SKU(EA)</th><th class="num">수량(G)</th><th class="num">수량(EA)</th><th class="num">입고금액(EA)</th><th class="num">입고금액(G)</th><th class="num grp-mom grp-mom-start">전월대비 입고량</th><th class="num grp-mom grp-mom-end">전월대비 입고금액</th><th class="num grp-yoy grp-yoy-start">전년동월대비 입고량</th><th class="num grp-yoy grp-yoy-end">전년동월대비 입고금액</th></tr></thead><tbody id="inAnaTrendBody"></tbody></table></div>
   </div>
   <div class="panel mt14">
     <div class="panel-head"><div><small>CATEGORY TREND</small><h3>제품군별 입고 추이</h3></div></div>
@@ -4293,7 +4300,7 @@ setTimeout(initInventoryColumnResize,0);
       const amtMoM=prev?pct(amountTotal,prev.amountEA+prev.amountG):null;
       const qtyYoy=yoy?pct(v.qtyTotalEA,yoy.qtyTotalEA):null;
       const amtYoy=yoy?pct(amountTotal,yoy.amountEA+yoy.amountG):null;
-      return `<tr><td class="grp-key grp-key-start">${esc(m)}</td><td class="num grp-key">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num grp-key grp-key-end">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(v.batches)}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num grp-mom grp-mom-start">${pctLabel(qtyMoM)}</td><td class="num grp-mom grp-mom-end">${pctLabel(amtMoM)}</td><td class="num grp-yoy grp-yoy-start">${pctLabel(qtyYoy)}</td><td class="num grp-yoy grp-yoy-end">${pctLabel(amtYoy)}</td></tr>`;
+      return `<tr><td class="grp-key grp-key-start">${esc(m)}</td><td class="num grp-key">${fmt(v.batches)}</td><td class="num grp-key">${fmt(Math.round(v.qtyTotalEA))}</td><td class="num grp-key grp-key-end">${fmt(Math.round(amountTotal))}</td><td class="num">${fmt(v.skuG)}</td><td class="num">${fmt(v.skuEA)}</td><td class="num">${fmt(v.qtyG)}</td><td class="num">${fmt(v.qtyEA)}</td><td class="num">${fmt(Math.round(v.amountEA))}</td><td class="num">${fmt(Math.round(v.amountG))}</td><td class="num grp-mom grp-mom-start">${pctLabel(qtyMoM)}</td><td class="num grp-mom grp-mom-end">${pctLabel(amtMoM)}</td><td class="num grp-yoy grp-yoy-start">${pctLabel(qtyYoy)}</td><td class="num grp-yoy grp-yoy-end">${pctLabel(amtYoy)}</td></tr>`;
     }).join(''):'<tr><td colspan="14" class="data-empty">데이터가 없습니다.</td></tr>';
     if(!__inAnaDetailSearched){
       $('inAnaBody').innerHTML='<tr><td colspan="7" class="data-empty">"조회"를 누르면 결과가 표시됩니다.</td></tr>';
@@ -4307,15 +4314,6 @@ setTimeout(initInventoryColumnResize,0);
     const cols=outboundColIndex();
     const cats=new Set();
     all.forEach(r=>{const cat=categoryDisplay(r[cols.category]);if(cat)cats.add(cat)});
-    if(!window.__catDebugShown&&all.length){
-      window.__catDebugShown=true;
-      const header=(read().outbound?.header)||[];
-      const sample=all[0]||[];
-      const box=document.createElement('div');
-      box.style.cssText='position:fixed;left:12px;bottom:12px;z-index:99999;max-width:520px;background:#fff;border:1px solid #d8dde1;border-radius:10px;box-shadow:0 12px 30px rgba(0,0,0,.18);padding:14px 16px;font-size:12px;line-height:1.6;color:#22303a;white-space:pre-wrap;word-break:break-all';
-      box.innerHTML=`<b>[진단] 출고 데이터 확인</b><br>저장된 헤더: [${esc(header.map((h,i)=>`${i}:${h||'(빈칸)'}`).join(', '))}]<br>제품군으로 인식한 칸 번호: ${cols.category}<br>첫 행에서 그 칸의 실제 값: "${esc(sample[cols.category])}"<br>첫 행 전체: [${esc(sample.join(' | '))}]<br><button style="margin-top:8px;padding:5px 10px;border:1px solid #ccc;border-radius:6px;background:#f5f5f5;cursor:pointer" onclick="this.closest('div').remove()">닫기</button>`;
-      document.body.appendChild(box);
-    }
     const sortedCats=[...cats].sort(KO_COLLATOR.compare);
     const outCatSel=$('outCatSelect');
     if(outCatSel){
@@ -4913,7 +4911,7 @@ setTimeout(initInventoryColumnResize,0);
     }else if(key){let rows=raw;if(key==='misship')rows=cleanMisship(raw);if(key==='damage')rows=cleanDamage(raw);if(key==='inbound'){rows=upsertByKey(data[key]?.rows||[],rows,r=>String(r[1]||'').trim());}else{const dateMergeIdx=({'출고':0,'box':0,'misship':1,'damage':1})[key];rows=upsertByDate(data[key]?.rows||[],rows,dateMergeIdx);}
     const archiveDateIdx=({inbound:0,outbound:0,box:0,misship:1,damage:1})[key];
     rows=archiveOldRows(key,header,rows,archiveDateIdx);
-    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();if(key==='inbound')rebuildInboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`);if(window.__lastOutboundCatMapInfo)alert(window.__lastOutboundCatMapInfo)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
+    data[key]={header,rows,updatedAt:new Date().toISOString(),sourceFile:f.name,mode:'날짜 기준 누적/교체'};save(data);if(key==='outbound')rebuildOutboundMonthlySummary();if(key==='inbound')rebuildInboundMonthlySummary();}const hist=JSON.parse(localStorage.getItem(HIST_KEY_LOCAL)||'[]');hist.unshift({time:new Date().toLocaleString('ko-KR'),name:f.name,type,rows:raw.length,mode:key?(data[key]?.mode||'반영'):'읽기'});localStorage.setItem(HIST_KEY_LOCAL,JSON.stringify(hist.slice(0,50)));if(typeof renderHistory==='function')renderHistory();renderAll();if(typeof BASE_NOTIFY==='function')BASE_NOTIFY(`${type} 데이터 업데이트`,`${f.name} · ${fmt(raw.length)}행 반영`);if(typeof toastMsg==='function')toastMsg(`${type} 파일 ${fmt(raw.length)}행을 반영했습니다.`)}catch(e){console.error(e);if(typeof toastMsg==='function')toastMsg('파일을 읽는 중 오류가 발생했습니다: '+e.message)}finally{inp.value=''}}
   function exportOos(){const rows=window.__OOS_ROWS||[];if(!rows.length)return;const csv='\ufeff'+[['담당자','제품코드','제품명','제품군','품절일','품절 기준일'],...rows.map(x=>[x.owner,x.id,x.name,x.cat,x.out.length,x.out.join(' / ')])].map(r=>r.map(v=>`"${String(v??'').replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download='품절재고_분석.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),500)}
   const ARCHIVE_DATE_IDX={inbound:0,outbound:0,box:0,misship:1,damage:1};
   const INVENTORY_ARCHIVE_HEADER=['담당자','날짜','제품코드','제품명','제품군','시스템재고','실사재고'];
@@ -5095,7 +5093,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
  function toast(msg){if(typeof toastMsg==='function')toastMsg(msg)}
  function renderCounts(){if($('baseNoticeCount'))$('baseNoticeCount').textContent=notes.filter(n=>!n.read).length}
  function showPopup(title,text){let p=$('alarmPopup');if(!p){p=document.createElement('div');p.id='alarmPopup';p.className='alarm-popup';document.body.appendChild(p)}p.innerHTML=`<div class="alarm-popup-icon">🔔</div><div><b>${esc(title||'알림')}</b><span>${esc(text||'')}</span></div><button type="button" aria-label="닫기">×</button>`;p.classList.add('show');p.querySelector('button').onclick=()=>p.classList.remove('show');clearTimeout(window.__alarmTimer);window.__alarmTimer=setTimeout(()=>p.classList.remove('show'),5000)}
- function noticePanel(){const drawer=$('baseDrawer'),title=$('baseDrawerTitle'),body=$('baseDrawerBody');if(!drawer)return;title.textContent='알림센터';body.innerHTML=`<div class="base-section">${notes.length?notes.map(n=>`<div class="base-list-item"><b>${esc(n.title||'알림')}</b><div>${esc(n.text||'')}</div><div class="base-muted">${esc(n.time||'')}</div></div>`).join(''):'<div class="base-muted">새로운 알림이 없습니다.</div>'}</div><button class="btn" id="baseReadAll">모두 읽음 처리</button>`;drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');$('baseReadAll').onclick=()=>{notes=notes.map(n=>({...n,read:true}));save(notes);renderCounts();drawer.classList.remove('open')}}
+ function noticePanel(){const drawer=$('baseDrawer'),title=$('baseDrawerTitle'),body=$('baseDrawerBody');if(!drawer)return;title.textContent='알림센터';body.innerHTML=`<button class="btn" id="baseReadAll">모두 읽음 처리</button><div class="base-section">${notes.length?notes.map(n=>`<div class="base-list-item"><b>${esc(n.title||'알림')}</b><div>${esc(n.text||'')}</div><div class="base-muted">${esc(n.time||'')}</div></div>`).join(''):'<div class="base-muted">새로운 알림이 없습니다.</div>'}</div>`;drawer.classList.add('open');drawer.setAttribute('aria-hidden','false');$('baseReadAll').onclick=()=>{notes=notes.map(n=>({...n,read:true}));save(notes);renderCounts();drawer.classList.remove('open')}}
  function exportCurrent(){const view=document.querySelector('.view.active'),table=view?.querySelector('table');if(!table){toast('현재 화면에 내보낼 표가 없습니다.');return}const rows=[...table.querySelectorAll('tr')].map(tr=>[...tr.children].map(c=>c.innerText.trim()));const csv='\ufeff'+rows.map(r=>r.map(x=>`"${x.replaceAll('"','""')}"`).join(',')).join('\n');const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8'}));a.download=(view.id||'export')+'.csv';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
  window.BASE_MENU_REORDER=function(index,dir){if(typeof menus==='undefined')return;const m=menus[index],same=menus.map((x,i)=>({x,i})).filter(o=>o.x.group===m.group),pos=same.findIndex(o=>o.i===index),target=same[pos+dir];if(!target)return;[menus[index],menus[target.i]]=[menus[target.i],menus[index]];saveMenus();renderNav();renderMenusTable()}
  function patchMenuTable(){if(typeof renderMenusTable!=='function'||renderMenusTable.__basePatched)return;const original=renderMenusTable;window.renderMenusTable=function(){original();document.querySelectorAll('#menuRows tr').forEach((tr,i)=>{const cell=tr.firstElementChild;if(!cell||cell.querySelector('.base-menu-order'))return;const order=document.createElement('div');order.className='base-menu-order';order.innerHTML='<span class="base-drag">⋮⋮</span><button type="button" class="base-order-btn">↑</button><button type="button" class="base-order-btn">↓</button>';order.querySelectorAll('button')[0].onclick=()=>BASE_MENU_REORDER(i,-1);order.querySelectorAll('button')[1].onclick=()=>BASE_MENU_REORDER(i,1);cell.prepend(order)})};window.renderMenusTable.__basePatched=true;window.renderMenusTable()}
