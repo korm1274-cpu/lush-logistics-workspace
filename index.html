@@ -2239,6 +2239,12 @@ html,body{max-width:100%;overflow-x:hidden}
 #appShell #dashboard .dash-section-head{margin-bottom:10px!important}
 /* 최근 공지 수치를 출고요청 배지(대량/트래픽/본사)와 동일한 디자인으로 */
 #appShell #dashboard #dashNoticeCount{display:inline-block!important;min-width:36px!important;text-align:center!important;padding:4px 7px!important;border-radius:999px!important;background:#f4f5f6!important;color:#59656c!important;font-size:12px!important;font-weight:800!important;margin:0!important}
+/* 금주 출고 요청: 대량/트래픽(위) + 본사출고/노즐비닐(아래) 2x2 배치 */
+#appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+/* 매장명·요청일자 글자는 키우고, 완료 처리 버튼은 줄여서 균형을 맞춤 */
+#appShell #dashboard .request-row .store-name,
+#appShell #dashboard .request-row .doc-no{font-size:13px!important;font-weight:600!important}
+#appShell #dashboard .request-row .complete-btn{font-size:11px!important;padding:4px 8px!important}
 </style>
 <style id="productivity-view-css">
 .prod-table th{white-space:nowrap;text-align:center}
@@ -2344,6 +2350,21 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="request-mini-table">
               <div class="request-mini-header"><span>매장명</span><span>요청일자</span><span>처리</span></div>
               <div class="request-mini-body" data-request-list="hq">
+                <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="request-mini-card" data-request-type="nozzle">
+            <div class="request-mini-head">
+              <div>
+                <b>노즐/비닐 출고 요청 현황</b>
+              </div>
+              <span class="request-badge" data-request-count="nozzle">0건</span>
+            </div>
+            <div class="request-mini-table">
+              <div class="request-mini-header"><span>매장명</span><span>요청일자</span><span>처리</span></div>
+              <div class="request-mini-body" data-request-list="nozzle">
                 <button type="button" class="request-empty-card" disabled>오늘 등록된 요청이 없습니다.</button>
               </div>
             </div>
@@ -2562,6 +2583,7 @@ html,body{max-width:100%;overflow-x:hidden}
               <div class="request-period-stat"><span>대량 주문</span><b id="requestPeriodBulk">0</b><small>건</small></div>
               <div class="request-period-stat"><span>트래픽</span><b id="requestPeriodTraffic">0</b><small>건</small></div>
               <div class="request-period-stat"><span>본사 출고</span><b id="requestPeriodHq">0</b><small>건</small></div>
+              <div class="request-period-stat"><span>노즐/비닐</span><b id="requestPeriodNozzle">0</b><small>건</small></div>
             </div>
             <div class="request-period-foot" id="requestPeriodCaption">현재 월 기준</div>
           </div>
@@ -2574,7 +2596,7 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="request-form-fields">
               <div class="field full"><label>Amaranth 문서 URL</label><input id="requestUrl" placeholder="Amaranth 전자결재 문서 URL을 붙여넣어 주세요."></div>
               <div class="field"><label>매장명</label><input id="requestStoreName" placeholder="예: 압구정1호"></div>
-              <div class="field"><label>구분</label><select id="requestType"><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option></select></div>
+              <div class="field"><label>구분</label><select id="requestType"><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option><option value="nozzle">노즐/비닐</option></select></div>
               <div class="field full">
                 <label>요청일자</label>
                 <div class="request-date-entry"><input type="date" id="requestDateInput"><button type="button" class="btn" id="addRequestDateBtn">＋ 요청일자 추가</button></div>
@@ -2589,7 +2611,7 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="request-register-list">
             <div class="request-register-head"><div><h3>등록된 출고 요청</h3><p>원본 문서를 열거나 작업자가 목록에서 바로 완료 처리할 수 있습니다.</p></div><span id="requestManagerCount">0건</span></div>
             <div class="request-filter-row">
-              <select id="requestManagerTypeFilter"><option value="">전체 구분</option><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option></select>
+              <select id="requestManagerTypeFilter"><option value="">전체 구분</option><option value="bulk">대량 주문</option><option value="traffic">트래픽</option><option value="hq">본사 출고</option><option value="nozzle">노즐/비닐</option></select>
               <select id="requestManagerStatusFilter"><option value="">전체 상태</option><option value="미처리">미처리</option><option value="처리완료">처리완료</option></select>
               <input id="requestManagerSearch" placeholder="매장명 / 특이사항 검색">
             </div>
@@ -3395,7 +3417,7 @@ setTimeout(initInventoryColumnResize,0);
     list.querySelectorAll("[data-open-original]").forEach(b=>b.onclick=e=>{e.stopPropagation();openOriginal(all.find(r=>r.id===b.dataset.openOriginal))});
     list.querySelectorAll("[data-complete-request]").forEach(b=>b.onclick=e=>{e.stopPropagation();completeRequest(b.dataset.completeRequest)});
   }
-  function renderAll(){["bulk","traffic","hq"].forEach(renderType)}
+  function renderAll(){["bulk","traffic","hq","nozzle"].forEach(renderType)}
   window.renderTodayOutboundRequests=renderAll;window.getTodayOutboundRequestDate=todayKey;renderAll();
 })();
 </script>
@@ -5267,7 +5289,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
 <script id="v52-outbound-request-manager">
 (function(){
  const KEY='lush_outbound_requests_v1',$=id=>document.getElementById(id),read=()=>{try{const a=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(a)?a:[]}catch{return[]}},save=a=>{localStorage.setItem(KEY,JSON.stringify(a));render();window.renderTodayOutboundRequests?.()},esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));let dates=[];
- const typeLabel=t=>({bulk:'대량 주문',traffic:'트래픽',hq:'본사 출고'}[t]||t||'-');
+ const typeLabel=t=>({bulk:'대량 주문',traffic:'트래픽',hq:'본사 출고',nozzle:'노즐/비닐'}[t]||t||'-');
  function reset(){if($('requestRecordId'))$('requestRecordId').value='';if($('requestUrl'))$('requestUrl').value='';if($('requestStoreName'))$('requestStoreName').value='';if($('requestType'))$('requestType').value='bulk';if($('requestNote'))$('requestNote').value='';dates=[];renderDates();if($('requestFormTitle'))$('requestFormTitle').textContent='신규 요청 등록';if($('requestEditBadge'))$('requestEditBadge').textContent='신규'}
  function renderDates(){const c=$('requestDateChips');if(!c)return;c.innerHTML=dates.map(d=>`<span class="request-date-chip">${d}<button type="button" data-rd="${d}">×</button></span>`).join('');c.querySelectorAll('[data-rd]').forEach(b=>b.onclick=()=>{dates=dates.filter(x=>x!==b.dataset.rd);renderDates()})}
  function load(id){const r=read().find(x=>x.id===id);if(!r)return;$('requestRecordId').value=r.id;$('requestUrl').value=r.url||'';$('requestStoreName').value=r.storeName||'';$('requestType').value=r.type||'bulk';$('requestNote').value=r.note||'';dates=[...(r.requestDates||[])];renderDates();$('requestFormTitle').textContent='출고 요청 수정';$('requestEditBadge').textContent='수정'}
@@ -5278,7 +5300,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
         <button class="btn" data-toggle="${r.id}" style="font-size:13px;${done?'background:#eef8f1;color:#23834b;border-color:#cdeadb':'background:#fff5ea;color:#a05a00;border-color:#f3ddb8'}">${done?'처리':'미처리'}</button>
         <span style="display:flex;gap:5px"><button class="btn" data-edit="${r.id}" style="font-size:12px">수정</button><button class="btn" data-del="${r.id}" style="font-size:12px">삭제</button></span>
       </div>`}).join(''):'<div class="request-manager-empty">등록된 출고 요청이 없습니다.</div>';list.querySelectorAll('[data-edit]').forEach(b=>b.onclick=()=>load(b.dataset.edit));list.querySelectorAll('[data-toggle]').forEach(b=>b.onclick=()=>{const x=all.find(v=>v.id===b.dataset.toggle);if(x)x.status=x.status==='처리완료'?'미처리':'처리완료';save(all)});list.querySelectorAll('[data-del]').forEach(b=>b.onclick=()=>{if(confirm('이 출고 요청을 삭제하시겠습니까?'))save(all.filter(x=>x.id!==b.dataset.del))})}renderPeriod()}
- function renderPeriod(){const all=read().filter(r=>(r.status||'미처리')!=='처리완료'),st=$('requestPeriodStart')?.value||'',en=$('requestPeriodEnd')?.value||'',a=all.filter(r=>(r.requestDates||[]).some(d=>(!st||d>=st)&&(!en||d<=en)));if($('requestPeriodTotal'))$('requestPeriodTotal').textContent=a.length;if($('requestPeriodBulk'))$('requestPeriodBulk').textContent=a.filter(x=>x.type==='bulk').length;if($('requestPeriodTraffic'))$('requestPeriodTraffic').textContent=a.filter(x=>x.type==='traffic').length;if($('requestPeriodHq'))$('requestPeriodHq').textContent=a.filter(x=>x.type==='hq').length;if($('requestPeriodCaption'))$('requestPeriodCaption').textContent=st||en?`${st||'처음'} ~ ${en||'현재'}`:'전체 기간(미처리 기준)'}
+ function renderPeriod(){const all=read().filter(r=>(r.status||'미처리')!=='처리완료'),st=$('requestPeriodStart')?.value||'',en=$('requestPeriodEnd')?.value||'',a=all.filter(r=>(r.requestDates||[]).some(d=>(!st||d>=st)&&(!en||d<=en)));if($('requestPeriodTotal'))$('requestPeriodTotal').textContent=a.length;if($('requestPeriodBulk'))$('requestPeriodBulk').textContent=a.filter(x=>x.type==='bulk').length;if($('requestPeriodTraffic'))$('requestPeriodTraffic').textContent=a.filter(x=>x.type==='traffic').length;if($('requestPeriodHq'))$('requestPeriodHq').textContent=a.filter(x=>x.type==='hq').length;if($('requestPeriodNozzle'))$('requestPeriodNozzle').textContent=a.filter(x=>x.type==='nozzle').length;if($('requestPeriodCaption'))$('requestPeriodCaption').textContent=st||en?`${st||'처음'} ~ ${en||'현재'}`:'전체 기간(미처리 기준)'}
  function submit(){const store=$('requestStoreName').value.trim();if(!store){toastMsg('매장명을 입력해주세요.');return}if(!dates.length){toastMsg('요청일자를 1개 이상 추가해주세요.');return}const all=read(),id=$('requestRecordId').value||('req_'+Date.now()),old=all.find(x=>x.id===id),rec={...old,id,url:$('requestUrl').value.trim(),storeName:store,type:$('requestType').value,requestDates:[...dates],note:$('requestNote').value.trim(),status:old?.status||'미처리',createdAt:old?.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString()},i=all.findIndex(x=>x.id===id);if(i>=0)all[i]=rec;else all.unshift(rec);save(all);reset();toastMsg('출고 요청을 저장했습니다.')}
  window.openOutboundRequestManager=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('outboundRequestManager').classList.add('active');pageTitle.textContent=label||'출고 요청 관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;render()};window.refreshOutboundRequestManager=render;
  document.addEventListener('DOMContentLoaded',()=>{$('addRequestDateBtn')?.addEventListener('click',()=>{const d=$('requestDateInput').value;if(d&&!dates.includes(d)){dates.push(d);dates.sort();renderDates()}});$('requestPeriodApplyBtn')?.addEventListener('click',renderPeriod);
