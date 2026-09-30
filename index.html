@@ -7612,9 +7612,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return merged;
   };
   getRecord=function(dt){
-    if(DEMO_MODE){
-      return demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
-    }
+    if(DEMO_MODE)return demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
     var all=readDailyDisplay(),record=all[dt];
     if(record)return record;
     return{date:dt,staff:0,startTime:'',endTime:'',hours:{}};
@@ -7773,13 +7771,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   fillStatusPeriods();
 
   function monthAggregate(year,month){
+    if(DEMO_MODE){
+      var demoRate=900+((Number(month||1)*37)%190),demoLabor=64;
+      return{qty:Math.round(demoRate*demoLabor),labor:demoLabor,rate:demoRate};
+    }
     var all=readDailyDisplay(),qty=0,labor=0,prefix=year+'-'+pad(month)+'-';
     Object.keys(all).forEach(function(dt){if(dt.indexOf(prefix)!==0)return;var s=calcRecord(all[dt]);qty+=s.qty;labor+=s.labor});
-    if(DEMO_MODE&&(!qty||!labor)){
-      var demoRate=900+((Number(month||1)*37)%190);
-      var demoLabor=56+((Number(month||1)*5)%18);
-      qty=Math.round(demoRate*demoLabor);labor=demoLabor;
-    }
     return{qty:qty,labor:labor,rate:labor>0?qty/labor:0};
   }
   function periodMonths(start,end){
@@ -7801,15 +7798,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 
   var selectedDetailDate='';
   function renderDailyDetail(){
-    var period=q('#detailPeriod').value||today.slice(0,7),all=readDailyDisplay(),prefix=period+'-';
-    var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
-    if(DEMO_MODE&&!dates.length){
-      [3,8,15,22,28].forEach(function(day,idx){
+    var period=q('#detailPeriod').value||today.slice(0,7),prefix=period+'-',all=DEMO_MODE?{}:readDailyDisplay();
+    if(DEMO_MODE){
+      [3,8,15,22,28].forEach(function(day){
         var dt=period+'-'+pad(day);
-        all[dt]=demoRecord(dt,8,[4200+idx*180,4550+idx*160,8650+idx*210,9200+idx*190,7350+idx*170,8120+idx*140,7840+idx*120,7560+idx*100],'08:40','15:40');
+        all[dt]=demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
       });
-      dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
     }
+    var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
     window.__statusDailyDetailDisplay=all;
     var list=q('#detailDayList');
     if(!dates.length){list.innerHTML='<div class="data-empty">데모 데이터를 준비 중입니다.</div>';selectedDetailDate='';renderSelectedDay();return}
@@ -7870,9 +7866,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   function filteredStoreHistory(){
     var start=q('#storeHistoryStart').value||'',end=q('#storeHistoryEnd').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
-    var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)&&(!store||r.store.toLowerCase().includes(store.toLowerCase()))});
-    if(DEMO_MODE&&!rows.length)rows=demoStoreHistoryRange(start,end,store);
-    return rows.sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
+    if(DEMO_MODE)return demoStoreHistoryRange(start,end,store).sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
+    return[].sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
   }
   function drawStoreHistoryChart(rows){
     var empty=q('#storeHistoryChartEmpty'),canvas=q('#storeHistoryChart');if(!canvas)return;
@@ -7954,8 +7949,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   function renderStoreHistoryDailyDetail(){
     var date=q('#storeHistoryDetailDate').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
-    var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!date||r.date===date)&&(!store||r.store.toLowerCase().includes(store.toLowerCase()))});
-    if(DEMO_MODE&&!rows.length)rows=demoStoreHistoryRange(date,date,store);
+    var rows=DEMO_MODE?demoStoreHistoryRange(date,date,store):[];
     rows=rows.sort(function(a,b){return a.store.localeCompare(b.store)});
     q('#storeHistoryDetailTitle').textContent=(date||'선택 일자')+' 처리이력'+(store?' · '+store:'');
     q('#storeHistoryBody').innerHTML=rows.length?rows.map(function(r){
@@ -7971,6 +7965,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   q('#storeHistoryStore').addEventListener('input',function(){if(storeHistoryMode==='detail')renderStoreHistory()});
   q('#storeProductSearchBtn').addEventListener('click',renderStoreProductDetail);
   q('#storeProductQuery').addEventListener('input',renderStoreProductDetail);
+  if(DEMO_MODE)renderStoreProductDetail();
   q('#storeHistoryDetailBtn').addEventListener('click',function(){
     q('#storeHistoryDetailPanel').hidden=false;renderStoreHistoryDailyDetail();
   });
@@ -8028,15 +8023,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return d.getFullYear()+'-'+pad(d.getMonth()+1);
   }
   function productRowsInRange(rows,start,end){
-    var filtered=rows.filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)});
-    if(!DEMO_MODE||filtered.length)return filtered;
-    var base=rows.length?rows:DEMO_PRODUCT_ROWS;
-    var anchor=end||start||today;
-    var a=new Date(anchor+'T00:00:00');
-    return base.map(function(r,idx){
-      var d=new Date(a);d.setDate(a.getDate()-(idx%12));
-      return Object.assign({},r,{date:dateKey(d)});
-    }).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)});
+    if(DEMO_MODE){
+      var base=rows.length?rows:DEMO_PRODUCT_ROWS,anchor=end||start||today,a=new Date(anchor+'T00:00:00');
+      return base.map(function(r,idx){
+        var d=new Date(a);d.setDate(a.getDate()-(idx%10));
+        return Object.assign({},r,{date:dateKey(d)});
+      });
+    }
+    return rows.filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)});
   }
   function productAllRangeLabel(rows){
     if(!rows.length)return'전체 기간';
