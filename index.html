@@ -7385,7 +7385,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       if(DEMO_MODE&&demo){
         merged[dt]={
           date:dt,
-          staff:real.staff!=null?Number(real.staff||0):0,
+          staff:real.staff!=null?Number(real.staff||0):Number(demo.staff||0),
           startTime:real.startTime||demo.startTime||'',
           endTime:real.endTime||demo.endTime||'',
           hours:(real.hours&&Object.keys(real.hours).length)?real.hours:demo.hours,
