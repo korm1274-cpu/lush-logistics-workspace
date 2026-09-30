@@ -3011,6 +3011,161 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .shipping-kpi-row{grid-template-columns:1fr!important}
 }
 </style>
+
+<style id="v85-shipping-visibility-balance">
+/* V85 — balanced wallboard boxes + stronger long-distance readability */
+#statusBoardView .shipping-display-board{
+  min-height:700px!important;
+}
+#statusBoardView .shipping-display-head{
+  min-height:74px!important;
+  align-items:center!important;
+  padding-bottom:20px!important;
+}
+#statusBoardView .shipping-display-kicker{
+  font-size:13px!important;
+  color:#5f6761!important;
+}
+#statusBoardView .shipping-display-head h3{
+  font-size:34px!important;
+  font-weight:950!important;
+  color:#171b18!important;
+}
+#statusBoardView .shipping-display-time{
+  font-size:38px!important;
+  color:#111!important;
+}
+#statusBoardView .shipping-display-main{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  min-height:355px!important;
+  padding:18px 0!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-height:355px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #dde2dd!important;
+}
+#statusBoardView .shipping-progress-label,
+#statusBoardView .shipping-eta-zone>span{
+  font-size:20px!important;
+  color:#374038!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-ring{
+  width:292px!important;
+  height:292px!important;
+  background:conic-gradient(#3f9a5f calc(var(--shipping-pct) * 1%),#e5e9e5 0)!important;
+}
+#statusBoardView .shipping-ring:before{
+  inset:22px!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-size:84px!important;
+  color:#101510!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-ring-caption{
+  font-size:15px!important;
+  color:#4f5951!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone{
+  background:#f5faf6!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  font-size:96px!important;
+  color:#1f6436!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  font-size:15px!important;
+  color:#59635c!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-quantity-row{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  padding:0 0 16px!important;
+  border-top:0!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  min-height:128px!important;
+  padding:22px 26px!important;
+  background:#f8faf8!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  font-size:19px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-row{
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:16px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:132px!important;
+  padding:22px 26px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  font-size:18px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone,
+  #statusBoardView .shipping-eta-zone{min-height:320px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-head h3{font-size:28px!important}
+  #statusBoardView .shipping-display-time{font-size:30px!important}
+  #statusBoardView .shipping-ring{width:230px!important;height:230px!important}
+  #statusBoardView .shipping-ring-value{font-size:64px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:70px!important}
+  #statusBoardView .shipping-quantity-main>strong,
+  #statusBoardView .shipping-quantity-remain>strong,
+  #statusBoardView .shipping-kpi-card>strong{font-size:34px!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
