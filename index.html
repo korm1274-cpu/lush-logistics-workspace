@@ -3682,12 +3682,24 @@ html,body{max-width:100%;overflow-x:hidden}
   color:#202520!important;font-size:22px!important;font-weight:900!important;line-height:1.15!important;box-shadow:none!important
 }
 #statusBoardView .prod-date-metric input:focus{outline:none!important;box-shadow:none!important}
-#statusBoardView .prod-staff-input-wrap{display:flex;align-items:baseline;gap:5px;margin-top:5px}
-#statusBoardView .prod-staff-input-wrap input{
-  width:82px!important;height:36px!important;padding:0 8px!important;border:1px solid #d8ddd9!important;border-radius:7px!important;
-  background:#fff!important;text-align:right!important;font-size:22px!important;font-weight:900!important;color:#202520!important
+#statusBoardView .prod-staff-input-wrap{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;
+  margin-top:5px!important;min-height:24px!important
 }
-#statusBoardView .prod-staff-input-wrap b{font-size:15px!important;color:#59625b!important}
+#statusBoardView .prod-staff-input-wrap input{
+  width:64px!important;height:24px!important;padding:0!important;border:0!important;border-bottom:1px solid #cfd5d1!important;border-radius:0!important;
+  background:transparent!important;text-align:center!important;font-size:24px!important;line-height:24px!important;font-weight:950!important;
+  color:#202620!important;font-variant-numeric:tabular-nums!important;box-shadow:none!important
+}
+#statusBoardView .prod-staff-input-wrap input:focus{
+  outline:0!important;border-bottom-color:#7f8a82!important;box-shadow:none!important
+}
+#statusBoardView .prod-staff-input-wrap input::-webkit-outer-spin-button,
+#statusBoardView .prod-staff-input-wrap input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0!important}
+#statusBoardView .prod-staff-input-wrap input[type=number]{appearance:textfield!important;-moz-appearance:textfield!important}
+#statusBoardView .prod-staff-input-wrap b{
+  margin:0!important;font-size:15px!important;line-height:24px!important;font-weight:850!important;color:#59625b!important
+}
 #statusBoardView .shipping-unit-values{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
 #statusBoardView .shipping-unit-values strong{margin:0!important;padding:10px 12px;border:1px solid #e7e9e7;border-radius:9px;background:#fff}
 #statusBoardView .shipping-unit-values strong b{font:inherit!important}
