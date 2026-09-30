@@ -7544,12 +7544,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     Object.keys(saved).forEach(function(dt){
       var demo=merged[dt],real=saved[dt]||{};
       if(DEMO_MODE&&demo){
+        var realStaff=Number(real.staff||0);
+        var hasRealHours=real.hours&&Object.values(real.hours).some(function(row){return Number(row&&row.qty||0)>0});
         merged[dt]={
           date:dt,
-          staff:real.staff!=null?Number(real.staff||0):Number(demo.staff||0),
+          staff:realStaff>0?realStaff:Number(demo.staff||0),
           startTime:real.startTime||demo.startTime||'',
           endTime:real.endTime||demo.endTime||'',
-          hours:(real.hours&&Object.keys(real.hours).length)?real.hours:demo.hours,
+          hours:hasRealHours?real.hours:demo.hours,
           __demo:true
         };
       }else{
