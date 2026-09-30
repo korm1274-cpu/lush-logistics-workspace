@@ -2540,7 +2540,7 @@ html,body{max-width:100%;overflow-x:hidden}
   <div class="panel">
     <div class="panel-head"><div><small>MONTHLY INBOUND</small><h3>월별 입고 현황</h3></div></div>
     <div class="data-filter-row"><div class="field"><label>연도</label><select id="inboundMonthlyYear"></select></div><button class="btn primary" id="inboundMonthlyYearRun">조회</button></div>
-    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">입고수량(EA환산)</th><th class="num">입고수량(G)</th><th class="num">입고수량(EA)</th><th class="num">입고차수</th><th class="num">평균 투입인원</th><th class="num">평균 생산성</th></tr></thead><tbody id="inboundMonthlyBody"></tbody></table></div>
+    <div class="data-table-wrap"><table class="data-table"><thead><tr><th>월</th><th class="num">입고차수</th><th class="num">총 팔렛수</th><th class="num">입고수량(EA환산)</th><th class="num">입고수량(G)</th><th class="num">입고수량(EA)</th><th class="num">평균 투입인원</th><th class="num">평균 생산성</th></tr></thead><tbody id="inboundMonthlyBody"></tbody></table></div>
   </div>
 </div></section>
     <section id="inboundBasicView" class="view"><div class="data-workbench">
@@ -3693,6 +3693,18 @@ setTimeout(initInventoryColumnResize,0);
       localStorage.setItem(DONE_KEY,'1');
     }catch(e){}
   })();
+  /* 입고는 출고와 달리 별도로 수동 입력해둔 과거 요약이 없고, 이제부터는 구글시트 자동연동이
+     매일 새로 계산해서 채워주므로, 예전(엑셀 업로드 시절) 형식으로 남아있던 월별 요약을
+     한 번 깨끗하게 비웁니다. 앞으로는 시트 동기화가 알아서 다시 채웁니다. */
+  (function clearInboundSummaryForSheetsSyncOnce(){
+    const DONE_KEY='lush-inbound-summary-cleared-for-sheets-sync-v1';
+    try{
+      if(localStorage.getItem(DONE_KEY))return;
+      const d=read();
+      if(d.inboundMonthlySummary){delete d.inboundMonthlySummary;save(d)}
+      localStorage.setItem(DONE_KEY,'1');
+    }catch(e){}
+  })();
   let __sharedSyncing=false;
   let __suppressPullUntil=0;
   function pushSharedData(d){
@@ -3785,8 +3797,8 @@ setTimeout(initInventoryColumnResize,0);
   const fmt=n=>num(n).toLocaleString('ko-KR'); const ym=d=>normDate(d).slice(0,7); const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date());
   function eaEquivQty(r){
     const u=inboundUnit(r);
-    if(u==='EA')return num(r[6]);
-    if(u==='G'){const f=PRODUCT_EA_CONVERSION[String(r[2]||'').trim()];return f?num(r[6])/f:0;}
+    if(u==='EA')return num(r[7]);
+    if(u==='G'){const f=PRODUCT_EA_CONVERSION[String(r[3]||'').trim()];return f?num(r[7])/f:0;}
     return 0;
   }
   function monthStats(rows,qtyFn){
@@ -5103,7 +5115,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
 (function(){
  const NOTICE='lush-v51-notices',TODO='lush-v51-todos';
  const $=id=>document.getElementById(id),read=(k,d)=>{try{return JSON.parse(localStorage.getItem(k)||'null')||d}catch{return d}},save=(k,v)=>localStorage.setItem(k,JSON.stringify(v)),esc=x=>String(x??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
- function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort((a,b)=>Number(a.done)-Number(b.done)||(String(b.date)>String(a.date)?1:String(b.date)<String(a.date)?-1:0));if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';if($('dashTodoList'))$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="ops-todo-manager">${esc(x.manager||'미지정')}</span><span class="todo-content">${esc(x.content)}</span><span class="badge ${x.done?'':'info'}">${x.done?'완료':'미완료'}</span></div>`).join(''):'<div class="data-empty">등록된 할 일이 없습니다.</div>'}
+ function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort((a,b)=>Number(a.done)-Number(b.done)||(String(b.date)>String(a.date)?1:String(b.date)<String(a.date)?-1:0));if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';if($('dashTodoList')){$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="ops-todo-manager">${esc(x.manager||'미지정')}</span><span class="todo-content">${esc(x.content)}</span><button type="button" class="badge ${x.done?'':'info'}" data-dash-todo-toggle="${esc(x.id)}" style="cursor:pointer;border:0">${x.done?'완료':'미완료'}</button></div>`).join(''):'<div class="data-empty">등록된 할 일이 없습니다.</div>';$('dashTodoList').querySelectorAll('[data-dash-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.dashTodoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()})}}
  function renderNoticeManager(){const body=$('noticeMgrBody');if(!body)return;const a=read(NOTICE,[]);body.innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.date||'')}</td><td><b>${esc(x.title||'')}</b></td><td>${esc(x.content||'')}</td><td>${esc(x.author||'')}</td><td><button class="btn" data-notice-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 공지가 없습니다.</td></tr>';body.querySelectorAll('[data-notice-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 공지를 삭제하시겠습니까?'))return;save(NOTICE,a.filter(x=>x.id!==b.dataset.noticeDel));renderAll()})}
  function renderTodoManager(){const body=$('todoMgrBody');if(!body)return;const a=read(TODO,[]).sort((x,y)=>Number(x.done)-Number(y.done)||(String(y.date)>String(x.date)?1:String(y.date)<String(x.date)?-1:0));body.innerHTML=a.length?a.map(x=>`<tr><td>${esc((x.date||'').slice(0,10))}</td><td><b>${esc(x.manager||'미지정')}</b></td><td>${esc(x.content||'')}</td><td><button class="btn" data-todo-toggle="${x.id}">${x.done?'완료':'미완료'}</button></td><td><button class="btn" data-todo-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 할 일이 없습니다.</td></tr>';body.querySelectorAll('[data-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.todoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()});body.querySelectorAll('[data-todo-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 할 일을 삭제하시겠습니까?'))return;save(TODO,read(TODO,[]).filter(x=>x.id!==b.dataset.todoDel));renderAll()})}
  function renderAll(){renderDashboard();renderNoticeManager();renderTodoManager()}
@@ -5159,9 +5171,9 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
   }
   function dailyQtyMap(rows){const map={};rows.forEach(r=>{const d=normInboundDate(r[0]);if(!d)return;map[d]=(map[d]||0)+eaEquivQty(r)});return map}
   function eaEquivQty(r){
-    const u=window.inboundUnit?window.inboundUnit(r):String(r[5]||'').trim().toUpperCase();
-    if(u==='EA')return num(r[6]);
-    if(u==='G'){const f=(window.PRODUCT_EA_CONVERSION||{})[String(r[2]||'').trim()];return f?num(r[6])/f:0;}
+    const u=window.inboundUnit?window.inboundUnit(r):String(r[6]||'').trim().toUpperCase();
+    if(u==='EA')return num(r[7]);
+    if(u==='G'){const f=(window.PRODUCT_EA_CONVERSION||{})[String(r[3]||'').trim()];return f?num(r[7])/f:0;}
     return 0;
   }
   function dailyAgg(start,end){
@@ -5172,7 +5184,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
       if(end&&date>end)return;
       if(!map[date])map[date]={date,qty:0,skus:new Set(),batches:new Set()};
       map[date].qty+=eaEquivQty(r);
-      if(r[2])map[date].skus.add(String(r[2]));
+      if(r[3])map[date].skus.add(String(r[3]));
       if(r[1])map[date].batches.add(String(r[1]));
     });
     return Object.values(map).map(x=>({date:x.date,qty:x.qty,sku:x.skus.size,batch:x.batches.size})).sort((a,b)=>b.date>a.date?1:b.date<a.date?-1:0);
@@ -5188,18 +5200,18 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
       const date=normInboundDate(r[0]),month=date.slice(0,7);
       if(!/^\d{4}-\d{2}$/.test(month))return;
       if(year&&!month.startsWith(year+'-'))return;
-      if(!map[month])map[month]={month,qty:0,qtyG:0,qtyEA:0,batches:new Set(),days:new Set()};
-      const u=window.inboundUnit?window.inboundUnit(r):String(r[5]||'').trim().toUpperCase();
+      if(!map[month])map[month]={month,qty:0,qtyG:0,qtyEA:0,batches:new Set(),batchPallets:new Map(),days:new Set()};
+      const u=window.inboundUnit?window.inboundUnit(r):String(r[6]||'').trim().toUpperCase();
       map[month].qty+=eaEquivQty(r);
-      if(u==='G')map[month].qtyG+=num(r[6]);
-      else if(u==='EA')map[month].qtyEA+=num(r[6]);
-      if(r[1])map[month].batches.add(String(r[1]));
+      if(u==='G')map[month].qtyG+=num(r[7]);
+      else if(u==='EA')map[month].qtyEA+=num(r[7]);
+      if(r[1]){map[month].batches.add(String(r[1]));if(r[2]!==''&&r[2]!=null)map[month].batchPallets.set(String(r[1]),num(r[2]))}
       map[month].days.add(date);
     });
     if(year){
       for(let m=1;m<=12;m++){
         const key=`${year}-${String(m).padStart(2,'0')}`;
-        if(!map[key])map[key]={month:key,qty:0,qtyG:0,qtyEA:0,batches:new Set(),days:new Set()};
+        if(!map[key])map[key]={month:key,qty:0,qtyG:0,qtyEA:0,batches:new Set(),batchPallets:new Map(),days:new Set()};
       }
     }
     return Object.values(map).map(x=>{
@@ -5210,7 +5222,8 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
         if(staff>0){staffSum+=staff;staffCnt++}
         if(staff>0&&hours>0){prodSum+=(dailyQty[d]||0)/(staff*hours);prodCnt++}
       });
-      return{month:x.month,qty:x.qty,qtyG:x.qtyG,qtyEA:x.qtyEA,batchCount:x.batches.size,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
+      let pallets=0;x.batchPallets.forEach(p=>pallets+=p);
+      return{month:x.month,qty:x.qty,qtyG:x.qtyG,qtyEA:x.qtyEA,batchCount:x.batches.size,pallets,avgStaff:staffCnt?staffSum/staffCnt:null,avgProd:prodCnt?prodSum/prodCnt:null};
     }).sort((a,b)=>year?(a.month>b.month?1:a.month<b.month?-1:0):(b.month>a.month?1:b.month<a.month?-1:0));
   }
   function renderInboundDailyView(){
@@ -5258,10 +5271,11 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
     if(!agg.length){tbody.innerHTML='<tr><td colspan="7" class="data-empty">업로드된 입고 데이터가 없습니다.</td></tr>';return}
     tbody.innerHTML=agg.map(r=>`<tr>
       <td>${esc(r.month)}</td>
+      <td class="num">${r.batchCount}</td>
+      <td class="num">${nf(Math.round(r.pallets))}</td>
       <td class="num">${nf(Math.round(r.qty))}</td>
       <td class="num">${nf(Math.round(r.qtyG))}</td>
       <td class="num">${nf(Math.round(r.qtyEA))}</td>
-      <td class="num">${r.batchCount}</td>
       <td class="num">${r.avgStaff!==null?r.avgStaff.toFixed(1):'-'}</td>
       <td class="num">${r.avgProd!==null?nf(Math.round(r.avgProd)):'-'}</td>
     </tr>`).join('');
@@ -5276,8 +5290,8 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
   function exportMonthlyCsv(){
     const year=$('inboundMonthlyYear')?.value||'';
     const agg=monthlyAgg(year);
-    const rows=[['월','입고수량(EA환산)','입고수량(G)','입고수량(EA)','입고차수','평균 투입인원','평균 생산성']];
-    agg.forEach(r=>rows.push([r.month,r.qty,r.qtyG,r.qtyEA,r.batchCount,r.avgStaff!==null?r.avgStaff.toFixed(1):'',r.avgProd!==null?Math.round(r.avgProd):'']));
+    const rows=[['월','입고차수','총 팔렛수','입고수량(EA환산)','입고수량(G)','입고수량(EA)','평균 투입인원','평균 생산성']];
+    agg.forEach(r=>rows.push([r.month,r.batchCount,Math.round(r.pallets),r.qty,r.qtyG,r.qtyEA,r.avgStaff!==null?r.avgStaff.toFixed(1):'',r.avgProd!==null?Math.round(r.avgProd):'']));
     download('월별_입고현황.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   }
   window.openInboundDailyView=function(label,el){document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));$('inboundDailyView').classList.add('active');pageTitle.textContent=label||'일일 입고관리';document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));if(el)el.classList.add('active');currentSheet=null;renderInboundDailyView()};

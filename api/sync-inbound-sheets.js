@@ -173,6 +173,8 @@ module.exports = async (req, res) => {
       최종반영행수: finalRows.length,
       보관되는최근행수: recentRows.length,
       갱신된월: Object.keys(freshSummary).sort(),
+      진단_원본첫행: csvRows[0] || null,
+      진단_변환후첫행_날짜_차수_팔렛_코드_제품군_제품명_단위_수량: finalRows[0] || null,
       실행시각: new Date().toISOString()
     });
   } catch (err) {
