@@ -2242,15 +2242,21 @@ html,body{max-width:100%;overflow-x:hidden}
 #appShell #dashboard .request-card-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
 #appShell #dashboard .request-card-grid .request-mini-card{min-height:230px!important}
 #appShell #dashboard .request-card-grid .request-mini-body{min-height:130px!important}
-/* 매장명·요청일자 글자는 키우고, 완료 처리 버튼은 줄여서 균형을 맞춤 */
+/* 매장명·요청일자 글자 크기를 다시 살짝 줄여서 균형 맞춤 */
 #appShell #dashboard .request-row .store-name,
-#appShell #dashboard .request-row .doc-no{font-size:13px!important;font-weight:600!important}
+#appShell #dashboard .request-row .doc-no{font-size:11px!important;font-weight:600!important}
 #appShell #dashboard .request-row .complete-btn{font-size:11px!important;padding:4px 8px!important}
+/* 금주 출고 요청 각 카드 제목(대량 주문/트래픽/본사 출고/노즐·비닐) 글자 키움 */
+#appShell #dashboard .request-mini-head b{font-size:15px!important}
 /* 메인 화면 TO DO: 담당자 이름 안 잘리게, 내용 안 잘리게, "미완료" 배지는 글자만 딱 맞게 */
 #appShell #dashboard .ops-todo-item{grid-template-columns:110px minmax(0,1fr) auto!important;align-items:start!important;column-gap:10px!important}
 #appShell #dashboard .ops-todo-manager{white-space:normal!important;overflow-wrap:break-word!important;word-break:keep-all!important}
 #appShell #dashboard .todo-content{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word!important}
 #appShell #dashboard .ops-todo-item .badge{width:fit-content!important;white-space:nowrap!important;justify-self:start!important}
+/* 박스(둥근 테두리) 대신 밑줄만으로 여러 할 일을 구분, "미완료" 글씨도 살짝 더 작게 */
+#appShell #dashboard .ops-todo-item{border:0!important;border-bottom:1px solid #e7e7e3!important;border-radius:0!important;background:transparent!important;padding:11px 2px!important}
+#appShell #dashboard .ops-todo-list>.ops-todo-item:last-child{border-bottom:0!important}
+#appShell #dashboard .ops-todo-item .badge{font-size:10px!important;padding:3px 7px!important}
 </style>
 <style id="out-trend-table-css">
 /* 월별 출고 추이 표: 핵심 지표(월/총수량/출고금액합계)를 하나로 묶어서 테두리 표시,
