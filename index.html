@@ -4471,10 +4471,12 @@ setTimeout(initInventoryColumnResize,0);
 (()=>{
   const KEY='lush_schedule_events_v1',TEAM_SIZE=14;
   const IMPORT_API='/api/calendar';
+  const IMPORT_CACHE_KEY='lush_calendar_import_cache_v1';
+  const IMPORT_REFRESH_MS=60000;
   const types={annual:'연차',half_am:'오전반차',half_pm:'오후반차',field:'외근',checkup:'건강검진'};
   const absenceTypes=new Set(Object.keys(types)),fullAbsence=new Set(['annual','field','checkup']);
   let calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
-  let importEvents=[],importLoadError='';
+  let importEvents=[],importLoadError='',lastImportSuccessAt='';
   const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
   const dateKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
   const todayKey=()=>dateKey(new Date());
@@ -4488,6 +4490,25 @@ setTimeout(initInventoryColumnResize,0);
   function eventCovers(e,date){return date>=(e.startDate||'')&&date<=(e.endDate||e.startDate||'')}
   function isoToSeoulDate(iso){if(!iso)return'';const d=new Date(iso);return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
   function normalizeImport(raw){return (raw||[]).map(e=>({id:e.id||'',title:String(e.title||'').trim(),startDate:isoToSeoulDate(e.start),endDate:isoToSeoulDate(e.end),type:'import',source:String(e.source||'수입일정')})).filter(e=>e.startDate&&e.title)}
+  function formatSyncTime(iso){
+    if(!iso)return'';
+    const d=new Date(iso);
+    if(Number.isNaN(d.getTime()))return'';
+    return `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  }
+  function restoreImportCache(){
+    try{
+      const cached=JSON.parse(localStorage.getItem(IMPORT_CACHE_KEY)||'null');
+      if(cached&&Array.isArray(cached.events)){
+        importEvents=cached.events;
+        lastImportSuccessAt=cached.updatedAt||'';
+      }
+    }catch(e){}
+  }
+  function saveImportCache(events){
+    lastImportSuccessAt=new Date().toISOString();
+    try{localStorage.setItem(IMPORT_CACHE_KEY,JSON.stringify({events,updatedAt:lastImportSuccessAt}))}catch(e){}
+  }
 
   function holidayEvents(year){
     const fixed=[
@@ -4512,13 +4533,15 @@ setTimeout(initInventoryColumnResize,0);
       const data=await res.json();
       if(!data.success||!Array.isArray(data.events))throw new Error(data?.error||'응답 형식 오류');
       importEvents=normalizeImport(data.events);importLoadError='';
-      const now=new Date(),stamp=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
-      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent=`수입 일정 ${importEvents.length}건 연동 완료 · ${stamp} 기준`;
+      saveImportCache(importEvents);
+      const stamp=formatSyncTime(lastImportSuccessAt);
+      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent=`수입 일정 ${importEvents.length}건 연동 완료 · ${stamp} 기준 · 1분 자동 갱신`;
       if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent=`수입 일정 연동 완료 · ${stamp}`;
     }catch(err){
-      importLoadError=String(err?.message||err);importEvents=[];
-      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent='수입 일정 연결 실패 · 새로고침 후 다시 확인해주세요.';
-      if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent='수입 일정 연결 확인 필요';
+      importLoadError=String(err?.message||err);
+      const stamp=formatSyncTime(lastImportSuccessAt);
+      if($('calendarSyncStatus'))$('calendarSyncStatus').textContent=stamp?`수입 일정 연동 지연 · 마지막 성공 ${stamp} · 기존 일정 유지`:'수입 일정 연결 실패 · 1분 후 자동 재시도';
+      if($('dashboardCalendarSync'))$('dashboardCalendarSync').textContent=stamp?`수입 일정 연동 지연 · 마지막 성공 ${stamp}`:'수입 일정 연결 확인 필요';
       console.error('Import calendar load failed:',err);
     }
     renderMasterCalendar();renderDashboardSchedule();
@@ -4613,7 +4636,9 @@ setTimeout(initInventoryColumnResize,0);
   $('calendarTodayBtn')&&($('calendarTodayBtn').onclick=()=>{calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);renderMasterCalendar()});
   $('refreshImportScheduleBtn')&&($('refreshImportScheduleBtn').onclick=()=>loadImportSchedule(true));$('dashRefreshImportScheduleBtn')&&($('dashRefreshImportScheduleBtn').onclick=()=>loadImportSchedule(true));
 
-  resetForm();showScheduleBoard();renderMasterCalendar();renderDashboardSchedule();loadImportSchedule();
+  restoreImportCache();
+  resetForm();showScheduleBoard();renderMasterCalendar();renderDashboardSchedule();loadImportSchedule(true);
+  setInterval(()=>loadImportSchedule(true),IMPORT_REFRESH_MS);
 })();
 </script>
 
