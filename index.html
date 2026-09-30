@@ -3676,6 +3676,33 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .store-history-on-demand-actions{display:grid!important;grid-template-columns:1fr auto!important}
 }
 </style>
+<style id="v89-unit-conversion-productivity">
+#statusBoardView .prod-date-metric input{
+  width:100%!important;min-height:0!important;height:auto!important;padding:0!important;border:0!important;background:transparent!important;
+  color:#202520!important;font-size:22px!important;font-weight:900!important;line-height:1.15!important;box-shadow:none!important
+}
+#statusBoardView .prod-date-metric input:focus{outline:none!important;box-shadow:none!important}
+#statusBoardView .prod-staff-input-wrap{display:flex;align-items:baseline;gap:5px;margin-top:5px}
+#statusBoardView .prod-staff-input-wrap input{
+  width:82px!important;height:36px!important;padding:0 8px!important;border:1px solid #d8ddd9!important;border-radius:7px!important;
+  background:#fff!important;text-align:right!important;font-size:22px!important;font-weight:900!important;color:#202520!important
+}
+#statusBoardView .prod-staff-input-wrap b{font-size:15px!important;color:#59625b!important}
+#statusBoardView .shipping-unit-values{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+#statusBoardView .shipping-unit-values strong{margin:0!important;padding:10px 12px;border:1px solid #e7e9e7;border-radius:9px;background:#fff}
+#statusBoardView .shipping-unit-values strong b{font:inherit!important}
+#statusBoardView .shipping-unit-values strong small{margin-left:5px!important}
+.unit-conversion-shell{display:flex;flex-direction:column;gap:14px}
+.unit-conversion-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.unit-conversion-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:14px 0}
+.unit-conversion-toolbar .grow{flex:1 1 280px}
+.unit-conversion-table input{width:120px;height:32px;border:1px solid #dce2e5;border-radius:7px;padding:0 8px;text-align:right}
+.unit-conversion-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:850}
+.unit-conversion-status.registered{background:#edf7f0;color:#2d7142}
+.unit-conversion-status.missing{background:#fff3e8;color:#9a5d24}
+.unit-conversion-updated{color:#7b858d;font-size:10px}
+@media(max-width:760px){.unit-conversion-summary{grid-template-columns:1fr}.unit-conversion-toolbar{align-items:stretch}.unit-conversion-toolbar .field{width:100%}}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -3840,7 +3867,7 @@ html,body{max-width:100%;overflow-x:hidden}
                     <div class="shipping-ring" id="statusShippingRing">
                       <div class="shipping-ring-inner">
                         <div class="shipping-ring-value" id="statusShippingPct">0%</div>
-                        <div class="shipping-ring-caption">EA 기준</div>
+                        <div class="shipping-ring-caption">환산 처리량 기준</div>
                       </div>
                     </div>
                   </div>
@@ -3855,19 +3882,19 @@ html,body{max-width:100%;overflow-x:hidden}
                 <div class="shipping-quantity-row">
                   <div class="shipping-quantity-main shipping-quantity-focus">
                     <span>현재 처리수량</span>
-                    <strong><b id="statusShipQtyNow">0</b><small>EA</small></strong>
-                    <div class="shipping-total-goal">총 처리량 <b id="statusShipQtyGoal">100,000</b> EA</div>
+                    <div class="shipping-unit-values"><strong><b id="statusShipQtyNowEA">0</b><small>EA</small></strong><strong><b id="statusShipQtyNowG">0</b><small>G</small></strong></div>
+                    <div class="shipping-total-goal">총 출고량 <b id="statusShipQtyGoalEA">0</b> EA · <b id="statusShipQtyGoalG">0</b> G</div>
                   </div>
                   <div class="shipping-quantity-remain shipping-quantity-focus">
                     <span>남은 수량</span>
-                    <strong><b id="statusShipQtyRemain">100,000</b><small>EA</small></strong>
-                    <div class="shipping-remain-note">전체 작업 기준 잔여 물량</div>
+                    <div class="shipping-unit-values"><strong><b id="statusShipQtyRemainEA">0</b><small>EA</small></strong><strong><b id="statusShipQtyRemainG">0</b><small>G</small></strong></div>
+                    <div class="shipping-remain-note">EA / G 실제 출고 단위 기준</div>
                   </div>
                 </div>
 
                 <div class="shipping-last-hour-card">
                   <span>최근 1시간 처리량</span>
-                  <strong><b id="statusLastHourQty">0</b><small>EA</small></strong>
+                  <strong><b id="statusLastHourQtyEA">0</b><small>EA</small> · <b id="statusLastHourQtyG">0</b><small>G</small></strong>
                 </div>
               </div>
 
@@ -3891,10 +3918,10 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="status-card status-toolbar-card">
             <div class="status-card-title"><h3>작업경과별 생산성</h3><small>출고 시작 기준 · 초반 1시간 30분 단위, 이후 1시간 단위</small></div>
             <div class="prod-toolbar prod-toolbar-readonly">
-              <div class="prod-field"><label for="prodDate">조회일자</label><input type="date" id="prodDate"></div>
+              <div class="prod-api-metric prod-date-metric"><span>조회일자</span><input type="date" id="prodDate"><small>날짜 선택</small></div>
               <div class="prod-api-metric"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
               <div class="prod-api-metric"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
-              <div class="prod-api-metric"><span>투입 인원</span><strong><b id="prodStaffDisplay">0</b>명</strong><small>작업 로그 기준</small></div>
+              <div class="prod-api-metric prod-staff-metric"><span>투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>날짜별 직접 입력 · 자동 저장</small></div>
             </div>
           </div>
           <div class="prod-layout">
@@ -4367,10 +4394,38 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
     <section id="settings" class="view">
-      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button></div>
+      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button></div>
       <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
       <div id="admin-menus" class="admin-section"><div class="admin-grid"><div class="admin-card"><h3>메뉴 구성</h3><p>메뉴명 수정, 표시/숨김, 신규 메뉴 추가를 Admin에서 직접 관리합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>그룹</th><th>메뉴명</th><th>유형</th><th>표시</th><th>관리</th></tr></thead><tbody id="menuRows"></tbody></table></div></div><div class="admin-card"><h3>새 메뉴 추가</h3><p>별도 코드 수정 없이 기본 메뉴를 추가할 수 있는 구조입니다.</p><div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div><div class="hint" style="margin-top:13px">Dashboard와 Admin은 운영 안전을 위해 삭제할 수 없고, 나머지 사용자 추가 메뉴는 자유롭게 삭제할 수 있습니다.</div></div></div></div>
       <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
+      <div id="admin-conversion" class="admin-section">
+        <div class="unit-conversion-shell">
+          <div class="unit-conversion-summary">
+            <div class="kpi"><span>전체 G 제품</span><b id="unitConvAllCount">0</b><small>제품</small></div>
+            <div class="kpi"><span>등록 완료</span><b id="unitConvRegisteredCount">0</b><small>제품</small></div>
+            <div class="kpi"><span>미등록 G 제품</span><b id="unitConvMissingCount">0</b><small>제품</small></div>
+          </div>
+          <div class="admin-card">
+            <h3>단위 환산 관리</h3>
+            <p>G 단위 제품의 EA 환산계수를 직접 관리합니다. 생산성·생산성 누계·KPI·EA 환산 분석은 이 값을 공통으로 사용합니다.</p>
+            <div class="unit-conversion-toolbar">
+              <div class="field grow"><label>제품 검색</label><input id="unitConvQuery" placeholder="제품코드 또는 제품명"></div>
+              <div class="field"><label>등록 상태</label><select id="unitConvStatus"><option value="all">전체</option><option value="registered">등록 완료</option><option value="missing">미등록 G 제품</option></select></div>
+            </div>
+            <div class="data-table-wrap"><table class="admin-table unit-conversion-table"><thead><tr><th>제품코드</th><th>제품명</th><th>기준 단위</th><th>환산계수</th><th>상태</th><th>최종 수정</th></tr></thead><tbody id="unitConvBody"></tbody></table></div>
+          </div>
+          <div class="admin-card">
+            <h3>변경 이력</h3>
+            <p>환산계수 변경 내역을 기간과 제품코드로 조회합니다.</p>
+            <div class="unit-conversion-toolbar">
+              <div class="field"><label>시작일</label><input type="date" id="unitConvHistStart"></div>
+              <div class="field"><label>종료일</label><input type="date" id="unitConvHistEnd"></div>
+              <div class="field grow"><label>제품코드</label><input id="unitConvHistCode" placeholder="제품코드 검색"></div>
+            </div>
+            <div class="data-table-wrap"><table class="admin-table"><thead><tr><th>변경 일시</th><th>제품코드</th><th>제품명</th><th>변경 전</th><th>변경 후</th><th>변경 사용자</th></tr></thead><tbody id="unitConvHistoryBody"></tbody></table></div>
+          </div>
+        </div>
+      </div>
     </section>
     <footer class="bottom-toolbar" id="bottomToolbar">
       <button type="button" class="base-tool" id="baseExportBtn" title="현재 화면 데이터 내보내기">CSV</button>
@@ -4844,7 +4899,7 @@ function kindLabel(m){return m.kind==="sheet"?"웹 시트":m.kind==="inventoryOw
 function renderMenusTable(){menuRows.innerHTML=menus.map((m,i)=>{const g=GROUPS.find(x=>x.id===m.group);return `<tr><td>${g?g.label:m.group}</td><td><input class="inline-input menuLabel" data-i="${i}" value="${esc(m.label)}"></td><td>${kindLabel(m)}</td><td><button class="toggle ${m.visible?"on":""}" data-toggle="${i}"></button></td><td>${m.protected?'<span class="muted">고정</span>':`<button class="btn remove sm" data-del="${i}">− 삭제</button>`}</td></tr>`}).join("");document.querySelectorAll(".menuLabel").forEach(x=>x.onchange=()=>{menus[+x.dataset.i].label=x.value.trim()||menus[+x.dataset.i].label;saveMenus();renderNav();renderPermissions();toastMsg("메뉴명을 변경했습니다.")});document.querySelectorAll("[data-toggle]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.toggle];m.visible=!m.visible;saveMenus();renderNav();renderMenusTable();toastMsg(m.visible?"메뉴를 표시합니다.":"메뉴를 숨겼습니다.")});document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{menus.splice(+b.dataset.del,1);saveMenus();renderNav();renderMenusTable();renderPermissions();toastMsg("메뉴를 삭제했습니다.")})}
 addMenuBtn.onclick=()=>{const name=newMenuName.value.trim();if(!name){toastMsg("메뉴 이름을 입력해주세요.");return}const id="custom-"+Date.now();const group=newMenuGroup.value,kind=newMenuType.value;const m={id,group,label:name,kind:kind==="sheet"?"sheet":kind==="inventoryOwner"?"inventoryOwner":"blank",visible:true,roles:["admin","leader","editor"]};if(kind==="sheet"){m.cat=group;m.sheet=name;if(!db[group])db[group]={};db[group][name]={cols:["항목","내용","비고"],rows:[]};localStorage.setItem(DATA_KEY,JSON.stringify(db))}else if(kind==="inventoryOwner"){m.group="inventory";m.owner=name;if(!inventoryDb.owners[name])inventoryDb.owners[name]={label:name,snapshots:{}};saveInventoryDb()}menus.push(m);saveMenus();newMenuName.value="";renderNav();renderMenusTable();renderPermissions();toastMsg("새 메뉴를 추가했습니다.")};
 function renderPermissions(){permissionRows.innerHTML=menus.filter(m=>m.group!=="admin").map((m,i)=>{const idx=menus.indexOf(m);return `<tr><td><b>${esc(m.label)}</b></td><td><span class="badge">항상 허용</span></td>${["leader","editor","restricted"].map(r=>`<td><button class="role-pill ${m.roles.includes(r)?"on":""}" data-pidx="${idx}" data-role="${r}">${m.roles.includes(r)?"허용":"차단"}</button></td>`).join("")}</tr>`}).join("");document.querySelectorAll("[data-pidx]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.pidx],r=b.dataset.role;if(m.roles.includes(r))m.roles=m.roles.filter(x=>x!==r);else m.roles.push(r);if(!m.roles.includes("admin"))m.roles.push("admin");saveMenus();renderPermissions();renderNav();toastMsg(`${ROLE_LABEL[r]} 권한을 변경했습니다.`)})}
-document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active")});
+document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active");if(b.dataset.admin==="conversion"&&typeof renderUnitConversionAdmin==="function")renderUnitConversionAdmin()});
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","메인",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","메인",document.querySelector('[data-menu-id="dashboard-main"]'));
 
@@ -5735,8 +5790,77 @@ setTimeout(initInventoryColumnResize,0);
     });
     download('날짜별_출고현황.csv',new Blob(['\ufeff'+rows.map(r=>r.map(x=>`"${String(x??'').replaceAll('"','""')}"`).join(',')).join('\n')],{type:'text/csv;charset=utf-8'}));
   }
-  const PRODUCT_EA_CONVERSION={"T0017390":5,"T0017344":10,"T0017345":10,"T0017391":10,"T0015387":15,"T0015388":15,"T0015389":15,"T0017343":20,"T0012651":50,"T0011245":50,"T0013136":100,"T0004870":100,"T0000157":100,"T0000156":200,"T0002618":250,"T0015067":250,"T0000827":500,"T0000823":500,"T0015619":650,"T0017034":650,"T0017035":650,"T0017323":650,"T0018229":1100,"T0017030":1250,"T0016938":1500,"T0015446":1500,"T0016855":1500,"T0016849":1500,"T0016853":1500,"T0016851":1500,"T0017584":1500,"T0018237":1500,"T0016660":1500,"T0016659":1500,"T0017216":1500,"T0017217":1500,"T0017218":1500,"T0017211":1500,"T0017219":1500,"T0017205":1500,"T0013867":1500,"T0017220":1500,"T0017221":1500,"T0017877":1500,"T0017222":1500,"T0017441":1500,"T0017223":1500,"T0017324":1500,"T0014806":1550,"T0017413":1800,"T0016357":2000,"T0018231":2100,"T0017724":2600,"T0016471":2700,"T0016472":3000,"T0015839":3200,"T0017440":3200,"T0015445":3400,"T0017033":3400,"T0017032":3400,"T0017206":3400,"T0017208":3400,"T0017210":3400,"T0017214":3400,"T0017215":4200,"T0017325":4200,"T0017207":4500,"T0017213":5100,"T0018158":5800,"T0017212":6100,"T0017233":8500,"T0017234":8500,"T0017643":8500,"T0017646":8500,"T0017439":8500,"T0017645":8500,"T0017642":8500,"T0017641":8500,"T0017644":8500,"T0018801":1500,"T0018775":10,"T0017791":10,"T0019180":1400,"T0019314":2000};
+  const PRODUCT_EA_CONVERSION_SEED={"T0017390":5,"T0017344":10,"T0017345":10,"T0017391":10,"T0015387":15,"T0015388":15,"T0015389":15,"T0017343":20,"T0012651":50,"T0011245":50,"T0013136":100,"T0004870":100,"T0000157":100,"T0000156":200,"T0002618":250,"T0015067":250,"T0000827":500,"T0000823":500,"T0015619":650,"T0017034":650,"T0017035":650,"T0017323":650,"T0018229":1100,"T0017030":1250,"T0016938":1500,"T0015446":1500,"T0016855":1500,"T0016849":1500,"T0016853":1500,"T0016851":1500,"T0017584":1500,"T0018237":1500,"T0016660":1500,"T0016659":1500,"T0017216":1500,"T0017217":1500,"T0017218":1500,"T0017211":1500,"T0017219":1500,"T0017205":1500,"T0013867":1500,"T0017220":1500,"T0017221":1500,"T0017877":1500,"T0017222":1500,"T0017441":1500,"T0017223":1500,"T0017324":1500,"T0014806":1550,"T0017413":1800,"T0016357":2000,"T0018231":2100,"T0017724":2600,"T0016471":2700,"T0016472":3000,"T0015839":3200,"T0017440":3200,"T0015445":3400,"T0017033":3400,"T0017032":3400,"T0017206":3400,"T0017208":3400,"T0017210":3400,"T0017214":3400,"T0017215":4200,"T0017325":4200,"T0017207":4500,"T0017213":5100,"T0018158":5800,"T0017212":6100,"T0017233":8500,"T0017234":8500,"T0017643":8500,"T0017646":8500,"T0017439":8500,"T0017645":8500,"T0017642":8500,"T0017641":8500,"T0017644":8500,"T0018801":1500,"T0018775":10,"T0017791":10,"T0019180":1400,"T0019314":2000};
+  const UNIT_CONV_KEY='lush-logistics-unit-conversion-v1';
+  const UNIT_CONV_HISTORY_KEY='lush-logistics-unit-conversion-history-v1';
+  const UNIT_CONV_META_KEY='lush-logistics-unit-conversion-meta-v1';
+  function readUnitConversion(){try{const v=JSON.parse(localStorage.getItem(UNIT_CONV_KEY)||'{}');return v&&typeof v==='object'?v:{}}catch{return{}}}
+  function readUnitConversionMeta(){try{const v=JSON.parse(localStorage.getItem(UNIT_CONV_META_KEY)||'{}');return v&&typeof v==='object'?v:{}}catch{return{}}}
+  function readUnitConversionHistory(){try{const v=JSON.parse(localStorage.getItem(UNIT_CONV_HISTORY_KEY)||'[]');return Array.isArray(v)?v:[]}catch{return[]}}
+  const PRODUCT_EA_CONVERSION=Object.assign({},PRODUCT_EA_CONVERSION_SEED,readUnitConversion());
   window.PRODUCT_EA_CONVERSION=PRODUCT_EA_CONVERSION;
+  function currentUnitConversionUser(){return (document.querySelector('.profile b')?.textContent||'현재 사용자').trim()||'현재 사용자'}
+  function saveUnitConversionValue(code,name,nextValue){
+    code=String(code||'').trim();if(!code)return;
+    const before=Number(PRODUCT_EA_CONVERSION[code]||0),after=Number(nextValue||0);
+    if(!(after>0))return;
+    PRODUCT_EA_CONVERSION[code]=after;
+    const saved=readUnitConversion();saved[code]=after;localStorage.setItem(UNIT_CONV_KEY,JSON.stringify(saved));
+    const meta=readUnitConversionMeta();meta[code]={updatedAt:new Date().toISOString(),updatedBy:currentUnitConversionUser(),name:name||''};localStorage.setItem(UNIT_CONV_META_KEY,JSON.stringify(meta));
+    if(before!==after){
+      const hist=readUnitConversionHistory();hist.unshift({at:new Date().toISOString(),code:code,name:name||'',before:before||null,after:after,user:currentUnitConversionUser()});
+      localStorage.setItem(UNIT_CONV_HISTORY_KEY,JSON.stringify(hist.slice(0,1000)));
+    }
+    renderUnitConversionAdmin();
+    if(typeof renderOutboundBasic==='function')renderOutboundBasic();
+    if(typeof renderOutboundAnalysis==='function')renderOutboundAnalysis();
+    if(typeof renderInboundBasic==='function')renderInboundBasic();
+    if(typeof renderInboundAnalysis==='function')renderInboundAnalysis();
+    if(typeof window.renderStatusProductivity==='function')window.renderStatusProductivity();
+  }
+  function discoverGProducts(){
+    const products={};
+    const d=read();
+    const outRows=d.outbound?.rows||[],cols=outboundColIndex(d.outbound?.header);
+    outRows.forEach(r=>{if(outboundUnit(r,cols)!=='G')return;const code=String(r[cols.code]||'').trim();if(!code)return;products[code]={code,name:String(r[cols.name]||'').trim(),unit:'G',seen:true}});
+    (d.inbound?.rows||[]).forEach(r=>{if(inboundUnit(r)!=='G')return;const code=String(r[3]||'').trim();if(!code)return;products[code]=products[code]||{code,name:String(r[5]||'').trim(),unit:'G',seen:true}});
+    Object.keys(PRODUCT_EA_CONVERSION).forEach(code=>{if(!products[code])products[code]={code,name:'',unit:'G',seen:false}});
+    return Object.values(products).sort((a,b)=>a.code.localeCompare(b.code));
+  }
+  function renderUnitConversionAdmin(){
+    const body=document.getElementById('unitConvBody');if(!body)return;
+    const qv=(document.getElementById('unitConvQuery')?.value||'').trim().toLowerCase();
+    const status=document.getElementById('unitConvStatus')?.value||'all';
+    const all=discoverGProducts(),missing=all.filter(p=>p.seen&&!(Number(PRODUCT_EA_CONVERSION[p.code])>0));
+    const registered=all.filter(p=>Number(PRODUCT_EA_CONVERSION[p.code])>0);
+    document.getElementById('unitConvAllCount').textContent=String(all.filter(p=>p.seen).length);
+    document.getElementById('unitConvRegisteredCount').textContent=String(registered.filter(p=>p.seen).length);
+    document.getElementById('unitConvMissingCount').textContent=String(missing.length);
+    const meta=readUnitConversionMeta();
+    const rows=all.filter(p=>{
+      const has=Number(PRODUCT_EA_CONVERSION[p.code])>0;
+      if(status==='registered'&&!has)return false;
+      if(status==='missing'&&(!p.seen||has))return false;
+      return !qv||p.code.toLowerCase().includes(qv)||p.name.toLowerCase().includes(qv);
+    });
+    body.innerHTML=rows.length?rows.map(p=>{
+      const factor=Number(PRODUCT_EA_CONVERSION[p.code]||0),has=factor>0,m=meta[p.code]||{};
+      const updated=m.updatedAt?new Date(m.updatedAt).toLocaleString('ko-KR'):'-';
+      return '<tr><td><b>'+esc(p.code)+'</b></td><td>'+esc(p.name||'-')+'</td><td>G</td><td><input type="number" min="1" step="1" value="'+(has?factor:'')+'" placeholder="미등록" data-unit-conv="'+esc(p.code)+'" data-unit-name="'+esc(p.name||'')+'"></td><td><span class="unit-conversion-status '+(has?'registered':'missing')+'">'+(has?'등록 완료':'미등록')+'</span></td><td><span class="unit-conversion-updated">'+updated+'</span></td></tr>';
+    }).join(''):'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    body.querySelectorAll('[data-unit-conv]').forEach(inp=>{
+      inp.onchange=()=>{const n=Number(inp.value);if(!(n>0)){inp.value=PRODUCT_EA_CONVERSION[inp.dataset.unitConv]||'';if(typeof toastMsg==='function')toastMsg('환산계수는 1 이상으로 입력해주세요.');return}saveUnitConversionValue(inp.dataset.unitConv,inp.dataset.unitName,n)};
+    });
+    renderUnitConversionHistory();
+  }
+  function renderUnitConversionHistory(){
+    const body=document.getElementById('unitConvHistoryBody');if(!body)return;
+    const start=document.getElementById('unitConvHistStart')?.value||'',end=document.getElementById('unitConvHistEnd')?.value||'',code=(document.getElementById('unitConvHistCode')?.value||'').trim().toLowerCase();
+    const rows=readUnitConversionHistory().filter(h=>{const d=String(h.at||'').slice(0,10);return(!start||d>=start)&&(!end||d<=end)&&(!code||String(h.code||'').toLowerCase().includes(code))});
+    body.innerHTML=rows.length?rows.map(h=>'<tr><td>'+esc(new Date(h.at).toLocaleString('ko-KR'))+'</td><td>'+esc(h.code)+'</td><td>'+esc(h.name||'-')+'</td><td>'+esc(h.before==null?'-':h.before)+'</td><td>'+esc(h.after)+'</td><td>'+esc(h.user||'-')+'</td></tr>').join(''):'<tr><td colspan="6" class="data-empty">변경 이력이 없습니다.</td></tr>';
+  }
+  ['unitConvQuery','unitConvStatus','unitConvHistStart','unitConvHistEnd','unitConvHistCode'].forEach(id=>document.getElementById(id)?.addEventListener(id==='unitConvStatus'?'change':'input',()=>{if(id.indexOf('Hist')>=0)renderUnitConversionHistory();else renderUnitConversionAdmin()}));
+  renderUnitConversionAdmin();
   window.renderOutboundBasic=renderOutboundBasic;
   const NAKED_MERGE_SET=new Set(['BATH BOMB','BUBBLE BAR','SHAMPOO BAR','MASSAGE BAR','SOAP']);
   const CATEGORY_EXCLUDE_SET=new Set(['리미티드','SPA','스파','VM','ACCESSORIES','ACCESSORY','RAW MAT','KNOT WRAP','LOKTA WRAP','MERCH','액세서리','악세서리','악세사리','엑세서리','데모','DEMO','디지털부자재','디지털사은품']);
@@ -7221,7 +7345,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var getRecord=function(dt){var all=readDaily();return all[dt]||{date:dt,staff:0,hours:{}}};
   var calcRecord=function(r){
     var qty=0,labor=0;
-    HOURS.forEach(function(h){var row=(r.hours&&r.hours[h])||{};var qn=Number(row.qty||0),sn=Number(row.staff!=null?row.staff:r.staff||0),duration=Number(BUCKET_HOURS[h]||1);qty+=qn;if(qn>0&&sn>0)labor+=sn*duration});
+    HOURS.forEach(function(h){var row=(r.hours&&r.hours[h])||{};var qn=Number(row.qty||0),sn=Number(r.staff||0),duration=Number(BUCKET_HOURS[h]||1);qty+=qn;if(qn>0&&sn>0)labor+=sn*duration});
     return {qty:qty,labor:labor,rate:labor>0?qty/labor:0};
   };
 
@@ -7249,7 +7373,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       if(DEMO_MODE&&demo){
         merged[dt]={
           date:dt,
-          staff:real.staff!=null?Number(real.staff||0):Number(demo.staff||0),
+          staff:real.staff!=null?Number(real.staff||0):0,
           startTime:real.startTime||demo.startTime||'',
           endTime:real.endTime||demo.endTime||'',
           hours:(real.hours&&Object.keys(real.hours).length)?real.hours:demo.hours,
@@ -7262,7 +7386,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return merged;
   };
   getRecord=function(dt){var all=readDailyDisplay();return all[dt]||{date:dt,staff:0,startTime:'',endTime:'',hours:{}}};
-  var DEMO_SHIPPING={qty:68400,goal:100000,lastHourQty:12600,eta:'16:40'};
+  var DEMO_SHIPPING={qtyEA:58400,qtyG:15000,goalEA:82000,goalG:27000,convertedQty:68400,convertedGoal:100000,lastHourEA:10800,lastHourG:2700,eta:'16:40'};
   var DEMO_STORES=[
     {name:'강남역점',total:9000,done:9000},
     {name:'홍대점',total:8000,done:7600},
@@ -7320,19 +7444,20 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
 
   function renderShipping(){
-    var qty=DEMO_MODE?DEMO_SHIPPING.qty:0;
-    var qtyGoal=DEMO_MODE?DEMO_SHIPPING.goal:100000;
+    var qty=DEMO_MODE?DEMO_SHIPPING.convertedQty:0;
+    var qtyGoal=DEMO_MODE?DEMO_SHIPPING.convertedGoal:100000;
     var progress=Math.min(100,qtyGoal?qty/qtyGoal*100:0);
 
     q('#statusShippingPct').textContent=Math.round(progress)+'%';
     q('#statusShippingRing').style.setProperty('--shipping-pct',String(progress));
 
-    q('#statusShipQtyNow').textContent=fmt(qty);
-    q('#statusShipQtyGoal').textContent=fmt(qtyGoal);
-    q('#statusShipQtyRemain').textContent=fmt(Math.max(0,qtyGoal-qty));
-
-    var lastHourQty=DEMO_MODE?DEMO_SHIPPING.lastHourQty:0;
-    q('#statusLastHourQty').textContent=fmt(lastHourQty);
+    var qtyEA=DEMO_MODE?DEMO_SHIPPING.qtyEA:0,qtyG=DEMO_MODE?DEMO_SHIPPING.qtyG:0;
+    var goalEA=DEMO_MODE?DEMO_SHIPPING.goalEA:0,goalG=DEMO_MODE?DEMO_SHIPPING.goalG:0;
+    q('#statusShipQtyNowEA').textContent=fmt(qtyEA);q('#statusShipQtyNowG').textContent=fmt(qtyG);
+    q('#statusShipQtyGoalEA').textContent=fmt(goalEA);q('#statusShipQtyGoalG').textContent=fmt(goalG);
+    q('#statusShipQtyRemainEA').textContent=fmt(Math.max(0,goalEA-qtyEA));q('#statusShipQtyRemainG').textContent=fmt(Math.max(0,goalG-qtyG));
+    q('#statusLastHourQtyEA').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourEA:0);
+    q('#statusLastHourQtyG').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourG:0);
 
     var eta=DEMO_MODE?DEMO_SHIPPING.eta:'--:--';
     var etaNote=DEMO_MODE?'데모 처리 속도 기준':'처리 속도 데이터 연동 후 계산';
@@ -7383,23 +7508,31 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderProductivity(){
     var dt=q('#prodDate').value||today;if(!q('#prodDate').value)q('#prodDate').value=dt;
     var r=getRecord(dt);
-    var startDisplay=q('#prodStartTimeDisplay'),endDisplay=q('#prodEndTimeDisplay'),staffDisplay=q('#prodStaffDisplay');
+    var startDisplay=q('#prodStartTimeDisplay'),endDisplay=q('#prodEndTimeDisplay'),staffInput=q('#prodStaffInput');
     if(startDisplay)startDisplay.textContent=r.startTime||'--:--';
     if(endDisplay)endDisplay.textContent=r.endTime||'--:--';
-    if(staffDisplay)staffDisplay.textContent=fmt(r.staff||0);
+    if(staffInput)staffInput.value=Number(r.staff||0)>0?String(Number(r.staff)):"";
     q('#prodTableDate').textContent=dt;
     var values=[],body='';
     HOURS.forEach(function(h,i){
-      var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(row.staff!=null?row.staff:r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;
+      var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;
       values.push(rate);
       body+='<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>';
     });
     q('#prodHourBody').innerHTML=body;
-    var sum=calcRecord(r);q('#prodCumQty').textContent=fmt(sum.qty);q('#prodCumLabor').textContent=fmt(Math.round(sum.labor*10)/10);q('#prodCumRate').textContent=fmt(Math.round(sum.rate));
+    var sum=calcRecord(r);q('#prodCumQty').textContent=fmt(sum.qty);q('#prodCumLabor').textContent=sum.labor>0?fmt(Math.round(sum.labor*10)/10):'-';q('#prodCumRate').textContent=sum.labor>0?fmt(Math.round(sum.rate)):'-';
     drawChart('prodHourChart',HOURS,values,'#prodHourEmpty');
   }
   q('#prodDate').value=today;
   q('#prodDate').addEventListener('change',renderProductivity);
+  q('#prodStaffInput').addEventListener('change',function(){
+    var dt=q('#prodDate').value||today,raw=this.value.trim();
+    if(raw==='' ){var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=null;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();return}
+    var n=Number(raw);
+    if(!Number.isInteger(n)||n<1){this.value='';if(typeof toastMsg==='function')toastMsg('투입 인원은 1명 이상 숫자로 입력해주세요.');return}
+    var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=n;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();
+  });
+  window.renderStatusProductivity=function(){renderProductivity();renderCumulative();renderDailyDetail()};
   function fillYearAndMonths(){
     var now=new Date(),year=now.getFullYear(),years=[];
     for(var y=year-2;y<=year+2;y++)years.push(y);
@@ -7437,8 +7570,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderSelectedDay(){
     var all=readDailyDisplay(),r=selectedDetailDate?all[selectedDetailDate]:null;
     if(!r){q('#detailSelectedDate').textContent='-';q('#detailQty').textContent='0 EA';q('#detailStaff').textContent='0명';q('#detailLabor').textContent='0 인·시간';q('#detailRate').textContent='0 EA/인·시간';q('#detailHourLabel').textContent='날짜를 선택해주세요.';q('#detailHourBody').innerHTML='<tr><td colspan="5" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr>';return}
-    var s=calcRecord(r);q('#detailSelectedDate').textContent=selectedDetailDate;q('#detailQty').textContent=fmt(s.qty)+' EA';q('#detailStaff').textContent=fmt(r.staff||0)+'명';q('#detailLabor').textContent=fmt(Math.round(s.labor*10)/10)+' 인·시간';q('#detailRate').textContent=fmt(Math.round(s.rate))+' EA/인·시간';q('#detailHourLabel').textContent=(r.startTime||'-')+' ~ '+(r.endTime||'-');
-    q('#detailHourBody').innerHTML=HOURS.map(function(h,i){var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(row.staff!=null?row.staff:r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;return '<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'}).join('');
+    var s=calcRecord(r);q('#detailSelectedDate').textContent=selectedDetailDate;q('#detailQty').textContent=fmt(s.qty)+' EA';q('#detailStaff').textContent=Number(r.staff||0)>0?fmt(r.staff)+'명':'-';q('#detailLabor').textContent=s.labor>0?fmt(Math.round(s.labor*10)/10)+' 인·시간':'-';q('#detailRate').textContent=s.labor>0?fmt(Math.round(s.rate))+' EA/인·시간':'-';q('#detailHourLabel').textContent=(r.startTime||'-')+' ~ '+(r.endTime||'-');
+    q('#detailHourBody').innerHTML=HOURS.map(function(h,i){var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;return '<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'}).join('');
   }
   q('#detailSearchBtn').addEventListener('click',function(){selectedDetailDate='';renderDailyDetail()});
 
@@ -7488,7 +7621,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderStoreHistory(){
     var rows=filteredStoreHistory(),store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||''):'';
     q('#storeHistoryChartTitle').textContent=storeHistoryMode==='detail'?(store+' 출고물량 추이'):'매장별 출고물량 비교';
-    q('#storeHistoryChartHint').textContent=storeHistoryMode==='detail'?'일자별 출고 EA':'선택 기간 누적 EA · 출고량 높은 순';
+    q('#storeHistoryChartHint').textContent=storeHistoryMode==='detail'?'일자별 출고량 · 실제 단위 기준':'선택 기간 출고량 비교 · 실제 단위 기준';
     q('#storeHistorySummaryName').textContent=storeHistoryMode==='detail'?(store||'매장 상세'):'전체 비교';
     var total=rows.reduce(function(a,r){return a+Number(r.total||0)},0),dates={};
     rows.forEach(function(r){dates[r.date]=(dates[r.date]||0)+Number(r.total||0)});
