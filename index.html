@@ -3704,6 +3704,68 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .shipping-unit-values strong{margin:0!important;padding:10px 12px;border:1px solid #e7e9e7;border-radius:9px;background:#fff}
 #statusBoardView .shipping-unit-values strong b{font:inherit!important}
 #statusBoardView .shipping-unit-values strong small{margin-left:5px!important}
+#statusBoardView .status-filter-cards{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;padding:0 22px 18px}
+#statusBoardView .status-filter-card{min-width:180px!important;flex:0 1 220px!important}
+#statusBoardView .status-filter-card input,
+#statusBoardView .status-filter-card select{
+  width:100%!important;margin-top:5px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+  color:#202620!important;font-size:19px!important;font-weight:900!important;line-height:1.25!important;outline:0!important
+}
+#statusBoardView .status-filter-card select{appearance:auto!important}
+#statusBoardView .status-filter-btn{align-self:center!important;height:40px!important;margin-top:0!important}
+#statusBoardView .product-outbound-tabs{display:flex;gap:6px;margin:0 0 14px;padding:4px;border:1px solid #e1e5e2;border-radius:11px;background:#f7f8f7;width:max-content;max-width:100%}
+#statusBoardView .product-outbound-tab{border:0;background:transparent;color:#687169;padding:9px 16px;border-radius:8px;font-size:11px;font-weight:850;cursor:pointer}
+#statusBoardView .product-outbound-tab.active{background:#315a7d;color:#fff;box-shadow:0 1px 3px rgba(49,90,125,.16)}
+#statusBoardView .product-outbound-panel{display:none}
+#statusBoardView .product-outbound-panel.active{display:block}
+#statusBoardView .product-period-label{margin:0 22px 16px;padding-top:2px;font-size:11px;font-weight:800;color:#667169}
+#statusBoardView .product-analysis-main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr);gap:14px;margin-top:14px}
+#statusBoardView .product-donut-card{min-height:400px}
+#statusBoardView .product-donut-wrap{position:relative;height:320px;padding:8px 18px 18px}
+#statusBoardView .product-analysis-summary{border:1px solid #e1e5e2;border-radius:14px;background:#fff;padding:20px}
+#statusBoardView .product-analysis-summary-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-head span{font-size:13px;font-weight:900}
+#statusBoardView .product-analysis-summary-head small{font-size:10px;color:#929993}
+#statusBoardView .product-analysis-summary-grid{display:grid;grid-template-columns:1fr 1fr;height:calc(100% - 36px)}
+#statusBoardView .product-analysis-summary-grid>div{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:112px;padding:14px;border-bottom:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-grid>div:nth-child(odd){border-right:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-grid>div:nth-last-child(-n+2){border-bottom:0}
+#statusBoardView .product-analysis-summary-grid span{font-size:10px;color:#788179;font-weight:800}
+#statusBoardView .product-analysis-summary-grid b{margin-top:7px;font-size:22px;color:#222a24}
+#statusBoardView .product-analysis-summary-grid small{margin-top:4px;font-size:10px;color:#899188}
+#statusBoardView .product-month-title{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:22px 0 10px;color:#69736b;font-size:11px;font-weight:800}
+#statusBoardView .product-month-title b{font-size:13px;color:#283029}
+#statusBoardView .product-volume-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#statusBoardView .product-volume-card{border:1px solid #e1e5e2;border-radius:14px;background:#fff;padding:20px 22px}
+#statusBoardView .product-volume-card>span{font-size:11px;font-weight:850;color:#6d776f}
+#statusBoardView .product-volume-card>strong{display:block;margin:10px 0 15px;font-size:30px;line-height:1;color:#202620}
+#statusBoardView .product-volume-card>strong small{margin-left:5px;font-size:12px;color:#737d75}
+#statusBoardView .product-volume-card>div{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #eef0ee;font-size:11px}
+#statusBoardView .product-volume-card em{font-style:normal;color:#818a83}
+#statusBoardView .product-top-card{margin-top:14px}
+#statusBoardView .product-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:0 18px 18px}
+#statusBoardView .product-top-grid h4{margin:0 0 8px;font-size:11px;color:#626d64}
+#statusBoardView .product-detail-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:14px 0;padding:18px 20px;border:1px solid #e1e5e2;border-radius:14px;background:#fff}
+#statusBoardView .product-detail-head>div:first-child span{font-size:10px;color:#758078;font-weight:800}
+#statusBoardView .product-detail-head h3{margin:4px 0 2px;font-size:20px}
+#statusBoardView .product-detail-head small{font-size:10px;color:#909891}
+#statusBoardView .product-detail-kpis{display:grid;grid-template-columns:repeat(3,minmax(110px,1fr));gap:8px}
+#statusBoardView .product-detail-kpis>div{text-align:center;padding:10px 16px;border-left:1px solid #edf0ed}
+#statusBoardView .product-detail-kpis span{display:block;font-size:9px;color:#838d85}
+#statusBoardView .product-detail-kpis b{display:inline-block;margin-top:5px;font-size:18px}
+#statusBoardView .product-detail-kpis small{margin-left:4px}
+#statusBoardView .product-date-table-card{margin-top:14px}
+#statusBoardView .product-search-card{min-width:260px!important;flex:1 1 300px!important}
+#statusBoardView .product-search-card input{font-size:14px!important}
+@media(max-width:900px){
+  #statusBoardView .product-analysis-main,#statusBoardView .product-volume-grid,#statusBoardView .product-top-grid{grid-template-columns:1fr}
+  #statusBoardView .product-detail-head{align-items:flex-start;flex-direction:column}
+  #statusBoardView .product-detail-kpis{width:100%}
+}
+@media(max-width:620px){
+  #statusBoardView .status-filter-card{min-width:100%!important;flex-basis:100%!important}
+  #statusBoardView .product-detail-kpis{grid-template-columns:1fr 1fr 1fr}
+}
 .unit-conversion-shell{display:flex;flex-direction:column;gap:14px}
 .unit-conversion-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .unit-conversion-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:14px 0}
@@ -3859,6 +3921,7 @@ html,body{max-width:100%;overflow-x:hidden}
           <button type="button" class="status-board-tab" data-status-tab="cumulative">생산성 누계</button>
           <button type="button" class="status-board-tab" data-status-tab="daily">일자별 상세조회</button>
           <button type="button" class="status-board-tab" data-status-tab="storehistory">매장별 처리이력</button>
+          <button type="button" class="status-board-tab" data-status-tab="products">제품별 출고현황</button>
         </div>
 
         <div class="status-panel active" data-status-panel="shipping">
@@ -3879,7 +3942,7 @@ html,body{max-width:100%;overflow-x:hidden}
                     <div class="shipping-ring" id="statusShippingRing">
                       <div class="shipping-ring-inner">
                         <div class="shipping-ring-value" id="statusShippingPct">0%</div>
-                        <div class="shipping-ring-caption">환산 처리량 기준</div>
+                        <div class="shipping-ring-caption">환산 EA 기준</div>
                       </div>
                     </div>
                   </div>
@@ -3894,19 +3957,19 @@ html,body{max-width:100%;overflow-x:hidden}
                 <div class="shipping-quantity-row">
                   <div class="shipping-quantity-main shipping-quantity-focus">
                     <span>현재 처리수량</span>
-                    <div class="shipping-unit-values"><strong><b id="statusShipQtyNowEA">0</b><small>EA</small></strong><strong><b id="statusShipQtyNowG">0</b><small>G</small></strong></div>
-                    <div class="shipping-total-goal">총 출고량 <b id="statusShipQtyGoalEA">0</b> EA · <b id="statusShipQtyGoalG">0</b> G</div>
+                    <strong><b id="statusShipQtyNow">0</b><small>환산 EA</small></strong>
+                    <div class="shipping-total-goal">총 처리량 <b id="statusShipQtyGoal">0</b> 환산 EA</div>
                   </div>
                   <div class="shipping-quantity-remain shipping-quantity-focus">
                     <span>남은 수량</span>
-                    <div class="shipping-unit-values"><strong><b id="statusShipQtyRemainEA">0</b><small>EA</small></strong><strong><b id="statusShipQtyRemainG">0</b><small>G</small></strong></div>
-                    <div class="shipping-remain-note">EA / G 실제 출고 단위 기준</div>
+                    <strong><b id="statusShipQtyRemain">0</b><small>환산 EA</small></strong>
+                    <div class="shipping-remain-note">EA + G 환산값 기준 잔여 물량</div>
                   </div>
                 </div>
 
                 <div class="shipping-last-hour-card">
                   <span>최근 1시간 처리량</span>
-                  <strong><b id="statusLastHourQtyEA">0</b><small>EA</small> · <b id="statusLastHourQtyG">0</b><small>G</small></strong>
+                  <strong><b id="statusLastHourQty">0</b><small>환산 EA</small></strong>
                 </div>
               </div>
 
@@ -3950,12 +4013,10 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="status-panel" data-status-panel="cumulative">
           <div class="status-card">
             <div class="status-card-title"><h3>생산성 누계</h3><small>기본 1~12월 표시 · 원하는 기간만 조회 가능</small></div>
-            <div class="cum-toolbar">
-              <div class="cum-field"><label for="cumYear">연도</label><select id="cumYear"></select></div>
-              <div class="cum-field"><label for="cumStartMonth">시작 월</label><select id="cumStartMonth"></select></div>
-              <span style="padding-bottom:9px;color:#888">~</span>
-              <div class="cum-field"><label for="cumEndMonth">종료 월</label><select id="cumEndMonth"></select></div>
-              <button type="button" class="btn primary" id="cumSearchBtn">조회</button>
+            <div class="status-filter-cards">
+              <div class="prod-api-metric status-filter-card"><span>시작 월</span><input type="month" id="cumStartPeriod"><small>조회 시작 월</small></div>
+              <div class="prod-api-metric status-filter-card"><span>종료 월</span><input type="month" id="cumEndPeriod"><small>조회 종료 월</small></div>
+              <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">조회</button>
             </div>
           </div>
           <div class="cum-layout">
@@ -3972,10 +4033,9 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="status-panel" data-status-panel="daily">
           <div class="status-card">
             <div class="status-card-title"><h3>일자별 상세조회</h3><small>일별 생산성과 작업경과별 상세 데이터를 함께 조회합니다.</small></div>
-            <div class="detail-toolbar">
-              <div class="detail-field"><label for="detailYear">연도</label><select id="detailYear"></select></div>
-              <div class="detail-field"><label for="detailMonth">월</label><select id="detailMonth"></select></div>
-              <button type="button" class="btn primary" id="detailSearchBtn">조회</button>
+            <div class="status-filter-cards">
+              <div class="prod-api-metric status-filter-card"><span>조회 월</span><input type="month" id="detailPeriod"><small>월 선택</small></div>
+              <button type="button" class="btn primary status-filter-btn" id="detailSearchBtn">조회</button>
             </div>
           </div>
           <div class="detail-layout">
@@ -3994,11 +4054,11 @@ html,body{max-width:100%;overflow-x:hidden}
                 <button type="button" class="store-mode-btn" data-store-mode="detail">매장 상세</button>
               </div>
             </div>
-            <div class="store-history-toolbar">
-              <div class="detail-field"><label for="storeHistoryStart">시작일</label><input type="date" id="storeHistoryStart"></div>
-              <div class="detail-field"><label for="storeHistoryEnd">종료일</label><input type="date" id="storeHistoryEnd"></div>
-              <div class="detail-field store-select-field" id="storeHistoryStoreField" hidden><label for="storeHistoryStore">상세 매장</label><select id="storeHistoryStore"></select></div>
-              <button type="button" class="btn primary" id="storeHistorySearchBtn">조회</button>
+            <div class="status-filter-cards store-history-toolbar">
+              <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="storeHistoryStart"><small>조회 시작일</small></div>
+              <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="storeHistoryEnd"><small>조회 종료일</small></div>
+              <div class="prod-api-metric status-filter-card store-select-field" id="storeHistoryStoreField" hidden><span>상세 매장</span><select id="storeHistoryStore"></select><small>매장 선택</small></div>
+              <button type="button" class="btn primary status-filter-btn" id="storeHistorySearchBtn">조회</button>
             </div>
           </div>
 
@@ -4037,6 +4097,105 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-table-scroll store-history-scroll">
               <table class="status-data-table"><thead><tr><th>일자</th><th>매장</th><th>총 출고량</th><th>처리수량</th><th>시작</th><th>완료</th><th>소요시간</th><th>상태</th></tr></thead>
               <tbody id="storeHistoryBody"><tr><td colspan="8" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-panel" data-status-panel="products">
+          <div class="product-outbound-tabs">
+            <button type="button" class="product-outbound-tab active" data-product-outbound-tab="analysis">분석</button>
+            <button type="button" class="product-outbound-tab" data-product-outbound-tab="product">제품 상세조회</button>
+            <button type="button" class="product-outbound-tab" data-product-outbound-tab="date">일자별 상세조회</button>
+          </div>
+
+          <div class="product-outbound-panel active" data-product-outbound-panel="analysis">
+            <div class="status-card">
+              <div class="status-card-title"><h3>제품별 출고현황</h3><small>제품군 구성과 EA / G 출고량 변화를 확인합니다.</small></div>
+              <div class="status-filter-cards product-analysis-filters">
+                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="productAnalysisStart"><small>비우면 전체 기간</small></div>
+                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="productAnalysisEnd"><small>비우면 전체 기간</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="productAnalysisSearch">조회</button>
+                <button type="button" class="btn status-filter-btn" id="productAnalysisAll">전체</button>
+              </div>
+              <div class="product-period-label" id="productAnalysisPeriod">전체 기간</div>
+            </div>
+
+            <div class="product-analysis-main">
+              <div class="chart-card product-donut-card">
+                <div class="status-card-title"><h3>제품군별 출고 구성비</h3><small>EA / G 통합 · 출고 SKU 기준</small></div>
+                <div class="product-donut-wrap"><canvas id="productCategoryDonut"></canvas><div class="chart-empty" id="productDonutEmpty">출고 제품 데이터가 없습니다.</div></div>
+              </div>
+              <div class="product-analysis-summary">
+                <div class="product-analysis-summary-head"><span>구성 요약</span><small>선택 기간 기준</small></div>
+                <div class="product-analysis-summary-grid">
+                  <div><span>TOP 제품군</span><b id="productTopCategory">-</b><small id="productTopCategoryPct">0%</small></div>
+                  <div><span>출고 제품군</span><b id="productCategoryCount">0</b><small>개</small></div>
+                  <div><span>출고 SKU</span><b id="productSkuCount">0</b><small>SKU</small></div>
+                  <div><span>출고 매장</span><b id="productStoreCount">0</b><small>개 매장</small></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="product-month-title"><span>최신 월 출고량 비교</span><b id="productLatestMonth">-</b></div>
+            <div class="product-volume-grid">
+              <div class="product-volume-card">
+                <span>EA 출고량</span><strong><b id="productEaQty">0</b><small>EA</small></strong>
+                <div><em>전월대비</em><b id="productEaMom">-</b></div>
+                <div><em>전년동월대비</em><b id="productEaYoy">-</b></div>
+              </div>
+              <div class="product-volume-card">
+                <span>G 출고량</span><strong><b id="productGQty">0</b><small>G</small></strong>
+                <div><em>전월대비</em><b id="productGMom">-</b></div>
+                <div><em>전년동월대비</em><b id="productGYoy">-</b></div>
+              </div>
+            </div>
+
+            <div class="table-card product-top-card">
+              <div class="status-card-title"><h3>TOP 출고 제품</h3><small>EA와 G를 각각 분리하여 표시합니다.</small></div>
+              <div class="product-top-grid">
+                <div><h4>EA TOP 5</h4><table class="status-data-table"><thead><tr><th>제품명</th><th>제품군</th><th>출고수량</th></tr></thead><tbody id="productTopEaBody"></tbody></table></div>
+                <div><h4>G TOP 5</h4><table class="status-data-table"><thead><tr><th>제품명</th><th>제품군</th><th>출고수량</th></tr></thead><tbody id="productTopGBody"></tbody></table></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="product-outbound-panel" data-product-outbound-panel="product">
+            <div class="status-card">
+              <div class="status-card-title"><h3>제품 상세조회</h3><small>특정 제품의 기간별 출고 추이와 매장별 출고량을 확인합니다.</small></div>
+              <div class="status-filter-cards product-detail-filters">
+                <div class="prod-api-metric status-filter-card product-search-card"><span>제품 검색</span><input id="productDetailQuery" list="productDetailList" placeholder="제품코드 또는 제품명"><datalist id="productDetailList"></datalist><small>제품 선택</small></div>
+                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="productDetailStart"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="productDetailEnd"><small>조회 종료일</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="productDetailSearch">조회</button>
+              </div>
+            </div>
+            <div class="product-detail-head">
+              <div><span id="productDetailCategory">제품을 선택해주세요.</span><h3 id="productDetailName">-</h3><small id="productDetailCode">-</small></div>
+              <div class="product-detail-kpis">
+                <div><span>기간 출고량</span><b id="productDetailQty">0</b><small id="productDetailUnit">-</small></div>
+                <div><span>출고 매장</span><b id="productDetailStores">0</b><small>개</small></div>
+                <div><span>출고 일수</span><b id="productDetailDays">0</b><small>일</small></div>
+              </div>
+            </div>
+            <div class="prod-layout product-detail-layout">
+              <div class="chart-card"><div class="status-card-title"><h3>일자별 출고 추이</h3><small id="productDetailTrendHint">제품 선택 후 조회</small></div><div class="chart-wrap"><canvas id="productDetailTrend"></canvas><div class="chart-empty" id="productDetailTrendEmpty">제품을 선택해주세요.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>매장별 출고량</h3><small>출고량 높은 순</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>매장</th><th>출고수량</th></tr></thead><tbody id="productDetailStoreBody"></tbody></table></div></div>
+            </div>
+          </div>
+
+          <div class="product-outbound-panel" data-product-outbound-panel="date">
+            <div class="status-card">
+              <div class="status-card-title"><h3>일자별 상세조회</h3><small>선택한 날짜의 매장별·제품별 실제 출고수량을 조회합니다.</small></div>
+              <div class="status-filter-cards product-date-filters">
+                <div class="prod-api-metric status-filter-card"><span>조회일자</span><input type="date" id="productDateDetailDate"><small>날짜 선택</small></div>
+                <div class="prod-api-metric status-filter-card"><span>매장</span><select id="productDateDetailStore"><option value="">전체 매장</option></select><small>매장 필터</small></div>
+                <div class="prod-api-metric status-filter-card product-search-card"><span>제품 검색</span><input id="productDateDetailQuery" placeholder="제품코드 또는 제품명"><small>선택 입력</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="productDateDetailSearch">조회</button>
+              </div>
+            </div>
+            <div class="table-card product-date-table-card">
+              <div class="status-card-title"><h3>출고 상세</h3><small id="productDateDetailCount">조회할 날짜를 선택해주세요.</small></div>
+              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>일자</th><th>매장</th><th>제품코드</th><th>제품명</th><th>제품군</th><th>단위</th><th>출고수량</th></tr></thead><tbody id="productDateDetailBody"><tr><td colspan="7" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table></div>
             </div>
           </div>
         </div>
@@ -5537,13 +5696,15 @@ setTimeout(initInventoryColumnResize,0);
     const name=find('제품명');
     const unit=find('단위');
     const qty=find('수량');
+    const store=find('매장명','매장','출고처','거래처');
     return{
       date:date>=0?date:0,
       code:code>=0?code:1,
       category:category>=0?category:2,
       name:name>=0?name:3,
       unit:unit>=0?unit:4,
-      qty:qty>=0?qty:5
+      qty:qty>=0?qty:5,
+      store:store
     };
   }
   window.outboundColIndex=outboundColIndex;
@@ -7398,7 +7559,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return merged;
   };
   getRecord=function(dt){var all=readDailyDisplay();return all[dt]||{date:dt,staff:0,startTime:'',endTime:'',hours:{}}};
-  var DEMO_SHIPPING={qtyEA:58400,qtyG:15000,goalEA:82000,goalG:27000,convertedQty:68400,convertedGoal:100000,lastHourEA:10800,lastHourG:2700,eta:'16:40'};
+  var DEMO_SHIPPING={convertedQty:68400,convertedGoal:100000,lastHourConverted:12600,eta:'16:40'};
   var DEMO_STORES=[
     {name:'강남역점',total:9000,done:9000},
     {name:'홍대점',total:8000,done:7600},
@@ -7452,6 +7613,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(name==='cumulative')renderCumulative();
     if(name==='daily')renderDailyDetail();
     if(name==='storehistory')renderStoreHistory();
+    if(name==='products')renderProductOutboundAnalysis();
   }
   qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
 
@@ -7463,13 +7625,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#statusShippingPct').textContent=Math.round(progress)+'%';
     q('#statusShippingRing').style.setProperty('--shipping-pct',String(progress));
 
-    var qtyEA=DEMO_MODE?DEMO_SHIPPING.qtyEA:0,qtyG=DEMO_MODE?DEMO_SHIPPING.qtyG:0;
-    var goalEA=DEMO_MODE?DEMO_SHIPPING.goalEA:0,goalG=DEMO_MODE?DEMO_SHIPPING.goalG:0;
-    q('#statusShipQtyNowEA').textContent=fmt(qtyEA);q('#statusShipQtyNowG').textContent=fmt(qtyG);
-    q('#statusShipQtyGoalEA').textContent=fmt(goalEA);q('#statusShipQtyGoalG').textContent=fmt(goalG);
-    q('#statusShipQtyRemainEA').textContent=fmt(Math.max(0,goalEA-qtyEA));q('#statusShipQtyRemainG').textContent=fmt(Math.max(0,goalG-qtyG));
-    q('#statusLastHourQtyEA').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourEA:0);
-    q('#statusLastHourQtyG').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourG:0);
+    q('#statusShipQtyNow').textContent=fmt(qty);
+    q('#statusShipQtyGoal').textContent=fmt(qtyGoal);
+    q('#statusShipQtyRemain').textContent=fmt(Math.max(0,qtyGoal-qty));
+    q('#statusLastHourQty').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourConverted:0);
 
     var eta=DEMO_MODE?DEMO_SHIPPING.eta:'--:--';
     var etaNote=DEMO_MODE?'데모 처리 속도 기준':'처리 속도 데이터 연동 후 계산';
@@ -7488,7 +7647,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
             '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
-            '<span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+' EA</span>'+
+            '<span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+' 환산 EA</span>'+
             '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
           '</div>'+
           '<div class="shipping-store-track"><span class="shipping-store-fill" style="width:'+pct.toFixed(1)+'%"></span></div>'+
@@ -7545,32 +7704,39 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=n;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();
   });
   window.renderStatusProductivity=function(){renderProductivity();renderCumulative();renderDailyDetail()};
-  function fillYearAndMonths(){
-    var now=new Date(),year=now.getFullYear(),years=[];
-    for(var y=year-2;y<=year+2;y++)years.push(y);
-    ['cumYear','detailYear'].forEach(function(id){var el=q('#'+id);el.innerHTML=years.map(function(y){return '<option value="'+y+'">'+y+'년</option>'}).join('');el.value=String(year)});
-    ['cumStartMonth','cumEndMonth','detailMonth'].forEach(function(id){var el=q('#'+id);el.innerHTML=Array.from({length:12},function(_,i){return '<option value="'+(i+1)+'">'+(i+1)+'월</option>'}).join('')});
-    q('#cumStartMonth').value=DEMO_MODE?'3':'1';q('#cumEndMonth').value=DEMO_MODE?String(now.getMonth()+1):'12';q('#detailMonth').value=String(now.getMonth()+1);
+  function fillStatusPeriods(){
+    var now=new Date(),year=now.getFullYear(),month=now.getMonth()+1,current=year+'-'+pad(month);
+    q('#cumStartPeriod').value=DEMO_MODE?year+'-03':year+'-01';
+    q('#cumEndPeriod').value=current;
+    q('#detailPeriod').value=current;
   }
-  fillYearAndMonths();
+  fillStatusPeriods();
 
   function monthAggregate(year,month){
     var all=readDailyDisplay(),qty=0,labor=0,prefix=year+'-'+pad(month)+'-';
     Object.keys(all).forEach(function(dt){if(dt.indexOf(prefix)!==0)return;var s=calcRecord(all[dt]);qty+=s.qty;labor+=s.labor});
     return{qty:qty,labor:labor,rate:labor>0?qty/labor:0};
   }
+  function periodMonths(start,end){
+    var out=[],s=String(start||''),e=String(end||'');if(!s||!e)return out;
+    if(s>e){var t=s;s=e;e=t;q('#cumStartPeriod').value=s;q('#cumEndPeriod').value=e}
+    var p=s.split('-').map(Number),d=new Date(p[0],p[1]-1,1);
+    while(true){var key=d.getFullYear()+'-'+pad(d.getMonth()+1);if(key>e)break;out.push({key:key,year:d.getFullYear(),month:d.getMonth()+1});d.setMonth(d.getMonth()+1)}
+    return out;
+  }
   function renderCumulative(){
-    var year=Number(q('#cumYear').value),start=Number(q('#cumStartMonth').value),end=Number(q('#cumEndMonth').value);if(start>end){var t=start;start=end;end=t;q('#cumStartMonth').value=String(start);q('#cumEndMonth').value=String(end)}
+    var start=q('#cumStartPeriod').value,end=q('#cumEndPeriod').value,months=periodMonths(start,end);
     var labels=[],values=[],body='',sumQty=0,sumLabor=0;
-    for(var m=start;m<=end;m++){var a=monthAggregate(year,m);labels.push(m+'월');values.push(a.rate);sumQty+=a.qty;sumLabor+=a.labor;body+='<tr><td>'+m+'월</td><td>'+fmt(a.qty)+'</td><td>'+fmt(a.labor)+'</td><td>'+(a.rate?fmt(Math.round(a.rate)):'-')+'</td></tr>'}
-    q('#cumMonthBody').innerHTML=body;q('#cumPeriodLabel').textContent=start+'월 ~ '+end+'월';q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(sumLabor);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
+    months.forEach(function(p){var a=monthAggregate(p.year,p.month);labels.push(p.key);values.push(a.rate);sumQty+=a.qty;sumLabor+=a.labor;body+='<tr><td>'+p.key+'</td><td>'+fmt(a.qty)+'</td><td>'+fmt(Math.round(a.labor*10)/10)+'</td><td>'+(a.rate?fmt(Math.round(a.rate)):'-')+'</td></tr>'});
+    q('#cumMonthBody').innerHTML=body||'<tr><td colspan="4" class="data-empty">조회 기간을 선택해주세요.</td></tr>';
+    q('#cumPeriodLabel').textContent=(start||'-')+' ~ '+(end||'-');q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
     drawChart('cumMonthChart',labels,values,'#cumMonthEmpty');
   }
   q('#cumSearchBtn').addEventListener('click',renderCumulative);
 
   var selectedDetailDate='';
   function renderDailyDetail(){
-    var year=Number(q('#detailYear').value),month=Number(q('#detailMonth').value),all=readDailyDisplay(),prefix=year+'-'+pad(month)+'-';
+    var period=q('#detailPeriod').value||today.slice(0,7),all=readDailyDisplay(),prefix=period+'-';
     var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
     var list=q('#detailDayList');
     if(!dates.length){list.innerHTML='<div class="data-empty">저장된 일자 데이터가 없습니다.</div>';selectedDetailDate='';renderSelectedDay();return}
@@ -7664,6 +7830,141 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   q('#storeHistoryDetailClose').addEventListener('click',function(){q('#storeHistoryDetailPanel').hidden=true});
   q('#storeHistoryDetailDate').addEventListener('change',function(){if(!q('#storeHistoryDetailPanel').hidden)renderStoreHistoryDailyDetail()});
 
+  /* Product outbound analysis: actual outbound upload data first, demo fallback only when there is no uploaded outbound data. */
+  var productDonutChart=null,productTrendChart=null,productOutboundMode='analysis';
+  var DEMO_PRODUCT_ROWS=[
+    {date:'2026-07-04',store:'강남역점',code:'DEMO001',category:'BATH BOMB',name:'INTERGALACTIC',unit:'EA',qty:8200},
+    {date:'2026-07-12',store:'홍대점',code:'DEMO002',category:'BODY',name:'SLEEPY BODY LOTION',unit:'EA',qty:6100},
+    {date:'2026-07-18',store:'명동점',code:'DEMO003',category:'SHOWER',name:'ROSE JAM BULK',unit:'G',qty:76000},
+    {date:'2026-08-03',store:'잠실점',code:'DEMO001',category:'BATH BOMB',name:'INTERGALACTIC',unit:'EA',qty:9600},
+    {date:'2026-08-14',store:'강남역점',code:'DEMO004',category:'HAIR',name:'SHAMPOO BULK',unit:'G',qty:81000},
+    {date:'2026-08-24',store:'홍대점',code:'DEMO005',category:'SKINCARE',name:'FRESH MASK',unit:'EA',qty:5300},
+    {date:'2026-09-02',store:'강남역점',code:'DEMO001',category:'BATH BOMB',name:'INTERGALACTIC',unit:'EA',qty:11200},
+    {date:'2026-09-07',store:'홍대점',code:'DEMO006',category:'BODY',name:'DREAM CREAM',unit:'EA',qty:8900},
+    {date:'2026-09-11',store:'명동점',code:'DEMO003',category:'SHOWER',name:'ROSE JAM BULK',unit:'G',qty:94500},
+    {date:'2026-09-16',store:'잠실점',code:'DEMO004',category:'HAIR',name:'SHAMPOO BULK',unit:'G',qty:84200},
+    {date:'2026-09-22',store:'여의도점',code:'DEMO007',category:'SKINCARE',name:'ULTRABLAND',unit:'EA',qty:6100},
+    {date:'2026-09-28',store:'강남역점',code:'DEMO008',category:'SOAP',name:'KARMA SOAP',unit:'EA',qty:7400}
+  ];
+  function statusOutboundRows(){
+    try{
+      var d=typeof read==='function'?read():{},src=d&&d.outbound;
+      if(src&&Array.isArray(src.rows)&&src.rows.length){
+        var cols=outboundColIndex(src.header||[]);
+        return src.rows.map(function(r){
+          return{
+            date:String(r[cols.date]||'').slice(0,10),
+            store:cols.store>=0?String(r[cols.store]||'').trim():'',
+            code:String(r[cols.code]||'').trim(),
+            category:String(r[cols.category]||'').trim()||'기타',
+            name:String(r[cols.name]||'').trim()||String(r[cols.code]||'').trim(),
+            unit:outboundUnit(r,cols),
+            qty:Number(String(r[cols.qty]||0).replace(/,/g,''))||0
+          };
+        }).filter(function(r){return r.date&&r.code&&(r.unit==='EA'||r.unit==='G')});
+      }
+    }catch(e){}
+    return DEMO_MODE?DEMO_PRODUCT_ROWS.slice():[];
+  }
+  function pctChange(cur,base){
+    cur=Number(cur||0);base=Number(base||0);
+    if(!base)return cur>0?'신규':'-';
+    var v=(cur-base)/base*100;return(v>0?'+':'')+v.toFixed(1)+'%';
+  }
+  function shiftYmKey(key,delta){
+    var p=String(key||'').split('-').map(Number),d=new Date(p[0],p[1]-1+delta,1);
+    return d.getFullYear()+'-'+pad(d.getMonth()+1);
+  }
+  function productRowsInRange(rows,start,end){return rows.filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)})}
+  function productAllRangeLabel(rows){
+    if(!rows.length)return'전체 기간';
+    var dates=rows.map(function(r){return r.date}).sort();return'전체 기간 · '+dates[0]+' ~ '+dates[dates.length-1];
+  }
+  function renderProductOutboundAnalysis(){
+    var rows=statusOutboundRows(),start=q('#productAnalysisStart')?.value||'',end=q('#productAnalysisEnd')?.value||'',filtered=productRowsInRange(rows,start,end);
+    q('#productAnalysisPeriod').textContent=start||end?((start||'처음')+' ~ '+(end||'현재')):productAllRangeLabel(rows);
+    var catMap={},skuSet=new Set(),storeSet=new Set();
+    filtered.forEach(function(r){
+      if(r.code)skuSet.add(r.code);if(r.store)storeSet.add(r.store);
+      var cat=r.category||'기타';if(!catMap[cat])catMap[cat]=new Set();if(r.code)catMap[cat].add(r.code);
+    });
+    var cats=Object.keys(catMap).map(function(k){return{name:k,value:catMap[k].size}}).sort(function(a,b){return b.value-a.value});
+    var totalSku=cats.reduce(function(a,x){return a+x.value},0);
+    if(productDonutChart)productDonutChart.destroy();
+    var canvas=q('#productCategoryDonut'),empty=q('#productDonutEmpty');if(empty)empty.style.display=cats.length?'none':'grid';
+    if(cats.length&&canvas&&typeof Chart!=='undefined'){
+      productDonutChart=new Chart(canvas,{type:'doughnut',data:{labels:cats.map(function(x){return x.name}),datasets:[{data:cats.map(function(x){return x.value}),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:'64%',plugins:{legend:{position:'right',labels:{boxWidth:10,usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:function(ctx){var v=Number(ctx.raw||0),p=totalSku?v/totalSku*100:0;return ctx.label+' · '+v+' SKU · '+p.toFixed(1)+'%'}}}}}});
+    }
+    q('#productTopCategory').textContent=cats[0]?cats[0].name:'-';
+    q('#productTopCategoryPct').textContent=cats[0]&&totalSku?(cats[0].value/totalSku*100).toFixed(1)+'%':'0%';
+    q('#productCategoryCount').textContent=fmt(cats.length);q('#productSkuCount').textContent=fmt(skuSet.size);q('#productStoreCount').textContent=fmt(storeSet.size);
+
+    var months={};rows.forEach(function(r){var m=r.date.slice(0,7);if(!months[m])months[m]={EA:0,G:0};months[m][r.unit]+=r.qty});
+    var monthKeys=Object.keys(months).sort(),latest=monthKeys[monthKeys.length-1]||'',prev=latest?shiftYmKey(latest,-1):'',yoy=latest?shiftYmKey(latest,-12):'';
+    var cur=months[latest]||{EA:0,G:0},pm=months[prev]||{EA:0,G:0},py=months[yoy]||{EA:0,G:0};
+    q('#productLatestMonth').textContent=latest||'-';q('#productEaQty').textContent=fmt(cur.EA);q('#productGQty').textContent=fmt(cur.G);
+    q('#productEaMom').textContent=pctChange(cur.EA,pm.EA);q('#productEaYoy').textContent=pctChange(cur.EA,py.EA);
+    q('#productGMom').textContent=pctChange(cur.G,pm.G);q('#productGYoy').textContent=pctChange(cur.G,py.G);
+
+    function topRows(unit){
+      var map={};filtered.filter(function(r){return r.unit===unit}).forEach(function(r){if(!map[r.code])map[r.code]={name:r.name,category:r.category,qty:0};map[r.code].qty+=r.qty});
+      return Object.values(map).sort(function(a,b){return b.qty-a.qty}).slice(0,5);
+    }
+    function topHtml(items,unit){return items.length?items.map(function(x){return'<tr><td><b>'+esc(x.name)+'</b></td><td>'+esc(x.category)+'</td><td>'+fmt(x.qty)+' '+unit+'</td></tr>'}).join(''):'<tr><td colspan="3" class="data-empty">데이터가 없습니다.</td></tr>'}
+    q('#productTopEaBody').innerHTML=topHtml(topRows('EA'),'EA');q('#productTopGBody').innerHTML=topHtml(topRows('G'),'G');
+    initProductDetailOptions(rows);initProductDateStores(rows);
+  }
+  function initProductDetailOptions(rows){
+    var map={};rows.forEach(function(r){map[r.code]=r});
+    var dl=q('#productDetailList');if(dl)dl.innerHTML=Object.values(map).sort(function(a,b){return a.name.localeCompare(b.name)}).map(function(r){return'<option value="'+esc(r.code+' · '+r.name)+'"></option>'}).join('');
+  }
+  function initProductDateStores(rows){
+    var stores=Array.from(new Set(rows.map(function(r){return r.store}).filter(Boolean))).sort(),sel=q('#productDateDetailStore');if(!sel)return;
+    var current=sel.value;sel.innerHTML='<option value="">전체 매장</option>'+stores.map(function(s){return'<option value="'+esc(s)+'">'+esc(s)+'</option>'}).join('');if(stores.indexOf(current)>=0)sel.value=current;
+  }
+  function activateProductOutbound(name){
+    productOutboundMode=name;
+    qa('.product-outbound-tab').forEach(function(b){b.classList.toggle('active',b.dataset.productOutboundTab===name)});
+    qa('.product-outbound-panel').forEach(function(p){p.classList.toggle('active',p.dataset.productOutboundPanel===name)});
+    if(name==='analysis')renderProductOutboundAnalysis();
+  }
+  qa('.product-outbound-tab').forEach(function(b){b.addEventListener('click',function(){activateProductOutbound(b.dataset.productOutboundTab)})});
+  q('#productAnalysisSearch').addEventListener('click',renderProductOutboundAnalysis);
+  q('#productAnalysisAll').addEventListener('click',function(){q('#productAnalysisStart').value='';q('#productAnalysisEnd').value='';renderProductOutboundAnalysis()});
+
+  function resolveProductQuery(rows,value){
+    var v=String(value||'').trim(),code=v.split(' · ')[0].trim();
+    return rows.find(function(r){return r.code===code})||rows.find(function(r){return r.name.toLowerCase()===v.toLowerCase()})||null;
+  }
+  q('#productDetailSearch').addEventListener('click',function(){
+    var rows=statusOutboundRows(),picked=resolveProductQuery(rows,q('#productDetailQuery').value);
+    if(!picked){if(typeof toastMsg==='function')toastMsg('조회할 제품을 선택해주세요.');return}
+    var start=q('#productDetailStart').value||'',end=q('#productDetailEnd').value||'';
+    var filtered=productRowsInRange(rows,start,end).filter(function(r){return r.code===picked.code});
+    q('#productDetailCategory').textContent=picked.category||'-';q('#productDetailName').textContent=picked.name||'-';q('#productDetailCode').textContent=picked.code||'-';q('#productDetailUnit').textContent=picked.unit||'-';
+    q('#productDetailQty').textContent=fmt(filtered.reduce(function(a,r){return a+r.qty},0));
+    q('#productDetailStores').textContent=fmt(new Set(filtered.map(function(r){return r.store}).filter(Boolean)).size);
+    q('#productDetailDays').textContent=fmt(new Set(filtered.map(function(r){return r.date})).size);
+    var byDate={};filtered.forEach(function(r){byDate[r.date]=(byDate[r.date]||0)+r.qty});var dates=Object.keys(byDate).sort();
+    if(productTrendChart)productTrendChart.destroy();var empty=q('#productDetailTrendEmpty');if(empty)empty.style.display=dates.length?'none':'grid';
+    if(dates.length&&typeof Chart!=='undefined'){productTrendChart=new Chart(q('#productDetailTrend'),{type:'line',data:{labels:dates.map(function(d){return d.slice(5).replace('-','/')}),datasets:[{data:dates.map(function(d){return byDate[d]}),borderWidth:2,pointRadius:3,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true},x:{grid:{display:false}}}}})}
+    q('#productDetailTrendHint').textContent=(start||'전체')+' ~ '+(end||'전체')+' · '+picked.unit;
+    var byStore={};filtered.forEach(function(r){var s=r.store||'매장 미분류';byStore[s]=(byStore[s]||0)+r.qty});
+    var stores=Object.keys(byStore).sort(function(a,b){return byStore[b]-byStore[a]});
+    q('#productDetailStoreBody').innerHTML=stores.length?stores.map(function(s){return'<tr><td>'+esc(s)+'</td><td>'+fmt(byStore[s])+' '+picked.unit+'</td></tr>'}).join(''):'<tr><td colspan="2" class="data-empty">매장별 데이터가 없습니다.</td></tr>';
+  });
+
+  q('#productDateDetailSearch').addEventListener('click',function(){
+    var rows=statusOutboundRows(),dt=q('#productDateDetailDate').value||'',store=q('#productDateDetailStore').value||'',query=(q('#productDateDetailQuery').value||'').trim().toLowerCase();
+    if(!dt){if(typeof toastMsg==='function')toastMsg('조회일자를 선택해주세요.');return}
+    var filtered=rows.filter(function(r){return r.date===dt&&(!store||r.store===store)&&(!query||r.code.toLowerCase().includes(query)||r.name.toLowerCase().includes(query))});
+    var byKey={};filtered.forEach(function(r){var k=[r.date,r.store,r.code,r.unit].join('|');if(!byKey[k])byKey[k]=Object.assign({},r);else byKey[k].qty+=r.qty});
+    var list=Object.values(byKey).sort(function(a,b){return(a.store||'').localeCompare(b.store||'')||a.name.localeCompare(b.name)});
+    q('#productDateDetailCount').textContent=fmt(list.length)+'건';
+    q('#productDateDetailBody').innerHTML=list.length?list.map(function(r){return'<tr><td>'+esc(r.date)+'</td><td>'+esc(r.store||'-')+'</td><td>'+esc(r.code)+'</td><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.category||'-')+'</td><td>'+esc(r.unit)+'</td><td>'+fmt(r.qty)+'</td></tr>'}).join(''):'<tr><td colspan="7" class="data-empty" style="text-align:center">해당 조건의 출고 데이터가 없습니다.</td></tr>';
+  });
+  q('#productDateDetailDate').value=today;
+
   /* Weekly outbound requests: keep rows compact, show status explicitly, confirm before state changes. */
   function getRequests(){try{var x=JSON.parse(localStorage.getItem(REQUEST_KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
   function saveRequests(x){localStorage.setItem(REQUEST_KEY,JSON.stringify(x))}
@@ -7686,7 +7987,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   window.renderTodayOutboundRequests=renderWeeklyRequests;
 
-  renderShipping();renderProductivity();renderCumulative();renderDailyDetail();renderStoreHistory();renderWeeklyRequests();
+  renderShipping();renderProductivity();renderCumulative();renderDailyDetail();renderStoreHistory();renderProductOutboundAnalysis();renderWeeklyRequests();
   if(window.lucide)lucide.createIcons();
 })();
 </script>
