@@ -7828,7 +7828,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 
   var storeHistoryChart=null,storeHistoryCategoryChart=null,storeHistoryMode='compare';
   function initStoreHistoryControls(){
-    var names=Array.from(new Set(DEMO_STORES.map(function(s){return s.name}).concat(statusOutboundRows().map(function(r){return r.store}).filter(Boolean)))).sort();
+    var names=DEMO_STORES.map(function(s){return s.name}).filter(Boolean).sort();
     var list=q('#storeHistoryStoreList');if(list)list.innerHTML=names.map(function(name){return '<option value="'+esc(name)+'"></option>'}).join('');
     var end=new Date(),start=new Date(end);start.setDate(end.getDate()-29);
     q('#storeHistoryStart').value=dateKey(start);q('#storeHistoryEnd').value=dateKey(end);q('#storeHistoryDetailDate').value=dateKey(end);
@@ -7998,7 +7998,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     {date:'2026-09-29',store:'여의도점',code:'DEMO012',category:'SKINCARE',name:'CELESTIAL',unit:'EA',qty:3900}
   ];
   function statusOutboundRows(){
-    if(DEMO_MODE)return DEMO_PRODUCT_ROWS.slice();
+    if(DEMO_MODE)return Array.isArray(DEMO_PRODUCT_ROWS)?DEMO_PRODUCT_ROWS.slice():[];
     try{
       var d=typeof read==='function'?read():{},src=d&&d.outbound;
       if(src&&Array.isArray(src.rows)&&src.rows.length){
