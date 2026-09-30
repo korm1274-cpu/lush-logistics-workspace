@@ -6225,7 +6225,24 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   DEMO_DAILY[demoMonth+'-28']=demoRecord(demoMonth+'-28',8,[6200,6500,6100,6800,7100,6900,7200,7480]);
   DEMO_DAILY[demoMonth+'-29']=demoRecord(demoMonth+'-29',8,[7200,7600,6900,7800,7900,8000,7900,8120]);
   DEMO_DAILY[today]=demoRecord(today,8,[7800,8200,7600,8500,8800,7300,7600,12600]);
-  var readDailyDisplay=function(){var merged=Object.assign({},DEMO_MODE?DEMO_DAILY:{},readDaily());return merged};
+  var readDailyDisplay=function(){
+    var merged=Object.assign({},DEMO_MODE?DEMO_DAILY:{});
+    var saved=readDaily();
+    Object.keys(saved).forEach(function(dt){
+      var demo=merged[dt],real=saved[dt]||{};
+      if(DEMO_MODE&&demo){
+        merged[dt]={
+          date:dt,
+          staff:real.staff!=null?Number(real.staff||0):Number(demo.staff||0),
+          hours:(real.hours&&Object.keys(real.hours).length)?real.hours:demo.hours,
+          __demo:true
+        };
+      }else{
+        merged[dt]=real;
+      }
+    });
+    return merged;
+  };
   getRecord=function(dt){var all=readDailyDisplay();return all[dt]||{date:dt,staff:0,hours:{}}};
   var DEMO_SHIPPING={qty:68400,goal:100000,stores:10,storeGoal:15,lastHourQty:12600,eta:'16:40'};
 
@@ -6303,8 +6320,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   q('#prodDate').value=today;
   q('#prodDate').addEventListener('change',renderProductivity);
   q('#prodStaffSave').addEventListener('click',function(){
-    var dt=q('#prodDate').value||today,all=readDaily(),r=all[dt]||{date:dt,staff:0,hours:{}};
-    r.staff=Math.max(0,Number(q('#prodStaff').value||0));all[dt]=r;saveDaily(all);renderProductivity();
+    var dt=q('#prodDate').value||today,all=readDaily(),display=getRecord(dt),r=all[dt]||{date:dt,staff:0,hours:{}};
+    r.staff=Math.max(0,Number(q('#prodStaff').value||0));
+    if(DEMO_MODE&&(!r.hours||!Object.keys(r.hours).length)&&display&&display.hours){
+      r.hours=Object.assign({},display.hours);
+    }
+    all[dt]=r;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();
     if(typeof toastMsg==='function')toastMsg('당일 투입 인원을 저장했습니다.');
   });
 
