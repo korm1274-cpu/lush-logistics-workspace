@@ -2303,6 +2303,881 @@ html,body{max-width:100%;overflow-x:hidden}
 .prod-table tbody td:nth-child(8),
 .prod-table tbody td:nth-child(12){border-left:2px solid #ccd3d8}
 </style>
+<style id="v80-statusboard-style">
+/* V80 — dashboard balance + operations status board scaffold */
+.dashboard-info-panel.notice-panel,.dashboard-info-panel.todo-panel{min-height:236px!important}
+.dashboard-info-panel .notice-main{min-height:148px!important}
+.dashboard-info-panel .ops-todo-list{max-height:190px!important;overflow:auto!important}
+.dashboard-info-panel .ops-todo-item{grid-template-columns:72px minmax(0,1fr) 58px!important;gap:8px!important;min-height:34px!important;padding:7px 8px!important}
+.dashboard-info-panel .ops-todo-manager{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.dashboard-info-panel .todo-content{min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.dashboard-info-panel .ops-todo-item .badge{width:58px!important;min-width:58px!important;box-sizing:border-box!important;justify-content:center!important;padding:5px 4px!important;white-space:nowrap!important}
+
+#appShell #dashboard .request-card-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#appShell #dashboard .request-mini-head{padding:10px 11px!important}
+#appShell #dashboard .request-mini-head b{font-size:12px!important}
+#appShell #dashboard .request-badge{font-size:10px!important;padding:4px 6px!important}
+#appShell #appShell #dashboard .request-mini-header{padding:6px 9px!important;font-size:8.5px!important;grid-template-columns:minmax(0,1fr) 54px 58px!important;gap:4px!important}
+#appShell #appShell #dashboard .request-mini-header span{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#appShell #dashboard .request-mini-body{min-height:124px!important}
+#appShell #dashboard .request-row{padding:9px 9px!important;min-height:40px!important;grid-template-columns:minmax(0,1fr) 54px 58px!important;gap:4px!important;align-items:center!important}
+#appShell #dashboard .request-row .store-name,#appShell #dashboard .request-row .doc-no{font-size:8.8px!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#appShell #dashboard .request-row .doc-no{text-align:center!important}
+#appShell #dashboard .request-row .status-cell{display:flex!important;justify-content:flex-end!important;align-items:center!important;min-width:0!important}
+#appShell #dashboard .request-row .request-state-btn{width:58px!important;min-width:58px!important;padding:5px 3px!important;border:1px solid #deded9!important;border-radius:5px!important;background:#f6f6f3!important;color:#555!important;font-size:8.5px!important;font-weight:800!important;white-space:nowrap!important}
+#appShell #dashboard .request-row .request-state-btn.done{background:#edf4ef!important;color:#4f725b!important;border-color:#d9e8de!important}
+#appShell #dashboard .request-empty-card{min-height:84px!important;font-size:9px!important}
+@media(max-width:1180px){#appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){#appShell #dashboard .request-card-grid{grid-template-columns:1fr!important}.dashboard-info-panel.notice-panel,.dashboard-info-panel.todo-panel{min-height:0!important}}
+
+.status-board-shell{display:flex;flex-direction:column;gap:14px}
+.status-board-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:20px 22px;border:1px solid #e2e2de;border-radius:14px;background:#fff}
+.status-board-top h2{margin:3px 0 5px;font-size:25px}.status-board-top p{margin:0;color:#747470;font-size:11px}
+.status-board-api-state{font-size:10px;font-weight:800;color:#777;padding:7px 9px;border:1px solid #e1e1dd;background:#f8f8f5;border-radius:6px}
+.status-board-tabs{display:flex;gap:7px;flex-wrap:wrap;padding:7px;background:#efefeb;border-radius:9px;align-self:flex-start}
+.status-board-tab{border:0;background:transparent;color:#666;padding:9px 13px;border-radius:6px;font-size:12px;font-weight:800}
+.status-board-tab.active{background:#111;color:#fff}
+.status-panel{display:none}.status-panel.active{display:block}
+.status-card{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:18px}
+.status-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.status-card-title h3{margin:0;font-size:15px}.status-card-title small{color:#8a8a85;font-size:10px}
+.ship-progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ship-progress-card{padding:26px;border:1px solid #e5e5e1;border-radius:14px;background:#fff}
+.ship-progress-card span{display:block;font-size:12px;color:#747470;font-weight:800}.ship-progress-card strong{display:block;margin:11px 0 14px;font-size:34px;letter-spacing:-.04em}.ship-progress-card strong em{font-style:normal;font-size:17px;color:#8a8a85;font-weight:700}
+.ship-progress-track{height:12px;border-radius:999px;background:#eeeeea;overflow:hidden}.ship-progress-fill{height:100%;width:0;background:#111;border-radius:999px;transition:width .25s ease}
+.ship-progress-foot{display:flex;justify-content:space-between;margin-top:8px;color:#777;font-size:10px}
+
+.prod-toolbar,.cum-toolbar,.detail-toolbar{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap}
+.prod-field label,.cum-field label,.detail-field label{display:block;margin-bottom:5px;font-size:9px;color:#777;font-weight:800}
+.prod-field input,.cum-field select,.detail-field select{height:36px;border:1px solid #dcdcd7;border-radius:7px;background:#fff;padding:0 10px;font-size:11px}
+.prod-layout,.cum-layout,.detail-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr);gap:14px;margin-top:14px}
+.chart-card,.table-card,.detail-summary-card{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:16px;min-width:0}
+.chart-wrap{position:relative;height:300px}.chart-wrap canvas{width:100%!important;height:100%!important}.chart-empty{position:absolute;inset:0;display:grid;place-items:center;color:#aaa;font-size:11px;pointer-events:none}
+.status-data-table{width:100%;min-width:0!important;border-collapse:collapse;font-size:10px}.status-data-table th,.status-data-table td{height:34px!important;padding:7px 8px!important;border-bottom:1px solid #eeeeea!important;white-space:nowrap}.status-data-table th{position:static!important;background:#f7f7f4!important;color:#666!important;font-size:9px!important;text-align:center!important}.status-data-table td{text-align:right}.status-data-table td:first-child{text-align:left}
+.status-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.status-summary{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:18px}.status-summary span{display:block;color:#777;font-size:10px;font-weight:800}.status-summary strong{display:block;margin-top:8px;font-size:24px}.status-summary small{font-size:10px;color:#888;margin-left:3px}
+.detail-day-list{max-height:332px;overflow:auto}.detail-day-row{display:grid;grid-template-columns:72px 1fr 1fr;gap:8px;padding:9px 7px;border-bottom:1px solid #eeeeea;font-size:10px;cursor:pointer}.detail-day-row:hover,.detail-day-row.active{background:#f6f6f3}.detail-day-row b{font-size:10px}.detail-day-row span{text-align:right;color:#666}
+.detail-summary-card dl{display:grid;grid-template-columns:1fr auto;gap:12px;margin:0}.detail-summary-card dt{font-size:11px;color:#777}.detail-summary-card dd{margin:0;font-size:13px;font-weight:800}
+.status-bottom-table{margin-top:14px}
+@media(max-width:980px){.ship-progress-grid,.prod-layout,.cum-layout,.detail-layout{grid-template-columns:1fr}.status-summary-grid{grid-template-columns:1fr}.chart-wrap{height:250px}}
+</style>
+
+<style id="v81-dashboard-readability-symmetry">
+/* V81 — main dashboard readability + balanced spacing */
+#appShell #dashboard{
+  width:calc(100% - 24px)!important;
+  max-width:1680px!important;
+  margin:0 auto!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard>.dash-section{
+  margin:0 0 20px!important;
+  border-radius:10px!important;
+}
+#appShell #dashboard>.dash-section:last-child{margin-bottom:0!important}
+
+/* Notice / TO DO: same outer geometry and larger readable type */
+#appShell #dashboard .dashboard-notice-todo-grid{
+  gap:20px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .dashboard-info-panel{
+  padding:22px!important;
+  min-height:250px!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dashboard-panel-title{
+  margin:0 0 16px!important;
+  min-height:32px!important;
+  align-items:center!important;
+}
+#appShell #dashboard .dashboard-panel-title h3,
+#appShell #dashboard .dash-section-head h3,
+#appShell #dashboard .schedule-title-line h3{
+  font-size:20px!important;
+  line-height:1.3!important;
+  letter-spacing:-.02em!important;
+}
+#appShell #dashboard .notice-side{font-size:12px!important}
+#appShell #dashboard .notice-side b{font-size:15px!important;margin-left:7px!important}
+#appShell #dashboard .notice-main{
+  min-height:158px!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .notice-main b{font-size:15px!important;line-height:1.5!important}
+#appShell #dashboard .notice-main p{font-size:13px!important;line-height:1.65!important;margin-top:8px!important}
+#appShell #dashboard .notice-pin{font-size:11px!important;padding:5px 8px!important}
+#appShell #dashboard .ops-todo-head{
+  margin:0 0 10px!important;
+  font-size:12px!important;
+}
+#appShell #dashboard .ops-todo-list{max-height:190px!important}
+#appShell #dashboard .ops-todo-item{
+  min-height:40px!important;
+  padding:9px 10px!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .ops-todo-manager,
+#appShell #dashboard .todo-content{font-size:13px!important}
+#appShell #dashboard .ops-todo-item .badge{
+  font-size:11px!important;
+  min-height:27px!important;
+}
+
+/* Section headers: equal left/right padding */
+#appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card){
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dash-section-head{
+  padding:0!important;
+  margin:0 0 16px!important;
+  min-height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+
+/* Weekly outbound requests: four equal cards and one request per single horizontal row */
+#appShell #dashboard .request-card-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .request-mini-card{
+  height:100%!important;
+  border-radius:8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#appShell #dashboard .request-mini-head{
+  min-height:54px!important;
+  padding:14px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-head b{
+  font-size:14px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .request-badge{
+  font-size:11px!important;
+  padding:5px 7px!important;
+}
+#appShell #dashboard .request-mini-table{
+  padding:0 12px 12px!important;
+  flex:1 1 auto!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-header{
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
+  padding:10px 10px!important;
+  font-size:10.5px!important;
+}
+#appShell #dashboard .request-mini-header span:first-child{text-align:left!important}
+#appShell #dashboard .request-mini-header span:nth-child(2),
+#appShell #dashboard .request-mini-header span:nth-child(3){text-align:center!important}
+#appShell #dashboard .request-mini-body{
+  min-height:124px!important;
+  padding-top:8px!important;
+}
+#appShell #dashboard .request-row{
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
+  min-height:42px!important;
+  padding:10px 10px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-row .store-name,
+#appShell #dashboard .request-row .doc-no{
+  font-size:11.5px!important;
+  font-weight:650!important;
+}
+#appShell #dashboard .request-row .status-cell{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  text-align:center!important;
+}
+#appShell #dashboard .request-row .doc-no{text-align:center!important}
+#appShell #dashboard .request-row .request-state-btn{
+  width:64px!important;
+  min-width:64px!important;
+  margin:0 auto!important;
+  padding:6px 4px!important;
+  font-size:10.5px!important;
+  text-align:center!important;
+}
+#appShell #dashboard .request-empty-card{
+  min-height:124px!important;
+  font-size:11px!important;
+}
+
+/* Schedule: increase small text and keep header/calendar padding visually balanced */
+#appShell #dashboard .schedule-full-card{
+  margin:0 0 20px!important;
+  padding:0!important;
+}
+#appShell #dashboard .schedule-unified-head{
+  min-height:82px!important;
+  padding:18px 20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .schedule-title-line{gap:12px!important}
+#appShell #dashboard .schedule-title-line .dash-month{font-size:12px!important}
+#appShell #dashboard .schedule-staff-primary span,
+#appShell #dashboard .schedule-staff-secondary span{font-size:11px!important}
+#appShell #dashboard .schedule-staff-primary strong{font-size:28px!important}
+#appShell #dashboard .schedule-staff-primary em{font-size:12px!important}
+#appShell #dashboard .schedule-staff-secondary b{font-size:14px!important}
+#appShell #dashboard .dashboard-two-week-weekhead span{
+  font-size:12px!important;
+  padding:11px 6px!important;
+}
+#appShell #dashboard .dash-two-week-day{
+  min-height:108px!important;
+  padding:9px!important;
+}
+#appShell #dashboard .dash-two-week-date b{font-size:15px!important}
+#appShell #dashboard .dash-two-week-date span{font-size:10px!important}
+#appShell #dashboard .dash-two-week-event{
+  font-size:10px!important;
+  padding:5px 6px!important;
+}
+#appShell #dashboard .dash-two-week-event b{font-size:9.5px!important}
+#appShell #dashboard .dash-more{font-size:10px!important}
+
+/* Monthly cards: matching inner padding and readable labels */
+#appShell #dashboard .monthly-grid{
+  gap:16px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .monthly-card{
+  min-height:178px!important;
+  padding:20px!important;
+  border-radius:8px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .monthly-head h4{font-size:15px!important}
+#appShell #dashboard .monthly-stats{margin-top:16px!important}
+#appShell #dashboard .monthly-stats span{font-size:12px!important}
+#appShell #dashboard .monthly-stats b{font-size:32px!important}
+#appShell #dashboard .monthly-stats small{font-size:11px!important}
+#appShell #dashboard .monthly-foot{font-size:11px!important}
+
+/* Responsive symmetry */
+@media(max-width:1180px){
+  #appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+  #appShell #dashboard{width:100%!important;padding:14px!important}
+  #appShell #dashboard .dashboard-notice-todo-grid,
+  #appShell #dashboard .request-card-grid,
+  #appShell #dashboard .monthly-grid{grid-template-columns:1fr!important}
+  #appShell #dashboard .dashboard-info-panel,
+  #appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card),
+  #appShell #dashboard .monthly-card{padding:16px!important}
+}
+</style>
+
+<style id="v82-status-progress-and-badges">
+/* V82 — unified count badges + shipping status progress */
+#appShell #dashboard .request-badge{
+  min-width:42px!important;
+  padding:6px 9px!important;
+  border:1px solid #cfe7d6!important;
+  border-radius:999px!important;
+  background:#eaf6ee!important;
+  color:#2f7b49!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  text-align:center!important;
+  box-shadow:none!important;
+}
+
+/* Shipping overview */
+#statusBoardView .shipping-overview{
+  display:grid!important;
+  grid-template-columns:minmax(320px,.9fr) minmax(0,1.35fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-progress-hero,
+#statusBoardView .shipping-metrics-panel{
+  background:#fff!important;
+  border:1px solid #e2e2de!important;
+  border-radius:14px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-hero{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:390px!important;
+  padding:26px!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin-bottom:18px!important;
+  color:#666!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-ring{
+  --shipping-pct:0;
+  position:relative!important;
+  width:220px!important;
+  height:220px!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  background:conic-gradient(#4fa96e calc(var(--shipping-pct) * 1%),#eceeea 0)!important;
+}
+#statusBoardView .shipping-ring:before{
+  content:""!important;
+  position:absolute!important;
+  inset:16px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:inset 0 0 0 1px #eef0ec!important;
+}
+#statusBoardView .shipping-ring-inner{
+  position:relative!important;
+  z-index:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-size:58px!important;
+  line-height:.98!important;
+  font-weight:900!important;
+  letter-spacing:-.055em!important;
+  color:#171717!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:9px!important;
+  font-size:12px!important;
+  color:#747470!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-progress-count{
+  margin-top:20px!important;
+  font-size:13px!important;
+  color:#5f655f!important;
+}
+#statusBoardView .shipping-progress-count b{
+  font-size:16px!important;
+  color:#202520!important;
+}
+#statusBoardView .shipping-metrics-panel{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  padding:16px!important;
+}
+#statusBoardView .shipping-metric{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:150px!important;
+  padding:20px!important;
+  border:1px solid #e7e8e3!important;
+  border-radius:10px!important;
+  background:#fafbf9!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-metric>span{
+  color:#737873!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-metric strong{
+  margin-top:8px!important;
+  color:#202420!important;
+  font-size:27px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-metric small{
+  margin-top:7px!important;
+  color:#8b8f8b!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+#statusBoardView .shipping-metric.eta{
+  background:#eef8f1!important;
+  border-color:#cfe8d7!important;
+}
+#statusBoardView .shipping-metric.eta>span{
+  color:#4f765c!important;
+}
+#statusBoardView .shipping-metric.eta strong{
+  color:#24643a!important;
+  font-size:38px!important;
+  letter-spacing:-.04em!important;
+}
+#statusBoardView .shipping-metric.qty strong,
+#statusBoardView .shipping-metric.store strong{font-variant-numeric:tabular-nums!important}
+@media(max-width:980px){
+  #statusBoardView .shipping-overview{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  #statusBoardView .shipping-ring{width:190px!important;height:190px!important}
+  #statusBoardView .shipping-ring-value{font-size:48px!important}
+  #statusBoardView .shipping-metrics-panel{grid-template-columns:1fr!important}
+}
+</style>
+
+<style id="v83-statusboard-large-demo">
+/* V83 — large-screen operations board + clearly separated demo state */
+#statusBoardView .status-board-shell{
+  width:calc(100% - 12px)!important;
+  max-width:1880px!important;
+  margin:0 auto!important;
+}
+#statusBoardView .status-board-api-state{
+  background:#f3f8f4!important;
+  border-color:#d5e7da!important;
+  color:#3e7450!important;
+  font-size:11px!important;
+  padding:8px 10px!important;
+}
+#statusBoardView .shipping-overview{
+  grid-template-columns:minmax(420px,.95fr) minmax(0,1.45fr)!important;
+  min-height:560px!important;
+  gap:20px!important;
+}
+#statusBoardView .shipping-progress-hero{
+  min-height:560px!important;
+  padding:34px!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin-bottom:24px!important;
+  font-size:20px!important;
+  color:#3f4641!important;
+}
+#statusBoardView .shipping-ring{
+  width:310px!important;
+  height:310px!important;
+}
+#statusBoardView .shipping-ring:before{inset:20px!important}
+#statusBoardView .shipping-ring-value{
+  font-size:82px!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:12px!important;
+  font-size:14px!important;
+}
+#statusBoardView .shipping-progress-count{
+  margin-top:26px!important;
+  font-size:18px!important;
+}
+#statusBoardView .shipping-progress-count b{font-size:24px!important}
+#statusBoardView .shipping-metrics-panel{
+  gap:16px!important;
+  padding:20px!important;
+}
+#statusBoardView .shipping-metric{
+  min-height:245px!important;
+  padding:28px!important;
+}
+#statusBoardView .shipping-metric>span{font-size:15px!important}
+#statusBoardView .shipping-metric strong{
+  margin-top:12px!important;
+  font-size:36px!important;
+}
+#statusBoardView .shipping-metric small{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+#statusBoardView .shipping-metric.eta strong{
+  font-size:58px!important;
+}
+#statusBoardView .status-card-title h3{font-size:17px!important}
+#statusBoardView .status-data-table{font-size:12px!important}
+#statusBoardView .status-data-table th{font-size:11px!important}
+#statusBoardView .status-data-table th,
+#statusBoardView .status-data-table td{
+  height:42px!important;
+  padding:9px 10px!important;
+}
+#statusBoardView .status-summary span{font-size:12px!important}
+#statusBoardView .status-summary strong{font-size:28px!important}
+#statusBoardView .detail-day-row{font-size:12px!important}
+#statusBoardView .detail-day-row b{font-size:12px!important}
+@media(max-width:1180px){
+  #statusBoardView .shipping-overview{grid-template-columns:1fr!important;min-height:0!important}
+  #statusBoardView .shipping-progress-hero{min-height:460px!important}
+}
+@media(max-width:700px){
+  #statusBoardView .shipping-ring{width:220px!important;height:220px!important}
+  #statusBoardView .shipping-ring-value{font-size:58px!important}
+  #statusBoardView .shipping-progress-label{font-size:16px!important}
+}
+</style>
+
+<style id="v84-shipping-wallboard-layout">
+/* V84 — true wide wallboard layout for field display */
+#statusBoardView .shipping-display-board{
+  min-height:620px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  padding:30px 34px 26px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:24px!important;
+  padding-bottom:18px!important;
+  border-bottom:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-display-kicker{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:#7e8580!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  letter-spacing:.1em!important;
+}
+#statusBoardView .shipping-display-head h3{
+  margin:0!important;
+  font-size:30px!important;
+  line-height:1.15!important;
+  letter-spacing:-.035em!important;
+}
+#statusBoardView .shipping-display-time{
+  color:#202420!important;
+  font-size:31px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-display-main{
+  flex:1 1 auto!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  align-items:center!important;
+  min-height:310px!important;
+  padding:24px 0 22px!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin:0 0 14px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+  color:#525853!important;
+}
+#statusBoardView .shipping-ring{
+  width:265px!important;
+  height:265px!important;
+}
+#statusBoardView .shipping-ring:before{inset:18px!important}
+#statusBoardView .shipping-ring-value{
+  font-size:76px!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+#statusBoardView .shipping-eta-zone>span{
+  color:#55715d!important;
+  font-size:18px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  margin-top:12px!important;
+  color:#24643a!important;
+  font-size:86px!important;
+  line-height:1!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  margin-top:13px!important;
+  color:#7d857f!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#statusBoardView .shipping-quantity-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr)!important;
+  gap:14px!important;
+  padding:16px 0!important;
+  border-top:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:96px!important;
+  padding:17px 22px!important;
+  border:1px solid #e6e9e5!important;
+  border-radius:10px!important;
+  background:#fafbf9!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  color:#737a75!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:7px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-quantity-main>strong em{
+  margin:0 5px!important;
+  color:#a0a5a1!important;
+  font-style:normal!important;
+  font-weight:600!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  margin-left:5px!important;
+  color:#6f766f!important;
+  font-size:15px!important;
+}
+#statusBoardView .shipping-progress-count{
+  display:none!important;
+}
+#statusBoardView .shipping-kpi-row{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:105px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:18px 22px!important;
+  border:1px solid #e4e7e3!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  color:#747b76!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:8px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  margin-left:5px!important;
+  color:#777e78!important;
+  font-size:14px!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone{border-right:0!important;border-bottom:1px solid #eceeea!important;padding-bottom:24px!important}
+  #statusBoardView .shipping-eta-zone{padding-top:24px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-board{padding:22px 18px!important}
+  #statusBoardView .shipping-display-head h3{font-size:24px!important}
+  #statusBoardView .shipping-display-time{font-size:24px!important}
+  #statusBoardView .shipping-ring{width:220px!important;height:220px!important}
+  #statusBoardView .shipping-ring-value{font-size:60px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:62px!important}
+  #statusBoardView .shipping-kpi-row{grid-template-columns:1fr!important}
+}
+</style>
+
+<style id="v85-shipping-visibility-balance">
+/* V85 — balanced wallboard boxes + stronger long-distance readability */
+#statusBoardView .shipping-display-board{
+  min-height:700px!important;
+}
+#statusBoardView .shipping-display-head{
+  min-height:74px!important;
+  align-items:center!important;
+  padding-bottom:20px!important;
+}
+#statusBoardView .shipping-display-kicker{
+  font-size:13px!important;
+  color:#5f6761!important;
+}
+#statusBoardView .shipping-display-head h3{
+  font-size:34px!important;
+  font-weight:950!important;
+  color:#171b18!important;
+}
+#statusBoardView .shipping-display-time{
+  font-size:38px!important;
+  color:#111!important;
+}
+#statusBoardView .shipping-display-main{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  min-height:355px!important;
+  padding:18px 0!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-height:355px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #dde2dd!important;
+}
+#statusBoardView .shipping-progress-label,
+#statusBoardView .shipping-eta-zone>span{
+  font-size:20px!important;
+  color:#374038!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-ring{
+  width:292px!important;
+  height:292px!important;
+  background:conic-gradient(#3f9a5f calc(var(--shipping-pct) * 1%),#e5e9e5 0)!important;
+}
+#statusBoardView .shipping-ring:before{
+  inset:22px!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-size:84px!important;
+  color:#101510!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-ring-caption{
+  font-size:15px!important;
+  color:#4f5951!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone{
+  background:#f5faf6!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  font-size:96px!important;
+  color:#1f6436!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  font-size:15px!important;
+  color:#59635c!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-quantity-row{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  padding:0 0 16px!important;
+  border-top:0!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  min-height:128px!important;
+  padding:22px 26px!important;
+  background:#f8faf8!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  font-size:19px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-row{
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:16px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:132px!important;
+  padding:22px 26px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  font-size:18px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone,
+  #statusBoardView .shipping-eta-zone{min-height:320px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-head h3{font-size:28px!important}
+  #statusBoardView .shipping-display-time{font-size:30px!important}
+  #statusBoardView .shipping-ring{width:230px!important;height:230px!important}
+  #statusBoardView .shipping-ring-value{font-size:64px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:70px!important}
+  #statusBoardView .shipping-quantity-main>strong,
+  #statusBoardView .shipping-quantity-remain>strong,
+  #statusBoardView .shipping-kpi-card>strong{font-size:34px!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -2433,6 +3308,139 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
       </div>
     </section>
+
+<section id="statusBoardView" class="view">
+      <div class="status-board-shell">
+        <div class="status-board-top">
+          <div><div class="eyebrow">OPERATIONS STATUS BOARD</div><h2>현황판</h2><p>출고 진행률과 생산성을 한 화면에서 확인할 수 있도록 기본 화면 구조를 구성했습니다.</p></div>
+          <span class="status-board-api-state">DEMO DATA · 서버 연동 전 화면 검토용</span>
+        </div>
+
+        <div class="status-board-tabs" role="tablist" aria-label="현황판 메뉴">
+          <button type="button" class="status-board-tab active" data-status-tab="shipping">출고 현황</button>
+          <button type="button" class="status-board-tab" data-status-tab="productivity">생산성</button>
+          <button type="button" class="status-board-tab" data-status-tab="cumulative">생산성 누계</button>
+          <button type="button" class="status-board-tab" data-status-tab="daily">일자별 상세조회</button>
+        </div>
+
+        <div class="status-panel active" data-status-panel="shipping">
+          <div class="shipping-display-board">
+            <div class="shipping-display-head">
+              <div>
+                <span class="shipping-display-kicker">TODAY OUTBOUND</span>
+                <h3>금일 출고 현황</h3>
+              </div>
+              <div class="shipping-display-time" id="statusCurrentTime">--:--</div>
+            </div>
+
+            <div class="shipping-display-main">
+              <div class="shipping-progress-zone">
+                <div class="shipping-progress-label">금일 출고 진행률</div>
+                <div class="shipping-ring" id="statusShippingRing">
+                  <div class="shipping-ring-inner">
+                    <div class="shipping-ring-value" id="statusShippingPct">0%</div>
+                    <div class="shipping-ring-caption">EA 기준</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="shipping-eta-zone">
+                <span>예상 완료 시간</span>
+                <strong id="statusEta">--:--</strong>
+                <small id="statusEtaNote">처리 속도 데이터 연동 후 계산</small>
+              </div>
+            </div>
+
+            <div class="shipping-quantity-row">
+              <div class="shipping-quantity-main">
+                <span>금일 출고 수량</span>
+                <strong><b id="statusShipQtyNow">0</b> <em>/</em> <b id="statusShipQtyGoal">100,000</b> <small>EA</small></strong>
+                <div class="shipping-progress-count"><b id="statusProgressQtyNow">0</b> / <b id="statusProgressQtyGoal">100,000</b> EA</div>
+              </div>
+              <div class="shipping-quantity-remain">
+                <span>남은 수량</span>
+                <strong><b id="statusShipQtyRemain">100,000</b> <small>EA</small></strong>
+              </div>
+            </div>
+
+            <div class="shipping-kpi-row">
+              <div class="shipping-kpi-card">
+                <span>처리 매장</span>
+                <strong><b id="statusStoreNow">0</b> / <b id="statusStoreGoal">15</b><small>개점</small></strong>
+              </div>
+              <div class="shipping-kpi-card">
+                <span>남은 매장</span>
+                <strong><b id="statusStoreRemain">15</b><small>개점</small></strong>
+              </div>
+              <div class="shipping-kpi-card">
+                <span>최근 1시간 처리량</span>
+                <strong><b id="statusLastHourQty">0</b><small>EA</small></strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-panel" data-status-panel="productivity">
+          <div class="status-card">
+            <div class="status-card-title"><h3>시간대별 생산성</h3><small>1시간 단위 · 서버 연동 전 기본 구조</small></div>
+            <div class="prod-toolbar">
+              <div class="prod-field"><label for="prodDate">조회일자</label><input type="date" id="prodDate"></div>
+              <div class="prod-field"><label for="prodStaff">당일 투입 인원</label><input type="number" id="prodStaff" min="0" step="1" placeholder="0"></div>
+              <button type="button" class="btn primary" id="prodStaffSave">저장</button>
+            </div>
+          </div>
+          <div class="prod-layout">
+            <div class="chart-card"><div class="status-card-title"><h3>시간대별 생산성 그래프</h3><small>EA/인·시간</small></div><div class="chart-wrap"><canvas id="prodHourChart"></canvas><div class="chart-empty" id="prodHourEmpty">처리량 데이터 연동 전입니다.</div></div></div>
+            <div class="table-card"><div class="status-card-title"><h3>시간대별 처리 현황</h3><small id="prodTableDate"></small></div><table class="status-data-table"><thead><tr><th>시간대</th><th>처리량(EA)</th><th>인원</th><th>생산성</th></tr></thead><tbody id="prodHourBody"></tbody></table></div>
+          </div>
+          <div class="status-summary-grid">
+            <div class="status-summary"><span>누계 처리량</span><strong id="prodCumQty">0</strong><small>EA</small></div>
+            <div class="status-summary"><span>누계 투입 인시</span><strong id="prodCumLabor">0</strong><small>인·시간</small></div>
+            <div class="status-summary"><span>누계 생산성</span><strong id="prodCumRate">0</strong><small>EA/인·시간</small></div>
+          </div>
+        </div>
+
+        <div class="status-panel" data-status-panel="cumulative">
+          <div class="status-card">
+            <div class="status-card-title"><h3>생산성 누계</h3><small>기본 1~12월 표시 · 원하는 기간만 조회 가능</small></div>
+            <div class="cum-toolbar">
+              <div class="cum-field"><label for="cumYear">연도</label><select id="cumYear"></select></div>
+              <div class="cum-field"><label for="cumStartMonth">시작 월</label><select id="cumStartMonth"></select></div>
+              <span style="padding-bottom:9px;color:#888">~</span>
+              <div class="cum-field"><label for="cumEndMonth">종료 월</label><select id="cumEndMonth"></select></div>
+              <button type="button" class="btn primary" id="cumSearchBtn">조회</button>
+            </div>
+          </div>
+          <div class="cum-layout">
+            <div class="chart-card"><div class="status-card-title"><h3>월별 생산성 추이</h3><small>EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">월별 생산성 데이터가 없습니다.</div></div></div>
+            <div class="table-card"><div class="status-card-title"><h3>월별 생산성 현황</h3><small id="cumPeriodLabel">1월 ~ 12월</small></div><table class="status-data-table"><thead><tr><th>월</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div>
+          </div>
+          <div class="status-summary-grid">
+            <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
+            <div class="status-summary"><span>누계 투입 인시</span><strong id="cumLabor">0</strong><small>인·시간</small></div>
+            <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
+          </div>
+        </div>
+
+        <div class="status-panel" data-status-panel="daily">
+          <div class="status-card">
+            <div class="status-card-title"><h3>일자별 상세조회</h3><small>필요할 때만 일별·시간대별 상세 데이터를 조회합니다.</small></div>
+            <div class="detail-toolbar">
+              <div class="detail-field"><label for="detailYear">연도</label><select id="detailYear"></select></div>
+              <div class="detail-field"><label for="detailMonth">월</label><select id="detailMonth"></select></div>
+              <button type="button" class="btn primary" id="detailSearchBtn">조회</button>
+            </div>
+          </div>
+          <div class="detail-layout">
+            <div class="table-card"><div class="status-card-title"><h3>일자별 생산성 현황</h3><small>날짜 선택</small></div><div class="detail-day-list" id="detailDayList"><div class="data-empty">저장된 일자 데이터가 없습니다.</div></div></div>
+            <div class="detail-summary-card"><div class="status-card-title"><h3>선택 일자 상세</h3><small id="detailSelectedDate">-</small></div><dl><dt>처리량</dt><dd id="detailQty">0 EA</dd><dt>투입 인원</dt><dd id="detailStaff">0명</dd><dt>총 투입 인시</dt><dd id="detailLabor">0 인·시간</dd><dt>일 생산성</dt><dd id="detailRate">0 EA/인·시간</dd></dl></div>
+          </div>
+          <div class="table-card status-bottom-table"><div class="status-card-title"><h3>시간대별 처리 현황</h3><small id="detailHourLabel">날짜를 선택해주세요.</small></div><table class="status-data-table"><thead><tr><th>시간대</th><th>처리량(EA)</th><th>투입 인원</th><th>생산성</th></tr></thead><tbody id="detailHourBody"><tr><td colspan="4" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table></div>
+        </div>
+      </div>
+    </section>
+
+
 
     <section id="inventoryOwnerView" class="view">
       <div class="inventory-shell">
@@ -5604,6 +6612,220 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   document.addEventListener('mouseout',e=>{
     if(e.target.closest('.hover-tip-target')&&!e.relatedTarget?.closest?.('.hover-tip-target'))hide();
   });
+})();
+</script>
+
+<script id="v80-statusboard-patch">
+(function(){
+  var STATUS_KEY='lush_productivity_daily_v1';
+  var REQUEST_KEY='lush_outbound_requests_v1';
+  var HOURS=['09:00~10:00','10:00~11:00','11:00~12:00','13:00~14:00','14:00~15:00','15:00~16:00','16:00~17:00','17:00~18:00'];
+  var q=function(s,r){return (r||document).querySelector(s)}, qa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var pad=function(n){return String(n).padStart(2,'0')};
+  var dateKey=function(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())};
+  var today=dateKey(new Date());
+  var fmt=function(n){return Number(n||0).toLocaleString('ko-KR')};
+  var esc=function(v){return String(v==null?'':v).replace(/[&<>"']/g,function(m){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]})};
+  var readDaily=function(){try{var x=JSON.parse(localStorage.getItem(STATUS_KEY)||'{}');return x&&typeof x==='object'?x:{}}catch(e){return{}}};
+  var saveDaily=function(x){localStorage.setItem(STATUS_KEY,JSON.stringify(x))};
+  var getRecord=function(dt){var all=readDaily();return all[dt]||{date:dt,staff:0,hours:{}}};
+  var calcRecord=function(r){
+    var qty=0,labor=0;
+    HOURS.forEach(function(h){var row=(r.hours&&r.hours[h])||{};var qn=Number(row.qty||0),sn=Number(row.staff!=null?row.staff:r.staff||0);qty+=qn;if(qn>0&&sn>0)labor+=sn});
+    return {qty:qty,labor:labor,rate:labor>0?qty/labor:0};
+  };
+
+  /* Demo data is isolated from saved operational data and is overridden by real local data when available. */
+  var DEMO_MODE=true;
+  var demoRecord=function(dt,staff,qtys){
+    var hours={};HOURS.forEach(function(h,i){hours[h]={qty:Number(qtys[i]||0),staff:staff}});
+    return{date:dt,staff:staff,hours:hours,__demo:true};
+  };
+  var DEMO_DAILY={};
+  var demoYear=Number(today.slice(0,4));
+  [910,945,972,1018,1041,1067].forEach(function(rate,i){
+    var month=i+3,dt=demoYear+'-'+pad(month)+'-15';
+    DEMO_DAILY[dt]=demoRecord(dt,8,HOURS.map(function(){return rate*8}));
+  });
+  var demoMonth=today.slice(0,7);
+  DEMO_DAILY[demoMonth+'-28']=demoRecord(demoMonth+'-28',8,[6200,6500,6100,6800,7100,6900,7200,7480]);
+  DEMO_DAILY[demoMonth+'-29']=demoRecord(demoMonth+'-29',8,[7200,7600,6900,7800,7900,8000,7900,8120]);
+  DEMO_DAILY[today]=demoRecord(today,8,[7800,8200,7600,8500,8800,7300,7600,12600]);
+  var readDailyDisplay=function(){
+    var merged=Object.assign({},DEMO_MODE?DEMO_DAILY:{});
+    var saved=readDaily();
+    Object.keys(saved).forEach(function(dt){
+      var demo=merged[dt],real=saved[dt]||{};
+      if(DEMO_MODE&&demo){
+        merged[dt]={
+          date:dt,
+          staff:real.staff!=null?Number(real.staff||0):Number(demo.staff||0),
+          hours:(real.hours&&Object.keys(real.hours).length)?real.hours:demo.hours,
+          __demo:true
+        };
+      }else{
+        merged[dt]=real;
+      }
+    });
+    return merged;
+  };
+  getRecord=function(dt){var all=readDailyDisplay();return all[dt]||{date:dt,staff:0,hours:{}}};
+  var DEMO_SHIPPING={qty:68400,goal:100000,stores:10,storeGoal:15,lastHourQty:12600,eta:'16:40'};
+
+  /* Add one direct top-level status-board menu without changing existing menu behavior. */
+  if(typeof GROUPS!=='undefined'&&!GROUPS.some(function(g){return g.id==='statusboard'})){
+    var dashboardIndex=GROUPS.findIndex(function(g){return g.id==='dashboard'});
+    GROUPS.splice(dashboardIndex+1,0,{id:'statusboard',label:'현황판',icon:'monitor-up'});
+  }
+  if(typeof menus!=='undefined'&&!menus.some(function(m){return m.id==='statusboard-main'})){
+    var item={id:'statusboard-main',group:'statusboard',label:'현황판',kind:'view',target:'statusBoardView',visible:true,roles:['admin','leader','editor','restricted'],protected:true};
+    var dashLast=-1;menus.forEach(function(m,i){if(m.group==='dashboard')dashLast=i});
+    menus.splice(dashLast+1,0,item);
+    if(typeof saveMenus==='function')saveMenus();
+  }
+  if(typeof renderNav==='function')renderNav();
+
+  function activateTab(name){
+    qa('.status-board-tab').forEach(function(b){b.classList.toggle('active',b.dataset.statusTab===name)});
+    qa('.status-panel').forEach(function(p){p.classList.toggle('active',p.dataset.statusPanel===name)});
+    if(name==='productivity')renderProductivity();
+    if(name==='cumulative')renderCumulative();
+    if(name==='daily')renderDailyDetail();
+  }
+  qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
+
+  function renderShipping(){
+    var qty=DEMO_MODE?DEMO_SHIPPING.qty:0;
+    var qtyGoal=DEMO_MODE?DEMO_SHIPPING.goal:100000;
+    var stores=DEMO_MODE?DEMO_SHIPPING.stores:0;
+    var storeGoal=DEMO_MODE?DEMO_SHIPPING.storeGoal:15;
+    var progress=Math.min(100,qtyGoal?qty/qtyGoal*100:0);
+
+    q('#statusProgressQtyNow').textContent=fmt(qty);
+    q('#statusProgressQtyGoal').textContent=fmt(qtyGoal);
+    q('#statusShippingPct').textContent=Math.round(progress)+'%';
+    q('#statusShippingRing').style.setProperty('--shipping-pct',String(progress));
+
+    q('#statusShipQtyNow').textContent=fmt(qty);
+    q('#statusShipQtyGoal').textContent=fmt(qtyGoal);
+    q('#statusShipQtyRemain').textContent=fmt(Math.max(0,qtyGoal-qty));
+    q('#statusStoreNow').textContent=fmt(stores);
+    q('#statusStoreGoal').textContent=fmt(storeGoal);
+    q('#statusStoreRemain').textContent=fmt(Math.max(0,storeGoal-stores));
+
+    var lastHourQty=DEMO_MODE?DEMO_SHIPPING.lastHourQty:0;
+    q('#statusLastHourQty').textContent=fmt(lastHourQty);
+
+    var eta=DEMO_MODE?DEMO_SHIPPING.eta:'--:--';
+    var etaNote=DEMO_MODE?'데모 처리 속도 기준':'처리 속도 데이터 연동 후 계산';
+    q('#statusEta').textContent=eta;
+    q('#statusEtaNote').textContent=etaNote;
+  }
+  function renderStatusClock(){
+    var el=q('#statusCurrentTime');if(!el)return;
+    var now=new Date();el.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  }
+  renderStatusClock();setInterval(renderStatusClock,60000);
+  var prodChart=null,cumChart=null;
+  function drawChart(canvasId,labels,values,holderName){
+    var empty=q(holderName),has=values.some(function(v){return Number(v)>0});
+    if(empty)empty.style.display=has?'none':'grid';
+    if(typeof Chart==='undefined'){if(window.ensureChart)window.ensureChart().then(function(){if(canvasId==='prodHourChart')renderProductivity();else renderCumulative()});return null}
+    var canvas=q('#'+canvasId);if(!canvas)return null;
+    if(canvasId==='prodHourChart'&&prodChart)prodChart.destroy();
+    if(canvasId==='cumMonthChart'&&cumChart)cumChart.destroy();
+    var chart=new Chart(canvas,{type:'line',data:{labels:labels,datasets:[{label:'생산성',data:values,borderWidth:2,pointRadius:3,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eeeeea'}},x:{grid:{display:false}}}}});
+    if(canvasId==='prodHourChart')prodChart=chart;else cumChart=chart;
+    return chart;
+  }
+
+  function renderProductivity(){
+    var dt=q('#prodDate').value||today;if(!q('#prodDate').value)q('#prodDate').value=dt;
+    var r=getRecord(dt);q('#prodStaff').value=r.staff||'';q('#prodTableDate').textContent=dt;
+    var values=[],body='';
+    HOURS.forEach(function(h){var row=(r.hours&&r.hours[h])||{};var qty=Number(row.qty||0),staff=Number(row.staff!=null?row.staff:r.staff||0),rate=(qty>0&&staff>0)?qty/staff:0;values.push(rate);body+='<tr><td>'+h+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'});
+    q('#prodHourBody').innerHTML=body;
+    var sum=calcRecord(r);q('#prodCumQty').textContent=fmt(sum.qty);q('#prodCumLabor').textContent=fmt(sum.labor);q('#prodCumRate').textContent=fmt(Math.round(sum.rate));
+    drawChart('prodHourChart',HOURS.map(function(h){return h.slice(0,5)}),values,'#prodHourEmpty');
+  }
+  q('#prodDate').value=today;
+  q('#prodDate').addEventListener('change',renderProductivity);
+  q('#prodStaffSave').addEventListener('click',function(){
+    var dt=q('#prodDate').value||today,all=readDaily(),display=getRecord(dt),r=all[dt]||{date:dt,staff:0,hours:{}};
+    r.staff=Math.max(0,Number(q('#prodStaff').value||0));
+    if(DEMO_MODE&&(!r.hours||!Object.keys(r.hours).length)&&display&&display.hours){
+      r.hours=Object.assign({},display.hours);
+    }
+    all[dt]=r;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();
+    if(typeof toastMsg==='function')toastMsg('당일 투입 인원을 저장했습니다.');
+  });
+
+  function fillYearAndMonths(){
+    var now=new Date(),year=now.getFullYear(),years=[];
+    for(var y=year-2;y<=year+2;y++)years.push(y);
+    ['cumYear','detailYear'].forEach(function(id){var el=q('#'+id);el.innerHTML=years.map(function(y){return '<option value="'+y+'">'+y+'년</option>'}).join('');el.value=String(year)});
+    ['cumStartMonth','cumEndMonth','detailMonth'].forEach(function(id){var el=q('#'+id);el.innerHTML=Array.from({length:12},function(_,i){return '<option value="'+(i+1)+'">'+(i+1)+'월</option>'}).join('')});
+    q('#cumStartMonth').value=DEMO_MODE?'3':'1';q('#cumEndMonth').value=DEMO_MODE?String(now.getMonth()+1):'12';q('#detailMonth').value=String(now.getMonth()+1);
+  }
+  fillYearAndMonths();
+
+  function monthAggregate(year,month){
+    var all=readDailyDisplay(),qty=0,labor=0,prefix=year+'-'+pad(month)+'-';
+    Object.keys(all).forEach(function(dt){if(dt.indexOf(prefix)!==0)return;var s=calcRecord(all[dt]);qty+=s.qty;labor+=s.labor});
+    return{qty:qty,labor:labor,rate:labor>0?qty/labor:0};
+  }
+  function renderCumulative(){
+    var year=Number(q('#cumYear').value),start=Number(q('#cumStartMonth').value),end=Number(q('#cumEndMonth').value);if(start>end){var t=start;start=end;end=t;q('#cumStartMonth').value=String(start);q('#cumEndMonth').value=String(end)}
+    var labels=[],values=[],body='',sumQty=0,sumLabor=0;
+    for(var m=start;m<=end;m++){var a=monthAggregate(year,m);labels.push(m+'월');values.push(a.rate);sumQty+=a.qty;sumLabor+=a.labor;body+='<tr><td>'+m+'월</td><td>'+fmt(a.qty)+'</td><td>'+fmt(a.labor)+'</td><td>'+(a.rate?fmt(Math.round(a.rate)):'-')+'</td></tr>'}
+    q('#cumMonthBody').innerHTML=body;q('#cumPeriodLabel').textContent=start+'월 ~ '+end+'월';q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(sumLabor);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
+    drawChart('cumMonthChart',labels,values,'#cumMonthEmpty');
+  }
+  q('#cumSearchBtn').addEventListener('click',renderCumulative);
+
+  var selectedDetailDate='';
+  function renderDailyDetail(){
+    var year=Number(q('#detailYear').value),month=Number(q('#detailMonth').value),all=readDailyDisplay(),prefix=year+'-'+pad(month)+'-';
+    var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
+    var list=q('#detailDayList');
+    if(!dates.length){list.innerHTML='<div class="data-empty">저장된 일자 데이터가 없습니다.</div>';selectedDetailDate='';renderSelectedDay();return}
+    if(dates.indexOf(selectedDetailDate)<0)selectedDetailDate=dates[dates.length-1];
+    list.innerHTML=dates.map(function(dt){var s=calcRecord(all[dt]);return '<div class="detail-day-row '+(dt===selectedDetailDate?'active':'')+'" data-detail-date="'+esc(dt)+'"><b>'+dt.slice(5).replace('-','/')+'</b><span>'+fmt(s.qty)+' EA</span><span>'+(s.rate?fmt(Math.round(s.rate)):'-')+'</span></div>'}).join('');
+    qa('[data-detail-date]',list).forEach(function(row){row.onclick=function(){selectedDetailDate=row.dataset.detailDate;renderDailyDetail()}});
+    renderSelectedDay();
+  }
+  function renderSelectedDay(){
+    var all=readDailyDisplay(),r=selectedDetailDate?all[selectedDetailDate]:null;
+    if(!r){q('#detailSelectedDate').textContent='-';q('#detailQty').textContent='0 EA';q('#detailStaff').textContent='0명';q('#detailLabor').textContent='0 인·시간';q('#detailRate').textContent='0 EA/인·시간';q('#detailHourLabel').textContent='날짜를 선택해주세요.';q('#detailHourBody').innerHTML='<tr><td colspan="4" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr>';return}
+    var s=calcRecord(r);q('#detailSelectedDate').textContent=selectedDetailDate;q('#detailQty').textContent=fmt(s.qty)+' EA';q('#detailStaff').textContent=fmt(r.staff||0)+'명';q('#detailLabor').textContent=fmt(s.labor)+' 인·시간';q('#detailRate').textContent=fmt(Math.round(s.rate))+' EA/인·시간';q('#detailHourLabel').textContent=selectedDetailDate;
+    q('#detailHourBody').innerHTML=HOURS.map(function(h){var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(row.staff!=null?row.staff:r.staff||0),rate=(qty>0&&staff>0)?qty/staff:0;return '<tr><td>'+h+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'}).join('');
+  }
+  q('#detailSearchBtn').addEventListener('click',function(){selectedDetailDate='';renderDailyDetail()});
+
+  /* Weekly outbound requests: keep rows compact, show status explicitly, confirm before state changes. */
+  function getRequests(){try{var x=JSON.parse(localStorage.getItem(REQUEST_KEY)||'[]');return Array.isArray(x)?x:[]}catch(e){return[]}}
+  function saveRequests(x){localStorage.setItem(REQUEST_KEY,JSON.stringify(x))}
+  function weekRange(){var n=new Date(),s=new Date(n);s.setDate(n.getDate()-n.getDay());var e=new Date(s);e.setDate(s.getDate()+6);return{start:dateKey(s),end:dateKey(e)}}
+  function renderWeeklyRequests(){
+    var range=weekRange(),all=getRequests();
+    ['bulk','traffic','hq','nozzle'].forEach(function(type){
+      var rows=all.filter(function(r){return r&&r.type===type&&Array.isArray(r.requestDates)&&r.requestDates.some(function(d){return d>=range.start&&d<=range.end})}).map(function(r){var ds=r.requestDates.filter(function(d){return d>=range.start&&d<=range.end}).sort();var copy=Object.assign({},r);copy.__weekDate=ds[0]||'';return copy}).sort(function(a,b){return String(a.__weekDate).localeCompare(String(b.__weekDate))});
+      var list=q('[data-request-list="'+type+'"]'),count=q('[data-request-count="'+type+'"]');if(count)count.textContent=rows.length+'건';if(!list)return;
+      if(!rows.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>이번 주 등록된 요청이 없습니다.</button>';return}
+      list.innerHTML=rows.slice(0,6).map(function(r){var done=r.status==='처리완료'||r.status==='완료';return '<div class="request-row"><button type="button" class="request-link-cell store-name" data-v80-open="'+esc(r.id)+'">'+esc(r.storeName||'-')+'</button><span class="doc-no">'+esc(String(r.__weekDate||'').slice(5).replace('-','/'))+'</span><span class="status-cell"><button type="button" class="request-state-btn '+(done?'done':'')+'" data-v80-state="'+esc(r.id)+'">'+(done?'완료':'미완료')+'</button></span></div>'}).join('');
+      qa('[data-v80-open]',list).forEach(function(b){b.onclick=function(){var r=rows.find(function(x){return String(x.id)===String(b.dataset.v80Open)});if(r&&r.url)window.open(r.url,'_blank','noopener');else if(typeof toastMsg==='function')toastMsg('등록된 원본 URL이 없습니다.')}});
+      qa('[data-v80-state]',list).forEach(function(b){b.onclick=function(){
+        var data=getRequests(),idx=data.findIndex(function(x){return String(x.id)===String(b.dataset.v80State)});if(idx<0)return;var done=data[idx].status==='처리완료'||data[idx].status==='완료';
+        var ok=confirm(done?'해당 요청을 미완료 상태로 되돌리시겠습니까?':'해당 요청을 완료 처리하시겠습니까?');if(!ok)return;
+        data[idx].status=done?'미처리':'처리완료';data[idx].updatedAt=new Date().toISOString();if(done)delete data[idx].completedAt;else data[idx].completedAt=new Date().toISOString();saveRequests(data);renderWeeklyRequests();renderShipping();
+        if(typeof window.refreshOutboundRequestManager==='function')window.refreshOutboundRequestManager();if(typeof toastMsg==='function')toastMsg(done?'미완료로 변경했습니다.':'완료 처리했습니다.');
+      }});
+    });
+  }
+  window.renderTodayOutboundRequests=renderWeeklyRequests;
+
+  renderShipping();renderProductivity();renderCumulative();renderDailyDetail();renderWeeklyRequests();
+  if(window.lucide)lucide.createIcons();
 })();
 </script>
 </body>
