@@ -2811,6 +2811,206 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .shipping-progress-label{font-size:16px!important}
 }
 </style>
+
+<style id="v84-shipping-wallboard-layout">
+/* V84 — true wide wallboard layout for field display */
+#statusBoardView .shipping-display-board{
+  min-height:620px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  padding:30px 34px 26px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:24px!important;
+  padding-bottom:18px!important;
+  border-bottom:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-display-kicker{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:#7e8580!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  letter-spacing:.1em!important;
+}
+#statusBoardView .shipping-display-head h3{
+  margin:0!important;
+  font-size:30px!important;
+  line-height:1.15!important;
+  letter-spacing:-.035em!important;
+}
+#statusBoardView .shipping-display-time{
+  color:#202420!important;
+  font-size:31px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-display-main{
+  flex:1 1 auto!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  align-items:center!important;
+  min-height:310px!important;
+  padding:24px 0 22px!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin:0 0 14px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+  color:#525853!important;
+}
+#statusBoardView .shipping-ring{
+  width:265px!important;
+  height:265px!important;
+}
+#statusBoardView .shipping-ring:before{inset:18px!important}
+#statusBoardView .shipping-ring-value{
+  font-size:76px!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+#statusBoardView .shipping-eta-zone>span{
+  color:#55715d!important;
+  font-size:18px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  margin-top:12px!important;
+  color:#24643a!important;
+  font-size:86px!important;
+  line-height:1!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  margin-top:13px!important;
+  color:#7d857f!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#statusBoardView .shipping-quantity-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr)!important;
+  gap:14px!important;
+  padding:16px 0!important;
+  border-top:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:96px!important;
+  padding:17px 22px!important;
+  border:1px solid #e6e9e5!important;
+  border-radius:10px!important;
+  background:#fafbf9!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  color:#737a75!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:7px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-quantity-main>strong em{
+  margin:0 5px!important;
+  color:#a0a5a1!important;
+  font-style:normal!important;
+  font-weight:600!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  margin-left:5px!important;
+  color:#6f766f!important;
+  font-size:15px!important;
+}
+#statusBoardView .shipping-progress-count{
+  display:none!important;
+}
+#statusBoardView .shipping-kpi-row{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:105px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:18px 22px!important;
+  border:1px solid #e4e7e3!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  color:#747b76!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:8px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  margin-left:5px!important;
+  color:#777e78!important;
+  font-size:14px!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone{border-right:0!important;border-bottom:1px solid #eceeea!important;padding-bottom:24px!important}
+  #statusBoardView .shipping-eta-zone{padding-top:24px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-board{padding:22px 18px!important}
+  #statusBoardView .shipping-display-head h3{font-size:24px!important}
+  #statusBoardView .shipping-display-time{font-size:24px!important}
+  #statusBoardView .shipping-ring{width:220px!important;height:220px!important}
+  #statusBoardView .shipping-ring-value{font-size:60px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:62px!important}
+  #statusBoardView .shipping-kpi-row{grid-template-columns:1fr!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -2958,37 +3158,57 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
 
         <div class="status-panel active" data-status-panel="shipping">
-          <div class="shipping-overview">
-            <div class="shipping-progress-hero">
-              <div class="shipping-progress-label">금일 출고 진행률</div>
-              <div class="shipping-ring" id="statusShippingRing">
-                <div class="shipping-ring-inner">
-                  <div class="shipping-ring-value" id="statusShippingPct">0%</div>
-                  <div class="shipping-ring-caption">처리 완료 기준</div>
+          <div class="shipping-display-board">
+            <div class="shipping-display-head">
+              <div>
+                <span class="shipping-display-kicker">TODAY OUTBOUND</span>
+                <h3>금일 출고 현황</h3>
+              </div>
+              <div class="shipping-display-time" id="statusCurrentTime">--:--</div>
+            </div>
+
+            <div class="shipping-display-main">
+              <div class="shipping-progress-zone">
+                <div class="shipping-progress-label">금일 출고 진행률</div>
+                <div class="shipping-ring" id="statusShippingRing">
+                  <div class="shipping-ring-inner">
+                    <div class="shipping-ring-value" id="statusShippingPct">0%</div>
+                    <div class="shipping-ring-caption">EA 기준</div>
+                  </div>
                 </div>
               </div>
-              <div class="shipping-progress-count"><b id="statusProgressQtyNow">0</b> / <b id="statusProgressQtyGoal">100,000</b> EA</div>
-            </div>
-            <div class="shipping-metrics-panel">
-              <div class="shipping-metric qty">
-                <span>출고 수량</span>
-                <strong><b id="statusShipQtyNow">0</b> / <b id="statusShipQtyGoal">1,000</b> EA</strong>
-                <small>남은 수량 <b id="statusShipQtyRemain">1,000</b> EA</small>
-              </div>
-              <div class="shipping-metric store">
-                <span>처리 매장</span>
-                <strong><b id="statusStoreNow">0</b> / <b id="statusStoreGoal">15</b>개점</strong>
-                <small>남은 매장 <b id="statusStoreRemain">15</b>개점</small>
-              </div>
-              <div class="shipping-metric">
-                <span>최근 1시간 처리량</span>
-                <strong><b id="statusLastHourQty">0</b> EA</strong>
-                <small>생산성 입력 데이터 기준</small>
-              </div>
-              <div class="shipping-metric eta">
+
+              <div class="shipping-eta-zone">
                 <span>예상 완료 시간</span>
                 <strong id="statusEta">--:--</strong>
                 <small id="statusEtaNote">처리 속도 데이터 연동 후 계산</small>
+              </div>
+            </div>
+
+            <div class="shipping-quantity-row">
+              <div class="shipping-quantity-main">
+                <span>금일 출고 수량</span>
+                <strong><b id="statusShipQtyNow">0</b> <em>/</em> <b id="statusShipQtyGoal">100,000</b> <small>EA</small></strong>
+                <div class="shipping-progress-count"><b id="statusProgressQtyNow">0</b> / <b id="statusProgressQtyGoal">100,000</b> EA</div>
+              </div>
+              <div class="shipping-quantity-remain">
+                <span>남은 수량</span>
+                <strong><b id="statusShipQtyRemain">100,000</b> <small>EA</small></strong>
+              </div>
+            </div>
+
+            <div class="shipping-kpi-row">
+              <div class="shipping-kpi-card">
+                <span>처리 매장</span>
+                <strong><b id="statusStoreNow">0</b> / <b id="statusStoreGoal">15</b><small>개점</small></strong>
+              </div>
+              <div class="shipping-kpi-card">
+                <span>남은 매장</span>
+                <strong><b id="statusStoreRemain">15</b><small>개점</small></strong>
+              </div>
+              <div class="shipping-kpi-card">
+                <span>최근 1시간 처리량</span>
+                <strong><b id="statusLastHourQty">0</b><small>EA</small></strong>
               </div>
             </div>
           </div>
@@ -6295,6 +6515,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#statusEta').textContent=eta;
     q('#statusEtaNote').textContent=etaNote;
   }
+  function renderStatusClock(){
+    var el=q('#statusCurrentTime');if(!el)return;
+    var now=new Date();el.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+  }
+  renderStatusClock();setInterval(renderStatusClock,60000);
   var prodChart=null,cumChart=null;
   function drawChart(canvasId,labels,values,holderName){
     var empty=q(holderName),has=values.some(function(v){return Number(v)>0});
