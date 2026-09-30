@@ -7560,7 +7560,15 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     });
     return merged;
   };
-  getRecord=function(dt){var all=readDailyDisplay();return all[dt]||{date:dt,staff:0,startTime:'',endTime:'',hours:{}}};
+  getRecord=function(dt){
+    var all=readDailyDisplay(),record=all[dt];
+    if(record)return record;
+    if(DEMO_MODE){
+      var fallback=DEMO_DAILY[today]||demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
+      return demoRecord(dt,Number(fallback.staff||8),HOURS.map(function(h){return Number(fallback.hours&&fallback.hours[h]&&fallback.hours[h].qty||0)}),fallback.startTime||'08:40',fallback.endTime||'15:40');
+    }
+    return{date:dt,staff:0,startTime:'',endTime:'',hours:{}};
+  };
   var DEMO_SHIPPING={convertedQty:68400,convertedGoal:100000,lastHourConverted:12600,eta:'16:40'};
   var DEMO_STORES=[
     {name:'강남역점',total:9000,done:9000},
