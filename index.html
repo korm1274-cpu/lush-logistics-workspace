@@ -3511,7 +3511,9 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .store-summary-title span{display:block!important;font-size:11px!important;font-weight:850!important;color:#7b837d!important}
 #statusBoardView .store-summary-title strong{display:block!important;margin-top:5px!important;font-size:21px!important;line-height:1.2!important;letter-spacing:-.03em!important}
 #statusBoardView .store-summary-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:14px!important}
-#statusBoardView .store-summary-grid>div{min-height:105px!important;padding:14px!important;border-radius:10px!important;background:#f7f8f7!important}
+#statusBoardView .store-summary-grid>div{min-height:105px!important;padding:14px!important;border-radius:10px!important;background:#f7f8f7!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+#statusBoardView .store-summary-title{text-align:center!important}
+#statusBoardView .store-summary-title span,#statusBoardView .store-summary-title strong,#statusBoardView .store-summary-grid span,#statusBoardView .store-summary-grid b,#statusBoardView .store-summary-grid small{text-align:center!important;width:100%!important}
 #statusBoardView .store-summary-grid span{display:block!important;font-size:11px!important;font-weight:800!important;color:#737c75!important}
 #statusBoardView .store-summary-grid b{display:block!important;margin-top:8px!important;font-size:22px!important;line-height:1!important;letter-spacing:-.03em!important}
 #statusBoardView .store-summary-grid small{display:block!important;margin-top:6px!important;font-size:11px!important;color:#7b837d!important}
@@ -7561,14 +7563,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return merged;
   };
   getRecord=function(dt){
-    var all=readDailyDisplay(),record=all[dt];
     if(DEMO_MODE){
-      var fallback=DEMO_DAILY[today]||demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
-      var hasQty=record&&record.hours&&Object.values(record.hours).some(function(row){return Number(row&&row.qty||0)>0});
-      var qtys=hasQty?HOURS.map(function(h){return Number(record.hours&&record.hours[h]&&record.hours[h].qty||0)}):HOURS.map(function(h){return Number(fallback.hours&&fallback.hours[h]&&fallback.hours[h].qty||0)});
-      var staff=record&&Number(record.staff||0)>0?Number(record.staff):Number(fallback.staff||8);
-      return demoRecord(dt,staff,qtys,(record&&record.startTime)||fallback.startTime||'08:40',(record&&record.endTime)||fallback.endTime||'15:40');
+      return demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
     }
+    var all=readDailyDisplay(),record=all[dt];
     if(record)return record;
     return{date:dt,staff:0,startTime:'',endTime:'',hours:{}};
   };
