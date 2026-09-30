@@ -7562,11 +7562,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   };
   getRecord=function(dt){
     var all=readDailyDisplay(),record=all[dt];
-    if(record)return record;
     if(DEMO_MODE){
       var fallback=DEMO_DAILY[today]||demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
-      return demoRecord(dt,Number(fallback.staff||8),HOURS.map(function(h){return Number(fallback.hours&&fallback.hours[h]&&fallback.hours[h].qty||0)}),fallback.startTime||'08:40',fallback.endTime||'15:40');
+      var hasQty=record&&record.hours&&Object.values(record.hours).some(function(row){return Number(row&&row.qty||0)>0});
+      var qtys=hasQty?HOURS.map(function(h){return Number(record.hours&&record.hours[h]&&record.hours[h].qty||0)}):HOURS.map(function(h){return Number(fallback.hours&&fallback.hours[h]&&fallback.hours[h].qty||0)});
+      var staff=record&&Number(record.staff||0)>0?Number(record.staff):Number(fallback.staff||8);
+      return demoRecord(dt,staff,qtys,(record&&record.startTime)||fallback.startTime||'08:40',(record&&record.endTime)||fallback.endTime||'15:40');
     }
+    if(record)return record;
     return{date:dt,staff:0,startTime:'',endTime:'',hours:{}};
   };
   var DEMO_SHIPPING={convertedQty:68400,convertedGoal:100000,lastHourConverted:12600,eta:'16:40'};
