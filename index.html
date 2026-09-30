@@ -7537,7 +7537,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var demoMonth=today.slice(0,7);
   DEMO_DAILY[demoMonth+'-28']=demoRecord(demoMonth+'-28',8,[6200,6500,6100,6800,7100,6900,7200,7480]);
   DEMO_DAILY[demoMonth+'-29']=demoRecord(demoMonth+'-29',8,[7200,7600,6900,7800,7900,8000,7900,8120]);
-  DEMO_DAILY[today]=demoRecord(today,8,[4200,4550,8650,9200,7350,0,0,0],'08:40','12:05');
+  DEMO_DAILY[today]=demoRecord(today,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40');
   var readDailyDisplay=function(){
     var merged=Object.assign({},DEMO_MODE?DEMO_DAILY:{});
     var saved=readDaily();
