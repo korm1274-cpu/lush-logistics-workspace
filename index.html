@@ -3603,7 +3603,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 #statusBoardView .store-history-segment{
   display:inline-grid!important;
-  grid-template-columns:1fr 1fr!important;
+  grid-template-columns:repeat(3,1fr)!important;
   gap:4px!important;
   padding:4px!important;
   border:1px solid #e1e5e2!important;
@@ -7877,7 +7877,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 
   function renderStoreProductDetail(){
     var store=(q('#storeProductStore').value||'').trim(),start=q('#storeProductStart').value||'',end=q('#storeProductEnd').value||'',query=(q('#storeProductQuery').value||'').trim().toLowerCase();
-    var rows=productRowsInRange(statusOutboundRows(),start,end).filter(function(r){return !store||String(r.store||'').toLowerCase().includes(store.toLowerCase())});
+    if(!store){
+      q('#storeProductSku').textContent='0';q('#storeProductEa').textContent='0';q('#storeProductG').textContent='0';
+      q('#storeProductTitle').textContent='매장별 제품 출고 내역';q('#storeProductCount').textContent='조회할 매장을 입력해주세요.';
+      q('#storeProductBody').innerHTML='<tr><td colspan="5" class="data-empty" style="text-align:center">조회할 매장을 입력해주세요.</td></tr>';
+      return;
+    }
+    var rows=productRowsInRange(statusOutboundRows(),start,end).filter(function(r){return String(r.store||'').toLowerCase().includes(store.toLowerCase())});
     var grouped={};rows.forEach(function(r){var key=[r.code,r.name,r.category,r.unit].join('|');if(!grouped[key])grouped[key]={code:r.code,name:r.name,category:r.category,unit:r.unit,qty:0};grouped[key].qty+=r.qty});
     var all=Object.values(grouped).sort(function(a,b){return b.qty-a.qty});
     var filtered=all.filter(function(r){return !query||r.code.toLowerCase().includes(query)||r.name.toLowerCase().includes(query)});
