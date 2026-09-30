@@ -7775,6 +7775,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function monthAggregate(year,month){
     var all=readDailyDisplay(),qty=0,labor=0,prefix=year+'-'+pad(month)+'-';
     Object.keys(all).forEach(function(dt){if(dt.indexOf(prefix)!==0)return;var s=calcRecord(all[dt]);qty+=s.qty;labor+=s.labor});
+    if(DEMO_MODE&&(!qty||!labor)){
+      var demoRate=900+((Number(month||1)*37)%190);
+      var demoLabor=56+((Number(month||1)*5)%18);
+      qty=Math.round(demoRate*demoLabor);labor=demoLabor;
+    }
     return{qty:qty,labor:labor,rate:labor>0?qty/labor:0};
   }
   function periodMonths(start,end){
@@ -7798,15 +7803,23 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderDailyDetail(){
     var period=q('#detailPeriod').value||today.slice(0,7),all=readDailyDisplay(),prefix=period+'-';
     var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
+    if(DEMO_MODE&&!dates.length){
+      [3,8,15,22,28].forEach(function(day,idx){
+        var dt=period+'-'+pad(day);
+        all[dt]=demoRecord(dt,8,[4200+idx*180,4550+idx*160,8650+idx*210,9200+idx*190,7350+idx*170,8120+idx*140,7840+idx*120,7560+idx*100],'08:40','15:40');
+      });
+      dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
+    }
+    window.__statusDailyDetailDisplay=all;
     var list=q('#detailDayList');
-    if(!dates.length){list.innerHTML='<div class="data-empty">저장된 일자 데이터가 없습니다.</div>';selectedDetailDate='';renderSelectedDay();return}
+    if(!dates.length){list.innerHTML='<div class="data-empty">데모 데이터를 준비 중입니다.</div>';selectedDetailDate='';renderSelectedDay();return}
     if(dates.indexOf(selectedDetailDate)<0)selectedDetailDate=dates[dates.length-1];
     list.innerHTML=dates.map(function(dt){var s=calcRecord(all[dt]);return '<div class="detail-day-row '+(dt===selectedDetailDate?'active':'')+'" data-detail-date="'+esc(dt)+'"><b>'+dt.slice(5).replace('-','/')+'</b><span>'+fmt(s.qty)+' EA</span><span>'+(s.rate?fmt(Math.round(s.rate)):'-')+'</span></div>'}).join('');
     qa('[data-detail-date]',list).forEach(function(row){row.onclick=function(){selectedDetailDate=row.dataset.detailDate;renderDailyDetail()}});
     renderSelectedDay();
   }
   function renderSelectedDay(){
-    var all=readDailyDisplay(),r=selectedDetailDate?all[selectedDetailDate]:null;
+    var all=window.__statusDailyDetailDisplay||readDailyDisplay(),r=selectedDetailDate?all[selectedDetailDate]:null;
     if(!r){q('#detailSelectedDate').textContent='-';q('#detailQty').textContent='0 EA';q('#detailStaff').textContent='0명';q('#detailLabor').textContent='0 인·시간';q('#detailRate').textContent='0 EA/인·시간';q('#detailHourLabel').textContent='날짜를 선택해주세요.';q('#detailHourBody').innerHTML='<tr><td colspan="5" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr>';return}
     var s=calcRecord(r);q('#detailSelectedDate').textContent=selectedDetailDate;q('#detailQty').textContent=fmt(s.qty)+' EA';q('#detailStaff').textContent=Number(r.staff||0)>0?fmt(r.staff)+'명':'-';q('#detailLabor').textContent=s.labor>0?fmt(Math.round(s.labor*10)/10)+' 인·시간':'-';q('#detailRate').textContent=s.labor>0?fmt(Math.round(s.rate))+' EA/인·시간':'-';q('#detailHourLabel').textContent=(r.startTime||'-')+' ~ '+(r.endTime||'-');
     q('#detailHourBody').innerHTML=HOURS.map(function(h,i){var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;return '<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'}).join('');
@@ -7820,6 +7833,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var end=new Date(),start=new Date(end);start.setDate(end.getDate()-29);
     q('#storeHistoryStart').value=dateKey(start);q('#storeHistoryEnd').value=dateKey(end);q('#storeHistoryDetailDate').value=dateKey(end);
     q('#storeProductStart').value=dateKey(start);q('#storeProductEnd').value=dateKey(end);
+    if(q('#storeProductStore')&&!q('#storeProductStore').value)q('#storeProductStore').value='강남역점';
     updateStoreHistoryModeUI();
   }
   function updateStoreHistoryModeUI(){
@@ -7833,9 +7847,32 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(donut)donut.hidden=storeHistoryMode!=='compare';
     if(summary)summary.hidden=storeHistoryMode!=='detail';
   }
+  function demoStoreHistoryRange(start,end,store){
+    var endDate=end?new Date(end+'T00:00:00'):new Date(),startDate=start?new Date(start+'T00:00:00'):new Date(endDate);
+    if(!start)startDate.setDate(endDate.getDate()-6);
+    if(startDate>endDate){var tmp=startDate;startDate=endDate;endDate=tmp}
+    var names=DEMO_STORES.map(function(s){return s.name});
+    if(store){
+      var matched=names.filter(function(n){return n.toLowerCase().includes(store.toLowerCase())});
+      names=matched.length?matched:[store];
+    }else names=names.slice(0,10);
+    var rows=[],cursor=new Date(startDate),dayIndex=0;
+    while(cursor<=endDate&&dayIndex<10){
+      var dt=dateKey(cursor);
+      names.forEach(function(name,idx){
+        var total=4800+((idx*690+dayIndex*430)%5600),startM=(8+((idx+dayIndex)%2))*60+((idx*11+dayIndex*7)%4)*10,duration=150+((idx*19+dayIndex*17)%150);
+        var hh=function(m){return pad(Math.floor(m/60)%24)+':'+pad(m%60)};
+        rows.push({date:dt,store:name,total:total,done:total,start:hh(startM),end:hh(startM+duration),duration:duration,status:'완료'});
+      });
+      cursor.setDate(cursor.getDate()+1);dayIndex++;
+    }
+    return rows;
+  }
   function filteredStoreHistory(){
     var start=q('#storeHistoryStart').value||'',end=q('#storeHistoryEnd').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
-    return (DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)&&(!store||r.store===store)}).sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
+    var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)&&(!store||r.store.toLowerCase().includes(store.toLowerCase()))});
+    if(DEMO_MODE&&!rows.length)rows=demoStoreHistoryRange(start,end,store);
+    return rows.sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
   }
   function drawStoreHistoryChart(rows){
     var empty=q('#storeHistoryChartEmpty'),canvas=q('#storeHistoryChart');if(!canvas)return;
@@ -7884,6 +7921,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       return;
     }
     var rows=productRowsInRange(statusOutboundRows(),start,end).filter(function(r){return String(r.store||'').toLowerCase().includes(store.toLowerCase())});
+    if(DEMO_MODE&&!rows.length){
+      rows=productRowsInRange(statusOutboundRows(),start,end).slice(0,6).map(function(r){return Object.assign({},r,{store:store})});
+    }
     var grouped={};rows.forEach(function(r){var key=[r.code,r.name,r.category,r.unit].join('|');if(!grouped[key])grouped[key]={code:r.code,name:r.name,category:r.category,unit:r.unit,qty:0};grouped[key].qty+=r.qty});
     var all=Object.values(grouped).sort(function(a,b){return b.qty-a.qty});
     var filtered=all.filter(function(r){return !query||r.code.toLowerCase().includes(query)||r.name.toLowerCase().includes(query)});
@@ -7914,7 +7954,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   function renderStoreHistoryDailyDetail(){
     var date=q('#storeHistoryDetailDate').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
-    var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!date||r.date===date)&&(!store||r.store===store)}).sort(function(a,b){return a.store.localeCompare(b.store)});
+    var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!date||r.date===date)&&(!store||r.store.toLowerCase().includes(store.toLowerCase()))});
+    if(DEMO_MODE&&!rows.length)rows=demoStoreHistoryRange(date,date,store);
+    rows=rows.sort(function(a,b){return a.store.localeCompare(b.store)});
     q('#storeHistoryDetailTitle').textContent=(date||'선택 일자')+' 처리이력'+(store?' · '+store:'');
     q('#storeHistoryBody').innerHTML=rows.length?rows.map(function(r){
       return '<tr><td>'+r.date+'</td><td><b>'+esc(r.store)+'</b></td><td>'+fmt(r.total)+' EA</td><td>'+fmt(r.done)+' EA</td><td>'+esc(r.start||'-')+'</td><td>'+esc(r.end||'-')+'</td><td>'+fmt(r.duration||0)+'분</td><td><span class="store-history-status '+(r.status==='완료'?'done':'progress')+'">'+esc(r.status||'-')+'</span></td></tr>';
@@ -7956,6 +7998,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     {date:'2026-09-29',store:'여의도점',code:'DEMO012',category:'SKINCARE',name:'CELESTIAL',unit:'EA',qty:3900}
   ];
   function statusOutboundRows(){
+    if(DEMO_MODE)return DEMO_PRODUCT_ROWS.slice();
     try{
       var d=typeof read==='function'?read():{},src=d&&d.outbound;
       if(src&&Array.isArray(src.rows)&&src.rows.length){
@@ -7973,7 +8016,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         }).filter(function(r){return r.date&&r.code&&(r.unit==='EA'||r.unit==='G')});
       }
     }catch(e){}
-    return DEMO_MODE?DEMO_PRODUCT_ROWS.slice():[];
+    return[];
   }
   function pctChange(cur,base){
     cur=Number(cur||0);base=Number(base||0);
@@ -7984,7 +8027,17 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var p=String(key||'').split('-').map(Number),d=new Date(p[0],p[1]-1+delta,1);
     return d.getFullYear()+'-'+pad(d.getMonth()+1);
   }
-  function productRowsInRange(rows,start,end){return rows.filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)})}
+  function productRowsInRange(rows,start,end){
+    var filtered=rows.filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)});
+    if(!DEMO_MODE||filtered.length)return filtered;
+    var base=rows.length?rows:DEMO_PRODUCT_ROWS;
+    var anchor=end||start||today;
+    var a=new Date(anchor+'T00:00:00');
+    return base.map(function(r,idx){
+      var d=new Date(a);d.setDate(a.getDate()-(idx%12));
+      return Object.assign({},r,{date:dateKey(d)});
+    }).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)});
+  }
   function productAllRangeLabel(rows){
     if(!rows.length)return'전체 기간';
     var dates=rows.map(function(r){return r.date}).sort();return'전체 기간 · '+dates[0]+' ~ '+dates[dates.length-1];
