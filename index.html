@@ -2679,7 +2679,7 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 #statusBoardView .shipping-metrics-panel{
   display:grid!important;
-  grid-template-columns:1fr 1fr!important;
+  grid-template-columns:repeat(3,1fr)!important;
   gap:12px!important;
   padding:16px!important;
 }
@@ -3517,6 +3517,24 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .store-summary-grid span{display:block!important;font-size:11px!important;font-weight:800!important;color:#737c75!important}
 #statusBoardView .store-summary-grid b{display:block!important;margin-top:8px!important;font-size:22px!important;line-height:1!important;letter-spacing:-.03em!important}
 #statusBoardView .store-summary-grid small{display:block!important;margin-top:6px!important;font-size:11px!important;color:#7b837d!important}
+#statusBoardView .store-history-category-card{min-width:0!important}
+#statusBoardView .store-history-donut-wrap{position:relative!important;height:360px!important;padding:4px 12px 20px!important}
+#statusBoardView .store-history-category-card canvas{width:100%!important;height:100%!important}
+#statusBoardView .store-product-detail{display:flex;flex-direction:column;gap:14px}
+#statusBoardView .store-product-kpis{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+#statusBoardView .store-product-kpis>div{background:#fff;border:1px solid #e2e5e2;border-radius:12px;padding:16px;text-align:center}
+#statusBoardView .store-product-kpis span{display:block;font-size:10px;color:#7b847d;font-weight:800}
+#statusBoardView .store-product-kpis b{display:block;margin-top:6px;font-size:24px;color:#252c27}
+#statusBoardView .store-product-kpis small{display:block;margin-top:3px;font-size:10px;color:#8a928b}
+#statusBoardView .store-product-table-head{display:flex;align-items:center;justify-content:space-between;gap:14px}
+#statusBoardView .store-product-table-head .status-card-title{margin-bottom:12px}
+#statusBoardView .store-product-table-head>input{min-width:280px;height:38px;border:1px solid #dde2de;border-radius:8px;padding:0 11px;font-size:11px;background:#fff}
+#statusBoardView .store-product-table-head>input:focus{outline:none;border-color:#8baac8;box-shadow:0 0 0 2px rgba(59,111,165,.08)}
+@media(max-width:900px){
+  #statusBoardView .store-product-kpis{grid-template-columns:1fr 1fr 1fr}
+  #statusBoardView .store-product-table-head{align-items:stretch;flex-direction:column}
+  #statusBoardView .store-product-table-head>input{width:100%;min-width:0}
+}
 #statusBoardView .store-history-scroll{max-height:430px!important}
 #statusBoardView .store-history-table-card td:nth-child(3),#statusBoardView .store-history-table-card td:nth-child(4){font-variant-numeric:tabular-nums!important;font-weight:800!important}
 #statusBoardView .store-history-status{display:inline-flex!important;min-width:48px!important;justify-content:center!important;padding:4px 8px!important;border-radius:999px!important;font-size:10px!important;font-weight:900!important}
@@ -3923,7 +3941,6 @@ html,body{max-width:100%;overflow-x:hidden}
           <button type="button" class="status-board-tab" data-status-tab="cumulative">생산성 누계</button>
           <button type="button" class="status-board-tab" data-status-tab="daily">일자별 상세조회</button>
           <button type="button" class="status-board-tab" data-status-tab="storehistory">매장별 처리이력</button>
-          <button type="button" class="status-board-tab" data-status-tab="products">제품별 출고현황</button>
         </div>
 
         <div class="status-panel active" data-status-panel="shipping">
@@ -3944,7 +3961,7 @@ html,body{max-width:100%;overflow-x:hidden}
                     <div class="shipping-ring" id="statusShippingRing">
                       <div class="shipping-ring-inner">
                         <div class="shipping-ring-value" id="statusShippingPct">0%</div>
-                        <div class="shipping-ring-caption">환산 EA 기준</div>
+                        <div class="shipping-ring-caption">처리량 기준</div>
                       </div>
                     </div>
                   </div>
@@ -3959,19 +3976,19 @@ html,body{max-width:100%;overflow-x:hidden}
                 <div class="shipping-quantity-row">
                   <div class="shipping-quantity-main shipping-quantity-focus">
                     <span>현재 처리수량</span>
-                    <strong><b id="statusShipQtyNow">0</b><small>환산 EA</small></strong>
-                    <div class="shipping-total-goal">총 처리량 <b id="statusShipQtyGoal">0</b> 환산 EA</div>
+                    <strong><b id="statusShipQtyNow">0</b></strong>
+                    <div class="shipping-total-goal">총 처리량 <b id="statusShipQtyGoal">0</b></div>
                   </div>
                   <div class="shipping-quantity-remain shipping-quantity-focus">
                     <span>남은 수량</span>
-                    <strong><b id="statusShipQtyRemain">0</b><small>환산 EA</small></strong>
-                    <div class="shipping-remain-note">EA + G 환산값 기준 잔여 물량</div>
+                    <strong><b id="statusShipQtyRemain">0</b></strong>
+                    <div class="shipping-remain-note">전체 출고량 기준 잔여 물량</div>
                   </div>
                 </div>
 
                 <div class="shipping-last-hour-card">
                   <span>최근 1시간 처리량</span>
-                  <strong><b id="statusLastHourQty">0</b><small>환산 EA</small></strong>
+                  <strong><b id="statusLastHourQty">0</b></strong>
                 </div>
               </div>
 
@@ -4054,28 +4071,60 @@ html,body{max-width:100%;overflow-x:hidden}
               <div class="store-history-segment" role="tablist" aria-label="매장 처리이력 조회 방식">
                 <button type="button" class="store-mode-btn active" data-store-mode="compare">전체 비교</button>
                 <button type="button" class="store-mode-btn" data-store-mode="detail">매장 상세</button>
+                <button type="button" class="store-mode-btn" data-store-mode="product">제품 출고 상세</button>
               </div>
             </div>
             <div class="status-filter-cards store-history-toolbar">
               <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="storeHistoryStart"><small>조회 시작일</small></div>
               <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="storeHistoryEnd"><small>조회 종료일</small></div>
-              <div class="prod-api-metric status-filter-card store-select-field" id="storeHistoryStoreField" hidden><span>상세 매장</span><select id="storeHistoryStore"></select><small>매장 선택</small></div>
+              <div class="prod-api-metric status-filter-card store-select-field" id="storeHistoryStoreField" hidden><span>매장 검색</span><input id="storeHistoryStore" list="storeHistoryStoreList" placeholder="매장명 입력"><datalist id="storeHistoryStoreList"></datalist><small>매장명을 입력해서 검색</small></div>
               <button type="button" class="btn primary status-filter-btn" id="storeHistorySearchBtn">조회</button>
             </div>
           </div>
 
-          <div class="store-history-analysis">
+          <div class="store-history-analysis" id="storeHistoryAnalysisArea">
             <div class="chart-card store-history-chart-card">
-              <div class="status-card-title"><h3 id="storeHistoryChartTitle">매장별 출고물량 비교</h3><small id="storeHistoryChartHint">선택 기간 누적 EA · 출고량 높은 순</small></div>
+              <div class="status-card-title"><h3 id="storeHistoryChartTitle">매장별 물동량 비교</h3><small id="storeHistoryChartHint">선택 기간 누적 출고량 · 선 그래프</small></div>
               <div class="store-history-chart-wrap"><canvas id="storeHistoryChart"></canvas><div class="chart-empty" id="storeHistoryChartEmpty">매장 처리 데이터가 없습니다.</div></div>
             </div>
-            <div class="store-history-summary">
-              <div class="store-summary-title"><span>선택 기준 요약</span><strong id="storeHistorySummaryName">전체 비교</strong></div>
+            <div class="chart-card store-history-category-card" id="storeHistoryCategoryCard">
+              <div class="status-card-title"><h3>제품군별 출고 구성비</h3><small>EA / G 통합 · 출고 SKU 기준</small></div>
+              <div class="store-history-donut-wrap"><canvas id="storeHistoryCategoryDonut"></canvas><div class="chart-empty" id="storeHistoryCategoryEmpty">제품군 데이터가 없습니다.</div></div>
+            </div>
+            <div class="store-history-summary" id="storeHistorySummaryCard" hidden>
+              <div class="store-summary-title"><span>선택 기준 요약</span><strong id="storeHistorySummaryName">매장 상세</strong></div>
               <div class="store-summary-grid">
                 <div><span>누적 출고량</span><b id="storeHistoryTotalQty">0</b><small>EA</small></div>
                 <div><span>일평균 출고량</span><b id="storeHistoryAvgQty">0</b><small>EA</small></div>
                 <div><span>최대 출고일</span><b id="storeHistoryMaxDate">-</b><small id="storeHistoryMaxQty">0 EA</small></div>
                 <div><span>작업 이력</span><b id="storeHistoryCount">0</b><small>건</small></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="store-product-detail" id="storeProductDetailPanel" hidden>
+            <div class="status-card">
+              <div class="status-card-title"><h3>제품 출고 상세</h3><small>선택한 매장과 기간의 전체 출고 제품을 먼저 보여줍니다.</small></div>
+              <div class="status-filter-cards store-product-filters">
+                <div class="prod-api-metric status-filter-card product-search-card"><span>매장 검색</span><input id="storeProductStore" list="storeHistoryStoreList" placeholder="매장명 입력"><small>매장명을 입력해서 검색</small></div>
+                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="storeProductStart"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="storeProductEnd"><small>조회 종료일</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="storeProductSearchBtn">조회</button>
+              </div>
+            </div>
+            <div class="store-product-kpis">
+              <div><span>출고 SKU</span><b id="storeProductSku">0</b><small>SKU</small></div>
+              <div><span>총 출고 EA</span><b id="storeProductEa">0</b><small>EA</small></div>
+              <div><span>총 출고 G</span><b id="storeProductG">0</b><small>G</small></div>
+            </div>
+            <div class="table-card store-product-table-card">
+              <div class="store-product-table-head">
+                <div class="status-card-title"><h3 id="storeProductTitle">매장별 제품 출고 내역</h3><small id="storeProductCount">매장과 기간을 선택해주세요.</small></div>
+                <input id="storeProductQuery" placeholder="제품코드 또는 제품명 검색">
+              </div>
+              <div class="status-table-scroll">
+                <table class="status-data-table"><thead><tr><th>제품코드</th><th>제품명</th><th>제품군</th><th>단위</th><th>출고수량</th></tr></thead>
+                <tbody id="storeProductBody"><tr><td colspan="5" class="data-empty" style="text-align:center">조회할 매장을 입력해주세요.</td></tr></tbody></table>
               </div>
             </div>
           </div>
@@ -7658,7 +7707,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
             '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
-            '<span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+' 환산 EA</span>'+
+            '<span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+'</span>'+
             '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
           '</div>'+
           '<div class="shipping-store-track"><span class="shipping-store-fill" style="width:'+pct.toFixed(1)+'%"></span></div>'+
@@ -7764,21 +7813,28 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   q('#detailSearchBtn').addEventListener('click',function(){selectedDetailDate='';renderDailyDetail()});
 
-  var storeHistoryChart=null,storeHistoryMode='compare';
+  var storeHistoryChart=null,storeHistoryCategoryChart=null,storeHistoryMode='compare';
   function initStoreHistoryControls(){
-    var sel=q('#storeHistoryStore');if(!sel)return;
-    sel.innerHTML=DEMO_STORES.map(function(s){return '<option value="'+esc(s.name)+'">'+esc(s.name)+'</option>'}).join('');
-    if(sel.options.length)sel.selectedIndex=0;
-    var end=new Date(),start=new Date(end);start.setDate(end.getDate()-6);
+    var names=Array.from(new Set(DEMO_STORES.map(function(s){return s.name}).concat(statusOutboundRows().map(function(r){return r.store}).filter(Boolean)))).sort();
+    var list=q('#storeHistoryStoreList');if(list)list.innerHTML=names.map(function(name){return '<option value="'+esc(name)+'"></option>'}).join('');
+    var end=new Date(),start=new Date(end);start.setDate(end.getDate()-29);
     q('#storeHistoryStart').value=dateKey(start);q('#storeHistoryEnd').value=dateKey(end);q('#storeHistoryDetailDate').value=dateKey(end);
+    q('#storeProductStart').value=dateKey(start);q('#storeProductEnd').value=dateKey(end);
     updateStoreHistoryModeUI();
   }
   function updateStoreHistoryModeUI(){
     qa('.store-mode-btn').forEach(function(b){b.classList.toggle('active',b.dataset.storeMode===storeHistoryMode)});
     var field=q('#storeHistoryStoreField');if(field)field.hidden=storeHistoryMode!=='detail';
+    var analysis=q('#storeHistoryAnalysisArea'),product=q('#storeProductDetailPanel'),onDemand=q('.store-history-on-demand');
+    if(analysis)analysis.hidden=storeHistoryMode==='product';
+    if(product)product.hidden=storeHistoryMode!=='product';
+    if(onDemand)onDemand.hidden=storeHistoryMode==='product';
+    var donut=q('#storeHistoryCategoryCard'),summary=q('#storeHistorySummaryCard');
+    if(donut)donut.hidden=storeHistoryMode!=='compare';
+    if(summary)summary.hidden=storeHistoryMode!=='detail';
   }
   function filteredStoreHistory(){
-    var start=q('#storeHistoryStart').value||'',end=q('#storeHistoryEnd').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||''):'';
+    var start=q('#storeHistoryStart').value||'',end=q('#storeHistoryEnd').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
     return (DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!start||r.date>=start)&&(!end||r.date<=end)&&(!store||r.store===store)}).sort(function(a,b){return b.date.localeCompare(a.date)||a.store.localeCompare(b.store)});
   }
   function drawStoreHistoryChart(rows){
@@ -7807,10 +7863,38 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       }
     });
   }
+  function renderStoreHistoryCategory(){
+    var start=q('#storeHistoryStart').value||'',end=q('#storeHistoryEnd').value||'',rows=productRowsInRange(statusOutboundRows(),start,end);
+    var map={};rows.forEach(function(r){var cat=r.category||'기타';if(!map[cat])map[cat]=new Set();if(r.code)map[cat].add(r.code)});
+    var items=Object.keys(map).map(function(k){return{name:k,value:map[k].size}}).filter(function(x){return x.value>0}).sort(function(a,b){return b.value-a.value});
+    var canvas=q('#storeHistoryCategoryDonut'),empty=q('#storeHistoryCategoryEmpty');
+    if(empty)empty.style.display=items.length?'none':'grid';
+    if(storeHistoryCategoryChart){storeHistoryCategoryChart.destroy();storeHistoryCategoryChart=null}
+    if(!items.length||!canvas)return;
+    if(typeof Chart==='undefined'){if(window.ensureChart)window.ensureChart().then(renderStoreHistoryCategory);return}
+    storeHistoryCategoryChart=new Chart(canvas,{type:'doughnut',data:{labels:items.map(function(x){return x.name}),datasets:[{data:items.map(function(x){return x.value}),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,cutout:'64%',plugins:{legend:{position:'bottom',labels:{boxWidth:9,usePointStyle:true,font:{size:10}}},tooltip:{callbacks:{label:function(ctx){var total=items.reduce(function(a,x){return a+x.value},0),v=Number(ctx.raw||0);return ctx.label+' · '+v+' SKU · '+(total?v/total*100:0).toFixed(1)+'%'}}}}}});
+  }
+
+  function renderStoreProductDetail(){
+    var store=(q('#storeProductStore').value||'').trim(),start=q('#storeProductStart').value||'',end=q('#storeProductEnd').value||'',query=(q('#storeProductQuery').value||'').trim().toLowerCase();
+    var rows=productRowsInRange(statusOutboundRows(),start,end).filter(function(r){return !store||String(r.store||'').toLowerCase().includes(store.toLowerCase())});
+    var grouped={};rows.forEach(function(r){var key=[r.code,r.name,r.category,r.unit].join('|');if(!grouped[key])grouped[key]={code:r.code,name:r.name,category:r.category,unit:r.unit,qty:0};grouped[key].qty+=r.qty});
+    var all=Object.values(grouped).sort(function(a,b){return b.qty-a.qty});
+    var filtered=all.filter(function(r){return !query||r.code.toLowerCase().includes(query)||r.name.toLowerCase().includes(query)});
+    q('#storeProductSku').textContent=fmt(all.length);
+    q('#storeProductEa').textContent=fmt(rows.filter(function(r){return r.unit==='EA'}).reduce(function(a,r){return a+r.qty},0));
+    q('#storeProductG').textContent=fmt(rows.filter(function(r){return r.unit==='G'}).reduce(function(a,r){return a+r.qty},0));
+    q('#storeProductTitle').textContent=(store||'전체 매장')+' · 제품 출고 내역';
+    q('#storeProductCount').textContent=(start||'전체')+' ~ '+(end||'전체')+' · '+fmt(filtered.length)+' SKU';
+    q('#storeProductBody').innerHTML=filtered.length?filtered.map(function(r){return '<tr><td>'+esc(r.code)+'</td><td><b>'+esc(r.name)+'</b></td><td>'+esc(r.category||'-')+'</td><td>'+esc(r.unit)+'</td><td>'+fmt(r.qty)+'</td></tr>'}).join(''):'<tr><td colspan="5" class="data-empty" style="text-align:center">조건에 맞는 출고 제품이 없습니다.</td></tr>';
+  }
+
   function renderStoreHistory(){
-    var rows=filteredStoreHistory(),store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||''):'';
-    q('#storeHistoryChartTitle').textContent=storeHistoryMode==='detail'?(store+' 출고물량 추이'):'매장별 출고물량 비교';
-    q('#storeHistoryChartHint').textContent=storeHistoryMode==='detail'?'일자별 출고량 · 실제 단위 기준':'선택 기간 출고량 비교 · 실제 단위 기준';
+    updateStoreHistoryModeUI();
+    if(storeHistoryMode==='product'){renderStoreProductDetail();return}
+    var rows=filteredStoreHistory(),store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
+    q('#storeHistoryChartTitle').textContent=storeHistoryMode==='detail'?((store||'매장')+' 출고물량 추이'):'매장별 물동량 비교';
+    q('#storeHistoryChartHint').textContent=storeHistoryMode==='detail'?'일자별 출고량':'선택 기간 누적 출고량 · 선 그래프';
     q('#storeHistorySummaryName').textContent=storeHistoryMode==='detail'?(store||'매장 상세'):'전체 비교';
     var total=rows.reduce(function(a,r){return a+Number(r.total||0)},0),dates={};
     rows.forEach(function(r){dates[r.date]=(dates[r.date]||0)+Number(r.total||0)});
@@ -7819,10 +7903,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#storeHistoryTotalQty').textContent=fmt(total);q('#storeHistoryAvgQty').textContent=fmt(Math.round(avg));
     q('#storeHistoryMaxDate').textContent=maxDate==='-'?'-':maxDate.slice(5).replace('-','/');q('#storeHistoryMaxQty').textContent=fmt(maxQty)+' EA';q('#storeHistoryCount').textContent=fmt(rows.length);
     drawStoreHistoryChart(rows);
+    if(storeHistoryMode==='compare')renderStoreHistoryCategory();
     var panel=q('#storeHistoryDetailPanel');if(panel&&!panel.hidden)renderStoreHistoryDailyDetail();
   }
   function renderStoreHistoryDailyDetail(){
-    var date=q('#storeHistoryDetailDate').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||''):'';
+    var date=q('#storeHistoryDetailDate').value||'',store=storeHistoryMode==='detail'?(q('#storeHistoryStore').value||'').trim():'';
     var rows=(DEMO_MODE?DEMO_STORE_HISTORY:[]).filter(function(r){return(!date||r.date===date)&&(!store||r.store===store)}).sort(function(a,b){return a.store.localeCompare(b.store)});
     q('#storeHistoryDetailTitle').textContent=(date||'선택 일자')+' 처리이력'+(store?' · '+store:'');
     q('#storeHistoryBody').innerHTML=rows.length?rows.map(function(r){
@@ -7835,6 +7920,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   })});
   q('#storeHistorySearchBtn').addEventListener('click',renderStoreHistory);
   q('#storeHistoryStore').addEventListener('change',renderStoreHistory);
+  q('#storeHistoryStore').addEventListener('input',function(){if(storeHistoryMode==='detail')renderStoreHistory()});
+  q('#storeProductSearchBtn').addEventListener('click',renderStoreProductDetail);
+  q('#storeProductQuery').addEventListener('input',renderStoreProductDetail);
   q('#storeHistoryDetailBtn').addEventListener('click',function(){
     q('#storeHistoryDetailPanel').hidden=false;renderStoreHistoryDailyDetail();
   });
@@ -7855,7 +7943,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     {date:'2026-09-11',store:'명동점',code:'DEMO003',category:'SHOWER',name:'ROSE JAM BULK',unit:'G',qty:94500},
     {date:'2026-09-16',store:'잠실점',code:'DEMO004',category:'HAIR',name:'SHAMPOO BULK',unit:'G',qty:84200},
     {date:'2026-09-22',store:'여의도점',code:'DEMO007',category:'SKINCARE',name:'ULTRABLAND',unit:'EA',qty:6100},
-    {date:'2026-09-28',store:'강남역점',code:'DEMO008',category:'SOAP',name:'KARMA SOAP',unit:'EA',qty:7400}
+    {date:'2026-09-24',store:'홍대점',code:'DEMO009',category:'BODY',name:'SYMPATHY FOR THE SKIN',unit:'EA',qty:4850},
+    {date:'2026-09-25',store:'명동점',code:'DEMO010',category:'SHOWER',name:'HAPPY HIPPY BULK',unit:'G',qty:61200},
+    {date:'2026-09-26',store:'잠실점',code:'DEMO011',category:'HAIR',name:'BIG SHAMPOO BULK',unit:'G',qty:55800},
+    {date:'2026-09-28',store:'강남역점',code:'DEMO008',category:'SOAP',name:'KARMA SOAP',unit:'EA',qty:7400},
+    {date:'2026-09-29',store:'여의도점',code:'DEMO012',category:'SKINCARE',name:'CELESTIAL',unit:'EA',qty:3900}
   ];
   function statusOutboundRows(){
     try{
