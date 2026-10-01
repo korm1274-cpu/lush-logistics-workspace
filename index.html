@@ -6709,7 +6709,7 @@ setTimeout(initInventoryColumnResize,0);
      행 형식: [No, 기안 작성 일자, 매장명, 출고 방식, 제품명, (미사용), 파손 수량, 파손 합계, 제품군, 담당자]
      건수 = 기안(No.) 단위(dmCaseKey), 금액 = 품목별 파손 합계. 제품군은 금액만 집계.
      범례가 Top 5뿐이라 색은 그 달 순위 1-5위에 서로 다른 범주 색을 주고, 나머지는 그 외(회색)로 묶음 */
-  const DI_DIMS=[{key:'manager',idx:9,label:'담당자'},{key:'category',idx:8,label:'제품군',amountOnly:true},{key:'store',idx:2,label:'매장'},{key:'method',idx:3,label:'출고방식'}];
+  const DI_DIMS=[{key:'manager',idx:9,label:'담당자',listAll:true},{key:'category',idx:8,label:'제품군',amountOnly:true,listAll:true},{key:'store',idx:2,label:'매장'},{key:'method',idx:3,label:'출고방식'}];
   const DI_COLORS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'],DI_REST='#9aa0a6',DI_TOP=5;
   const diLabel=v=>String(v??'').trim()||'(미지정)';
   const wonShort=v=>{v=Math.round(v);if(Math.abs(v)>=1e8)return(v/1e8).toFixed(1).replace(/\.0$/,'')+'억원';if(Math.abs(v)>=1e4)return fmt(Math.round(v/1e4))+'만원';return fmt(v)+'원'};
@@ -6745,8 +6745,8 @@ setTimeout(initInventoryColumnResize,0);
       diDonut(sec,dim,cur,null,totalAmt,totalCases,m);
       const share=a=>totalAmt?(a/totalAmt*100).toFixed(1)+'%':'-';
       const row=(k,a,c,pa,bold)=>`<tr${bold?' style="font-weight:800;background:#f8f9fa"':''}><td>${esc(k)}</td><td class="num">${share(a)}</td><td class="num">${fmt(a)}원</td>${dim.amountOnly?'':`<td class="num">${fmt(c)}건</td>`}<td class="num">${fmt(pa)}원</td>${(a||pa)?diMoveCell(a,pa):'<td class="num">-</td>'}</tr>`;
-      // 조회월에 파손 금액이 있는 항목만 표시 (전월에만 있던 항목은 제외)
-      const labels=Object.keys(cur).filter(k=>cur[k].a>0).sort((a,b)=>(cur[b]?.a||0)-(cur[a]?.a||0)||(prv[b]?.a||0)-(prv[a]?.a||0)||a.localeCompare(b,'ko'));
+      // 담당자·제품군(listAll)은 전체 기간에 나온 항목을 0원이어도 모두 표시, 매장·출고방식은 조회월에 금액이 있는 항목만
+      const labels=(dim.listAll?Object.keys(diGroup(all,dim.idx)):Object.keys(cur).filter(k=>cur[k].a>0)).sort((a,b)=>(cur[b]?.a||0)-(cur[a]?.a||0)||(prv[b]?.a||0)-(prv[a]?.a||0)||a.localeCompare(b,'ko'));
       sec.querySelector('tbody').innerHTML=labels.length?row('총 파손',totalAmt,totalCases,prevAmt,true)+labels.map(k=>row(k,cur[k]?.a||0,cur[k]?.c||0,prv[k]?.a||0)).join(''):`<tr><td colspan="${dim.amountOnly?5:6}" class="data-empty">해당 월 데이터가 없습니다.</td></tr>`;
     });
   }
