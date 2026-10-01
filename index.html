@@ -4851,6 +4851,119 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v101-shipping-left-centered">
+/* V101 — centered main progress with lower quantity/time pair */
+#statusBoardView .shipping-workspace-split{
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr)!important;
+  gap:18px!important;
+}
+#statusBoardView .shipping-overview-column{
+  display:grid!important;
+  grid-template-rows:minmax(330px,1fr) auto!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-progress-main{
+  min-height:330px!important;
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-main .shipping-ring{
+  width:230px!important;
+  height:230px!important;
+}
+#statusBoardView .shipping-progress-main .shipping-ring-value{
+  font-size:64px!important;
+}
+#statusBoardView .shipping-bottom-metrics{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  min-height:132px!important;
+  padding:18px 20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#5f6761!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong{
+  margin-top:8px!important;
+  font-size:38px!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  margin-top:8px!important;
+  font-size:38px!important;
+  color:#24643a!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small,
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note{
+  margin-top:8px!important;
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr)!important;
+  gap:22px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-column,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-column{
+  grid-template-rows:minmax(0,1fr) auto!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  min-height:0!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main .shipping-ring{
+  width:min(28vh,270px)!important;
+  height:min(28vh,270px)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main .shipping-ring-value,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main .shipping-ring-value{
+  font-size:72px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom{
+  min-height:150px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  font-size:46px!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-workspace-split{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-overview-column{grid-template-rows:auto auto!important}
+}
+@media(max-width:700px){
+  #statusBoardView .shipping-bottom-metrics{grid-template-columns:1fr!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -5030,29 +5143,26 @@ html,body{max-width:100%;overflow-x:hidden}
 
             <div class="shipping-workspace-split">
               <div class="shipping-overview-column">
-                <div class="shipping-overview-primary">
-                  <div class="shipping-progress-zone">
-                    <div class="shipping-progress-label">금일 출고 진행률</div>
-                    <div class="shipping-ring" id="statusShippingRing">
-                      <div class="shipping-ring-inner">
-                        <div class="shipping-ring-value" id="statusShippingPct">0%</div>
-                        <div class="shipping-ring-caption">EA 기준</div>
-                      </div>
+                <div class="shipping-progress-zone shipping-progress-main">
+                  <div class="shipping-progress-label">금일 출고 진행률</div>
+                  <div class="shipping-ring" id="statusShippingRing">
+                    <div class="shipping-ring-inner">
+                      <div class="shipping-ring-value" id="statusShippingPct">0%</div>
+                      <div class="shipping-ring-caption">EA 기준</div>
                     </div>
-                  </div>
-
-                  <div class="shipping-eta-zone">
-                    <span>예상 완료 시간</span>
-                    <strong id="statusEta">--:--</strong>
-                    <small id="statusEtaNote">처리 속도 데이터 연동 후 계산</small>
                   </div>
                 </div>
 
-                <div class="shipping-quantity-row shipping-quantity-row-single">
+                <div class="shipping-bottom-metrics">
                   <div class="shipping-quantity-remain shipping-quantity-focus">
                     <span>남은 수량</span>
                     <strong><b id="statusShipQtyRemain">0</b><small>EA</small></strong>
                     <div class="shipping-remain-note">총 출고량 <b id="statusShipQtyGoal">0</b> EA 기준</div>
+                  </div>
+                  <div class="shipping-eta-zone shipping-eta-bottom">
+                    <span>예상 완료 시간</span>
+                    <strong id="statusEta">--:--</strong>
+                    <small id="statusEtaNote">처리 속도 데이터 연동 후 계산</small>
                   </div>
                 </div>
               </div>
