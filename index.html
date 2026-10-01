@@ -5015,6 +5015,32 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v100-shipping-left-simplify">
+#statusBoardView .shipping-quantity-row-single{
+  grid-template-columns:1fr!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain{
+  min-height:126px!important;
+  align-items:center!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain>span{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain>strong{
+  font-size:40px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row-single .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row-single .shipping-quantity-remain{
+  min-height:150px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row-single .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row-single .shipping-quantity-remain>strong{
+  font-size:50px!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -5212,22 +5238,12 @@ html,body{max-width:100%;overflow-x:hidden}
                   </div>
                 </div>
 
-                <div class="shipping-quantity-row">
-                  <div class="shipping-quantity-main shipping-quantity-focus">
-                    <span>현재 처리수량</span>
-                    <strong><b id="statusShipQtyNow">0</b><small>EA</small></strong>
-                    <div class="shipping-total-goal">총 처리량 <b id="statusShipQtyGoal">0</b> EA</div>
-                  </div>
+                <div class="shipping-quantity-row shipping-quantity-row-single">
                   <div class="shipping-quantity-remain shipping-quantity-focus">
                     <span>남은 수량</span>
                     <strong><b id="statusShipQtyRemain">0</b><small>EA</small></strong>
-                    <div class="shipping-remain-note">전체 출고량 기준 잔여 물량</div>
+                    <div class="shipping-remain-note">총 출고량 <b id="statusShipQtyGoal">0</b> EA 기준</div>
                   </div>
-                </div>
-
-                <div class="shipping-last-hour-card">
-                  <span>최근 1시간 처리량</span>
-                  <strong><b id="statusLastHourQty">0</b><small>EA</small></strong>
                 </div>
               </div>
 
@@ -9233,10 +9249,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#statusShippingPct').textContent=Math.round(progress)+'%';
     q('#statusShippingRing').style.setProperty('--shipping-pct',String(progress));
 
-    q('#statusShipQtyNow').textContent=fmt(qty);
     q('#statusShipQtyGoal').textContent=fmt(qtyGoal);
     q('#statusShipQtyRemain').textContent=fmt(Math.max(0,qtyGoal-qty));
-    q('#statusLastHourQty').textContent=fmt(DEMO_MODE?DEMO_SHIPPING.lastHourConverted:0);
 
     var eta=DEMO_MODE?DEMO_SHIPPING.eta:'--:--';
     var etaNote=DEMO_MODE?'데모 처리 속도 기준':'처리 속도 데이터 연동 후 계산';
