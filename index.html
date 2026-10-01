@@ -3807,8 +3807,8 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="lush-hero" aria-label="오늘의 인사">
         <div class="lush-hero-text">
           <div class="lush-hero-date" id="heroDate"></div>
-          <h2 class="lush-hero-hello">안녕하세요, <span id="heroName">Time</span>님!</h2>
-          <p class="lush-hero-sub">오늘도 힘차게, 우리 함께 화이팅해요!</p>
+          <h2 class="lush-hero-hello">오늘도 힘차게, 우리 함께 화이팅해요!</h2>
+          <p class="lush-hero-sub">LUSH 물류팀의 하루를 응원합니다.</p>
         </div>
         <div class="lush-hero-stats">
           <div class="lush-hero-stat"><small>오늘 출고 요청</small><b id="heroReq">0</b><span>건</span></div>
@@ -8271,20 +8271,19 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 })();
 </script>
 <style id="lush-main-theme">
-@import url('https://fonts.googleapis.com/css2?family=Gaegu:wght@700&display=swap');
-/* 메인 화면 테마: 블랙 칠판 인사 배너 + 크라프트지 톤 배경 + 손글씨 제목 + 배쓰밤 포인트 색 (메인 화면에서만 적용) */
-#appShell{--lush-paper:#f6f2ea;--lush-card:#fffdf8;--lush-ink:#1d1d1b;--lush-kraft:#e4d9c7;--lush-pink:#e87ba4;--lush-violet:#8a6fd1;--lush-mint:#1baf7a;--lush-yellow:#eda100;--lush-hand:'Gaegu','Pretendard','Noto Sans KR',cursive;}
+/* 메인 화면 테마: 블랙 칠판 인사 배너 + 크라프트지 톤 배경 + 배쓰밤 포인트 색 (메인 화면에서만 적용) */
+#appShell{--lush-paper:#f6f2ea;--lush-card:#fffdf8;--lush-ink:#1d1d1b;--lush-kraft:#e4d9c7;--lush-pink:#e87ba4;--lush-violet:#8a6fd1;--lush-mint:#1baf7a;--lush-yellow:#eda100;}
 #appShell.on-dashboard .main{background:var(--lush-paper)!important;}
 .lush-hero{display:flex;position:relative;overflow:hidden;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin:6px 0 4px;padding:26px 32px;border-radius:18px;background:#1d1d1b;color:#fff;background-image:radial-gradient(circle at 92% 18%,rgba(232,123,164,.28) 0 46px,transparent 47px),radial-gradient(circle at 84% 86%,rgba(27,175,122,.22) 0 30px,transparent 31px),radial-gradient(circle at 97% 70%,rgba(237,161,0,.22) 0 18px,transparent 19px);}
 #appShell .lush-hero-date{font-size:13px!important;color:#cfcac0!important;letter-spacing:.02em;margin-bottom:6px;}
-.lush-hero-hello,#appShell .lush-hero .lush-hero-hello{margin:0;font-family:var(--lush-hand)!important;font-size:36px!important;line-height:1.15!important;font-weight:700!important;color:#fff!important;letter-spacing:0!important;}
-.lush-hero-sub,#appShell .lush-hero .lush-hero-sub{margin:6px 0 0;font-family:var(--lush-hand)!important;font-size:22px!important;font-weight:700!important;color:#f3d9e4!important;}
+.lush-hero-hello,#appShell .lush-hero .lush-hero-hello{margin:0;font-size:30px!important;line-height:1.25!important;font-weight:800!important;color:#fff!important;letter-spacing:0!important;}
+.lush-hero-sub,#appShell .lush-hero .lush-hero-sub{margin:6px 0 0;font-size:15px!important;font-weight:600!important;color:#f3d9e4!important;}
 .lush-hero-stats{display:flex;gap:12px;flex-wrap:wrap;}
 .lush-hero-stat{min-width:120px;padding:12px 16px;border:1.5px solid rgba(255,255,255,.28);border-radius:14px;background:#272725;position:relative;}
 #appShell .lush-hero-stat small{display:block;font-size:12px!important;color:#cfcac0!important;margin-bottom:4px;}
 #appShell .lush-hero-stat b{font-size:26px!important;font-weight:800!important;color:#fff!important;}
 #appShell .lush-hero-stat span{font-size:13px!important;color:#cfcac0!important;margin-left:3px;}
-@media(max-width:900px){.lush-hero{padding:20px;}#appShell .lush-hero .lush-hero-hello{font-size:28px!important;}#appShell .lush-hero .lush-hero-sub{font-size:18px!important;}.lush-hero-stat{min-width:0;flex:1 1 90px;}}
+@media(max-width:900px){.lush-hero{padding:20px;}#appShell .lush-hero .lush-hero-hello{font-size:22px!important;}#appShell .lush-hero .lush-hero-sub{font-size:14px!important;}.lush-hero-stat{min-width:0;flex:1 1 90px;}}
 /* 섹션 카드: 크라프트 라벨처럼 두꺼운 테두리 + 윗줄 배쓰밤 색 띠 */
 #appShell.on-dashboard #dashboard .dash-section{position:relative;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;overflow:hidden;}
 #appShell.on-dashboard #dashboard .dash-section::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink);}
@@ -8292,9 +8291,6 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell.on-dashboard #dashboard .dash-section:nth-of-type(4)::before{background:var(--lush-mint);}
 #appShell.on-dashboard #dashboard .dash-section:nth-of-type(5)::before{background:var(--lush-yellow);}
 #appShell.on-dashboard #dashboard .dashboard-info-panel{background:#fff!important;border-color:var(--lush-kraft)!important;}
-/* 섹션 제목만 손글씨체 (본문 글꼴은 그대로) */
-#appShell.on-dashboard #dashboard .dashboard-panel-title h3,#appShell.on-dashboard #dashboard .dash-section-head h3,#appShell.on-dashboard #dashboard .schedule-title-line h3{font-family:var(--lush-hand)!important;font-size:26px!important;font-weight:700!important;letter-spacing:0!important;color:var(--lush-ink)!important;}
-@media(max-width:900px){#appShell.on-dashboard #dashboard .dashboard-panel-title h3,#appShell.on-dashboard #dashboard .dash-section-head h3,#appShell.on-dashboard #dashboard .schedule-title-line h3{font-size:21px!important;white-space:nowrap;}}
 /* 홈 아이콘(배쓰밤) */
 #appShell .logo .bathbomb-icon{display:block;}
 </style>
@@ -8408,7 +8404,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 }
 </style>
 <script id="lush-hero">
-/* 메인 인사 배너: 날짜·이름과 오늘의 숫자 3개(오늘 출고 요청, 미완료 할 일, 오늘 근무 인원) */
+/* 메인 인사 배너(물류팀 공용): 날짜와 오늘의 숫자 3개(오늘 출고 요청, 미완료 할 일, 오늘 근무 인원) */
 (function(){
   var $=function(id){return document.getElementById(id)};
   function readArr(k){try{var a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
@@ -8416,7 +8412,6 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function update(){
     if(!$('heroDate'))return;
     $('heroDate').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(new Date());
-    var name=(document.querySelector('.profile b')||{}).textContent;if(name)$('heroName').textContent=name.trim();
     var today=todayKST();
     var req=readArr('lush_outbound_requests_v1').filter(function(r){return(r.status||'미처리')!=='처리완료'&&(r.requestDates||[]).indexOf(today)>=0}).length;
     var todo=readArr('lush-v51-todos').filter(function(t){return!t.done}).length;
