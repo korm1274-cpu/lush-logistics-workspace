@@ -6745,7 +6745,8 @@ setTimeout(initInventoryColumnResize,0);
       diDonut(sec,dim,cur,null,totalAmt,totalCases,m);
       const share=a=>totalAmt?(a/totalAmt*100).toFixed(1)+'%':'-';
       const row=(k,a,c,pa,bold)=>`<tr${bold?' style="font-weight:800;background:#f8f9fa"':''}><td>${esc(k)}</td><td class="num">${share(a)}</td><td class="num">${fmt(a)}원</td>${dim.amountOnly?'':`<td class="num">${fmt(c)}건</td>`}<td class="num">${fmt(pa)}원</td>${(a||pa)?diMoveCell(a,pa):'<td class="num">-</td>'}</tr>`;
-      const labels=[...new Set([...Object.keys(cur),...Object.keys(prv)])].sort((a,b)=>(cur[b]?.a||0)-(cur[a]?.a||0)||(prv[b]?.a||0)-(prv[a]?.a||0)||a.localeCompare(b,'ko'));
+      // 조회월에 파손 금액이 있는 항목만 표시 (전월에만 있던 항목은 제외)
+      const labels=Object.keys(cur).filter(k=>cur[k].a>0).sort((a,b)=>(cur[b]?.a||0)-(cur[a]?.a||0)||(prv[b]?.a||0)-(prv[a]?.a||0)||a.localeCompare(b,'ko'));
       sec.querySelector('tbody').innerHTML=labels.length?row('총 파손',totalAmt,totalCases,prevAmt,true)+labels.map(k=>row(k,cur[k]?.a||0,cur[k]?.c||0,prv[k]?.a||0)).join(''):`<tr><td colspan="${dim.amountOnly?5:6}" class="data-empty">해당 월 데이터가 없습니다.</td></tr>`;
     });
   }
