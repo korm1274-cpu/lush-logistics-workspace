@@ -4122,6 +4122,37 @@ html,body{max-width:100%;overflow-x:hidden}
   }
 }
 </style>
+<style id="v95-productivity-integrated-layout">
+#statusBoardView .productivity-subtabs{
+  display:flex!important;align-items:center!important;gap:4px!important;width:max-content!important;max-width:100%!important;
+  margin:0 0 14px!important;padding:3px!important;background:transparent!important;border:0!important;overflow-x:auto!important;
+}
+#statusBoardView .productivity-subtab{
+  flex:0 0 auto!important;min-height:35px!important;padding:7px 10px!important;border:1px solid transparent!important;
+  border-radius:6px!important;background:transparent!important;color:#666662!important;box-shadow:none!important;
+  font-size:12.5px!important;font-weight:520!important;white-space:nowrap!important;cursor:pointer!important;
+}
+#statusBoardView .productivity-subtab:hover{background:#f0f0ed!important;color:#111!important}
+#statusBoardView .productivity-subtab.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important}
+#statusBoardView .productivity-section{display:none}
+#statusBoardView .productivity-section.active{display:block}
+#statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(3,minmax(160px,1fr)) auto!important}
+#statusBoardView .productivity-history-staff-btn{align-self:center!important;min-height:40px!important;white-space:nowrap!important}
+#statusBoardView .past-staff-editor{
+  margin:0 22px 20px!important;padding:14px!important;border:1.5px solid var(--status-issue-kraft,#e4d9c7)!important;
+  border-radius:12px!important;background:#fafaf8!important;display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;
+}
+#statusBoardView .past-staff-editor[hidden]{display:none!important}
+#statusBoardView .past-staff-editor .status-filter-card{flex:1 1 190px!important}
+#statusBoardView .productivity-detail-close-row{display:flex;justify-content:flex-end;margin-top:12px}
+@media(max-width:900px){
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:1fr 1fr!important}
+}
+@media(max-width:620px){
+  #statusBoardView .productivity-subtabs{width:100%!important}
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:1fr!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -4277,8 +4308,6 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="status-board-tabs" role="tablist" aria-label="현황판 메뉴">
           <button type="button" class="status-board-tab active" data-status-tab="shipping">출고 현황</button>
           <button type="button" class="status-board-tab" data-status-tab="productivity">생산성</button>
-          <button type="button" class="status-board-tab" data-status-tab="cumulative">생산성 누계</button>
-          <button type="button" class="status-board-tab" data-status-tab="daily">일자별 상세조회</button>
           <button type="button" class="status-board-tab" data-status-tab="storehistory">매장별 처리이력</button>
           <button type="button" class="status-board-tab" data-status-tab="products">제품별 출고현황</button>
         </div>
@@ -4349,59 +4378,81 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
 
         <div class="status-panel" data-status-panel="productivity">
-          <div class="status-card status-toolbar-card">
-            <div class="status-card-title"><h3>작업경과별 생산성</h3><small>출고 시작 기준 · 초반 1시간 30분 단위, 이후 1시간 단위</small></div>
-            <div class="prod-toolbar prod-toolbar-readonly">
-              <div class="prod-api-metric prod-date-metric"><span>조회일자</span><input type="date" id="prodDate"><small>날짜 선택</small></div>
-              <div class="prod-api-metric"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
-              <div class="prod-api-metric"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
-              <div class="prod-api-metric prod-staff-metric"><span>투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>날짜별 직접 입력 · 자동 저장</small></div>
-            </div>
+          <div class="productivity-subtabs" role="tablist" aria-label="생산성 세부 메뉴">
+            <button type="button" class="productivity-subtab active" data-productivity-view="today">오늘 생산성</button>
+            <button type="button" class="productivity-subtab" data-productivity-view="cumulative">누계 생산성</button>
+            <button type="button" class="productivity-subtab" data-productivity-view="detail">상세조회</button>
           </div>
-          <div class="prod-layout">
-            <div class="chart-card"><div class="status-card-title"><h3>작업경과별 생산성 추이</h3><small>EA/인·시간 · 작업 시작점을 0으로 비교</small></div><div class="chart-wrap"><canvas id="prodHourChart"></canvas><div class="chart-empty" id="prodHourEmpty">처리량 데이터 연동 전입니다.</div></div></div>
-            <div class="table-card"><div class="status-card-title"><h3>작업경과별 처리 현황</h3><small id="prodTableDate"></small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>경과구간</th><th>실제시간</th><th>처리량(EA)</th><th>인원</th><th>생산성</th></tr></thead><tbody id="prodHourBody"></tbody></table></div></div>
-          </div>
-          <div class="status-summary-grid">
-            <div class="status-summary"><span>누계 처리량</span><strong id="prodCumQty">0</strong><small>EA</small></div>
-            <div class="status-summary"><span>누계 투입 인시</span><strong id="prodCumLabor">0</strong><small>인·시간</small></div>
-            <div class="status-summary"><span>누계 생산성</span><strong id="prodCumRate">0</strong><small>EA/인·시간</small></div>
-          </div>
-        </div>
 
-        <div class="status-panel" data-status-panel="cumulative">
-          <div class="status-card">
-            <div class="status-card-title"><h3>생산성 누계</h3><small>기본 1~12월 표시 · 원하는 기간만 조회 가능</small></div>
-            <div class="status-filter-cards">
-              <div class="prod-api-metric status-filter-card"><span>시작 월</span><input type="month" id="cumStartPeriod"><small>조회 시작 월</small></div>
-              <div class="prod-api-metric status-filter-card"><span>종료 월</span><input type="month" id="cumEndPeriod"><small>조회 종료 월</small></div>
-              <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">조회</button>
+          <div class="productivity-section active" data-productivity-section="today">
+            <div class="status-card status-toolbar-card">
+              <div class="status-card-title">
+                <h3>오늘 생산성</h3>
+                <small id="prodTodayLabel">오늘 기준 · 출고 시작 후 작업경과별 생산성</small>
+              </div>
+              <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar">
+                <div class="prod-api-metric"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
+                <div class="prod-api-metric"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
+                <div class="prod-api-metric prod-staff-metric"><span>오늘 투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>직접 입력 · 자동 저장</small></div>
+                <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
+              </div>
+              <div class="past-staff-editor" id="pastStaffEditor" hidden>
+                <div class="prod-api-metric status-filter-card"><span>수정 일자</span><input type="date" id="pastStaffDate"><small>과거 날짜 선택</small></div>
+                <div class="prod-api-metric status-filter-card"><span>투입 인원</span><input type="number" id="pastStaffCount" min="1" step="1" inputmode="numeric" placeholder="인원"><small>해당 날짜 인원</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="pastStaffSave">저장</button>
+                <button type="button" class="btn status-filter-btn" id="pastStaffClose">닫기</button>
+              </div>
+            </div>
+            <div class="prod-layout">
+              <div class="chart-card"><div class="status-card-title"><h3>작업경과별 생산성 추이</h3><small>EA/인·시간 · 작업 시작점을 0으로 비교</small></div><div class="chart-wrap"><canvas id="prodHourChart"></canvas><div class="chart-empty" id="prodHourEmpty">처리량 데이터 연동 전입니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>작업경과별 처리 현황</h3><small id="prodTableDate"></small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>경과구간</th><th>실제시간</th><th>처리량(EA)</th><th>인원</th><th>생산성</th></tr></thead><tbody id="prodHourBody"></tbody></table></div></div>
+            </div>
+            <div class="status-summary-grid">
+              <div class="status-summary"><span>오늘 누계 처리량</span><strong id="prodCumQty">0</strong><small>EA</small></div>
+              <div class="status-summary"><span>오늘 누계 투입 인시</span><strong id="prodCumLabor">0</strong><small>인·시간</small></div>
+              <div class="status-summary"><span>현재 생산성</span><strong id="prodCumRate">0</strong><small>EA/인·시간</small></div>
             </div>
           </div>
-          <div class="cum-layout">
-            <div class="chart-card"><div class="status-card-title"><h3>월별 생산성 추이</h3><small>EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">월별 생산성 데이터가 없습니다.</div></div></div>
-            <div class="table-card"><div class="status-card-title"><h3>월별 생산성 현황</h3><small id="cumPeriodLabel">1월 ~ 12월</small></div><table class="status-data-table"><thead><tr><th>월</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div>
-          </div>
-          <div class="status-summary-grid">
-            <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
-            <div class="status-summary"><span>누계 투입 인시</span><strong id="cumLabor">0</strong><small>인·시간</small></div>
-            <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
-          </div>
-        </div>
 
-        <div class="status-panel" data-status-panel="daily">
-          <div class="status-card">
-            <div class="status-card-title"><h3>일자별 상세조회</h3><small>일별 생산성과 작업경과별 상세 데이터를 함께 조회합니다.</small></div>
-            <div class="status-filter-cards">
-              <div class="prod-api-metric status-filter-card"><span>조회 월</span><input type="month" id="detailPeriod"><small>월 선택</small></div>
-              <button type="button" class="btn primary status-filter-btn" id="detailSearchBtn">조회</button>
+          <div class="productivity-section" data-productivity-section="cumulative">
+            <div class="status-card">
+              <div class="status-card-title"><h3>누계 생산성</h3><small>기본적으로 전체 누계를 표시하고, 필요할 때만 특정 기간을 조회합니다.</small></div>
+              <div class="status-filter-cards">
+                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="cumStartDate"><small>비우면 최초 데이터부터</small></div>
+                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="cumEndDate"><small>비우면 최신 데이터까지</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
+                <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
+              </div>
+            </div>
+            <div class="cum-layout">
+              <div class="chart-card"><div class="status-card-title"><h3>일자별 생산성 추이</h3><small>EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>일자별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>일자</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
+            </div>
+            <div class="status-summary-grid">
+              <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
+              <div class="status-summary"><span>누계 투입 인시</span><strong id="cumLabor">0</strong><small>인·시간</small></div>
+              <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
             </div>
           </div>
-          <div class="detail-layout">
-            <div class="table-card"><div class="status-card-title"><h3>일자별 생산성 현황</h3><small>날짜 선택</small></div><div class="detail-day-list" id="detailDayList"><div class="data-empty">저장된 일자 데이터가 없습니다.</div></div></div>
-            <div class="detail-summary-card"><div class="status-card-title"><h3>선택 일자 상세</h3><small id="detailSelectedDate">-</small></div><dl><dt>처리량</dt><dd id="detailQty">0 EA</dd><dt>투입 인원</dt><dd id="detailStaff">0명</dd><dt>총 투입 인시</dt><dd id="detailLabor">0 인·시간</dd><dt>일 생산성</dt><dd id="detailRate">0 EA/인·시간</dd></dl></div>
+
+          <div class="productivity-section" data-productivity-section="detail">
+            <div class="status-card">
+              <div class="status-card-title"><h3>상세조회</h3><small>필요한 경우에만 기간을 지정하여 일자별 상세 데이터를 조회합니다.</small></div>
+              <div class="status-filter-cards">
+                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="detailStartDate"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="detailEndDate"><small>조회 종료일</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="detailSearchBtn">조회</button>
+              </div>
+            </div>
+            <div id="detailResults" hidden>
+              <div class="detail-layout">
+                <div class="table-card"><div class="status-card-title"><h3>기간 내 일자별 생산성</h3><small id="detailRangeLabel">조회 결과</small></div><div class="detail-day-list" id="detailDayList"><div class="data-empty">조회 조건을 선택해주세요.</div></div></div>
+                <div class="detail-summary-card"><div class="status-card-title"><h3>선택 일자 상세</h3><small id="detailSelectedDate">-</small></div><dl><dt>처리량</dt><dd id="detailQty">0 EA</dd><dt>투입 인원</dt><dd id="detailStaff">0명</dd><dt>총 투입 인시</dt><dd id="detailLabor">0 인·시간</dd><dt>일 생산성</dt><dd id="detailRate">0 EA/인·시간</dd></dl></div>
+              </div>
+              <div class="table-card status-bottom-table"><div class="status-card-title"><h3>작업경과별 처리 현황</h3><small id="detailHourLabel">날짜를 선택해주세요.</small></div><div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>경과구간</th><th>실제시간</th><th>처리량(EA)</th><th>투입 인원</th><th>생산성</th></tr></thead><tbody id="detailHourBody"><tr><td colspan="5" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table></div></div>
+              <div class="productivity-detail-close-row"><button type="button" class="btn" id="detailResultsClose">조회 결과 닫기</button></div>
+            </div>
           </div>
-          <div class="table-card status-bottom-table"><div class="status-card-title"><h3>작업경과별 처리 현황</h3><small id="detailHourLabel">날짜를 선택해주세요.</small></div><div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>경과구간</th><th>실제시간</th><th>처리량(EA)</th><th>투입 인원</th><th>생산성</th></tr></thead><tbody id="detailHourBody"><tr><td colspan="5" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table></div></div>
         </div>
 
         <div class="status-panel" data-status-panel="storehistory">
@@ -8297,9 +8348,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function activateTab(name){
     qa('.status-board-tab').forEach(function(b){b.classList.toggle('active',b.dataset.statusTab===name)});
     qa('.status-panel').forEach(function(p){p.classList.toggle('active',p.dataset.statusPanel===name)});
-    if(name==='productivity')renderProductivity();
-    if(name==='cumulative')renderCumulative();
-    if(name==='daily')renderDailyDetail();
+    if(name==='productivity'){setProductivityView('today');renderCumulative();}
     if(name==='storehistory')renderStoreHistory();
     if(name==='products')renderProductOutboundAnalysis();
   }
@@ -8364,13 +8413,44 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function timeToMinutes(v){if(!v||String(v).indexOf(':')<0)return null;var p=String(v).split(':');return Number(p[0])*60+Number(p[1])}
   function minutesToTime(m){if(m==null||!isFinite(m))return '-';m=((Math.round(m)%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)}
   function bucketActualTime(startTime,index){var start=timeToMinutes(startTime);if(start==null)return '-';var starts=[0,.5,1,2,3,4,5,6],ends=[.5,1,2,3,4,5,6,7];return minutesToTime(start+starts[index]*60)+'~'+minutesToTime(start+ends[index]*60)}
+  var productivityView='today';
+  function setProductivityView(name){
+    productivityView=name||'today';
+    qa('.productivity-subtab').forEach(function(b){b.classList.toggle('active',b.dataset.productivityView===productivityView)});
+    qa('.productivity-section').forEach(function(p){p.classList.toggle('active',p.dataset.productivitySection===productivityView)});
+    if(productivityView==='today')renderProductivity();
+    if(productivityView==='cumulative')renderCumulative();
+  }
+  qa('.productivity-subtab').forEach(function(b){b.addEventListener('click',function(){setProductivityView(b.dataset.productivityView)})});
+
+  function effectiveRecord(dt){
+    var all=readDailyDisplay(),record=all[dt];
+    if(record)return record;
+    var demo=DEMO_MODE?demoRecord(dt,8,[4200,4550,8650,9200,7350,8120,7840,7560],'08:40','15:40'):{date:dt,staff:0,startTime:'',endTime:'',hours:{}};
+    var saved=readDaily()[dt];
+    if(saved){
+      if(Number(saved.staff||0)>0)demo.staff=Number(saved.staff);
+      if(saved.startTime)demo.startTime=saved.startTime;
+      if(saved.endTime)demo.endTime=saved.endTime;
+      if(saved.hours&&Object.values(saved.hours).some(function(row){return Number(row&&row.qty||0)>0}))demo.hours=saved.hours;
+    }
+    return demo;
+  }
+
+  function saveStaffForDate(dt,raw){
+    if(!dt)return false;
+    var n=Number(raw);
+    if(!Number.isInteger(n)||n<1){if(typeof toastMsg==='function')toastMsg('투입 인원은 1명 이상 숫자로 입력해주세요.');return false}
+    var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=n;saveDaily(all);return true;
+  }
+
   function renderProductivity(){
-    var dt=q('#prodDate').value||today;if(!q('#prodDate').value)q('#prodDate').value=dt;
-    var r=getRecord(dt);
+    var dt=today,r=effectiveRecord(dt);
     var startDisplay=q('#prodStartTimeDisplay'),endDisplay=q('#prodEndTimeDisplay'),staffInput=q('#prodStaffInput');
     if(startDisplay)startDisplay.textContent=r.startTime||'--:--';
     if(endDisplay)endDisplay.textContent=r.endTime||'--:--';
-    if(staffInput)staffInput.value=Number(r.staff||0)>0?String(Number(r.staff)):"";
+    if(staffInput)staffInput.value=Number(r.staff||0)>0?String(Number(r.staff)):'';
+    if(q('#prodTodayLabel'))q('#prodTodayLabel').textContent=dt+' · 오늘 기준';
     q('#prodTableDate').textContent=dt;
     var values=[],body='';
     HOURS.forEach(function(h,i){
@@ -8382,54 +8462,64 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var sum=calcRecord(r);q('#prodCumQty').textContent=fmt(sum.qty);q('#prodCumLabor').textContent=sum.labor>0?fmt(Math.round(sum.labor*10)/10):'-';q('#prodCumRate').textContent=sum.labor>0?fmt(Math.round(sum.rate)):'-';
     drawChart('prodHourChart',HOURS,values,'#prodHourEmpty');
   }
-  q('#prodDate').value=today;
-  q('#prodDate').addEventListener('change',renderProductivity);
-  q('#prodStaffInput').addEventListener('change',function(){
-    var dt=q('#prodDate').value||today,raw=this.value.trim();
-    if(raw==='' ){var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=null;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();return}
-    var n=Number(raw);
-    if(!Number.isInteger(n)||n<1){this.value='';if(typeof toastMsg==='function')toastMsg('투입 인원은 1명 이상 숫자로 입력해주세요.');return}
-    var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=n;saveDaily(all);renderProductivity();renderCumulative();renderDailyDetail();
-  });
-  window.renderStatusProductivity=function(){renderProductivity();renderCumulative();renderDailyDetail()};
-  function fillStatusPeriods(){
-    var now=new Date(),year=now.getFullYear(),month=now.getMonth()+1,current=year+'-'+pad(month);
-    q('#cumStartPeriod').value=DEMO_MODE?year+'-03':year+'-01';
-    q('#cumEndPeriod').value=current;
-    q('#detailPeriod').value=current;
-  }
-  fillStatusPeriods();
 
-  function monthAggregate(year,month){
-    var all=readDailyDisplay(),qty=0,labor=0,prefix=year+'-'+pad(month)+'-';
-    Object.keys(all).forEach(function(dt){if(dt.indexOf(prefix)!==0)return;var s=calcRecord(all[dt]);qty+=s.qty;labor+=s.labor});
-    return{qty:qty,labor:labor,rate:labor>0?qty/labor:0};
+  q('#prodStaffInput').addEventListener('change',function(){
+    var raw=this.value.trim();
+    if(raw===''){var all=readDaily();if(!all[today])all[today]={date:today};all[today].staff=null;saveDaily(all);renderProductivity();renderCumulative();return}
+    if(saveStaffForDate(today,raw)){renderProductivity();renderCumulative();if(!q('#detailResults').hidden)renderDailyDetail()}
+  });
+
+  q('#openPastStaffEditor').addEventListener('click',function(){
+    var editor=q('#pastStaffEditor');editor.hidden=!editor.hidden;
+    if(!editor.hidden){
+      var d=new Date();d.setDate(d.getDate()-1);q('#pastStaffDate').value=dateKey(d);
+      var r=effectiveRecord(q('#pastStaffDate').value);q('#pastStaffCount').value=Number(r.staff||0)>0?String(Number(r.staff)):'';
+    }
+  });
+  q('#pastStaffDate').addEventListener('change',function(){var r=effectiveRecord(this.value);q('#pastStaffCount').value=Number(r.staff||0)>0?String(Number(r.staff)):''});
+  q('#pastStaffSave').addEventListener('click',function(){
+    var dt=q('#pastStaffDate').value,raw=q('#pastStaffCount').value.trim();
+    if(saveStaffForDate(dt,raw)){
+      if(typeof toastMsg==='function')toastMsg(dt+' 투입 인원을 저장했습니다.');
+      renderCumulative();if(!q('#detailResults').hidden)renderDailyDetail();
+    }
+  });
+  q('#pastStaffClose').addEventListener('click',function(){q('#pastStaffEditor').hidden=true});
+
+  window.renderStatusProductivity=function(){renderProductivity();renderCumulative();if(!q('#detailResults').hidden)renderDailyDetail()};
+
+  function dateRowsInRange(start,end){
+    var all=readDailyDisplay(),dates=Object.keys(all).sort();
+    return dates.filter(function(dt){return(!start||dt>=start)&&(!end||dt<=end)}).map(function(dt){return{date:dt,record:all[dt],summary:calcRecord(all[dt])}});
   }
-  function periodMonths(start,end){
-    var out=[],s=String(start||''),e=String(end||'');if(!s||!e)return out;
-    if(s>e){var t=s;s=e;e=t;q('#cumStartPeriod').value=s;q('#cumEndPeriod').value=e}
-    var p=s.split('-').map(Number),d=new Date(p[0],p[1]-1,1);
-    while(true){var key=d.getFullYear()+'-'+pad(d.getMonth()+1);if(key>e)break;out.push({key:key,year:d.getFullYear(),month:d.getMonth()+1});d.setMonth(d.getMonth()+1)}
-    return out;
+  function normalizeDateRange(startInput,endInput){
+    var s=q(startInput).value||'',e=q(endInput).value||'';
+    if(s&&e&&s>e){var t=s;s=e;e=t;q(startInput).value=s;q(endInput).value=e}
+    return{s:s,e:e};
   }
   function renderCumulative(){
-    var start=q('#cumStartPeriod').value,end=q('#cumEndPeriod').value,months=periodMonths(start,end);
+    var range=normalizeDateRange('#cumStartDate','#cumEndDate'),rows=dateRowsInRange(range.s,range.e);
     var labels=[],values=[],body='',sumQty=0,sumLabor=0;
-    months.forEach(function(p){var a=monthAggregate(p.year,p.month);labels.push(p.key);values.push(a.rate);sumQty+=a.qty;sumLabor+=a.labor;body+='<tr><td>'+p.key+'</td><td>'+fmt(a.qty)+'</td><td>'+fmt(Math.round(a.labor*10)/10)+'</td><td>'+(a.rate?fmt(Math.round(a.rate)):'-')+'</td></tr>'});
-    q('#cumMonthBody').innerHTML=body||'<tr><td colspan="4" class="data-empty">조회 기간을 선택해주세요.</td></tr>';
-    q('#cumPeriodLabel').textContent=(start||'-')+' ~ '+(end||'-');q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
+    rows.forEach(function(x){
+      labels.push(x.date.slice(5).replace('-','/'));values.push(x.summary.rate);sumQty+=x.summary.qty;sumLabor+=x.summary.labor;
+      body+='<tr><td>'+x.date+'</td><td>'+fmt(x.summary.qty)+'</td><td>'+fmt(Math.round(x.summary.labor*10)/10)+'</td><td>'+(x.summary.rate?fmt(Math.round(x.summary.rate)):'-')+'</td></tr>';
+    });
+    q('#cumMonthBody').innerHTML=body||'<tr><td colspan="4" class="data-empty">누계 데이터가 없습니다.</td></tr>';
+    q('#cumPeriodLabel').textContent=(range.s||range.e)?((range.s||'최초')+' ~ '+(range.e||'최신')):'전체 누계';
+    q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
     drawChart('cumMonthChart',labels,values,'#cumMonthEmpty');
   }
   q('#cumSearchBtn').addEventListener('click',renderCumulative);
+  q('#cumAllBtn').addEventListener('click',function(){q('#cumStartDate').value='';q('#cumEndDate').value='';renderCumulative()});
 
   var selectedDetailDate='';
   function renderDailyDetail(){
-    var period=q('#detailPeriod').value||today.slice(0,7),all=readDailyDisplay(),prefix=period+'-';
-    var dates=Object.keys(all).filter(function(dt){return dt.indexOf(prefix)===0}).sort();
+    var range=normalizeDateRange('#detailStartDate','#detailEndDate'),rows=dateRowsInRange(range.s,range.e),dates=rows.map(function(x){return x.date}),all=readDailyDisplay();
+    q('#detailRangeLabel').textContent=(range.s||'-')+' ~ '+(range.e||'-');
     var list=q('#detailDayList');
-    if(!dates.length){list.innerHTML='<div class="data-empty">저장된 일자 데이터가 없습니다.</div>';selectedDetailDate='';renderSelectedDay();return}
+    if(!dates.length){list.innerHTML='<div class="data-empty">해당 기간의 데이터가 없습니다.</div>';selectedDetailDate='';renderSelectedDay();return}
     if(dates.indexOf(selectedDetailDate)<0)selectedDetailDate=dates[dates.length-1];
-    list.innerHTML=dates.map(function(dt){var s=calcRecord(all[dt]);return '<div class="detail-day-row '+(dt===selectedDetailDate?'active':'')+'" data-detail-date="'+esc(dt)+'"><b>'+dt.slice(5).replace('-','/')+'</b><span>'+fmt(s.qty)+' EA</span><span>'+(s.rate?fmt(Math.round(s.rate)):'-')+'</span></div>'}).join('');
+    list.innerHTML=dates.map(function(dt){var s=calcRecord(all[dt]);return '<div class="detail-day-row '+(dt===selectedDetailDate?'active':'')+'" data-detail-date="'+esc(dt)+'"><b>'+dt+'</b><span>'+fmt(s.qty)+' EA</span><span>'+(s.rate?fmt(Math.round(s.rate)):'-')+'</span></div>'}).join('');
     qa('[data-detail-date]',list).forEach(function(row){row.onclick=function(){selectedDetailDate=row.dataset.detailDate;renderDailyDetail()}});
     renderSelectedDay();
   }
@@ -8439,7 +8529,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var s=calcRecord(r);q('#detailSelectedDate').textContent=selectedDetailDate;q('#detailQty').textContent=fmt(s.qty)+' EA';q('#detailStaff').textContent=Number(r.staff||0)>0?fmt(r.staff)+'명':'-';q('#detailLabor').textContent=s.labor>0?fmt(Math.round(s.labor*10)/10)+' 인·시간':'-';q('#detailRate').textContent=s.labor>0?fmt(Math.round(s.rate))+' EA/인·시간':'-';q('#detailHourLabel').textContent=(r.startTime||'-')+' ~ '+(r.endTime||'-');
     q('#detailHourBody').innerHTML=HOURS.map(function(h,i){var row=(r.hours&&r.hours[h])||{},qty=Number(row.qty||0),staff=Number(r.staff||0),duration=Number(BUCKET_HOURS[h]||1),rate=(qty>0&&staff>0)?qty/(staff*duration):0;return '<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>'}).join('');
   }
-  q('#detailSearchBtn').addEventListener('click',function(){selectedDetailDate='';renderDailyDetail()});
+  q('#detailSearchBtn').addEventListener('click',function(){
+    var range=normalizeDateRange('#detailStartDate','#detailEndDate');
+    if(!range.s||!range.e){if(typeof toastMsg==='function')toastMsg('시작일과 종료일을 선택해주세요.');return}
+    q('#detailResults').hidden=false;selectedDetailDate='';renderDailyDetail();
+  });
+  q('#detailResultsClose').addEventListener('click',function(){q('#detailResults').hidden=true;selectedDetailDate=''});
 
   var storeHistoryChart=null,storeHistoryMode='compare';
   function initStoreHistoryControls(){
