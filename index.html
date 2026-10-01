@@ -6706,7 +6706,7 @@ setTimeout(initInventoryColumnResize,0);
      행 형식: [No, 기안 작성 일자, 매장명, 출고 방식, 제품명, (미사용), 파손 수량, 파손 합계, 제품군, 담당자]
      건수 = 기안(No.) 단위(dmCaseKey), 금액 = 품목별 파손 합계. 제품군은 금액만 집계.
      범례가 Top 5뿐이라 색은 그 달 순위 1-5위에 서로 다른 범주 색을 주고, 나머지는 그 외(회색)로 묶음 */
-  const DI_DIMS=[{key:'store',idx:2,label:'매장'},{key:'method',idx:3,label:'출고방식'},{key:'manager',idx:9,label:'담당자'},{key:'category',idx:8,label:'제품군',amountOnly:true}];
+  const DI_DIMS=[{key:'manager',idx:9,label:'담당자'},{key:'category',idx:8,label:'제품군',amountOnly:true},{key:'store',idx:2,label:'매장'},{key:'method',idx:3,label:'출고방식'}];
   const DI_COLORS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'],DI_REST='#9aa0a6',DI_TOP=5;
   const diLabel=v=>String(v??'').trim()||'(미지정)';
   const wonShort=v=>{v=Math.round(v);if(Math.abs(v)>=1e8)return(v/1e8).toFixed(1).replace(/\.0$/,'')+'억원';if(Math.abs(v)>=1e4)return fmt(Math.round(v/1e4))+'만원';return fmt(v)+'원'};
