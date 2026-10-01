@@ -4417,6 +4417,65 @@ html,body{max-width:100%;overflow-x:hidden}
   font-weight:950!important;
 }
 
+
+/* Standard view: keep all demo stores visible without scrolling */
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-board{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-list{
+  display:grid!important;
+  grid-template-rows:repeat(15,minmax(0,1fr))!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  padding-top:4px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-row{
+  min-height:0!important;
+  padding:3px 0 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-line{
+  grid-template-columns:minmax(0,1fr) auto 56px!important;
+  gap:7px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-status{
+  min-width:32px!important;
+  min-height:16px!important;
+  padding:0 5px!important;
+  font-size:8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-track{
+  height:4px!important;
+  margin-top:3px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta{
+  margin-top:2px!important;
+  font-size:8px!important;
+  gap:4px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta strong{
+  font-size:9px!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{font-size:10px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{font-size:13px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta{font-size:7px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta strong{font-size:8px!important}
+}
+
 /* Fullscreen: keep left/right split, switch only wallboard to dark mode */
 #statusBoardView .shipping-display-board:fullscreen,
 #statusBoardView .shipping-display-board:-webkit-full-screen{
