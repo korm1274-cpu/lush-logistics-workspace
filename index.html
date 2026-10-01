@@ -6601,8 +6601,11 @@ setTimeout(initInventoryColumnResize,0);
     // 처음 열 때 기본 조회 기간: 2026-07-01 ~ 오늘
     if(!renderMisshipRecords.inited){renderMisshipRecords.inited=true;if(!$('mrStart').value)$('mrStart').value='2026-07-01';if(!$('mrEnd').value)$('mrEnd').value=today()}
     const d=read(),all=d.misship?.rows||[],st=$('mrStart').value,en=$('mrEnd').value,status=$('mrStatus').value,q=$('mrQuery').value.trim().toLowerCase();
-    const rows=all.filter(r=>{const dt=normDate(r[0]);const isDone=String(r[8]??'').includes('완료');return(!st||dt>=st)&&(!en||dt<=en)&&(!status||(status==='done'?isDone:!isDone))&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q)))}).sort((a,b)=>String(b[0])>String(a[0])?1:String(b[0])<String(a[0])?-1:0);
-    const cases=misshipCases(rows),done=cases.filter(c=>c.done).length;
+    // 처리여부는 줄이 아니라 건(날짜+매장) 단위로 판단: 건 안의 모든 줄이 완료여야 완료. 일부만 완료된 건이 완료로 잘못 잡히지 않도록
+    const inRange=all.filter(r=>{const dt=normDate(r[0]);return(!st||dt>=st)&&(!en||dt<=en)});
+    const caseDone=new Map(misshipCases(inRange).map(c=>[c.key,c.done]));
+    const rows=inRange.filter(r=>{const isDone=caseDone.get(msCaseKey(r));return(!status||(status==='done'?isDone:!isDone))&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q)))}).sort((a,b)=>String(b[0])>String(a[0])?1:String(b[0])<String(a[0])?-1:0);
+    const cases=misshipCases(rows),done=cases.filter(c=>caseDone.get(c.key)).length;
     $('mrCount').textContent=fmt(cases.length);$('mrDone').textContent=fmt(done);$('mrPending').textContent=fmt(cases.length-done);$('mrItems').textContent=`품목 ${fmt(rows.length)}줄`;
     $('mrUpdated').textContent=d.misship?.updatedAt?`마지막 연동: ${new Date(d.misship.updatedAt).toLocaleString('ko-KR')}`:'아직 연동된 데이터가 없습니다. 상단 동기화 버튼을 눌러주세요.';
     const numCell=v=>`<td class="num">${String(v??'')===''?'':fmt(v)}</td>`;
