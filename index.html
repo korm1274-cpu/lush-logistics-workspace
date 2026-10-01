@@ -8547,19 +8547,21 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell .nav-group:not(.nav-group-direct) .nav-root em{display:none!important;}
   #appShell.has-side-subnav #sideSubNav{
     display:flex;flex-direction:column;gap:2px;position:fixed;top:56px;left:0;bottom:0;width:200px;
-    padding:22px 12px;background:#fff;border-right:1px solid #e5e8eb;overflow-y:auto;z-index:40;box-sizing:border-box;
+    padding:22px 12px;background:#1d1d1b;border-right:0;overflow-y:auto;z-index:40;box-sizing:border-box;
   }
   #appShell.has-side-subnav .main{margin-left:200px!important;flex:1 1 auto!important;width:calc(100% - 200px)!important;min-width:0!important;}
   /* 현황판 안쪽 탭도 왼쪽 메뉴로 옮겼으므로 본문 위 탭 줄은 숨김 */
   #appShell.has-side-subnav #statusBoardView .status-board-tabs{display:none!important;}
-  #sideSubNav .side-subnav-title{display:flex;align-items:center;gap:8px;padding:0 10px 14px;font-size:15px;font-weight:800;color:#191f28;}
-  #sideSubNav .side-subnav-title svg{width:18px;height:18px;color:#37a866;}
+  #sideSubNav .side-subnav-title{display:flex;align-items:center;gap:8px;padding:0 10px 14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px;font-weight:800;color:#fff;}
+  #sideSubNav .side-subnav-title svg{width:18px;height:18px;color:#e87ba4;}
   #sideSubNav .side-subnav-item{
     display:block;width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
-    padding:11px 12px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:#4e5968;line-height:1.35;word-break:keep-all;
+    padding:11px 12px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:#cfcac0;line-height:1.35;word-break:keep-all;position:relative;
   }
-  #sideSubNav .side-subnav-item:hover{background:#f2f4f6;color:#191f28;}
-  #sideSubNav .side-subnav-item.active{background:#e9f7ee;color:#1f7a45;font-weight:800;}
+  /* 검은 왼쪽 메뉴: 선택 항목만 배쓰밤 핑크로 은은하게 강조 (장식은 넣지 않음) */
+  #sideSubNav .side-subnav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+  #sideSubNav .side-subnav-item.active{background:rgba(232,123,164,.16);color:#fff;font-weight:800;}
+  #sideSubNav .side-subnav-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#e87ba4;}
 }
 </style>
 <script id="lush-hero">
