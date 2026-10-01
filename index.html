@@ -4865,6 +4865,156 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v99-shipping-store-two-column">
+/* V99 — two-column store progress cards for readability */
+#statusBoardView .shipping-store-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,1fr)!important;
+  gap:8px 14px!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  padding-top:10px!important;
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-store-row{
+  min-width:0!important;
+  min-height:0!important;
+  padding:8px 10px!important;
+  border:1px solid #edf0ed!important;
+  border-radius:10px!important;
+  background:#fbfcfb!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-store-topline{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-width:0!important;
+}
+#statusBoardView .shipping-store-name{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:14px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-state-wrap{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex:0 0 auto!important;
+}
+#statusBoardView .shipping-store-pct{
+  font-size:17px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  margin-top:4px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  flex:0 0 auto!important;
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-store-track{
+  height:6px!important;
+  margin-top:6px!important;
+}
+#statusBoardView .shipping-store-row.complete{
+  background:#f5f6f5!important;
+}
+#statusBoardView .shipping-store-row.waiting{
+  background:#fff!important;
+}
+
+/* Normal view must fit all 15 stores without scroll */
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(8,minmax(0,1fr))!important;
+  gap:6px 10px!important;
+  padding-top:8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-row{
+  padding:5px 8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{
+  font-size:12.5px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{
+  font-size:9px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-status{
+  min-width:30px!important;
+  min-height:15px!important;
+  padding:0 5px!important;
+  font-size:7px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-track{
+  height:4px!important;
+  margin-top:4px!important;
+}
+
+/* Fullscreen keeps the same 2-column information architecture */
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(8,minmax(0,1fr))!important;
+  gap:8px 12px!important;
+  padding-top:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  padding:6px 9px!important;
+  background:#181b1d!important;
+  border-color:#2a2f33!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.complete,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.complete{
+  background:#16191b!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:17px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  font-size:10px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-track,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-track{
+  height:5px!important;
+  margin-top:5px!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -9112,12 +9262,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         var state=pct>=100?'complete':pct<=0?'waiting':'active';
         var statusLabel=state==='complete'?'완료':state==='waiting'?'대기':'진행';
         return '<div class="shipping-store-row '+state+'">'+
-          '<div class="shipping-store-line">'+
+          '<div class="shipping-store-topline">'+
             '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
-            '<span class="shipping-store-inline-info"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></span>'+
-            '<span class="shipping-store-status '+state+'">'+statusLabel+'</span>'+
-            '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
+            '<span class="shipping-store-state-wrap"><span class="shipping-store-status '+state+'">'+statusLabel+'</span><strong class="shipping-store-pct">'+Math.round(pct)+'%</strong></span>'+
           '</div>'+
+          '<div class="shipping-store-inline-info"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></div>'+
           '<div class="shipping-store-track"><span class="shipping-store-fill" style="width:'+pct.toFixed(1)+'%"></span></div>'+
         '</div>';
       }).join(''):'<div class="shipping-store-empty">오늘 주문 매장 데이터 연동 전입니다.</div>';
