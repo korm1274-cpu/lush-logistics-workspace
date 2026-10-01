@@ -3812,7 +3812,7 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
         <div class="lush-hero-stats">
           <div class="lush-hero-stat" id="heroInboundCard"><small>오늘 입고 팔렛</small><b id="heroPallet">0</b><span id="heroPalletUnit">팔렛</span></div>
-          <div class="lush-hero-stat"><small>오늘 출고 요청</small><b id="heroReq">0</b><span>건</span></div>
+          <div class="lush-hero-stat" title="출고 요청 관리에 등록된 요청 중 아직 처리완료되지 않은 전체 건수 (요청일자 무관)"><small>출고 요청</small><b id="heroReq">0</b><span>건 미처리</span></div>
           <div class="lush-hero-stat"><small>미완료 할 일</small><b id="heroTodo">0</b><span>건</span></div>
           <div class="lush-hero-stat"><small>오늘 근무 인원</small><b id="heroStaff">-</b><span>명</span></div>
         </div>
@@ -4463,9 +4463,8 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="floor-clock-wrap"><div class="floor-date" id="floorDate"></div><div class="floor-clock" id="floorClock">--:--</div><button type="button" class="floor-full-btn" id="floorFullBtn">⛶ 전체 화면</button></div>
         </div>
         <div class="floor-label">오늘</div>
-        <div class="floor-grid three">
+        <div class="floor-grid two">
           <div class="floor-tile" style="--accent:#e87ba4" id="floorInboundTile"><small>오늘 입고 팔렛</small><b id="floorPallet">0</b><span id="floorPalletUnit">팔렛</span></div>
-          <div class="floor-tile" style="--accent:#1baf7a"><small>오늘 출고 요청</small><b id="floorReq">0</b><span>건 (미처리)</span></div>
           <div class="floor-tile" style="--accent:#eda100"><small>미완료 할 일</small><b id="floorTodo">0</b><span>건</span></div>
         </div>
         <div class="floor-label">출고 요청 <span id="floorWeek"></span></div>
@@ -8339,6 +8338,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 .floor-label span{font-size:14px;font-weight:600;color:#a8a39a;margin-left:6px;}
 .floor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
 .floor-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.floor-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}
 .floor-staff{display:flex;align-items:baseline;gap:10px;margin:8px 0 6px;}
 .floor-staff-label{font-size:20px;font-weight:700;color:#e6e1d8;}
 .floor-staff b{font-size:56px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
@@ -8475,6 +8475,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function stats(){
     var today=ymd(new Date()),reqs=readArr('lush_outbound_requests_v1'),isDone=function(r){return r.status==='처리완료'||r.status==='완료'};
     var req=reqs.filter(function(r){return!isDone(r)&&(r.requestDates||[]).indexOf(today)>=0}).length;
+    // 미처리 출고 요청 전체(요청일자 무관) — 메인 배너 '출고 요청' 카드
+    var pendingAll=reqs.filter(function(r){return r&&!isDone(r)}).length;
     var todo=readArr('lush-v51-todos').filter(function(t){return!t.done}).length;
     // 오늘 입고 팔렛: 캘린더 일정 중 오늘 날짜 + 제목에 '입고'가 있는 것(예: "132차-JP-1팔렛-9시 입고")의 팔렛 수 합계.
     // '입항'(항구 도착)은 제외. 박스만 있는 입고는 팔렛에 넣지 않고 박스로 따로 표시
@@ -8484,7 +8486,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var staffEl=$('todayOperatingCount');
     var wk=weekRangeKST(),byType={};
     ['bulk','traffic','hq','nozzle'].forEach(function(type){var rows=reqs.filter(function(r){return r&&r.type===type&&(r.requestDates||[]).some(function(d){return d>=wk.start&&d<=wk.end})});byType[type]={total:rows.length,pending:rows.filter(function(r){return!isDone(r)}).length}});
-    return{today:today,req:req,todo:todo,pallets:pallets,boxes:boxes,inboundEvents:ev,staff:staffEl?staffEl.textContent.trim():'-',week:wk,byType:byType};
+    return{today:today,req:req,pendingAll:pendingAll,todo:todo,pallets:pallets,boxes:boxes,inboundEvents:ev,staff:staffEl?staffEl.textContent.trim():'-',week:wk,byType:byType};
   }
   window.getTodayOpsStats=stats;
   function fmtPallet(s){return Number.isInteger(s.pallets)?s.pallets:s.pallets.toFixed(1)}
@@ -8495,7 +8497,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(!$('heroDate'))return;
     $('heroDate').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(new Date());
     var s=stats();
-    $('heroReq').textContent=s.req;$('heroTodo').textContent=s.todo;
+    $('heroReq').textContent=s.pendingAll;$('heroTodo').textContent=s.todo;
     $('heroPallet').textContent=fmtPallet(s);
     $('heroPalletUnit').textContent='팔렛'+(s.boxes?' + '+s.boxes+'박스':'');
     $('heroInboundCard').title=inboundTitle(s);
@@ -8522,7 +8524,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     $('floorPallet').textContent=window.formatPalletCount(s);
     $('floorPalletUnit').textContent='팔렛'+(s.boxes?' + '+s.boxes+'박스':'');
     $('floorInboundTile').title=window.inboundEventsTitle(s);
-    $('floorReq').textContent=s.req;$('floorTodo').textContent=s.todo;$('floorStaff').textContent=s.staff;
+    $('floorTodo').textContent=s.todo;$('floorStaff').textContent=s.staff;
     var md=function(d){return(+d.slice(5,7))+'/'+(+d.slice(8,10))};
     $('floorWeek').textContent='('+md(s.week.start)+' ~ '+md(s.week.end)+')';
     Object.keys(s.byType).forEach(function(t){var v=s.byType[t],b=document.querySelector('[data-floor-type="'+t+'"]'),p=document.querySelector('[data-floor-pending="'+t+'"]');if(b)b.textContent=v.total;if(p){p.textContent=v.pending?'미처리 '+v.pending+'건':'모두 처리 완료';p.classList.toggle('alert',v.pending>0)}});
