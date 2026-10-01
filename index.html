@@ -4608,6 +4608,83 @@ html,body{max-width:100%;overflow-x:hidden}
   color:#a0a8a2!important;
 }
 
+
+/* Fullscreen store list must fit in one screen without scrolling */
+#statusBoardView .shipping-display-board:fullscreen,
+#statusBoardView .shipping-display-board:-webkit-full-screen{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  overflow:hidden!important;
+  padding:18px 20px 14px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-head,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-head{
+  flex:0 0 auto!important;
+  padding-bottom:10px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-rows:repeat(15,minmax(0,1fr))!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  padding-top:4px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  min-height:0!important;
+  padding:3px 0 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-line,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-line{
+  grid-template-columns:minmax(0,1fr) auto 60px!important;
+  gap:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:12px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-status,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-status{
+  min-height:17px!important;
+  min-width:34px!important;
+  padding:0 6px!important;
+  font-size:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-track,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-track{
+  height:5px!important;
+  margin-top:3px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta{
+  margin-top:3px!important;
+  font-size:9px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta strong{
+  font-size:10px!important;
+}
+
 /* Fullscreen visual centering for the two headline panels */
 #statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary,
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary{
