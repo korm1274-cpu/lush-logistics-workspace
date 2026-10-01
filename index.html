@@ -4442,6 +4442,14 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="panel mt14"><div class="panel-head"><div><small>RECORDS</small><h3>오출고 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>접수시각</th><th>매장</th><th>제품명</th><th class="num">전산</th><th class="num">실입고</th><th class="num">미입고</th><th class="num">과입고</th><th>담당자</th><th>처리여부</th><th>처리일</th><th>처리 내용</th><th>사유</th></tr></thead><tbody id="mrBody"></tbody></table></div></div>
     </div></section>
 
+    <section id="damageInsightView" class="view"><div class="data-workbench">
+      <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE INSIGHT</div><h2>파손 분석</h2><p>구글시트 '입고 파손' 기준으로 매장·출고방식·담당자·제품군별 파손 금액과 건수를 월별로 비교합니다. 건수는 기안(No.) 단위로 세고, 금액은 품목별 파손 합계를 더합니다. 도넛은 금액 비중입니다.</p></div></div>
+      <div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 파손 비교 (전월 대비)</h3></div><div class="field" style="margin:0"><label>기준월</label><input type="month" id="diMonth"></div></div>
+        <div id="dmTip" class="ms-tip" hidden></div>
+        <div class="ms-sections" id="diSections"></div>
+      </div>
+    </div></section>
+
     <section id="damageAnalyticsView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE ANALYTICS</div><h2>파손 분석</h2><p>업로드된 파손 원본을 기준으로 회계연도 현황, 상세 기록 조회, 월별 증감을 확인합니다.</p></div></div>
 
@@ -4644,6 +4652,7 @@ const DEFAULT_MENUS=[
  {id:"issue-wrong",group:"issues",label:"오출고",kind:"view",target:"misshipRecordsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-damage",group:"issues",label:"파손",kind:"view",target:"damageAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-misship-analysis",group:"issues",label:"오출고 분석",kind:"view",target:"misshipAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"issue-damage-insight",group:"issues",label:"파손 분석",kind:"view",target:"damageInsightView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
  {id:"data-archive",group:"upload",label:"지난 데이터 보관함",kind:"view",target:"dataArchiveView",visible:true,roles:["admin","leader","editor","restricted"]},
@@ -6535,7 +6544,7 @@ setTimeout(initInventoryColumnResize,0);
   function msPctCell(cur,base){const p=pct(cur,base);if(p===null)return'<td class="num" style="color:#8a949e">신규</td>';if(p===0)return'<td class="num" style="color:#8a949e">0.0%</td>';return`<td class="num" style="font-weight:800;color:${p>0?'#d64545':'#2f7de1'}">${p>0?'▲':'▼'} ${Math.abs(p).toFixed(1)}%</td>`}
   /* 담당자별 / 사유별 비중 도넛 (같은 그리기 함수 사용).
      - 모든 담당자·사유를 묶지 않고 범례에 전부 표시
-     - 색은 순위가 아니라 항목에 고정: 전체 기간 건수 순으로 범주 색 1~7번을 배정, 그 뒤 항목은 회색 계열
+     - 범례는 Top 5만 보이므로 색은 그 달 순위 1-5위에 서로 다른 범주 색, 나머지는 그 외(회색)
      - 공란 항목(기타(매장, 확인불가) / 사유 확인 중)은 색 슬롯을 쓰지 않고 연회색 */
   const MS_COLORS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'],MS_REST='#9aa0a6',MS_BLANK_COLOR='#c9cdd2';
   function msColorMap(all,idx){const tot=misshipCountBy(all,idx),blank=MS_BLANK[idx];const order=Object.keys(tot).filter(k=>k!==blank).sort((a,b)=>tot[b]-tot[a]||a.localeCompare(b,'ko'));const map={};order.forEach((k,i)=>map[k]=MS_COLORS[i]||MS_REST);if(blank)map[blank]=MS_BLANK_COLOR;return map}
@@ -6545,7 +6554,7 @@ setTimeout(initInventoryColumnResize,0);
     const pctOf=c=>totalCur?(c/totalCur*100).toFixed(1)+'%':'-';
     // 범례는 Top 5만 표시하고, 나머지는 도넛에서 회색 '그 외' 한 조각으로 묶음 (전체 목록은 아래 표)
     const MS_TOP=5;
-    const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([k,v])=>({k,v,c:colors[k]||MS_REST}));
+    const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([k,v])=>({k,v})); let ci=0; ranked.forEach(x=>{x.c=(x.k===MS_BLANK[7]||x.k===MS_BLANK[11])?MS_BLANK_COLOR:(MS_COLORS[ci++]||MS_REST)});
     const items=ranked.slice(0,MS_TOP),rest=ranked.slice(MS_TOP);
     if(rest.length)items.push({k:'그 외',v:rest.reduce((a,x)=>a+x.v,0),c:'#dfe2e6',other:rest.map(x=>x.k)});
     const sum=items.reduce((a,x)=>a+x.v,0);
@@ -6693,6 +6702,51 @@ setTimeout(initInventoryColumnResize,0);
     $('dmMomYoyDetailLine').textContent=`${yoyMonth} · ${fmt(yoy.count)}건 · ${fmt(yoy.amount)}원`;
   }
   function renderDamage(){renderDamageFY();renderDamageRecords();renderDamageMoM()}
+  /* 파손 분석: 매장·출고방식·담당자·제품군별 금액 비중 도넛(범례 Top 5) + 전월 대비 표.
+     행 형식: [No, 기안 작성 일자, 매장명, 출고 방식, 제품명, (미사용), 파손 수량, 파손 합계, 제품군, 담당자]
+     건수 = 기안(No.) 단위(dmCaseKey), 금액 = 품목별 파손 합계. 제품군은 금액만 집계.
+     범례가 Top 5뿐이라 색은 그 달 순위 1-5위에 서로 다른 범주 색을 주고, 나머지는 그 외(회색)로 묶음 */
+  const DI_DIMS=[{key:'store',idx:2,label:'매장'},{key:'method',idx:3,label:'출고방식'},{key:'manager',idx:9,label:'담당자'},{key:'category',idx:8,label:'제품군',amountOnly:true}];
+  const DI_COLORS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'],DI_REST='#9aa0a6',DI_TOP=5;
+  const diLabel=v=>String(v??'').trim()||'(미지정)';
+  const wonShort=v=>{v=Math.round(v);if(Math.abs(v)>=1e8)return(v/1e8).toFixed(1).replace(/\.0$/,'')+'억원';if(Math.abs(v)>=1e4)return fmt(Math.round(v/1e4))+'만원';return fmt(v)+'원'};
+  function diGroup(rows,idx){const m={};rows.forEach(r=>{const k=diLabel(r[idx]);if(!m[k])m[k]={a:0,cases:new Set()};m[k].a+=num(r[7]);m[k].cases.add(dmCaseKey(r))});Object.values(m).forEach(v=>v.c=v.cases.size);return m}
+  function diTip(e,html){const t=$('dmTip');if(!t)return;if(!html){t.hidden=true;return}t.innerHTML=html;t.hidden=false;const x=Math.min(e.clientX+14,innerWidth-t.offsetWidth-8),y=Math.max(8,e.clientY-t.offsetHeight-10);t.style.left=x+'px';t.style.top=y+'px'}
+  function diMoveCell(cur,base){const p=pct(cur,base);if(p===null)return'<td class="num" style="color:#8a949e">신규</td>';if(p===0)return'<td class="num" style="color:#8a949e">0.0%</td>';return`<td class="num" style="font-weight:800;color:${p>0?'#d64545':'#2f7de1'}">${p>0?'▲':'▼'} ${Math.abs(p).toFixed(1)}%</td>`}
+  function diDonut(host,dim,cur,colors,totalAmt,totalCases,m){
+    const donut=host.querySelector('.ms-donut'),legend=host.querySelector('.ms-legend');
+    const share=a=>totalAmt?(a/totalAmt*100).toFixed(1)+'%':'-';
+    const ranked=Object.entries(cur).sort((a,b)=>b[1].a-a[1].a||a[0].localeCompare(b[0],'ko')).map(([k,v],i)=>({k,a:v.a,c:v.c,col:DI_COLORS[i]||DI_REST}));
+    const items=ranked.slice(0,DI_TOP),rest=ranked.slice(DI_TOP);
+    if(rest.length)items.push({k:'그 외',a:rest.reduce((s,x)=>s+x.a,0),col:'#dfe2e6',other:rest.map(x=>x.k)});
+    const sum=items.reduce((s,x)=>s+x.a,0);
+    if(!sum){donut.innerHTML='';legend.innerHTML='<div class="ms-empty">해당 월 데이터가 없습니다.</div>';return}
+    const R=46,SW=18,C=2*Math.PI*R,GAP=items.length>1?2:0;let off=0;
+    const segs=items.map((x,i)=>{const len=x.a/sum*C,s=`<circle class="seg" data-i="${i}" cx="60" cy="60" r="${R}" fill="none" stroke="${x.col}" stroke-width="${SW}" stroke-dasharray="${Math.max(len-GAP,0.5)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"></circle>`;off+=len;return s}).join('');
+    donut.innerHTML=`<svg viewBox="0 0 120 120" role="img" aria-label="${esc(m)} ${esc(dim.label)}별 파손 금액 비중"><circle cx="60" cy="60" r="${R}" fill="none" stroke="#f2f4f6" stroke-width="${SW}"></circle>${segs}</svg><div class="ms-donut-center"><small>총 파손 금액</small><b style="font-size:17px">${wonShort(totalAmt)}</b><small>${fmt(totalCases)}건</small></div>`;
+    legend.innerHTML=items.map((x,i)=>x.other?`<div class="ms-legend-more" data-i="${i}">그 외 ${fmt(x.other.length)}개 항목 · ${wonShort(x.a)} (전체는 아래 표 참고)</div>`:`<div class="ms-legend-row" data-i="${i}"><i style="background:${x.col}"></i><span title="${esc(x.k)}">${esc(x.k)}</span><small>${fmt(x.a)}원</small><b>${share(x.a)}</b></div>`).join('');
+    const hot=i=>{donut.classList.toggle('dim',i!=null);donut.querySelectorAll('.seg').forEach(s=>s.classList.toggle('hot',String(i)===s.dataset.i))};
+    donut.querySelectorAll('.seg').forEach(s=>{const x=items[s.dataset.i];s.onmousemove=e=>{hot(s.dataset.i);diTip(e,`<b>${esc(x.k)}</b> · ${fmt(x.a)}원 · ${share(x.a)}${!dim.amountOnly&&x.c!=null?` · ${fmt(x.c)}건`:''}${x.other?`<br><small>${esc(x.other.slice(0,6).join(', '))}${x.other.length>6?` 외 ${x.other.length-6}개`:''}</small>`:''}`)};s.onmouseleave=e=>{hot(null);diTip(e,null)}});
+    legend.querySelectorAll('.ms-legend-row,.ms-legend-more').forEach(r=>{r.onmouseenter=()=>hot(r.dataset.i);r.onmouseleave=()=>hot(null)});
+  }
+  function renderDamageInsight(){
+    const host=$('diSections');if(!host)return;
+    if(!$('diMonth').value)$('diMonth').value=today().slice(0,7);
+    const all=read().damage?.rows||[],m=$('diMonth').value,pm=shiftMonth(m,-1);
+    const inM=x=>all.filter(r=>ym(r[1]??r[0])===x),curRows=inM(m),prvRows=inM(pm);
+    const totalAmt=curRows.reduce((s,r)=>s+num(r[7]),0),prevAmt=prvRows.reduce((s,r)=>s+num(r[7]),0);
+    const totalCases=damageCaseCount(curRows),prevCases=damageCaseCount(prvRows);
+    host.innerHTML=DI_DIMS.map(dim=>`<div class="ms-section" data-dim="${dim.key}"><h4 class="ms-section-title">${dim.label}별${dim.amountOnly?' <small style="font-size:12px;color:#8a949e;font-weight:600">(금액 기준)</small>':''}</h4><div class="ms-section-grid"><div class="ms-card"><div class="ms-card-head"><b>${dim.label}별 파손 금액 비중</b><span>${esc(m)}</span></div><div class="ms-donut-wrap"><div class="ms-donut"></div><div class="ms-legend"></div></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>${dim.label}</th><th class="num">비중</th><th class="num">${esc(m)} 금액</th>${dim.amountOnly?'':`<th class="num">건수</th>`}<th class="num">${esc(pm)} 금액</th><th class="num">전월 대비</th></tr></thead><tbody></tbody></table></div></div></div>`).join('');
+    DI_DIMS.forEach(dim=>{
+      const sec=host.querySelector(`[data-dim="${dim.key}"]`),cur=diGroup(curRows,dim.idx),prv=diGroup(prvRows,dim.idx);
+      diDonut(sec,dim,cur,null,totalAmt,totalCases,m);
+      const share=a=>totalAmt?(a/totalAmt*100).toFixed(1)+'%':'-';
+      const row=(k,a,c,pa,bold)=>`<tr${bold?' style="font-weight:800;background:#f8f9fa"':''}><td>${esc(k)}</td><td class="num">${share(a)}</td><td class="num">${fmt(a)}원</td>${dim.amountOnly?'':`<td class="num">${fmt(c)}건</td>`}<td class="num">${fmt(pa)}원</td>${(a||pa)?diMoveCell(a,pa):'<td class="num">-</td>'}</tr>`;
+      const labels=[...new Set([...Object.keys(cur),...Object.keys(prv)])].sort((a,b)=>(cur[b]?.a||0)-(cur[a]?.a||0)||(prv[b]?.a||0)-(prv[a]?.a||0)||a.localeCompare(b,'ko'));
+      sec.querySelector('tbody').innerHTML=labels.length?row('총 파손',totalAmt,totalCases,prevAmt,true)+labels.map(k=>row(k,cur[k]?.a||0,cur[k]?.c||0,prv[k]?.a||0)).join(''):`<tr><td colspan="${dim.amountOnly?5:6}" class="data-empty">해당 월 데이터가 없습니다.</td></tr>`;
+    });
+  }
+
   function boxRows(){return read().box?.rows||[]}
   function saveBoxRows(rows){const d=read();d.box={header:['날짜','요일','담당자','매장','수량'],rows,updatedAt:new Date().toISOString(),mode:'표 직접 입력'};save(d)}
   function weekday(d){try{return ['일','월','화','수','목','금','토'][new Date(d+'T12:00:00').getDay()]}catch{return''}}
@@ -7060,6 +7114,7 @@ setTimeout(initInventoryColumnResize,0);
     outboundAnalysis:()=>renderOutbound(),
     misshipAnalyticsView:()=>renderMisship(),
     misshipRecordsView:()=>renderMisshipRecords(),
+    damageInsightView:()=>renderDamageInsight(),
     damageAnalyticsView:()=>renderDamage(),
     outboundBoxView:()=>renderBox(),
     inventoryOosView:()=>renderOos()
@@ -7083,6 +7138,7 @@ setTimeout(initInventoryColumnResize,0);
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
     $('archiveType')?.addEventListener('change',renderDataArchive);
+    $('diMonth')?.addEventListener('change',renderDamageInsight);
     $('msMonth')?.addEventListener('change',()=>renderMisshipCompare(read().misship?.rows||[]));
     $('mrRun')?.addEventListener('click',renderMisshipRecords);
     ['mrStatus','mrStart','mrEnd'].forEach(id=>$(id)?.addEventListener('change',renderMisshipRecords));
@@ -8170,7 +8226,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 </script>
 <style id="misship-visual-style">
 /* 오출고 분석: 담당자별 비중 도넛 + 사유별 Top 5 카드 */
-#misshipAnalyticsView{--ms-ink:#191f28;--ms-ink-2:#4e5968;--ms-muted:#8b95a1;--ms-surface:#fff;--ms-line:#eef0f3;--ms-up:#d64545;--ms-down:#2f7de1;}
+#misshipAnalyticsView,#damageInsightView{--ms-ink:#191f28;--ms-ink-2:#4e5968;--ms-muted:#8b95a1;--ms-surface:#fff;--ms-line:#eef0f3;--ms-up:#d64545;--ms-down:#2f7de1;}
 /* 담당자별 | 사유별 좌우 배치 (좁은 화면에서는 위아래) */
 .ms-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start;}
 @media(max-width:1100px){.ms-sections{grid-template-columns:1fr;}}
