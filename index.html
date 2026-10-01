@@ -6522,7 +6522,7 @@ setTimeout(initInventoryColumnResize,0);
       const cur=misshipCountBy(inM(m),idx),prv=misshipCountBy(inM(pm),idx);
       const labels=[...new Set([...Object.keys(cur),...Object.keys(prv)])].sort((a,b)=>(cur[b]||0)-(cur[a]||0)||(prv[b]||0)-(prv[a]||0)||a.localeCompare(b,'ko'));
       const row=(label,c,p,bold)=>`<tr${bold?' style="font-weight:800;background:#f8f9fa"':''}><td>${esc(label)}</td><td class="num">${share(c)}</td><td class="num">${fmt(c)}</td><td class="num">${fmt(p)}</td>${(c||p)?msPctCell(c,p):'<td class="num">-</td>'}</tr>`;
-      $(bodyId).innerHTML=labels.length?labels.map(l=>row(l,cur[l]||0,prv[l]||0)).join('')+row('총 오출고 건수',totalCur,totalPrev,true):'<tr><td colspan="5" class="data-empty">해당 월 데이터가 없습니다.</td></tr>';
+      $(bodyId).innerHTML=labels.length?row('총 오출고 건수',totalCur,totalPrev,true)+labels.map(l=>row(l,cur[l]||0,prv[l]||0)).join(''):'<tr><td colspan="5" class="data-empty">해당 월 데이터가 없습니다.</td></tr>';
     };
     table(7,'msMgrBody');table(11,'msRsnBody');
   }
