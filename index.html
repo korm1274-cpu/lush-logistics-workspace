@@ -4451,7 +4451,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="kpi"><span id="dmFyCountLabel">FY 총 파손 건수</span><b id="dmFyCount">0</b><small>건</small></div>
       <div class="kpi"><span id="dmFyAmountLabel">FY 총 파손 금액</span><b id="dmFyAmount">0</b><small>원</small></div>
     </div>
-    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="store">매장별</option><option value="manager">담당자별</option><option value="method">출고방식별</option></select></div>
+    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="store">매장별</option><option value="manager">담당자별</option><option value="method">출고방식별</option><option value="category">제품군별 (금액)</option></select></div>
     <div class="data-table-wrap"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
   </div>
 
@@ -5601,7 +5601,28 @@ setTimeout(initInventoryColumnResize,0);
     const idx=MISSHIP_COLUMNS.map(([names,fb])=>{const i=header.findIndex(h=>names.split('|').includes(h));return i>=0?i:fb});
     return rows.slice(hi+1).map(r=>idx.map(i=>r[i]instanceof Date?r[i]:String(r[i]??'').trim())).filter(r=>/^\d{4}-\d{2}-\d{2}/.test(normDate(r[0]))&&(r[1]||r[2]));
   };
-  const cleanDamage=rows=>fillMerged(rows.map(r=>r.slice(0,10)),[0,1,2,3]).filter(r=>r[4]);
+  /* 파손 업로드도 구글시트 '입고 파손'을 내려받은 파일 형식으로 받아 시트 연동(api/sync-damage-sheet.js)과 같은 행으로 변환.
+     저장 행: [No, 기안 작성 일자, 매장명, 출고 방식, 제품명, (미사용), 파손 수량, 파손 합계, 제품군, 담당자]
+     열은 헤더 이름으로 찾고, 병합된 No.·일자·매장명·출고 방식은 위 품목 값을 이어받음 */
+  const DAMAGE_COLUMNS=[[0,'No.|No|번호',0],[1,'기안작성일자|작성일자|일자',1],[2,'매장명|매장',2],[3,'출고방식',3],[4,'제품명',4],[6,'파손수량',8],[7,'파손합계|파손금액',9],[8,'제품군',11],[9,'담당자',12]];
+  const cleanDamage=rows=>{
+    const nz=s=>String(s??'').replace(/\s+/g,'');
+    const hi=rows.findIndex(r=>r.some(x=>nz(x)==='기안작성일자')||(r.some(x=>nz(x)==='매장명')&&r.some(x=>nz(x)==='제품명')));
+    if(hi<0)return fillMerged(rows.map(r=>r.slice(0,10)),[0,1,2,3]).filter(r=>r[4]); // 예전 업로드 형식
+    const header=rows[hi].map(nz);
+    const idx=DAMAGE_COLUMNS.map(([,names,fb])=>{const i=header.findIndex(h=>names.split('|').includes(h));return i>=0?i:fb});
+    const out=[];let last=null;
+    rows.slice(hi+1).forEach(r=>{
+      const row=['','','','','','',0,0,'',''];
+      DAMAGE_COLUMNS.forEach(([o],k)=>{const v=r[idx[k]];row[o]=v instanceof Date?v:String(v??'').trim()});
+      if(!row[4])return;
+      if(last)[0,1,2,3].forEach(o=>{if(row[o]===''||row[o]==null)row[o]=last[o]});
+      if(!/^\d{4}-\d{2}-\d{2}/.test(normDate(row[1])))return;
+      row[6]=num(row[6]);row[7]=num(row[7]);
+      out.push(row);last=row;
+    });
+    return out;
+  };
   const upsertByDate=(existing,incoming,dateIndex=0)=>{const dates=new Set(incoming.map(r=>normDate(r[dateIndex])));return (existing||[]).filter(r=>!dates.has(normDate(r[dateIndex]))).concat(incoming)};
   const upsertByKey=(existing,incoming,keyFn)=>{const keys=new Set(incoming.map(r=>keyFn(r)).filter(k=>k!==''&&k!=null));return (existing||[]).filter(r=>{const k=keyFn(r);return !(k!==''&&k!=null&&keys.has(k))}).concat(incoming)};
   /* 18개월보다 오래된 행은 지우지 않고 별도 보관함으로 옮겨서, 평소 화면은 최근 데이터만 빠르게 처리하도록 합니다. */
@@ -6583,6 +6604,9 @@ setTimeout(initInventoryColumnResize,0);
     const fyEndYear=m>=7?y+1:y;
     return{label:`FY${String(fyEndYear).slice(2)}`,start:`${fyEndYear-1}-07-01`,end:`${fyEndYear}-06-30`};
   }
+  /* 파손 건수 = 기안(No.) 단위: 같은 No.(같은 날짜·매장)는 품목이 여러 줄이어도 1건. 금액은 줄별 파손 합계를 그대로 더함 */
+  const dmCaseKey=r=>String(r[0]??'').trim()+'|'+normDate(r[1]??r[0])+'|'+String(r[2]??'').trim();
+  const damageCaseCount=rows=>new Set(rows.map(dmCaseKey)).size;
   function renderDamageFY(){
     if(!$('dmFyBody'))return;
     const all=read().damage?.rows||[],fy=damageFY();
@@ -6590,14 +6614,14 @@ setTimeout(initInventoryColumnResize,0);
     $('dmFyCountLabel').textContent=`${fy.label} 총 파손 건수`;
     $('dmFyAmountLabel').textContent=`${fy.label} 총 파손 금액`;
     const rows=all.filter(r=>{const d=normDate(r[1]??r[0]);return d>=fy.start&&d<=fy.end});
-    $('dmFyCount').textContent=fmt(rows.length);
+    $('dmFyCount').textContent=fmt(damageCaseCount(rows));
     $('dmFyAmount').textContent=fmt(rows.reduce((a,r)=>a+num(r[7]),0))+'원';
     const group=$('dmFyGroup').value;
-    const idx=group==='store'?2:group==='method'?3:group==='manager'?9:null,map={};
-    rows.forEach(r=>{const k=group==='month'?ym(r[1]??r[0]):String(r[idx]||'(미지정)').trim();if(!map[k])map[k]={c:0,a:0};map[k].c++;map[k].a+=num(r[7])});
-    $('dmFyTableHead').innerHTML=group==='month'?'<th>월</th><th class="num">건수</th><th class="num">금액</th>':`<th>${group==='manager'?'담당자':group==='store'?'매장':'출고방식'}</th><th class="num">건수</th><th class="num">금액</th>`;
+    const idx=group==='store'?2:group==='method'?3:group==='manager'?9:group==='category'?8:null,map={},amountOnly=group==='category';
+    rows.forEach(r=>{const k=group==='month'?ym(r[1]??r[0]):(String(r[idx]??'').trim()||'(미지정)');if(!map[k])map[k]={cases:new Set(),a:0};map[k].cases.add(dmCaseKey(r));map[k].a+=num(r[7])});Object.values(map).forEach(v=>v.c=v.cases.size);
+    $('dmFyTableHead').innerHTML=group==='month'?'<th>월</th><th class="num">건수</th><th class="num">금액</th>':`<th>${group==='manager'?'담당자':group==='store'?'매장':group==='category'?'제품군':'출고방식'}</th>${amountOnly?'':'<th class="num">건수</th>'}<th class="num">금액</th>`;
     const entries=Object.entries(map).sort((a,b)=>group==='month'?(a[0]>b[0]?1:a[0]<b[0]?-1:0):b[1].a-a[1].a);
-    $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td><td class="num">${fmt(v.c)}건</td><td class="num">${fmt(v.a)}원</td></tr>`).join(''):'<tr><td colspan="3" class="data-empty">데이터가 없습니다.</td></tr>';
+    $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td>${amountOnly?'':`<td class="num">${fmt(v.c)}건</td>`}<td class="num">${fmt(v.a)}원</td></tr>`).join(''):`<tr><td colspan="${amountOnly?2:3}" class="data-empty">데이터가 없습니다.</td></tr>`;
   }
   function populateDamageDatalists(){
     const all=read().damage?.rows||[];
@@ -6636,7 +6660,7 @@ setTimeout(initInventoryColumnResize,0);
         &&(!methodQ||String(r[3]||'').toLowerCase().includes(methodQ));
     });
     const totalQty=rows.reduce((a,r)=>a+num(r[6]),0),totalAmt=rows.reduce((a,r)=>a+num(r[7]),0);
-    $('dmRecordSummary').textContent=`${fmt(rows.length)}건, 파손수량 합계 ${fmt(totalQty)}, 파손금액 합계 ${fmt(totalAmt)}원`;
+    $('dmRecordSummary').textContent=`${fmt(damageCaseCount(rows))}건 (품목 ${fmt(rows.length)}줄), 파손수량 합계 ${fmt(totalQty)}, 파손금액 합계 ${fmt(totalAmt)}원`;
     $('dmBody').innerHTML=rows.length?rows.slice(0,1000).map(r=>`<tr><td>${esc(normDate(r[1]??r[0]))}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td><td class="num">${fmt(r[6])}</td><td class="num">${fmt(r[7])}원</td></tr>`).join(''):'<tr><td colspan="8" class="data-empty">조회 결과가 없습니다.</td></tr>';
   }
   function shiftMonth(ymStr,delta){
@@ -6645,7 +6669,7 @@ setTimeout(initInventoryColumnResize,0);
   }
   function damageStatsForMonth(all,ymStr){
     const rows=all.filter(r=>ym(r[1]??r[0])===ymStr);
-    return{amount:rows.reduce((a,r)=>a+num(r[7]),0),count:rows.length};
+    return{amount:rows.reduce((a,r)=>a+num(r[7]),0),count:damageCaseCount(rows)};
   }
   function pctBadge(v){
     if(v===null)return'-';
@@ -7169,7 +7193,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
      세 동기화가 같은 공유 저장소를 고쳐 쓰므로 동시에 돌리지 않고 순서대로 실행 */
   const btn=$('baseSyncBtn');if(btn.disabled)return;
   const label=btn.textContent;btn.disabled=true;btn.textContent='↻ 시트 연동 중…';
-  const jobs=[['입고','/api/sync-inbound-sheets'],['출고','/api/sync-outbound-sheets'],['출고요약','/api/sync-outbound-summary-sheet'],['오출고','/api/sync-misship-sheet']];
+  const jobs=[['입고','/api/sync-inbound-sheets'],['출고','/api/sync-outbound-sheets'],['출고요약','/api/sync-outbound-summary-sheet'],['오출고','/api/sync-misship-sheet'],['파손','/api/sync-damage-sheet']];
   const failed=[];
   try{
     for(const [name,url] of jobs){
