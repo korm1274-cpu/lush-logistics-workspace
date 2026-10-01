@@ -4261,9 +4261,9 @@ html,body{max-width:100%;overflow-x:hidden}
             <button class="btn" id="calendarTodayBtn" type="button">오늘</button>
           </div>
           <div class="master-calendar-legend">
-            <span><i class="legend-dot" style="background:#fff"></i>연차</span>
-            <span><i class="legend-dot" style="background:#fff"></i>수입</span>
-            <span><i class="legend-dot" style="background:#fff"></i>출고</span>
+            <span><i class="legend-dot" style="background:#2455b0"></i>연차</span>
+            <span><i class="legend-dot" style="background:#c35a00"></i>수입</span>
+            <span><i class="legend-dot" style="background:#1f7a45"></i>출고</span>
           </div>
         </div>
         <div class="calendar-sync-bar">
@@ -8388,6 +8388,36 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell.on-lush .view.active .ms-card,#appShell.on-lush .view.active .fy-chart{border:1.5px solid var(--lush-kraft)!important;background:#fff!important;}
 #appShell.on-lush .view.active .fy-tabs{background:#f2f4f6!important;}
 @media(max-width:900px){#appShell.on-lush .view.active .data-workbench-head{padding:18px!important;}}
+/* 일정(통합 일정·공지 등록·할 일 등록): 같은 칠판 제목 배너 + 테두리 카드, 캘린더는 큰 날짜·오늘 강조·둥근 일정 칩 */
+#appShell.on-lush #scheduleManagerView .schedule-head{position:relative;overflow:hidden;align-items:center;padding:22px 28px!important;margin-bottom:16px!important;border-radius:18px!important;border:0!important;background:#1d1d1b!important;background-image:radial-gradient(circle at 70% 20%,rgba(232,123,164,.26) 0 34px,transparent 35px),radial-gradient(circle at 63% 90%,rgba(27,175,122,.2) 0 22px,transparent 23px)!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head .eyebrow{color:#cfcac0!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head h2{color:#fff!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head p{color:#d9d4cb!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head .btn{background:transparent!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.4)!important;}
+#appShell.on-lush .view.active .box-entry-card{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-card{position:relative;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-card::before{content:"";display:block;height:6px;background:var(--lush-pink);}
+#appShell.on-lush #scheduleManagerView .master-calendar-toolbar{background:#fff!important;padding:14px 18px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-month-nav strong{font-size:20px!important;font-weight:800!important;color:var(--lush-ink)!important;min-width:140px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-month-nav .btn{border-radius:999px!important;min-width:36px;}
+#appShell.on-lush #scheduleManagerView .master-calendar-legend span{font-size:12px!important;color:#4e5968!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-legend .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+#appShell.on-lush #scheduleManagerView .calendar-sync-bar{background:#f6f7f8!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead{background:#1d1d1b!important;border-bottom:0!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span{color:#e6e1d8!important;font-size:13px!important;border-right-color:#333!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span:first-child{color:#ff9eb5!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span:last-child{color:#9cc3ff!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day{padding:8px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n+1),#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n){background:#fcfcfd;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.outside{background:#f6f7f8!important;}
+#appShell.on-lush #scheduleManagerView .master-day-num{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;font-size:14px!important;font-weight:800!important;color:var(--lush-ink)!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n+1) .master-day-num{color:#d64545!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n) .master-day-num{color:#2f6fd6!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.outside .master-day-num{color:#b4bbbf!important;}
+#appShell.on-lush #scheduleManagerView .master-day-head small{font-size:11px!important;color:#a0a8ad!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.today{box-shadow:none!important;background:#fff4f7!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.today .master-day-num{background:var(--lush-ink);color:#fff!important;}
+#appShell.on-lush #scheduleManagerView .master-event{border-radius:8px!important;padding:5px 7px!important;font-size:12px!important;border-left:3px solid currentColor!important;}
 </style>
 <style id="floor-dash-style">
 /* 현장 대시보드: 물류 현장 모니터에 띄워두는 용도 — 멀리서도 읽히는 큰 숫자, 어두운 칠판 배경 */
@@ -8719,7 +8749,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   window.renderNav=renderNav=function(){var r=origRenderNav.apply(this,arguments);patchTopTabs();render();return r};
 
   /* 메인 화면 테마는 메인(대시보드)을 보고 있을 때만 적용 */
-  var LUSH_THEME_VIEWS=['misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView'];
+  var LUSH_THEME_VIEWS=['misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView'];
   var syncDashTheme=function(){var a=document.querySelector('.view.active');shell.classList.toggle('on-dashboard',!!a&&a.id==='dashboard');shell.classList.toggle('on-lush',!!a&&LUSH_THEME_VIEWS.indexOf(a.id)>=0);if(a&&a.id==='dashboard'&&window.updateLushHero)window.updateLushHero()};
   var origActivate2=activateMenu;
   window.activateMenu=activateMenu=function(){try{return origActivate2.apply(this,arguments)}finally{syncDashTheme()}};
