@@ -2827,6 +2827,55 @@ html,body{max-width:100%;overflow-x:hidden}
 
 <style id="v84-shipping-wallboard-layout">
 /* V84 — true wide wallboard layout for field display */
+#statusBoardView .shipping-display-actions{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  margin:0 2px 8px!important;
+}
+#statusBoardView .shipping-fullscreen-btn{
+  min-height:34px!important;
+  padding:0 11px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#555d57!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  box-shadow:none!important;
+}
+#statusBoardView .shipping-fullscreen-btn:hover{
+  background:#f5f6f4!important;
+  color:#202420!important;
+}
+#statusBoardView .shipping-display-board:fullscreen{
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:34px 42px!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:auto!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-display-board:-webkit-full-screen{
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:34px 42px!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:auto!important;
+  background:#fff!important;
+}
 #statusBoardView .shipping-display-board{
   min-height:620px!important;
   display:flex!important;
@@ -4330,7 +4379,12 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
 
         <div class="status-panel active" data-status-panel="shipping">
-          <div class="shipping-display-board">
+          <div class="shipping-display-actions">
+            <button type="button" class="shipping-fullscreen-btn" id="shippingFullscreenBtn" aria-label="금일 출고 현황 전체화면">
+              <span aria-hidden="true">⛶</span> 전체화면
+            </button>
+          </div>
+          <div class="shipping-display-board" id="shippingDisplayBoard">
             <div class="shipping-display-head">
               <div>
                 <span class="shipping-display-kicker">TODAY OUTBOUND</span>
@@ -8523,6 +8577,35 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     }
   });
   q('#pastStaffClose').addEventListener('click',function(){q('#pastStaffEditor').hidden=true});
+
+
+  var shippingFullscreenBtn=q('#shippingFullscreenBtn'),shippingDisplayBoard=q('#shippingDisplayBoard');
+  function shippingFullscreenActive(){
+    return document.fullscreenElement===shippingDisplayBoard||document.webkitFullscreenElement===shippingDisplayBoard;
+  }
+  function updateShippingFullscreenButton(){
+    if(!shippingFullscreenBtn)return;
+    var active=shippingFullscreenActive();
+    shippingFullscreenBtn.innerHTML='<span aria-hidden="true">'+(active?'×':'⛶')+'</span> '+(active?'전체화면 종료':'전체화면');
+    shippingFullscreenBtn.setAttribute('aria-label',active?'금일 출고 현황 전체화면 종료':'금일 출고 현황 전체화면');
+  }
+  if(shippingFullscreenBtn&&shippingDisplayBoard){
+    shippingFullscreenBtn.addEventListener('click',function(){
+      if(shippingFullscreenActive()){
+        var exit=document.exitFullscreen||document.webkitExitFullscreen;
+        if(exit)exit.call(document);
+        return;
+      }
+      var request=shippingDisplayBoard.requestFullscreen||shippingDisplayBoard.webkitRequestFullscreen;
+      if(request){
+        var result=request.call(shippingDisplayBoard);
+        if(result&&typeof result.catch==='function')result.catch(function(){});
+      }
+    });
+    document.addEventListener('fullscreenchange',updateShippingFullscreenButton);
+    document.addEventListener('webkitfullscreenchange',updateShippingFullscreenButton);
+    updateShippingFullscreenButton();
+  }
 
   window.renderStatusProductivity=function(){renderProductivity();renderCumulative();if(!q('#detailResults').hidden)renderDailyDetail()};
 
