@@ -3780,6 +3780,99 @@ html,body{max-width:100%;overflow-x:hidden}
 .unit-conversion-updated{color:#7b858d;font-size:10px}
 @media(max-width:760px){.unit-conversion-summary{grid-template-columns:1fr}.unit-conversion-toolbar{align-items:stretch}.unit-conversion-toolbar .field{width:100%}}
 </style>
+<style id="v93-statusboard-issue-menu-style">
+/* Status-board local navigation mirrors the Issues submenu visual language. */
+#statusBoardView .status-board-tabs,
+#statusBoardView .store-history-segment,
+#statusBoardView .product-outbound-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin-bottom:14px!important;
+  padding:3px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow-x:auto!important;
+}
+
+#statusBoardView .status-board-tab,
+#statusBoardView .store-mode-btn,
+#statusBoardView .product-outbound-tab{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  min-height:35px!important;
+  padding:7px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#666662!important;
+  box-shadow:none!important;
+  font-size:12.5px!important;
+  font-weight:520!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  transition:background .14s ease,color .14s ease,border-color .14s ease!important;
+}
+
+#statusBoardView .status-board-tab:hover,
+#statusBoardView .store-mode-btn:hover,
+#statusBoardView .product-outbound-tab:hover{
+  background:#f0f0ed!important;
+  color:#111!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+
+#statusBoardView .status-board-tab.active,
+#statusBoardView .store-mode-btn.active,
+#statusBoardView .product-outbound-tab.active{
+  background:#e9e9e5!important;
+  color:#111!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  font-weight:700!important;
+}
+
+#statusBoardView .status-board-tab.active:after,
+#statusBoardView .store-mode-btn.active:after,
+#statusBoardView .product-outbound-tab.active:after{
+  content:none!important;
+  display:none!important;
+}
+
+#statusBoardView .store-history-modebar{
+  padding:0 22px 10px!important;
+}
+
+#statusBoardView .store-history-modebar .store-history-segment{
+  margin:0!important;
+}
+
+#statusBoardView .product-outbound-tabs{
+  margin:0 0 14px!important;
+}
+
+@media(max-width:760px){
+  #statusBoardView .status-board-tabs,
+  #statusBoardView .store-history-segment,
+  #statusBoardView .product-outbound-tabs{
+    width:100%!important;
+  }
+  #statusBoardView .status-board-tab,
+  #statusBoardView .store-mode-btn,
+  #statusBoardView .product-outbound-tab{
+    min-height:34px!important;
+    padding:7px 9px!important;
+    font-size:12px!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
