@@ -4981,6 +4981,77 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v103-shipping-visibility-polish">
+/* stronger progress animation visibility */
+#statusBoardView .shipping-ring{
+  transition:none!important;
+}
+#statusBoardView .shipping-ring.is-animating{
+  filter:drop-shadow(0 8px 18px rgba(79,169,110,.16))!important;
+}
+
+/* store count: black */
+#statusBoardView .shipping-store-count>b{
+  color:#111!important;
+}
+
+/* differentiate percentage and progress bar */
+#statusBoardView .shipping-store-pct{
+  color:#1f5f9f!important;
+}
+#statusBoardView .shipping-store-fill{
+  background:#4fa96e!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#6f7671!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{
+  background:#aeb5af!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#8b938d!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#cfd5d0!important;
+}
+
+/* box + EA information: much more readable */
+#statusBoardView .shipping-store-inline-info{
+  margin-top:5px!important;
+  color:#4f5851!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  color:#202520!important;
+  font-size:12px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info{
+  font-size:13px!important;
+  color:#4f5851!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  font-size:13px!important;
+  color:#202520!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:18px!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -9138,7 +9209,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     {name:'판교점',box:12,total:5900,done:2800},
     {name:'부산점',box:12,total:5800,done:2400},
     {name:'대전점',box:11,total:5700,done:2000},
-    {name:'인천점',box:11,total:5900,done:2100}
+    {name:'인천점',box:11,total:5900,done:0}
   ];
   var DEMO_STORE_HISTORY=[];
   (function(){
@@ -9178,33 +9249,39 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
 
-  var shippingProgressFrame=null,shippingProgressValue=0;
+  var shippingProgressFrame=null,shippingProgressTimer=null;
   function animateShippingProgress(target){
     target=Math.max(0,Math.min(100,Number(target)||0));
     var ring=q('#statusShippingRing'),label=q('#statusShippingPct');
     if(!ring||!label)return;
     if(shippingProgressFrame)cancelAnimationFrame(shippingProgressFrame);
-    var start=0,duration=900,startTime=null;
-    shippingProgressValue=0;
+    if(shippingProgressTimer)clearTimeout(shippingProgressTimer);
+    ring.classList.remove('is-animating');
     ring.style.setProperty('--shipping-pct','0');
     label.textContent='0%';
-    function step(ts){
-      if(startTime===null)startTime=ts;
-      var t=Math.min(1,(ts-startTime)/duration);
-      var eased=1-Math.pow(1-t,3);
-      var value=start+(target-start)*eased;
-      shippingProgressValue=value;
-      ring.style.setProperty('--shipping-pct',value.toFixed(2));
-      label.textContent=Math.round(value)+'%';
-      if(t<1)shippingProgressFrame=requestAnimationFrame(step);
-      else{
-        shippingProgressFrame=null;
-        shippingProgressValue=target;
-        ring.style.setProperty('--shipping-pct',String(target));
-        label.textContent=Math.round(target)+'%';
+    void ring.offsetWidth;
+    ring.classList.add('is-animating');
+    shippingProgressTimer=setTimeout(function(){
+      var duration=1400,startTime=null;
+      function step(ts){
+        if(startTime===null)startTime=ts;
+        var t=Math.min(1,(ts-startTime)/duration);
+        var eased=1-Math.pow(1-t,3);
+        var value=target*eased;
+        ring.style.setProperty('--shipping-pct',value.toFixed(2));
+        label.textContent=Math.round(value)+'%';
+        if(t<1){
+          shippingProgressFrame=requestAnimationFrame(step);
+        }else{
+          shippingProgressFrame=null;
+          shippingProgressTimer=null;
+          ring.style.setProperty('--shipping-pct',String(target));
+          label.textContent=Math.round(target)+'%';
+          ring.classList.remove('is-animating');
+        }
       }
-    }
-    shippingProgressFrame=requestAnimationFrame(step);
+      shippingProgressFrame=requestAnimationFrame(step);
+    },120);
   }
 
   function renderShipping(){
