@@ -3811,6 +3811,7 @@ html,body{max-width:100%;overflow-x:hidden}
           <p class="lush-hero-sub">LUSH 물류팀의 하루를 응원합니다.</p>
         </div>
         <div class="lush-hero-stats">
+          <div class="lush-hero-stat" id="heroInboundCard"><small>오늘 입고 팔렛</small><b id="heroPallet">0</b><span id="heroPalletUnit">팔렛</span></div>
           <div class="lush-hero-stat"><small>오늘 출고 요청</small><b id="heroReq">0</b><span>건</span></div>
           <div class="lush-hero-stat"><small>미완료 할 일</small><b id="heroTodo">0</b><span>건</span></div>
           <div class="lush-hero-stat"><small>오늘 근무 인원</small><b id="heroStaff">-</b><span>명</span></div>
@@ -5310,6 +5311,8 @@ setTimeout(initInventoryColumnResize,0);
   const absenceTypes=new Set(Object.keys(types)),fullAbsence=new Set(['annual','field','checkup']);
   let calendarCursor=new Date(new Date().getFullYear(),new Date().getMonth(),1);
   let importEvents=[],importLoadError='',lastImportSuccessAt='';
+  // 메인 인사 배너의 '오늘 입고 팔렛' 계산용으로 캘린더(수입일정) 일정을 읽기 전용으로 노출
+  window.getImportEvents=()=>importEvents;
   const $=id=>document.getElementById(id),pad=n=>String(n).padStart(2,'0');
   const dateKey=d=>`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
   const todayKey=()=>dateKey(new Date());
@@ -5453,6 +5456,8 @@ setTimeout(initInventoryColumnResize,0);
     if($('todayAbsenceCount'))$('todayAbsenceCount').textContent=excluded?`${excluded}명`:'0명';
     if($('todayAbsenceList'))$('todayAbsenceList').innerHTML=todayAbs.length?todayAbs.map(e=>`<div class="absence-item"><b>${escHtml(e.person)}</b><span>${types[e.type]}</span></div>`).join(''):'<div class="absence-empty">금일 제외 인원이 없습니다.</div>';
     if(window.lucide)lucide.createIcons();
+    // 캘린더·근무 인원이 갱신되면 메인 인사 배너 숫자(오늘 입고 팔렛, 근무 인원)도 함께 갱신
+    window.updateLushHero?.();
   }
 
   window.openScheduleManager=function(label,el){
@@ -8416,6 +8421,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var req=readArr('lush_outbound_requests_v1').filter(function(r){return(r.status||'미처리')!=='처리완료'&&(r.requestDates||[]).indexOf(today)>=0}).length;
     var todo=readArr('lush-v51-todos').filter(function(t){return!t.done}).length;
     $('heroReq').textContent=req;$('heroTodo').textContent=todo;
+    // 오늘 입고 팔렛: 캘린더 일정 중 오늘 날짜 + 제목에 '입고'가 있는 것(예: "132차-JP-1팔렛-9시 입고")의 팔렛 수 합계.
+    // '입항'(항구 도착)은 제외. 박스만 있는 입고는 팔렛에 넣지 않고 박스로 따로 표시
+    var ev=(window.getImportEvents?window.getImportEvents():[]).filter(function(e){return today>=(e.startDate||'')&&today<=(e.endDate||e.startDate||'')&&/입고/.test(e.title||'')});
+    var pallets=0,boxes=0;
+    ev.forEach(function(e){var t=e.title||'',m,re=/(\d+(?:\.\d+)?)\s*(?:팔렛|파렛|PLT)/gi;while((m=re.exec(t)))pallets+=parseFloat(m[1]);var b=/(\d+)\s*박스/g;while((m=b.exec(t)))boxes+=parseInt(m[1],10)});
+    $('heroPallet').textContent=Number.isInteger(pallets)?pallets:pallets.toFixed(1);
+    $('heroPalletUnit').textContent='팔렛'+(boxes?' + '+boxes+'박스':'');
+    $('heroInboundCard').title=ev.length?'오늘 입고 '+ev.length+'건\n'+ev.map(function(e){return'· '+e.title.trim()}).join('\n'):'오늘 캘린더에 입고 일정이 없습니다.';
     var staff=$('todayOperatingCount');$('heroStaff').textContent=staff?staff.textContent.trim():'-';
   }
   window.updateLushHero=update;
