@@ -4459,17 +4459,16 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="floorDashView" class="view">
       <div class="floor-board" id="floorBoard">
         <div class="floor-head">
-          <div><div class="floor-eyebrow">LUSH LOGISTICS · FLOOR BOARD</div><h2 class="floor-title">물류 현장 대시보드</h2><div class="floor-updated" id="floorUpdated"></div></div>
+          <div><div class="floor-eyebrow">LUSH LOGISTICS · FLOOR BOARD</div><div class="floor-staff"><span class="floor-staff-label">오늘 근무 인원</span><b id="floorStaff">-</b><span class="floor-staff-unit">명</span></div><div class="floor-updated" id="floorUpdated"></div></div>
           <div class="floor-clock-wrap"><div class="floor-date" id="floorDate"></div><div class="floor-clock" id="floorClock">--:--</div><button type="button" class="floor-full-btn" id="floorFullBtn">⛶ 전체 화면</button></div>
         </div>
         <div class="floor-label">오늘</div>
-        <div class="floor-grid">
+        <div class="floor-grid three">
           <div class="floor-tile" style="--accent:#e87ba4" id="floorInboundTile"><small>오늘 입고 팔렛</small><b id="floorPallet">0</b><span id="floorPalletUnit">팔렛</span></div>
           <div class="floor-tile" style="--accent:#1baf7a"><small>오늘 출고 요청</small><b id="floorReq">0</b><span>건 (미처리)</span></div>
           <div class="floor-tile" style="--accent:#eda100"><small>미완료 할 일</small><b id="floorTodo">0</b><span>건</span></div>
-          <div class="floor-tile" style="--accent:#8a6fd1"><small>오늘 근무 인원</small><b id="floorStaff">-</b><span>명</span></div>
         </div>
-        <div class="floor-label">금주 출고 요청 <span id="floorWeek"></span></div>
+        <div class="floor-label">출고 요청 <span id="floorWeek"></span></div>
         <div class="floor-grid">
           <div class="floor-tile type" style="--accent:#2a78d6"><small>대량 주문</small><b data-floor-type="bulk">0</b><span>건</span><em data-floor-pending="bulk"></em></div>
           <div class="floor-tile type" style="--accent:#eb6834"><small>트래픽</small><b data-floor-type="traffic">0</b><span>건</span><em data-floor-pending="traffic"></em></div>
@@ -8339,7 +8338,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 .floor-label{margin:26px 2px 12px;font-size:18px;font-weight:800;color:#f3d9e4;}
 .floor-label span{font-size:14px;font-weight:600;color:#a8a39a;margin-left:6px;}
 .floor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
-@media(max-width:1100px){.floor-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.floor-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.floor-staff{display:flex;align-items:baseline;gap:10px;margin:8px 0 6px;}
+.floor-staff-label{font-size:20px;font-weight:700;color:#e6e1d8;}
+.floor-staff b{font-size:56px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
+.floor-staff-unit{font-size:20px;color:#cfcac0;}
+.floor-board:fullscreen .floor-staff b{font-size:7vh;}
+@media(max-width:1100px){.floor-grid,.floor-grid.three{grid-template-columns:repeat(2,minmax(0,1fr));}}
 .floor-tile{position:relative;background:#272725;border:1.5px solid rgba(255,255,255,.14);border-radius:18px;padding:22px 24px 20px;overflow:hidden;}
 .floor-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent);}
 .floor-tile small{display:block;font-size:18px;font-weight:700;color:#e6e1d8;margin-bottom:10px;}
