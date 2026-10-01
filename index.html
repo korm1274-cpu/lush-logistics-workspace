@@ -8012,7 +8012,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     display:flex;flex-direction:column;gap:2px;position:fixed;top:56px;left:0;bottom:0;width:200px;
     padding:22px 12px;background:#fff;border-right:1px solid #e5e8eb;overflow-y:auto;z-index:40;box-sizing:border-box;
   }
-  #appShell.has-side-subnav .main{margin-left:200px!important;width:auto!important;}
+  #appShell.has-side-subnav .main{margin-left:200px!important;flex:1 1 auto!important;width:calc(100% - 200px)!important;min-width:0!important;}
+  /* 현황판 안쪽 탭도 왼쪽 메뉴로 옮겼으므로 본문 위 탭 줄은 숨김 */
+  #appShell.has-side-subnav #statusBoardView .status-board-tabs{display:none!important;}
   #sideSubNav .side-subnav-title{display:flex;align-items:center;gap:8px;padding:0 10px 14px;font-size:15px;font-weight:800;color:#191f28;}
   #sideSubNav .side-subnav-title svg{width:18px;height:18px;color:#37a866;}
   #sideSubNav .side-subnav-item{
@@ -8038,16 +8040,41 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(gid!=='admin')return list.filter(function(m){return canAccess(m)});
     return (typeof currentRole!=='undefined'&&currentRole==='admin')?list:[];
   }
-  function render(){
-    var items=current.group?groupItems(current.group):[];
-    var g=GROUPS.find(function(x){return x.id===current.group});
+  /* 현황판은 메뉴가 하나뿐이지만 화면 안에 탭(출고 현황·생산성 등)이 있으므로, 그 탭들을 왼쪽 메뉴로 보여줌 */
+  function renderStatusTabs(g){
+    var tabs=document.querySelectorAll('#statusBoardView .status-board-tab');
+    if(!tabs.length)return false;
     aside.innerHTML='';
-    if(!g||items.length<2){shell.classList.remove('has-side-subnav');markTopTab();return}
+    aside.appendChild(makeTitle(g));
+    tabs.forEach(function(t){
+      var b=document.createElement('button');
+      b.type='button';b.className='side-subnav-item'+(t.classList.contains('active')?' active':'');
+      b.textContent=t.textContent.trim();
+      b.onclick=function(){
+        t.click();
+        aside.querySelectorAll('.side-subnav-item').forEach(function(x){x.classList.toggle('active',x===b)});
+      };
+      aside.appendChild(b);
+    });
+    shell.classList.add('has-side-subnav');
+    markTopTab();
+    if(window.lucide)lucide.createIcons();
+    return true;
+  }
+  function makeTitle(g){
     var title=document.createElement('div');
     title.className='side-subnav-title';
     title.innerHTML='<i data-lucide="'+g.icon+'"></i>';
     title.appendChild(document.createTextNode(g.label));
-    aside.appendChild(title);
+    return title;
+  }
+  function render(){
+    var items=current.group?groupItems(current.group):[];
+    var g=GROUPS.find(function(x){return x.id===current.group});
+    aside.innerHTML='';
+    if(g&&current.menuId==='statusboard-main'&&renderStatusTabs(g))return;
+    if(!g||items.length<2){shell.classList.remove('has-side-subnav');markTopTab();return}
+    aside.appendChild(makeTitle(g));
     items.forEach(function(m){
       var b=document.createElement('button');
       b.type='button';b.className='side-subnav-item'+(m.id===current.menuId?' active':'');
