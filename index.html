@@ -4342,6 +4342,31 @@ html,body{max-width:100%;overflow-x:hidden}
   font-size:13px!important;
   font-weight:900!important;
 }
+#statusBoardView .shipping-store-main{
+  min-width:0!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:7px!important;
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-store-meta-inline{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  overflow:hidden!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-meta-inline strong{
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+
 #statusBoardView .shipping-store-status{
   min-width:38px!important;
   min-height:20px!important;
@@ -4377,21 +4402,6 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .shipping-store-track{
   height:7px!important;
   margin-top:7px!important;
-}
-#statusBoardView .shipping-store-meta{
-  display:flex!important;
-  align-items:center!important;
-  gap:5px!important;
-  margin-top:6px!important;
-  color:#778079!important;
-  font-size:10px!important;
-  line-height:1.2!important;
-  font-variant-numeric:tabular-nums!important;
-}
-#statusBoardView .shipping-store-meta strong{
-  color:#505851!important;
-  font-size:11px!important;
-  font-weight:900!important;
 }
 #statusBoardView .shipping-store-row.complete .shipping-store-fill{
   background:#aeb5af!important;
@@ -4461,20 +4471,10 @@ html,body{max-width:100%;overflow-x:hidden}
   height:4px!important;
   margin-top:3px!important;
 }
-#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta{
-  margin-top:2px!important;
-  font-size:8px!important;
-  gap:4px!important;
-}
-#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta strong{
-  font-size:9px!important;
-}
 @media(max-width:1360px){
   #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{font-size:10px!important}
   #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{font-size:13px!important}
-  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta{font-size:7px!important}
-  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-meta strong{font-size:8px!important}
-}
+  }
 
 /* Fullscreen: keep left/right split, switch only wallboard to dark mode */
 #statusBoardView .shipping-display-board:fullscreen,
@@ -4598,6 +4598,15 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
   color:#edf0ee!important;
 }
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta-inline,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta-inline{
+  color:#8f9992!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta-inline strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta-inline strong{
+  color:#c8ceca!important;
+}
+
 #statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
   color:#5fcb7a!important;
@@ -4611,16 +4620,6 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .shipping-display-board:fullscreen .shipping-store-fill,
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-fill{
   background:#5fcb7a!important;
-}
-#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta,
-#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta{
-  color:#8f9992!important;
-  font-size:11px!important;
-}
-#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta strong,
-#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta strong{
-  color:#c8ceca!important;
-  font-size:12px!important;
 }
 #statusBoardView .shipping-display-board:fullscreen .shipping-store-status.active,
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-status.active{
@@ -4733,15 +4732,6 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-track{
   height:5px!important;
   margin-top:3px!important;
-}
-#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta,
-#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta{
-  margin-top:3px!important;
-  font-size:9px!important;
-}
-#statusBoardView .shipping-display-board:fullscreen .shipping-store-meta strong,
-#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-meta strong{
-  font-size:10px!important;
 }
 
 /* Fullscreen visual centering for the two headline panels */
@@ -9005,12 +8995,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         var statusLabel=state==='complete'?'완료':state==='waiting'?'대기':'진행';
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
-            '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
+            '<span class="shipping-store-main"><span class="shipping-store-name">'+esc(store.name||'-')+'</span><span class="shipping-store-meta-inline"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></span></span>'+
             '<span class="shipping-store-status '+state+'">'+statusLabel+'</span>'+
             '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
           '</div>'+
           '<div class="shipping-store-track"><span class="shipping-store-fill" style="width:'+pct.toFixed(1)+'%"></span></div>'+
-          '<div class="shipping-store-meta"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></div>'+
         '</div>';
       }).join(''):'<div class="shipping-store-empty">오늘 주문 매장 데이터 연동 전입니다.</div>';
     }
