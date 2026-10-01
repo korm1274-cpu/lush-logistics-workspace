@@ -1,0 +1,7 @@
+{
+  "crons": [
+    { "path": "/api/sync-inbound-sheets", "schedule": "0 19 * * *" },
+    { "path": "/api/sync-outbound-sheets", "schedule": "10 19 * * *" },
+    { "path": "/api/sync-outbound-summary-sheet", "schedule": "20 19 * * *" }
+  ]
+}
