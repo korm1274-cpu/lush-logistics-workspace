@@ -5052,6 +5052,169 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v104-shipping-color-hierarchy">
+/* V104 — stronger visual hierarchy with restrained role-based colors */
+
+/* Main progress: green */
+#statusBoardView .shipping-progress-main{
+  background:#f6fbf7!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#2f5f3d!important;
+}
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#2f9e5b calc(var(--shipping-pct) * 1%),#e7ece8 0)!important;
+}
+#statusBoardView .shipping-ring-value{
+  color:#173d25!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#6d786f!important;
+}
+
+/* Remaining quantity: warm amber tone */
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain{
+  background:#fff8ed!important;
+  border-color:#ead7b6!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span{
+  color:#8a5a18!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong{
+  color:#9a4f10!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note{
+  color:#8b7254!important;
+}
+
+/* ETA: blue tone */
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#f3f7fc!important;
+  border-color:#cbd9ea!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#315e8f!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#1e5f9c!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small{
+  color:#718398!important;
+}
+
+/* Store board gets its own neutral surface */
+#statusBoardView .shipping-store-board{
+  background:#fafafa!important;
+  border-color:#d9ded9!important;
+}
+#statusBoardView .shipping-store-head h4{
+  color:#111!important;
+}
+#statusBoardView .shipping-store-head>div:first-child>span{
+  color:#777f79!important;
+}
+#statusBoardView .shipping-store-count>b{
+  color:#111!important;
+}
+#statusBoardView .shipping-store-count>small{
+  color:#717871!important;
+}
+
+/* Store cards */
+#statusBoardView .shipping-store-row{
+  background:#fff!important;
+  border-color:#e1e5e1!important;
+}
+#statusBoardView .shipping-store-name{
+  color:#171a17!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  color:#505750!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  color:#252a26!important;
+}
+
+/* Active: blue % + green bar */
+#statusBoardView .shipping-store-row.active .shipping-store-pct{
+  color:#2563a6!important;
+}
+#statusBoardView .shipping-store-row.active .shipping-store-fill{
+  background:#3da267!important;
+}
+#statusBoardView .shipping-store-status.active{
+  color:#24653a!important;
+  background:#eaf5ed!important;
+  border-color:#bdd8c4!important;
+}
+
+/* Waiting: amber status + gray bar */
+#statusBoardView .shipping-store-row.waiting{
+  background:#fffaf2!important;
+  border-color:#eadfc9!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#9b6a24!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#d8dcd8!important;
+}
+#statusBoardView .shipping-store-status.waiting{
+  color:#946522!important;
+  background:#fff2d9!important;
+  border-color:#ead4aa!important;
+}
+
+/* Complete: intentionally muted */
+#statusBoardView .shipping-store-row.complete{
+  background:#f2f4f2!important;
+  border-color:#dde1dd!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-name,
+#statusBoardView .shipping-store-row.complete .shipping-store-inline-info,
+#statusBoardView .shipping-store-row.complete .shipping-store-inline-info strong,
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#7b827d!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{
+  background:#aeb5af!important;
+}
+#statusBoardView .shipping-store-status.complete{
+  color:#656c67!important;
+  background:#e6e9e6!important;
+  border-color:#cdd2ce!important;
+}
+
+/* Fullscreen uses same hierarchy */
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#f6fbf7!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  background:#fafafa!important;
+  border-color:#d9ded9!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  background:#fff!important;
+  border-color:#e1e5e1!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.waiting,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.waiting{
+  background:#fffaf2!important;
+  border-color:#eadfc9!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.complete,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.complete{
+  background:#f2f4f2!important;
+  border-color:#dde1dd!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
