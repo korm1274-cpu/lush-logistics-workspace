@@ -4747,6 +4747,59 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v97-shipping-store-inline-columns">
+#statusBoardView .shipping-store-line{
+  grid-template-columns:minmax(82px,.9fr) minmax(145px,1.35fr) auto 58px!important;
+  gap:8px!important;
+}
+#statusBoardView .shipping-store-name{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  flex:0 0 auto!important;
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-line,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-line{
+  grid-template-columns:minmax(95px,.9fr) minmax(180px,1.35fr) auto 62px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info{
+  color:#8f9992!important;
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  color:#c8ceca!important;
+  font-size:11px!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-store-line{
+    grid-template-columns:minmax(72px,.8fr) minmax(120px,1.3fr) auto 52px!important;
+    gap:6px!important;
+  }
+  #statusBoardView .shipping-store-inline-info{font-size:9px!important}
+  #statusBoardView .shipping-store-inline-info strong{font-size:9px!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -8995,7 +9048,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         var statusLabel=state==='complete'?'완료':state==='waiting'?'대기':'진행';
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
-            '<span class="shipping-store-main"><span class="shipping-store-name">'+esc(store.name||'-')+'</span><span class="shipping-store-meta-inline"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></span></span>'+
+            '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
+            '<span class="shipping-store-inline-info"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span></span>'+
             '<span class="shipping-store-status '+state+'">'+statusLabel+'</span>'+
             '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
           '</div>'+
