@@ -5215,6 +5215,80 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v105-shipping-color-separation">
+/* V105 — separate left/right graph colors and neutralize lower metrics */
+
+/* Left main progress: blue */
+#statusBoardView .shipping-progress-main{
+  background:#f7f9fc!important;
+  border-color:#d7dee8!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#30363d!important;
+}
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#3b6ea8 calc(var(--shipping-pct) * 1%),#e7ebef 0)!important;
+}
+#statusBoardView .shipping-ring-value{
+  color:#111!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#6f767c!important;
+}
+
+/* Bottom quantity/time: neutral black */
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#fff!important;
+  border-color:#dfe3df!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#555!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#111!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small{
+  color:#7a807b!important;
+}
+
+/* Right store bars remain green, percentages stay blue */
+#statusBoardView .shipping-store-row.active .shipping-store-fill{
+  background:#3da267!important;
+}
+#statusBoardView .shipping-store-row.active .shipping-store-pct{
+  color:#2e5f97!important;
+}
+
+/* Fullscreen matches same hierarchy */
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#f7f9fc!important;
+  border-color:#d7dee8!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-ring{
+  background:conic-gradient(#3b6ea8 calc(var(--shipping-pct) * 1%),#e7ebef 0)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#fff!important;
+  border-color:#dfe3df!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#111!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
