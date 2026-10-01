@@ -6522,17 +6522,21 @@ setTimeout(initInventoryColumnResize,0);
   function renderMsDonut(donutId,legendId,counts,colors,totalCur,ariaLabel){
     const donut=$(donutId),legend=$(legendId);if(!donut||!legend)return;
     const pctOf=c=>totalCur?(c/totalCur*100).toFixed(1)+'%':'-';
-    const items=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([k,v])=>({k,v,c:colors[k]||MS_REST}));
+    // 범례는 Top 5만 표시하고, 나머지는 도넛에서 회색 '그 외' 한 조각으로 묶음 (전체 목록은 아래 표)
+    const MS_TOP=5;
+    const ranked=Object.entries(counts).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([k,v])=>({k,v,c:colors[k]||MS_REST}));
+    const items=ranked.slice(0,MS_TOP),rest=ranked.slice(MS_TOP);
+    if(rest.length)items.push({k:'그 외',v:rest.reduce((a,x)=>a+x.v,0),c:'#dfe2e6',other:rest.map(x=>x.k)});
     const sum=items.reduce((a,x)=>a+x.v,0);
-    legend.classList.toggle('two-col',items.length>8);
+    legend.classList.remove('two-col');
     if(!sum){donut.innerHTML='';legend.innerHTML='<div class="ms-empty">해당 월 데이터가 없습니다.</div>';return}
     const R=46,SW=18,C=2*Math.PI*R,GAP=items.length>1?2:0;let off=0;
     const segs=items.map((x,i)=>{const len=x.v/sum*C,s=`<circle class="seg" data-i="${i}" cx="60" cy="60" r="${R}" fill="none" stroke="${x.c}" stroke-width="${SW}" stroke-dasharray="${Math.max(len-GAP,0.5)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"></circle>`;off+=len;return s}).join('');
     donut.innerHTML=`<svg viewBox="0 0 120 120" role="img" aria-label="${esc(ariaLabel)}"><circle cx="60" cy="60" r="${R}" fill="none" stroke="#f2f4f6" stroke-width="${SW}"></circle>${segs}</svg><div class="ms-donut-center"><small>총 오출고</small><b>${fmt(totalCur)}건</b></div>`;
-    legend.innerHTML=items.map((x,i)=>`<div class="ms-legend-row" data-i="${i}"><i style="background:${x.c}"></i><span title="${esc(x.k)}">${esc(x.k)}</span><small>${fmt(x.v)}건</small><b>${pctOf(x.v)}</b></div>`).join('');
+    legend.innerHTML=items.map((x,i)=>x.other?`<div class="ms-legend-more" data-i="${i}">그 외 ${fmt(x.other.length)}개 항목 · ${fmt(x.v)}건 (전체는 아래 표 참고)</div>`:`<div class="ms-legend-row" data-i="${i}"><i style="background:${x.c}"></i><span title="${esc(x.k)}">${esc(x.k)}</span><small>${fmt(x.v)}건</small><b>${pctOf(x.v)}</b></div>`).join('');
     const hot=i=>{donut.classList.toggle('dim',i!=null);donut.querySelectorAll('.seg').forEach(s=>s.classList.toggle('hot',String(i)===s.dataset.i))};
-    donut.querySelectorAll('.seg').forEach(s=>{const x=items[s.dataset.i];s.onmousemove=e=>{hot(s.dataset.i);msTip(e,`<b>${esc(x.k)}</b> · ${fmt(x.v)}건 · ${pctOf(x.v)}`)};s.onmouseleave=e=>{hot(null);msTip(e,null)}});
-    legend.querySelectorAll('.ms-legend-row').forEach(r=>{r.onmouseenter=()=>hot(r.dataset.i);r.onmouseleave=()=>hot(null)});
+    donut.querySelectorAll('.seg').forEach(s=>{const x=items[s.dataset.i];s.onmousemove=e=>{hot(s.dataset.i);msTip(e,`<b>${esc(x.k)}</b> · ${fmt(x.v)}건 · ${pctOf(x.v)}${x.other?`<br><small>${esc(x.other.slice(0,6).join(', '))}${x.other.length>6?` 외 ${x.other.length-6}개`:''}</small>`:''}`)};s.onmouseleave=e=>{hot(null);msTip(e,null)}});
+    legend.querySelectorAll('.ms-legend-row,.ms-legend-more').forEach(r=>{r.onmouseenter=()=>hot(r.dataset.i);r.onmouseleave=()=>hot(null)});
   }
   function renderMisshipVisuals(all,m,pm,totalCur){
     document.querySelectorAll('#misshipAnalyticsView .ms-month-label').forEach(el=>el.textContent=m);
@@ -8180,6 +8184,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 .ms-legend-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 .ms-legend-row small{font-size:12px;color:var(--ms-muted);}
 .ms-legend-row b{font-weight:800;color:var(--ms-ink);min-width:52px;text-align:right;}
+.ms-legend-more{margin-top:6px;padding:8px 6px 0;border-top:1px dashed var(--ms-line);font-size:12px;color:var(--ms-muted);}
 .ms-empty{padding:40px 0;text-align:center;color:var(--ms-muted);font-size:13px;}
 .ms-tip{position:fixed;z-index:9999;pointer-events:none;background:#fff;color:var(--ms-ink,#191f28);border:1px solid #e3e7ea;border-radius:10px;padding:8px 12px;font-size:13px;box-shadow:0 10px 26px rgba(20,30,40,.16);white-space:nowrap;}
 .ms-tip b{font-weight:800;}
