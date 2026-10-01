@@ -2852,6 +2852,74 @@ html,body{max-width:100%;overflow-x:hidden}
   background:#f5f6f4!important;
   color:#202420!important;
 }
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-head,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-head{
+  min-height:76px!important;
+  padding-bottom:16px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-date,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-date{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-time,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-time{
+  font-size:38px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  flex:1 1 auto!important;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;
+  gap:24px!important;
+  min-height:0!important;
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-column,
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-column,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  min-height:0!important;
+  height:100%!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary{
+  flex:1 1 auto!important;
+  grid-template-columns:1fr 1fr!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-progress-zone,
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-eta-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-progress-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-eta-zone{
+  min-height:300px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-ring{
+  width:min(24vh,250px)!important;
+  height:min(24vh,250px)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-ring-value,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-ring-value{
+  font-size:66px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-eta-zone>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-eta-zone>strong{
+  font-size:68px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row{
+  grid-template-columns:1.15fr .85fr!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  display:flex!important;
+  flex-direction:column!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  flex:1 1 auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:auto!important;
+}
 #statusBoardView .shipping-display-board:fullscreen{
   width:100vw!important;
   height:100vh!important;
@@ -2908,6 +2976,22 @@ html,body{max-width:100%;overflow-x:hidden}
   font-size:30px!important;
   line-height:1.15!important;
   letter-spacing:-.035em!important;
+}
+#statusBoardView .shipping-display-datetime{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:6px!important;
+  text-align:right!important;
+}
+#statusBoardView .shipping-display-date{
+  color:#767e78!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:-.015em!important;
+  white-space:nowrap!important;
 }
 #statusBoardView .shipping-display-time{
   color:#202420!important;
@@ -4390,7 +4474,10 @@ html,body{max-width:100%;overflow-x:hidden}
                 <span class="shipping-display-kicker">TODAY OUTBOUND</span>
                 <h3>금일 출고 현황</h3>
               </div>
-              <div class="shipping-display-time" id="statusCurrentTime">--:--</div>
+              <div class="shipping-display-datetime">
+                <div class="shipping-display-date" id="statusCurrentDate">-</div>
+                <div class="shipping-display-time" id="statusCurrentTime">--:--</div>
+              </div>
             </div>
 
             <div class="shipping-workspace-split">
@@ -8465,8 +8552,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     }
   }
   function renderStatusClock(){
-    var el=q('#statusCurrentTime');if(!el)return;
-    var now=new Date();el.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+    var timeEl=q('#statusCurrentTime'),dateEl=q('#statusCurrentDate');if(!timeEl&&!dateEl)return;
+    var now=new Date();
+    if(timeEl)timeEl.textContent=pad(now.getHours())+':'+pad(now.getMinutes());
+    if(dateEl){
+      var weekdays=['일요일','월요일','화요일','수요일','목요일','금요일','토요일'];
+      dateEl.textContent=now.getFullYear()+'년 '+(now.getMonth()+1)+'월 '+now.getDate()+'일 '+weekdays[now.getDay()];
+    }
   }
   renderStatusClock();setInterval(renderStatusClock,60000);
   var prodChart=null,cumChart=null;
