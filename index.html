@@ -8553,14 +8553,22 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#statusEta').textContent=eta;
     q('#statusEtaNote').textContent=etaNote;
 
-    var stores=DEMO_MODE?DEMO_STORES:[];
+    var stores=(DEMO_MODE?DEMO_STORES:[]).map(function(store,index){
+      var total=Math.max(0,Number(store.total||0)),done=Math.max(0,Math.min(total,Number(store.done||0)));
+      var pct=total?Math.min(100,done/total*100):0;
+      return Object.assign({},store,{__order:index,__pct:pct});
+    }).sort(function(a,b){
+      var aDone=a.__pct>=100,bDone=b.__pct>=100;
+      if(aDone!==bDone)return aDone?1:-1;
+      return a.__order-b.__order;
+    });
     var storeCount=q('#statusStoreCount');
     var storeList=q('#statusStoreProgressList');
     if(storeCount)storeCount.textContent=fmt(stores.length);
     if(storeList){
       storeList.innerHTML=stores.length?stores.map(function(store){
         var total=Math.max(0,Number(store.total||0)),done=Math.max(0,Math.min(total,Number(store.done||0)));
-        var pct=total?Math.min(100,done/total*100):0;
+        var pct=Number(store.__pct||0);
         var state=pct>=100?'complete':pct<=0?'waiting':'active';
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
