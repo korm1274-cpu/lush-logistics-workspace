@@ -4456,6 +4456,29 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="panel mt14"><div class="panel-head"><div><small>RECORDS</small><h3>오출고 기록</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>접수시각</th><th>매장</th><th>제품명</th><th class="num">전산</th><th class="num">실입고</th><th class="num">미입고</th><th class="num">과입고</th><th>담당자</th><th>처리여부</th><th>처리일</th><th>처리 내용</th><th>사유</th></tr></thead><tbody id="mrBody"></tbody></table></div></div>
     </div></section>
 
+    <section id="floorDashView" class="view">
+      <div class="floor-board" id="floorBoard">
+        <div class="floor-head">
+          <div><div class="floor-eyebrow">LUSH LOGISTICS · FLOOR BOARD</div><h2 class="floor-title">물류 현장 대시보드</h2><div class="floor-updated" id="floorUpdated"></div></div>
+          <div class="floor-clock-wrap"><div class="floor-date" id="floorDate"></div><div class="floor-clock" id="floorClock">--:--</div><button type="button" class="floor-full-btn" id="floorFullBtn">⛶ 전체 화면</button></div>
+        </div>
+        <div class="floor-label">오늘</div>
+        <div class="floor-grid">
+          <div class="floor-tile" style="--accent:#e87ba4" id="floorInboundTile"><small>오늘 입고 팔렛</small><b id="floorPallet">0</b><span id="floorPalletUnit">팔렛</span></div>
+          <div class="floor-tile" style="--accent:#1baf7a"><small>오늘 출고 요청</small><b id="floorReq">0</b><span>건 (미처리)</span></div>
+          <div class="floor-tile" style="--accent:#eda100"><small>미완료 할 일</small><b id="floorTodo">0</b><span>건</span></div>
+          <div class="floor-tile" style="--accent:#8a6fd1"><small>오늘 근무 인원</small><b id="floorStaff">-</b><span>명</span></div>
+        </div>
+        <div class="floor-label">금주 출고 요청 <span id="floorWeek"></span></div>
+        <div class="floor-grid">
+          <div class="floor-tile type" style="--accent:#2a78d6"><small>대량 주문</small><b data-floor-type="bulk">0</b><span>건</span><em data-floor-pending="bulk"></em></div>
+          <div class="floor-tile type" style="--accent:#eb6834"><small>트래픽</small><b data-floor-type="traffic">0</b><span>건</span><em data-floor-pending="traffic"></em></div>
+          <div class="floor-tile type" style="--accent:#1baf7a"><small>본사 출고</small><b data-floor-type="hq">0</b><span>건</span><em data-floor-pending="hq"></em></div>
+          <div class="floor-tile type" style="--accent:#e87ba4"><small>노즐/비닐</small><b data-floor-type="nozzle">0</b><span>건</span><em data-floor-pending="nozzle"></em></div>
+        </div>
+      </div>
+    </section>
+
     <section id="damageInsightView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE INSIGHT</div><h2>파손 분석</h2><p>구글시트 '입고 파손' 기준으로 매장·출고방식·담당자·제품군별 파손 금액과 건수를 월별로 비교합니다. 건수는 기안(No.) 단위로 세고, 금액은 품목별 파손 합계를 더합니다. 도넛은 금액 비중입니다.</p></div></div>
       <div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 파손 비교 (전월 대비)</h3></div><div class="field" style="margin:0"><label>기준월</label><input type="month" id="diMonth"></div></div>
@@ -4648,7 +4671,7 @@ const USER_KEY="lush-logistics-v4-users";
 const HIST_KEY="lush-logistics-upload-history";
 const ROLE_LABEL={admin:"관리자",leader:"팀 리더",editor:"팀원",restricted:"제한 열람"};
 const GROUPS=[
- {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"traffic",label:"트래픽",icon:"signpost"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"traffic",label:"트래픽",icon:"signpost"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"floorboard",label:"대시보드",icon:"monitor"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
 ];
 const DEFAULT_MENUS=[
  {id:"dashboard-main",group:"dashboard",label:"메인 대시보드",kind:"view",target:"dashboard",visible:true,roles:["admin","leader","editor","restricted"],protected:true},
@@ -4671,6 +4694,7 @@ const DEFAULT_MENUS=[
  {id:"issue-misship-analysis",group:"issues",label:"오출고 분석",kind:"view",target:"misshipAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-damage-insight",group:"issues",label:"파손 분석",kind:"view",target:"damageInsightView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"floor-dash",group:"floorboard",label:"현장 대시보드",kind:"view",target:"floorDashView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
  {id:"data-archive",group:"upload",label:"지난 데이터 보관함",kind:"view",target:"dataArchiveView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"admin-main",group:"admin",label:"사용자 / 메뉴 / 권한 설정",kind:"view",target:"settings",visible:true,roles:["admin"],protected:true}
@@ -8299,6 +8323,33 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 /* 홈 아이콘(배쓰밤) */
 #appShell .logo .bathbomb-icon{display:block;}
 </style>
+<style id="floor-dash-style">
+/* 현장 대시보드: 물류 현장 모니터에 띄워두는 용도 — 멀리서도 읽히는 큰 숫자, 어두운 칠판 배경 */
+.floor-board{background:#1d1d1b;color:#fff;border-radius:20px;padding:28px 32px 32px;min-height:calc(100vh - 150px);box-sizing:border-box;}
+.floor-board:fullscreen{border-radius:0;min-height:100vh;padding:4vh 4vw;overflow:auto;}
+.floor-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
+#appShell .floor-eyebrow,.floor-board .floor-eyebrow{font-size:12px!important;letter-spacing:.12em;color:#cfcac0!important;font-weight:700;}
+#appShell .floor-title,.floor-board .floor-title{margin:6px 0 4px!important;font-size:30px!important;font-weight:800!important;color:#fff!important;}
+.floor-updated{font-size:13px;color:#a8a39a;}
+.floor-clock-wrap{text-align:right;}
+.floor-date{font-size:16px;color:#cfcac0;}
+.floor-clock{font-size:54px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+.floor-full-btn{margin-top:10px;border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:10px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+.floor-full-btn:hover{background:rgba(255,255,255,.1);}
+.floor-label{margin:26px 2px 12px;font-size:18px;font-weight:800;color:#f3d9e4;}
+.floor-label span{font-size:14px;font-weight:600;color:#a8a39a;margin-left:6px;}
+.floor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
+@media(max-width:1100px){.floor-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.floor-tile{position:relative;background:#272725;border:1.5px solid rgba(255,255,255,.14);border-radius:18px;padding:22px 24px 20px;overflow:hidden;}
+.floor-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent);}
+.floor-tile small{display:block;font-size:18px;font-weight:700;color:#e6e1d8;margin-bottom:10px;}
+.floor-tile b{font-size:72px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
+.floor-tile span{font-size:20px;color:#cfcac0;margin-left:6px;}
+.floor-tile em{display:block;margin-top:12px;font-style:normal;font-size:17px;font-weight:700;color:#cfcac0;}
+.floor-tile em.alert{color:#ffb4c8;}
+.floor-board:fullscreen .floor-tile b{font-size:9vh;}
+.floor-board:fullscreen .floor-clock{font-size:8vh;}
+</style>
 <style id="damage-fy-style">
 /* 파손 현황(FY): 기준 탭 + 금액/건수 막대 그래프 2개 + 접는 표 */
 #damageAnalyticsView{--fy-ink:#191f28;--fy-ink-2:#4e5968;--fy-muted:#8b95a1;--fy-line:#eef0f3;--fy-grid:#f0f2f4;--fy-bar:#2a78d6;--fy-bar-hover:#1f63b8;}
@@ -8409,32 +8460,89 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 }
 </style>
 <script id="lush-hero">
-/* 메인 인사 배너(물류팀 공용): 날짜와 오늘의 숫자 3개(오늘 출고 요청, 미완료 할 일, 오늘 근무 인원) */
+/* 메인 인사 배너(물류팀 공용) + 현장 대시보드: 오늘의 숫자는 getTodayOpsStats() 하나로 계산해 두 화면이 같은 값을 보여줌 */
 (function(){
   var $=function(id){return document.getElementById(id)};
   function readArr(k){try{var a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch(e){return[]}}
-  function todayKST(){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(new Date())}
-  function update(){
-    if(!$('heroDate'))return;
-    $('heroDate').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(new Date());
-    var today=todayKST();
-    var req=readArr('lush_outbound_requests_v1').filter(function(r){return(r.status||'미처리')!=='처리완료'&&(r.requestDates||[]).indexOf(today)>=0}).length;
+  function ymd(d){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Seoul',year:'numeric',month:'2-digit',day:'2-digit'}).format(d)}
+  // 금주 = 일요일~토요일 (메인 '금주 출고 요청'과 같은 기준)
+  function weekRangeKST(){var t=ymd(new Date()),p=t.split('-').map(Number),base=new Date(Date.UTC(p[0],p[1]-1,p[2])),dow=base.getUTCDay(),s=new Date(base);s.setUTCDate(base.getUTCDate()-dow);var e=new Date(s);e.setUTCDate(s.getUTCDate()+6);var f=function(d){return d.toISOString().slice(0,10)};return{start:f(s),end:f(e)}}
+  function stats(){
+    var today=ymd(new Date()),reqs=readArr('lush_outbound_requests_v1'),isDone=function(r){return r.status==='처리완료'||r.status==='완료'};
+    var req=reqs.filter(function(r){return!isDone(r)&&(r.requestDates||[]).indexOf(today)>=0}).length;
     var todo=readArr('lush-v51-todos').filter(function(t){return!t.done}).length;
-    $('heroReq').textContent=req;$('heroTodo').textContent=todo;
     // 오늘 입고 팔렛: 캘린더 일정 중 오늘 날짜 + 제목에 '입고'가 있는 것(예: "132차-JP-1팔렛-9시 입고")의 팔렛 수 합계.
     // '입항'(항구 도착)은 제외. 박스만 있는 입고는 팔렛에 넣지 않고 박스로 따로 표시
     var ev=(window.getImportEvents?window.getImportEvents():[]).filter(function(e){return today>=(e.startDate||'')&&today<=(e.endDate||e.startDate||'')&&/입고/.test(e.title||'')});
     var pallets=0,boxes=0;
     ev.forEach(function(e){var t=e.title||'',m,re=/(\d+(?:\.\d+)?)\s*(?:팔렛|파렛|PLT)/gi;while((m=re.exec(t)))pallets+=parseFloat(m[1]);var b=/(\d+)\s*박스/g;while((m=b.exec(t)))boxes+=parseInt(m[1],10)});
-    $('heroPallet').textContent=Number.isInteger(pallets)?pallets:pallets.toFixed(1);
-    $('heroPalletUnit').textContent='팔렛'+(boxes?' + '+boxes+'박스':'');
-    $('heroInboundCard').title=ev.length?'오늘 입고 '+ev.length+'건\n'+ev.map(function(e){return'· '+e.title.trim()}).join('\n'):'오늘 캘린더에 입고 일정이 없습니다.';
-    var staff=$('todayOperatingCount');$('heroStaff').textContent=staff?staff.textContent.trim():'-';
+    var staffEl=$('todayOperatingCount');
+    var wk=weekRangeKST(),byType={};
+    ['bulk','traffic','hq','nozzle'].forEach(function(type){var rows=reqs.filter(function(r){return r&&r.type===type&&(r.requestDates||[]).some(function(d){return d>=wk.start&&d<=wk.end})});byType[type]={total:rows.length,pending:rows.filter(function(r){return!isDone(r)}).length}});
+    return{today:today,req:req,todo:todo,pallets:pallets,boxes:boxes,inboundEvents:ev,staff:staffEl?staffEl.textContent.trim():'-',week:wk,byType:byType};
+  }
+  window.getTodayOpsStats=stats;
+  function fmtPallet(s){return Number.isInteger(s.pallets)?s.pallets:s.pallets.toFixed(1)}
+  window.formatPalletCount=fmtPallet;
+  function inboundTitle(s){return s.inboundEvents.length?'오늘 입고 '+s.inboundEvents.length+'건\n'+s.inboundEvents.map(function(e){return'· '+e.title.trim()}).join('\n'):'오늘 캘린더에 입고 일정이 없습니다.'}
+  window.inboundEventsTitle=inboundTitle;
+  function update(){
+    if(!$('heroDate'))return;
+    $('heroDate').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',month:'long',day:'numeric',weekday:'long'}).format(new Date());
+    var s=stats();
+    $('heroReq').textContent=s.req;$('heroTodo').textContent=s.todo;
+    $('heroPallet').textContent=fmtPallet(s);
+    $('heroPalletUnit').textContent='팔렛'+(s.boxes?' + '+s.boxes+'박스':'');
+    $('heroInboundCard').title=inboundTitle(s);
+    $('heroStaff').textContent=s.staff;
+    window.renderFloorDash?.();
   }
   window.updateLushHero=update;
   update();
   // 공지·할 일·출고 요청은 팀 동기화로 수시로 바뀌므로 주기적으로 다시 계산
   setInterval(function(){if(!document.hidden&&document.querySelector('#dashboard.active'))update()},30000);
+})();
+</script>
+
+<script id="floor-dash">
+/* 현장 대시보드: 메인 배너와 같은 오늘의 숫자(getTodayOpsStats) + 금주 출고 요청 종류별 건수.
+   현장 모니터에 하루 종일 띄워두는 용도라, 이 화면이 열려 있는 동안 스스로 갱신함
+   (숫자 30초, 팀 공유 데이터 1분, 캘린더 10분마다) */
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  var isOpen=function(){return!!document.querySelector('#floorDashView.active')};
+  function render(){
+    if(!$('floorPallet')||!window.getTodayOpsStats)return;
+    var s=window.getTodayOpsStats();
+    $('floorPallet').textContent=window.formatPalletCount(s);
+    $('floorPalletUnit').textContent='팔렛'+(s.boxes?' + '+s.boxes+'박스':'');
+    $('floorInboundTile').title=window.inboundEventsTitle(s);
+    $('floorReq').textContent=s.req;$('floorTodo').textContent=s.todo;$('floorStaff').textContent=s.staff;
+    var md=function(d){return(+d.slice(5,7))+'/'+(+d.slice(8,10))};
+    $('floorWeek').textContent='('+md(s.week.start)+' ~ '+md(s.week.end)+')';
+    Object.keys(s.byType).forEach(function(t){var v=s.byType[t],b=document.querySelector('[data-floor-type="'+t+'"]'),p=document.querySelector('[data-floor-pending="'+t+'"]');if(b)b.textContent=v.total;if(p){p.textContent=v.pending?'미처리 '+v.pending+'건':'모두 처리 완료';p.classList.toggle('alert',v.pending>0)}});
+    $('floorUpdated').textContent='마지막 갱신 '+new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
+  }
+  function tick(){
+    if(!$('floorClock')||!isOpen())return;
+    var now=new Date();
+    $('floorClock').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',hour12:false}).format(now);
+    $('floorDate').textContent=new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',year:'numeric',month:'long',day:'numeric',weekday:'long'}).format(now);
+  }
+  window.renderFloorDash=function(){if(isOpen())render()};
+  setInterval(tick,1000);
+  setInterval(function(){if(isOpen())render()},30000);
+  setInterval(function(){if(isOpen()){window.pullTeamData&&window.pullTeamData(true);setTimeout(render,3000)}},60000);
+  // 캘린더(입고 일정)는 메인 스케줄의 새로고침 버튼과 같은 경로로 다시 불러옴
+  setInterval(function(){if(isOpen()){var b=$('dashRefreshImportScheduleBtn');if(b)b.click()}},600000);
+  document.addEventListener('DOMContentLoaded',function(){
+    var fb=$('floorFullBtn');
+    if(fb)fb.addEventListener('click',function(){var el=$('floorBoard');if(document.fullscreenElement){document.exitFullscreen&&document.exitFullscreen()}else if(el&&el.requestFullscreen){el.requestFullscreen().catch(function(){})}});
+    document.addEventListener('fullscreenchange',function(){if(fb)fb.textContent=document.fullscreenElement?'✕ 전체 화면 끝내기':'⛶ 전체 화면'});
+  });
+  // 메뉴로 이 화면을 열 때 즉시 그리기
+  var mo=new MutationObserver(function(){if(isOpen()){tick();render()}});
+  document.addEventListener('DOMContentLoaded',function(){var v=$('floorDashView');if(v)mo.observe(v,{attributes:true,attributeFilter:['class']})});
 })();
 </script>
 <script id="side-subnav">
