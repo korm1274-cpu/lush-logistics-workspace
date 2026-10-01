@@ -4460,7 +4460,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="kpi"><span id="dmFyAmountLabel">FY 총 파손 금액</span><b id="dmFyAmount">0</b><small>원</small></div>
     </div>
     <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="store">매장별</option><option value="manager">담당자별</option><option value="method">출고방식별</option><option value="category">제품군별 (금액)</option></select></div>
-    <div class="data-table-wrap"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
+    <div class="data-table-wrap fit-table"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
   </div>
 
   <div class="panel mt14">
@@ -8225,6 +8225,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 })();
 </script>
 <style id="misship-visual-style">
+/* 칸이 적은 집계표: 표 폭을 내용에 맞추고 남는 폭은 오른쪽 여백으로 둠 (공통 표 최소 폭 920px 해제) */
+#appShell .data-table-wrap.fit-table{width:fit-content;max-width:100%;}
+#appShell .fit-table .data-table{width:auto!important;min-width:0!important;}
+#appShell .fit-table .data-table th,#appShell .fit-table .data-table td{padding:12px 28px 12px 18px!important;}
+#appShell .fit-table .data-table th:first-child,#appShell .fit-table .data-table td:first-child{min-width:150px;}
+#appShell .fit-table .data-table th.num,#appShell .fit-table .data-table td.num{min-width:96px;}
 /* 오출고 분석: 담당자별 비중 도넛 + 사유별 Top 5 카드 */
 #misshipAnalyticsView,#damageInsightView{--ms-ink:#191f28;--ms-ink-2:#4e5968;--ms-muted:#8b95a1;--ms-surface:#fff;--ms-line:#eef0f3;--ms-up:#d64545;--ms-down:#2f7de1;}
 /* 담당자별 | 사유별 좌우 배치 (좁은 화면에서는 위아래) */
