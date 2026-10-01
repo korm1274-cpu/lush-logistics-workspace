@@ -4964,6 +4964,23 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v102-shipping-progress-animation">
+#statusBoardView .shipping-ring{
+  transition:filter .25s ease!important;
+  will-change:background!important;
+}
+#statusBoardView .shipping-progress-main:hover .shipping-ring{
+  filter:drop-shadow(0 8px 18px rgba(79,169,110,.14))!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-variant-numeric:tabular-nums!important;
+}
+@media(prefers-reduced-motion:reduce){
+  #statusBoardView .shipping-ring{transition:none!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -9161,13 +9178,41 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
 
+  var shippingProgressFrame=null,shippingProgressValue=0;
+  function animateShippingProgress(target){
+    target=Math.max(0,Math.min(100,Number(target)||0));
+    var ring=q('#statusShippingRing'),label=q('#statusShippingPct');
+    if(!ring||!label)return;
+    if(shippingProgressFrame)cancelAnimationFrame(shippingProgressFrame);
+    var start=0,duration=900,startTime=null;
+    shippingProgressValue=0;
+    ring.style.setProperty('--shipping-pct','0');
+    label.textContent='0%';
+    function step(ts){
+      if(startTime===null)startTime=ts;
+      var t=Math.min(1,(ts-startTime)/duration);
+      var eased=1-Math.pow(1-t,3);
+      var value=start+(target-start)*eased;
+      shippingProgressValue=value;
+      ring.style.setProperty('--shipping-pct',value.toFixed(2));
+      label.textContent=Math.round(value)+'%';
+      if(t<1)shippingProgressFrame=requestAnimationFrame(step);
+      else{
+        shippingProgressFrame=null;
+        shippingProgressValue=target;
+        ring.style.setProperty('--shipping-pct',String(target));
+        label.textContent=Math.round(target)+'%';
+      }
+    }
+    shippingProgressFrame=requestAnimationFrame(step);
+  }
+
   function renderShipping(){
     var qty=DEMO_MODE?DEMO_SHIPPING.convertedQty:0;
     var qtyGoal=DEMO_MODE?DEMO_SHIPPING.convertedGoal:100000;
     var progress=Math.min(100,qtyGoal?qty/qtyGoal*100:0);
 
-    q('#statusShippingPct').textContent=Math.round(progress)+'%';
-    q('#statusShippingRing').style.setProperty('--shipping-pct',String(progress));
+    animateShippingProgress(progress);
 
     q('#statusShipQtyGoal').textContent=fmt(qtyGoal);
     q('#statusShipQtyRemain').textContent=fmt(Math.max(0,qtyGoal-qty));
