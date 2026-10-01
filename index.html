@@ -4136,7 +4136,23 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .productivity-subtab.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important}
 #statusBoardView .productivity-section{display:none}
 #statusBoardView .productivity-section.active{display:block}
-#statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(3,minmax(160px,1fr))!important}
+#statusBoardView .productivity-today-toolbar{
+  grid-template-columns:minmax(125px,.875fr) minmax(125px,.875fr) minmax(145px,1fr) minmax(145px,1fr) minmax(175px,1.25fr) minmax(190px,1.25fr)!important;
+  gap:10px!important;
+}
+#statusBoardView .productivity-today-toolbar .prod-api-metric{min-width:0!important}
+#statusBoardView .productivity-today-toolbar .productivity-metric-primary{
+  background:#f5f7f5!important;
+  border-color:#d9dfda!important;
+}
+#statusBoardView .productivity-today-toolbar .productivity-metric-primary>strong{
+  display:flex!important;align-items:baseline!important;gap:6px!important;white-space:nowrap!important;
+  font-size:29px!important;
+}
+#statusBoardView .productivity-today-toolbar .productivity-metric-primary>strong em{
+  font-style:normal!important;font-size:10px!important;font-weight:850!important;color:#707970!important;letter-spacing:-.01em!important;
+}
+#statusBoardView .productivity-today-toolbar .productivity-metric-elapsed>strong{font-size:21px!important;white-space:nowrap!important}
 #statusBoardView .productivity-today-head{align-items:flex-start!important}
 #statusBoardView .productivity-today-head>div{min-width:0}
 #statusBoardView .productivity-history-staff-btn{align-self:flex-start!important;min-height:36px!important;white-space:nowrap!important;margin-left:auto!important}
@@ -4147,8 +4163,11 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .past-staff-editor[hidden]{display:none!important}
 #statusBoardView .past-staff-editor .status-filter-card{flex:1 1 190px!important}
 #statusBoardView .productivity-detail-close-row{display:flex;justify-content:flex-end;margin-top:12px}
-@media(max-width:900px){
-  #statusBoardView .productivity-today-toolbar{grid-template-columns:1fr 1fr!important}
+@media(max-width:1180px){
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media(max-width:620px){
   #statusBoardView .productivity-subtabs{width:100%!important}
@@ -4396,9 +4415,12 @@ html,body{max-width:100%;overflow-x:hidden}
                 <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
               </div>
               <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar">
-                <div class="prod-api-metric"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
-                <div class="prod-api-metric"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
-                <div class="prod-api-metric prod-staff-metric"><span>오늘 투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>직접 입력 · 자동 저장</small></div>
+                <div class="prod-api-metric productivity-metric-time"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>기존 연동 데이터</small></div>
+                <div class="prod-api-metric productivity-metric-time"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>기존 연동 데이터</small></div>
+                <div class="prod-api-metric productivity-metric-elapsed"><span>총 소요시간</span><strong id="prodElapsedDisplay">-</strong><small>시작~종료 자동 계산</small></div>
+                <div class="prod-api-metric prod-staff-metric productivity-metric-staff"><span>총 투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>직접 입력 · 자동 저장</small></div>
+                <div class="prod-api-metric productivity-metric-primary"><span>오늘 처리량</span><strong><b id="prodTodayQty">0</b><em>EA</em></strong><small>금일 누계 처리량</small></div>
+                <div class="prod-api-metric productivity-metric-primary"><span>생산성</span><strong><b id="prodTodayRate">-</b><em>EA/인·시간</em></strong><small>처리량 ÷ 총 투입 인시</small></div>
               </div>
               <div class="past-staff-editor" id="pastStaffEditor" hidden>
                 <div class="prod-api-metric status-filter-card"><span>수정 일자</span><input type="date" id="pastStaffDate"><small>과거 날짜 선택</small></div>
@@ -4411,11 +4433,7 @@ html,body{max-width:100%;overflow-x:hidden}
               <div class="chart-card"><div class="status-card-title"><h3>작업경과별 생산성 추이</h3><small>EA/인·시간 · 작업 시작점을 0으로 비교</small></div><div class="chart-wrap"><canvas id="prodHourChart"></canvas><div class="chart-empty" id="prodHourEmpty">처리량 데이터 연동 전입니다.</div></div></div>
               <div class="table-card"><div class="status-card-title"><h3>작업경과별 처리 현황</h3><small id="prodTableDate"></small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>경과구간</th><th>실제시간</th><th>처리량(EA)</th><th>인원</th><th>생산성</th></tr></thead><tbody id="prodHourBody"></tbody></table></div></div>
             </div>
-            <div class="status-summary-grid">
-              <div class="status-summary"><span>오늘 누계 처리량</span><strong id="prodCumQty">0</strong><small>EA</small></div>
-              <div class="status-summary"><span>오늘 누계 투입 인시</span><strong id="prodCumLabor">0</strong><small>인·시간</small></div>
-              <div class="status-summary"><span>현재 생산성</span><strong id="prodCumRate">0</strong><small>EA/인·시간</small></div>
-            </div>
+            
           </div>
 
           <div class="productivity-section" data-productivity-section="cumulative">
@@ -8448,6 +8466,21 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var all=readDaily();if(!all[dt])all[dt]={date:dt};all[dt].staff=n;saveDaily(all);return true;
   }
 
+  function productivityElapsedMinutes(startTime,endTime){
+    if(!startTime||!endTime)return 0;
+    var sm=/^(\d{1,2}):(\d{2})$/.exec(startTime),em=/^(\d{1,2}):(\d{2})$/.exec(endTime);
+    if(!sm||!em)return 0;
+    var start=(Number(sm[1])*60)+Number(sm[2]),end=(Number(em[1])*60)+Number(em[2]);
+    if(end<start)end+=24*60;
+    return Math.max(0,end-start);
+  }
+  function productivityElapsedLabel(minutes){
+    if(!minutes)return '-';
+    var h=Math.floor(minutes/60),m=minutes%60;
+    if(h&&m)return h+'시간 '+m+'분';
+    if(h)return h+'시간';
+    return m+'분';
+  }
   function renderProductivity(){
     var dt=today,r=effectiveRecord(dt);
     var startDisplay=q('#prodStartTimeDisplay'),endDisplay=q('#prodEndTimeDisplay'),staffInput=q('#prodStaffInput');
@@ -8463,7 +8496,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       body+='<tr><td>'+h+'</td><td>'+bucketActualTime(r.startTime,i)+'</td><td>'+(qty?fmt(qty):'-')+'</td><td>'+(staff?fmt(staff):'-')+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>';
     });
     q('#prodHourBody').innerHTML=body;
-    var sum=calcRecord(r);q('#prodCumQty').textContent=fmt(sum.qty);q('#prodCumLabor').textContent=sum.labor>0?fmt(Math.round(sum.labor*10)/10):'-';q('#prodCumRate').textContent=sum.labor>0?fmt(Math.round(sum.rate)):'-';
+    var sum=calcRecord(r),elapsedMinutes=productivityElapsedMinutes(r.startTime,r.endTime),staff=Number(r.staff||0);
+    var totalLaborHours=(elapsedMinutes>0&&staff>0)?(elapsedMinutes/60)*staff:0;
+    var todayRate=totalLaborHours>0?sum.qty/totalLaborHours:0;
+    if(q('#prodElapsedDisplay'))q('#prodElapsedDisplay').textContent=productivityElapsedLabel(elapsedMinutes);
+    if(q('#prodTodayQty'))q('#prodTodayQty').textContent=fmt(sum.qty);
+    if(q('#prodTodayRate'))q('#prodTodayRate').textContent=todayRate>0?fmt(Math.round(todayRate)):'-';
     drawChart('prodHourChart',HOURS,values,'#prodHourEmpty');
   }
 
