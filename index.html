@@ -3495,6 +3495,28 @@ html,body{max-width:100%;overflow-x:hidden}
   align-items:center!important;
   min-width:0!important;
 }
+#statusBoardView .shipping-store-name-wrap{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+#statusBoardView .shipping-store-box{
+  flex:0 0 auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:20px!important;
+  padding:0 7px!important;
+  border:1px solid #dfe4df!important;
+  border-radius:999px!important;
+  background:#f6f8f6!important;
+  color:#5f685f!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  white-space:nowrap!important;
+}
 #statusBoardView .shipping-store-name{
   overflow:hidden!important;
   color:#282e29!important;
@@ -8459,21 +8481,21 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   };
   var DEMO_SHIPPING={convertedQty:68400,convertedGoal:100000,lastHourConverted:12600,eta:'16:40'};
   var DEMO_STORES=[
-    {name:'강남역점',total:9000,done:9000},
-    {name:'홍대점',total:8000,done:7600},
-    {name:'명동점',total:7500,done:6500},
-    {name:'잠실점',total:7200,done:6100},
-    {name:'여의도점',total:7000,done:5600},
-    {name:'대학로점',total:6800,done:5000},
-    {name:'신촌점',total:6500,done:4500},
-    {name:'건대점',total:6400,done:4200},
-    {name:'영등포점',total:6200,done:3900},
-    {name:'가로수길점',total:6100,done:3500},
-    {name:'수원점',total:6000,done:3200},
-    {name:'판교점',total:5900,done:2800},
-    {name:'부산점',total:5800,done:2400},
-    {name:'대전점',total:5700,done:2000},
-    {name:'인천점',total:5900,done:2100}
+    {name:'강남역점',box:23,total:9000,done:9000},
+    {name:'홍대점',box:20,total:8000,done:7600},
+    {name:'명동점',box:18,total:7500,done:6500},
+    {name:'잠실점',box:17,total:7200,done:6100},
+    {name:'여의도점',box:16,total:7000,done:5600},
+    {name:'대학로점',box:15,total:6800,done:5000},
+    {name:'신촌점',box:15,total:6500,done:4500},
+    {name:'건대점',box:14,total:6400,done:4200},
+    {name:'영등포점',box:14,total:6200,done:3900},
+    {name:'가로수길점',box:13,total:6100,done:3500},
+    {name:'수원점',box:13,total:6000,done:3200},
+    {name:'판교점',box:12,total:5900,done:2800},
+    {name:'부산점',box:12,total:5800,done:2400},
+    {name:'대전점',box:11,total:5700,done:2000},
+    {name:'인천점',box:11,total:5900,done:2100}
   ];
   var DEMO_STORE_HISTORY=[];
   (function(){
@@ -8542,7 +8564,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         var state=pct>=100?'complete':pct<=0?'waiting':'active';
         return '<div class="shipping-store-row '+state+'">'+
           '<div class="shipping-store-line">'+
-            '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
+            '<span class="shipping-store-name-wrap"><span class="shipping-store-name">'+esc(store.name||'-')+'</span><span class="shipping-store-box">'+fmt(store.box||0)+' BOX</span></span>'+
             '<span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+' EA</span>'+
             '<strong class="shipping-store-pct">'+Math.round(pct)+'%</strong>'+
           '</div>'+
