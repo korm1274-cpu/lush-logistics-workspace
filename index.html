@@ -4393,12 +4393,12 @@ html,body{max-width:100%;overflow-x:hidden}
                   <h3>오늘 생산성</h3>
                   <small id="prodTodayLabel">오늘 기준 · 출고 시작 후 작업경과별 생산성</small>
                 </div>
+                <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
               </div>
               <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar">
                 <div class="prod-api-metric"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
                 <div class="prod-api-metric"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>향후 API 연동</small></div>
                 <div class="prod-api-metric prod-staff-metric"><span>오늘 투입 인원</span><div class="prod-staff-input-wrap"><input type="number" id="prodStaffInput" min="1" step="1" inputmode="numeric" placeholder="-"><b>명</b></div><small>직접 입력 · 자동 저장</small></div>
-                <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
               </div>
               <div class="past-staff-editor" id="pastStaffEditor" hidden>
                 <div class="prod-api-metric status-filter-card"><span>수정 일자</span><input type="date" id="pastStaffDate"><small>과거 날짜 선택</small></div>
