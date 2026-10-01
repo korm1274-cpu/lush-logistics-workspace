@@ -4433,7 +4433,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
     <section id="inventoryOosView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">OUT OF STOCK</div><h2>품절 재고 분석</h2><p>기존 담당자별 기준일 Snapshot을 그대로 사용해 기간 중 실사수량 0인 일수를 계산합니다.</p></div></div><div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="oosStart"></div><div class="field"><label>종료일</label><input type="date" id="oosEnd"></div><div class="field"><label>담당자</label><select id="oosOwner"><option value="">전체</option></select></div><div class="field small"><label>최소 품절일</label><input type="number" min="1" value="1" id="oosMin"></div><div class="field grow"><label>검색</label><input id="oosQuery" placeholder="제품코드 / 제품명"></div><button class="btn primary" id="oosRun">조회</button></div><div class="kpis data-kpis"><div class="kpi"><span>품절 SKU</span><b id="oosSku">0</b><small>SKU</small></div><div class="kpi"><span>품절 일수 합계</span><b id="oosDays">0</b><small>일</small></div><div class="kpi"><span>최다 품절</span><b id="oosMax">0</b><small>일</small></div><div class="kpi"><span>조회 Snapshot</span><b id="oosSnapshots">0</b><small>건</small></div></div><div class="panel"><div class="panel-head"><div><small>OUT OF STOCK LIST</small><h3>품절 재고 목록</h3></div><button class="btn" id="oosExport">CSV</button></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>담당자</th><th>제품코드</th><th>제품명</th><th>제품군</th><th class="num">품절일</th><th>품절 기준일</th></tr></thead><tbody id="oosBody"></tbody></table></div></div></div></section>
 
-    <section id="misshipAnalyticsView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">MISSHIP ANALYTICS</div><h2>오출고 분석</h2><p>구글시트에서 연동된 오출고 기록을 매장·담당자·사유·처리여부 기준으로 분석합니다.</p></div></div><p style="margin:6px 2px 0;font-size:12px;color:#8a949e">건수 기준: 접수 날짜와 매장이 같으면 1건 · 담당자별은 날짜·매장·담당자, 사유별은 날짜·매장·사유가 같으면 1건으로 집계합니다. 비중은 당월 총 오출고 건수 대비 비율이며, 한 건에 담당자·사유가 여럿이면 각각 잡혀 합이 100%를 넘을 수 있습니다.</p><div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 담당자 · 사유 비교 (전월 대비)</h3></div><div class="field" style="margin:0"><label>기준월</label><input type="month" id="msMonth"></div></div><div style="display:grid;gap:18px"><div><h4 style="margin:4px 2px 10px;font-size:14px">담당자별</h4><div class="data-table-wrap"><table class="data-table"><thead><tr><th>담당자</th><th class="num">비중</th><th class="num" id="msMgrCurHead">당월</th><th class="num" id="msMgrPrevHead">전월</th><th class="num">전월 대비</th></tr></thead><tbody id="msMgrBody"></tbody></table></div></div><div><h4 style="margin:4px 2px 10px;font-size:14px">사유별</h4><div class="data-table-wrap"><table class="data-table"><thead><tr><th>사유</th><th class="num">비중</th><th class="num" id="msRsnCurHead">당월</th><th class="num" id="msRsnPrevHead">전월</th><th class="num">전월 대비</th></tr></thead><tbody id="msRsnBody"></tbody></table></div></div></div></div></div></section>
+    <section id="misshipAnalyticsView" class="view"><div class="data-workbench"><div class="data-workbench-head"><div><div class="eyebrow">MISSHIP ANALYTICS</div><h2>오출고 분석</h2><p>구글시트에서 연동된 오출고 기록을 매장·담당자·사유·처리여부 기준으로 분석합니다.</p></div></div><p style="margin:6px 2px 0;font-size:12px;color:#8a949e">건수 기준: 접수 날짜와 매장이 같으면 1건 · 담당자별은 날짜·매장·담당자, 사유별은 날짜·매장·사유가 같으면 1건으로 집계합니다. 비중은 당월 총 오출고 건수 대비 비율이며, 한 건에 담당자·사유가 여럿이면 각각 잡혀 합이 100%를 넘을 수 있습니다.</p><div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 담당자 · 사유 비교 (전월 대비)</h3></div><div class="field" style="margin:0"><label>기준월</label><input type="month" id="msMonth"></div></div><div class="ms-visual-grid"><div class="ms-card"><div class="ms-card-head"><b>담당자별 비중</b><span id="msDonutMonth"></span></div><div class="ms-donut-wrap"><div class="ms-donut" id="msMgrDonut"></div><div class="ms-legend" id="msMgrLegend"></div></div></div><div class="ms-card"><div class="ms-card-head"><b>사유별 Top 5</b><span id="msTopMonth"></span><em>건수순</em></div><div class="ms-top" id="msRsnTop"></div></div></div><div id="msTip" class="ms-tip" hidden></div><div style="display:grid;gap:18px;margin-top:18px"><div><h4 style="margin:4px 2px 10px;font-size:14px">담당자별</h4><div class="data-table-wrap"><table class="data-table"><thead><tr><th>담당자</th><th class="num">비중</th><th class="num" id="msMgrCurHead">당월</th><th class="num" id="msMgrPrevHead">전월</th><th class="num">전월 대비</th></tr></thead><tbody id="msMgrBody"></tbody></table></div></div><div><h4 style="margin:4px 2px 10px;font-size:14px">사유별</h4><div class="data-table-wrap"><table class="data-table"><thead><tr><th>사유</th><th class="num">비중</th><th class="num" id="msRsnCurHead">당월</th><th class="num" id="msRsnPrevHead">전월</th><th class="num">전월 대비</th></tr></thead><tbody id="msRsnBody"></tbody></table></div></div></div></div></div></section>
 
     <section id="misshipRecordsView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">MISSHIP RECORDS</div><h2>오출고</h2><p>구글시트 '오출고' 기록을 시트 순서 그대로 보여줍니다. 건수는 접수 날짜와 매장이 같으면 1건으로 셉니다. 내용 수정은 구글시트에서 하신 뒤 상단 동기화 버튼을 눌러주세요. <span id="mrUpdated" style="color:#8a949e"></span></p></div></div>
@@ -6510,6 +6510,38 @@ setTimeout(initInventoryColumnResize,0);
   function misshipCountBy(rows,idx){const seen=new Set(),out={};rows.forEach(r=>{const label=msLabel(r[idx]),k=msCaseKey(r)+'|'+label;if(seen.has(k))return;seen.add(k);out[label]=(out[label]||0)+1});return out}
   function shiftYm(m,delta){const[y,mo]=m.split('-').map(Number),d=new Date(y,mo-1+delta,1);return`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`}
   function msPctCell(cur,base){const p=pct(cur,base);if(p===null)return'<td class="num" style="color:#8a949e">신규</td>';if(p===0)return'<td class="num" style="color:#8a949e">0.0%</td>';return`<td class="num" style="font-weight:800;color:${p>0?'#d64545':'#2f7de1'}">${p>0?'▲':'▼'} ${Math.abs(p).toFixed(1)}%</td>`}
+  /* 담당자별 비중 도넛 + 사유별 Top 5.
+     색은 순위가 아니라 담당자에 고정: 전체 기간 건수 순으로 범주 색 1~7번을 배정하고 8번째부터는 '기타'(회색)로 묶음 */
+  const MS_COLORS=['#2a78d6','#eb6834','#1baf7a','#eda100','#e87ba4','#008300','#4a3aa7'],MS_OTHER='#9aa0a6';
+  function msColorMap(all){const tot=misshipCountBy(all,7);const order=Object.keys(tot).sort((a,b)=>tot[b]-tot[a]||a.localeCompare(b,'ko'));const map={};order.slice(0,MS_COLORS.length).forEach((k,i)=>map[k]=MS_COLORS[i]);return map}
+  function msTip(e,html){const t=$('msTip');if(!t)return;if(!html){t.hidden=true;return}t.innerHTML=html;t.hidden=false;const x=Math.min(e.clientX+14,innerWidth-t.offsetWidth-8),y=Math.max(8,e.clientY-t.offsetHeight-10);t.style.left=x+'px';t.style.top=y+'px'}
+  function renderMisshipVisuals(all,m,pm,totalCur){
+    if(!$('msMgrDonut'))return;
+    $('msDonutMonth').textContent=m;$('msTopMonth').textContent=m;
+    const inM=x=>all.filter(r=>ym(r[0])===x),pctOf=c=>totalCur?(c/totalCur*100).toFixed(1)+'%':'-';
+    // 도넛
+    const colors=msColorMap(all),cur=misshipCountBy(inM(m),7);
+    let items=Object.entries(cur).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).map(([k,v])=>({k,v,c:colors[k]}));
+    const named=items.filter(x=>x.c),rest=items.filter(x=>!x.c);
+    if(rest.length)named.push({k:'기타',v:rest.reduce((a,x)=>a+x.v,0),c:MS_OTHER,other:rest.map(x=>x.k)});
+    items=named;
+    const sum=items.reduce((a,x)=>a+x.v,0);
+    if(!sum){$('msMgrDonut').innerHTML='';$('msMgrLegend').innerHTML='<div class="ms-empty">해당 월 데이터가 없습니다.</div>';}
+    else{
+      const R=46,SW=18,C=2*Math.PI*R,GAP=items.length>1?2:0;let off=0;
+      const segs=items.map((x,i)=>{const len=x.v/sum*C,s=`<circle class="seg" data-i="${i}" cx="60" cy="60" r="${R}" fill="none" stroke="${x.c}" stroke-width="${SW}" stroke-dasharray="${Math.max(len-GAP,0.5)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)"></circle>`;off+=len;return s}).join('');
+      $('msMgrDonut').innerHTML=`<svg viewBox="0 0 120 120" role="img" aria-label="${esc(m)} 담당자별 오출고 비중"><circle cx="60" cy="60" r="${R}" fill="none" stroke="#f2f4f6" stroke-width="${SW}"></circle>${segs}</svg><div class="ms-donut-center"><small>총 오출고</small><b>${fmt(totalCur)}건</b></div>`;
+      $('msMgrLegend').innerHTML=items.map((x,i)=>`<div class="ms-legend-row" data-i="${i}"><i style="background:${x.c}"></i><span title="${esc(x.other?x.other.join(', '):x.k)}">${esc(x.k)}</span><small>${fmt(x.v)}건</small><b>${pctOf(x.v)}</b></div>`).join('');
+      const donut=$('msMgrDonut'),tipHtml=x=>`<b>${esc(x.k)}</b> · ${fmt(x.v)}건 · ${pctOf(x.v)}${x.other?`<br><small>${esc(x.other.join(', '))}</small>`:''}`;
+      const hot=i=>{donut.classList.toggle('dim',i!=null);donut.querySelectorAll('.seg').forEach(s=>s.classList.toggle('hot',String(i)===s.dataset.i))};
+      donut.querySelectorAll('.seg').forEach(s=>{const x=items[s.dataset.i];s.onmousemove=e=>{hot(s.dataset.i);msTip(e,tipHtml(x))};s.onmouseleave=e=>{hot(null);msTip(e,null)}});
+      $('msMgrLegend').querySelectorAll('.ms-legend-row').forEach(r=>{r.onmouseenter=()=>hot(r.dataset.i);r.onmouseleave=()=>hot(null)});
+    }
+    // 사유별 Top 5 (전월 대비 함께 표시)
+    const rc=misshipCountBy(inM(m),11),rp=misshipCountBy(inM(pm),11);
+    const top=Object.entries(rc).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0],'ko')).slice(0,5);
+    $('msRsnTop').innerHTML=top.length?top.map(([k,v],i)=>{const p=rp[k]||0,ch=pct(v,p);const chTxt=ch===null?'전월 0건 · 신규':`전월 ${fmt(p)}건 · <span style="color:${ch>0?'var(--ms-up)':ch<0?'var(--ms-down)':'var(--ms-muted)'};font-weight:700">${ch>0?'▲':ch<0?'▼':''} ${Math.abs(ch).toFixed(1)}%</span>`;return`<div class="ms-top-row"><div class="ms-top-rank">${i+1}</div><div class="ms-top-name"><b title="${esc(k)}">${esc(k)}</b><small>${chTxt}</small></div><div class="ms-top-val"><b>${fmt(v)}건</b><small>${pctOf(v)}</small></div></div>`}).join(''):'<div class="ms-empty">해당 월 데이터가 없습니다.</div>';
+  }
   function renderMisshipCompare(all){
     if(!$('msMgrBody'))return;
     if(!$('msMonth').value)$('msMonth').value=today().slice(0,7);
@@ -6525,6 +6557,7 @@ setTimeout(initInventoryColumnResize,0);
       $(bodyId).innerHTML=labels.length?row('총 오출고 건수',totalCur,totalPrev,true)+labels.map(l=>row(l,cur[l]||0,prv[l]||0)).join(''):'<tr><td colspan="5" class="data-empty">해당 월 데이터가 없습니다.</td></tr>';
     };
     table(7,'msMgrBody');table(11,'msRsnBody');
+    renderMisshipVisuals(all,m,pm,totalCur);
   }
   function renderMisship(){renderMisshipCompare(read().misship?.rows||[])}
 
@@ -8109,6 +8142,46 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   if(window.lucide)lucide.createIcons();
 })();
 </script>
+<style id="misship-visual-style">
+/* 오출고 분석: 담당자별 비중 도넛 + 사유별 Top 5 카드 */
+#misshipAnalyticsView{--ms-ink:#191f28;--ms-ink-2:#4e5968;--ms-muted:#8b95a1;--ms-surface:#fff;--ms-line:#eef0f3;--ms-up:#d64545;--ms-down:#2f7de1;}
+.ms-visual-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+@media(max-width:1100px){.ms-visual-grid{grid-template-columns:1fr;}}
+.ms-card{background:var(--ms-surface);border:1px solid var(--ms-line);border-radius:16px;padding:20px 22px;min-width:0;}
+.ms-card-head{display:flex;align-items:baseline;gap:8px;margin-bottom:16px;}
+.ms-card-head b{font-size:14px;color:var(--ms-ink);font-weight:800;}
+.ms-card-head span{font-size:13px;color:var(--ms-muted);}
+.ms-card-head em{margin-left:auto;font-style:normal;font-size:12px;color:var(--ms-muted);}
+.ms-donut-wrap{display:flex;align-items:center;gap:28px;}
+.ms-donut{flex:0 0 168px;position:relative;width:168px;height:168px;}
+.ms-donut svg{width:100%;height:100%;display:block;}
+.ms-donut .seg{cursor:default;transition:opacity .15s;}
+.ms-donut.dim .seg:not(.hot){opacity:.35;}
+.ms-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.ms-donut-center small{font-size:12px;color:var(--ms-muted);}
+.ms-donut-center b{font-size:20px;font-weight:800;color:var(--ms-ink);}
+.ms-legend{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.ms-legend-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:5px 6px;border-radius:8px;font-size:14px;color:var(--ms-ink-2);}
+.ms-legend-row:hover{background:#f6f7f9;}
+.ms-legend-row i{width:10px;height:10px;border-radius:50%;}
+.ms-legend-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-legend-row small{font-size:12px;color:var(--ms-muted);}
+.ms-legend-row b{font-weight:800;color:var(--ms-ink);min-width:52px;text-align:right;}
+.ms-top{display:flex;flex-direction:column;gap:6px;}
+.ms-top-row{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;gap:14px;padding:9px 4px;border-radius:10px;}
+.ms-top-row:hover{background:#f6f7f9;}
+.ms-top-rank{width:24px;height:24px;border-radius:7px;background:#eef0f3;color:var(--ms-ink-2);font-size:12px;font-weight:800;display:flex;align-items:center;justify-content:center;}
+.ms-top-row:first-child .ms-top-rank{background:var(--ms-ink);color:#fff;}
+.ms-top-name{min-width:0;}
+.ms-top-name b{display:block;font-size:14px;color:var(--ms-ink);font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-top-name small{font-size:12px;color:var(--ms-muted);}
+.ms-top-val{text-align:right;}
+.ms-top-val b{display:block;font-size:15px;color:var(--ms-ink);font-weight:800;}
+.ms-top-val small{font-size:12px;color:var(--ms-muted);}
+.ms-empty{padding:40px 0;text-align:center;color:var(--ms-muted);font-size:13px;}
+.ms-tip{position:fixed;z-index:9999;pointer-events:none;background:#fff;color:var(--ms-ink,#191f28);border:1px solid #e3e7ea;border-radius:10px;padding:8px 12px;font-size:13px;box-shadow:0 10px 26px rgba(20,30,40,.16);white-space:nowrap;}
+.ms-tip b{font-weight:800;}
+</style>
 <style id="side-subnav-style">
 /* 상단 탭의 부항목을 탭 아래 드롭다운 대신 화면 왼쪽 세로 메뉴로 보여줌 (데스크톱 전용, 모바일 ☰ 메뉴는 기존 유지) */
 #sideSubNav{display:none;}
