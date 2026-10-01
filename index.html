@@ -3873,6 +3873,255 @@ html,body{max-width:100%;overflow-x:hidden}
   }
 }
 </style>
+<style id="v94-statusboard-issue-content-style">
+/* Status-board content adopts the Issues visual language.
+   Charts/canvas geometry and chart type are intentionally untouched. */
+
+#statusBoardView{
+  --status-issue-ink:var(--lush-ink,#1d1d1b);
+  --status-issue-kraft:var(--lush-kraft,#d8d0c2);
+  --status-issue-paper:var(--lush-paper,#f5f3ee);
+  --status-issue-card:#fff;
+}
+
+#statusBoardView .status-board-shell{
+  background:transparent!important;
+}
+
+/* Header: same black banner language used by Issues */
+#statusBoardView .status-board-top{
+  position:relative!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:22px 28px!important;
+  margin-bottom:16px!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:#1d1d1b!important;
+  background-image:
+    radial-gradient(circle at 93% 22%,rgba(232,123,164,.28) 0 40px,transparent 41px),
+    radial-gradient(circle at 85% 88%,rgba(27,175,122,.22) 0 26px,transparent 27px),
+    radial-gradient(circle at 98% 74%,rgba(237,161,0,.22) 0 15px,transparent 16px)!important;
+  box-shadow:none!important;
+}
+#statusBoardView .status-board-top .eyebrow{color:#cfcac0!important}
+#statusBoardView .status-board-top h2{color:#fff!important}
+#statusBoardView .status-board-top p{color:#d9d4cb!important;max-width:900px!important}
+#statusBoardView .status-board-api-state{
+  background:transparent!important;
+  color:#fff!important;
+  border:1.5px solid rgba(255,255,255,.38)!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* Main content cards: same outlined white cards as Issues */
+#statusBoardView .status-card,
+#statusBoardView .chart-card,
+#statusBoardView .table-card,
+#statusBoardView .detail-summary-card,
+#statusBoardView .shipping-display-board,
+#statusBoardView .shipping-overview-primary,
+#statusBoardView .shipping-store-board,
+#statusBoardView .store-history-summary,
+#statusBoardView .store-history-on-demand,
+#statusBoardView .product-analysis-summary,
+#statusBoardView .product-volume-card,
+#statusBoardView .product-detail-head{
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+
+/* subtle accent strip, matching Issue panels without altering chart area */
+#statusBoardView .status-card,
+#statusBoardView .chart-card,
+#statusBoardView .table-card,
+#statusBoardView .detail-summary-card,
+#statusBoardView .shipping-display-board{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#statusBoardView .status-card:before,
+#statusBoardView .chart-card:before,
+#statusBoardView .table-card:before,
+#statusBoardView .detail-summary-card:before,
+#statusBoardView .shipping-display-board:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:5px!important;
+  background:var(--lush-pink,#e87ba4)!important;
+  z-index:1!important;
+}
+#statusBoardView .chart-card:nth-of-type(2):before,
+#statusBoardView .table-card:nth-of-type(2):before{background:var(--lush-violet,#8f79c7)!important}
+#statusBoardView .chart-card:nth-of-type(3):before,
+#statusBoardView .table-card:nth-of-type(3):before{background:var(--lush-mint,#1baf7a)!important}
+
+/* Titles */
+#statusBoardView .status-card-title{
+  position:relative!important;
+  z-index:2!important;
+}
+#statusBoardView .status-card-title h3,
+#statusBoardView .shipping-display-head h3,
+#statusBoardView .shipping-store-head h4{
+  color:#1d1d1b!important;
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+}
+#statusBoardView .status-card-title small,
+#statusBoardView .shipping-display-kicker,
+#statusBoardView .shipping-store-head span{
+  color:#7a7a74!important;
+}
+
+/* KPI/summary cards: white + kraft outline + left accent bar */
+#statusBoardView .status-summary,
+#statusBoardView .store-summary-grid>div,
+#statusBoardView .store-product-kpis>div,
+#statusBoardView .product-detail-kpis>div,
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain,
+#statusBoardView .shipping-kpi-card,
+#statusBoardView .shipping-last-hour-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+#statusBoardView .status-summary:before,
+#statusBoardView .store-summary-grid>div:before,
+#statusBoardView .store-product-kpis>div:before,
+#statusBoardView .shipping-kpi-card:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:6px!important;
+  background:var(--lush-pink,#e87ba4)!important;
+}
+#statusBoardView .status-summary:nth-child(2):before,
+#statusBoardView .store-summary-grid>div:nth-child(2):before,
+#statusBoardView .store-product-kpis>div:nth-child(2):before,
+#statusBoardView .shipping-kpi-card:nth-child(2):before{background:var(--lush-mint,#1baf7a)!important}
+#statusBoardView .status-summary:nth-child(3):before,
+#statusBoardView .store-summary-grid>div:nth-child(3):before,
+#statusBoardView .store-product-kpis>div:nth-child(3):before,
+#statusBoardView .shipping-kpi-card:nth-child(3):before{background:var(--lush-yellow,#eda100)!important}
+#statusBoardView .store-summary-grid>div:nth-child(4):before{background:var(--lush-violet,#8f79c7)!important}
+
+/* filters and readonly metric blocks */
+#statusBoardView .status-filter-cards,
+#statusBoardView .prod-toolbar-readonly{
+  background:#fff!important;
+}
+#statusBoardView .prod-api-metric,
+#statusBoardView .status-filter-card{
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+#statusBoardView .prod-api-metric>span,
+#statusBoardView .status-filter-card>span{
+  color:#687078!important;
+}
+#statusBoardView .prod-api-metric>strong,
+#statusBoardView .status-filter-card input,
+#statusBoardView .status-filter-card select{
+  color:#1d1d1b!important;
+}
+
+/* tables */
+#statusBoardView .status-data-table{
+  background:#fff!important;
+}
+#statusBoardView .status-data-table th{
+  background:#f6f7f8!important;
+  color:#5c6670!important;
+  border-bottom:1px solid #dfe3e6!important;
+}
+#statusBoardView .status-data-table td{
+  background:#fff!important;
+  border-bottom:1px solid #eceeef!important;
+  color:#2f363b!important;
+}
+#statusBoardView .status-table-scroll{
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:12px!important;
+  overflow:auto!important;
+}
+#statusBoardView .table-card .status-table-scroll{
+  border-left:0!important;
+  border-right:0!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+}
+
+/* Detail/list areas */
+#statusBoardView .detail-day-row{
+  background:#fff!important;
+  border-bottom:1px solid #eceeef!important;
+}
+#statusBoardView .detail-day-row:hover,
+#statusBoardView .detail-day-row.active{
+  background:#f4f4f1!important;
+}
+#statusBoardView .store-history-on-demand{
+  background:#fafaf8!important;
+}
+
+/* shipping: visual language only; keep ring/progress geometry intact */
+#statusBoardView .shipping-display-head{
+  border-bottom:1px solid #deded8!important;
+}
+#statusBoardView .shipping-progress-zone{
+  background:#fff!important;
+}
+#statusBoardView .shipping-eta-zone{
+  background:#fafaf8!important;
+  border-color:var(--status-issue-kraft)!important;
+}
+#statusBoardView .shipping-store-track{
+  background:#ecece8!important;
+}
+#statusBoardView .shipping-store-row{
+  border-bottom-color:#ecece8!important;
+}
+
+/* Charts are intentionally not restyled:
+   canvas dimensions, chart type, line/doughnut rendering, point sizes and axes remain as-is. */
+#statusBoardView canvas{
+  filter:none!important;
+}
+
+/* buttons inside content */
+#statusBoardView .status-filter-btn,
+#statusBoardView .store-history-close{
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  #statusBoardView .status-board-top{
+    padding:18px!important;
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
