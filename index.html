@@ -5289,6 +5289,33 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v106-shipping-progress-purple">
+/* V106 — separate main progress from store percentage blue */
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#7a5fb3 calc(var(--shipping-pct) * 1%),#ece9f3 0)!important;
+}
+#statusBoardView .shipping-progress-main{
+  background:#faf8fd!important;
+  border-color:#ddd5ea!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#4f4662!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#756d81!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-ring{
+  background:conic-gradient(#7a5fb3 calc(var(--shipping-pct) * 1%),#ece9f3 0)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#faf8fd!important;
+  border-color:#ddd5ea!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
