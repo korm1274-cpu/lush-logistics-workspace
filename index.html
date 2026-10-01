@@ -4459,8 +4459,12 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="kpi"><span id="dmFyCountLabel">FY 총 파손 건수</span><b id="dmFyCount">0</b><small>건</small></div>
       <div class="kpi"><span id="dmFyAmountLabel">FY 총 파손 금액</span><b id="dmFyAmount">0</b><small>원</small></div>
     </div>
-    <div class="field" style="max-width:170px;margin:14px 0 10px"><label>집계 기준</label><select id="dmFyGroup"><option value="month">월별</option><option value="store">매장별</option><option value="manager">담당자별</option><option value="method">출고방식별</option><option value="category">제품군별 (금액)</option></select></div>
-    <div class="data-table-wrap fit-table"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div>
+    <input type="hidden" id="dmFyGroup" value="month">
+    <div class="fy-tabs" role="tablist" aria-label="집계 기준"><button type="button" class="fy-tab active" data-fy-group="month">월별</button><button type="button" class="fy-tab" data-fy-group="store">매장별</button><button type="button" class="fy-tab" data-fy-group="manager">담당자별</button><button type="button" class="fy-tab" data-fy-group="method">출고방식별</button><button type="button" class="fy-tab" data-fy-group="category">제품군별</button></div>
+    <div class="fy-charts" id="dmFyCharts"><div class="fy-chart"><div class="fy-chart-head"><b>파손 금액</b><span id="dmFyAmtSub"></span></div><div class="fy-chart-body" id="dmFyAmtChart"></div></div><div class="fy-chart" id="dmFyCntWrap"><div class="fy-chart-head"><b>파손 건수</b><span id="dmFyCntSub"></span></div><div class="fy-chart-body" id="dmFyCntChart"></div></div></div>
+    <div id="dmFyTip" class="ms-tip" hidden></div>
+    <details class="fy-table-toggle"><summary>전체 표 보기</summary><div class="data-table-wrap fit-table"><table class="data-table"><thead><tr id="dmFyTableHead"><th>월</th><th class="num">건수</th><th class="num">금액</th></tr></thead><tbody id="dmFyBody"></tbody></table></div></details>
+
   </div>
 
   <div class="panel mt14">
@@ -6631,10 +6635,36 @@ setTimeout(initInventoryColumnResize,0);
     const group=$('dmFyGroup').value;
     const idx=group==='store'?2:group==='method'?3:group==='manager'?9:group==='category'?8:null,map={},amountOnly=group==='category';
     rows.forEach(r=>{const k=group==='month'?ym(r[1]??r[0]):(String(r[idx]??'').trim()||'(미지정)');if(!map[k])map[k]={cases:new Set(),a:0};map[k].cases.add(dmCaseKey(r));map[k].a+=num(r[7])});Object.values(map).forEach(v=>v.c=v.cases.size);
-    $('dmFyTableHead').innerHTML=group==='month'?'<th>월</th><th class="num">건수</th><th class="num">금액</th>':`<th>${group==='manager'?'담당자':group==='store'?'매장':group==='category'?'제품군':'출고방식'}</th>${amountOnly?'':'<th class="num">건수</th>'}<th class="num">금액</th>`;
+    // 표: 항목 | 건수 | 금액 | 금액 비중 (월별은 FY 순서, 그 외는 금액 순)
+    const totalA=rows.reduce((a,r)=>a+num(r[7]),0),shareA=a=>totalA?(a/totalA*100).toFixed(1)+'%':'-';
+    $('dmFyTableHead').innerHTML=`<th>${group==='month'?'월':group==='manager'?'담당자':group==='store'?'매장':group==='category'?'제품군':'출고방식'}</th>${amountOnly?'':'<th class="num">건수</th>'}<th class="num">금액</th><th class="num">금액 비중</th>`;
     const entries=Object.entries(map).sort((a,b)=>group==='month'?(a[0]>b[0]?1:a[0]<b[0]?-1:0):b[1].a-a[1].a);
-    $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td>${amountOnly?'':`<td class="num">${fmt(v.c)}건</td>`}<td class="num">${fmt(v.a)}원</td></tr>`).join(''):`<tr><td colspan="${amountOnly?2:3}" class="data-empty">데이터가 없습니다.</td></tr>`;
+    $('dmFyBody').innerHTML=entries.length?entries.map(([k,v])=>`<tr><td>${esc(k)}</td>${amountOnly?'':`<td class="num">${fmt(v.c)}건</td>`}<td class="num">${fmt(v.a)}원</td><td class="num">${shareA(v.a)}</td></tr>`).join(''):`<tr><td colspan="${amountOnly?3:4}" class="data-empty">데이터가 없습니다.</td></tr>`;
+    renderDamageFYCharts(group,map,fy,amountOnly);
   }
+  /* 파손 현황 그래프: 금액과 건수를 축 하나짜리 그래프 두 개로 분리(이중 축 사용 안 함).
+     월별 = FY 7월~다음 해 6월 세로 막대, 그 외 = 상위 10개 가로 막대(금액 그래프는 금액 순, 건수 그래프는 건수 순). 제품군은 금액만 */
+  const FY_TOP=10;
+  function fyTip(e,html){const t=$('dmFyTip');if(!t)return;if(!html){t.hidden=true;return}t.innerHTML=html;t.hidden=false;const x=Math.min(e.clientX+14,innerWidth-t.offsetWidth-8),y=Math.max(8,e.clientY-t.offsetHeight-10);t.style.left=x+'px';t.style.top=y+'px'}
+  const wonCompact=v=>{v=Math.round(v);if(Math.abs(v)>=1e8)return(v/1e8).toFixed(1).replace(/\.0$/,'')+'억';if(Math.abs(v)>=1e4)return fmt(Math.round(v/1e4))+'만';return fmt(v)};
+  function renderDamageFYCharts(group,map,fy,amountOnly){
+    const amtEl=$('dmFyAmtChart'),cntEl=$('dmFyCntChart');if(!amtEl||!cntEl)return;
+    $('dmFyCntWrap').hidden=amountOnly;$('dmFyCharts').classList.toggle('single',amountOnly);
+    const bindTips=el=>el.querySelectorAll('[data-tip]').forEach(n=>{n.onmousemove=e=>fyTip(e,n.dataset.tip);n.onmouseleave=e=>fyTip(e,null)});
+    if(group==='month'){
+      const months=[];for(let i=0;i<12;i++){const d=new Date(+fy.start.slice(0,4),6+i,1);months.push(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`)}
+      const cols=(val,fmtV,unit)=>{const max=Math.max(1,...months.map(m=>val(map[m])));return`<div class="fy-cols">${months.map(m=>{const v=val(map[m]);return`<div class="fy-col" data-tip="${esc(`<b>${m}</b> · ${fmt(map[m]?.c||0)}건 · ${fmt(map[m]?.a||0)}원`)}"><span class="fy-col-val">${v?fmtV(v):''}</span><div class="fy-col-bar" style="height:${v?Math.max(v/max*170,3):0}px"></div></div>`}).join('')}</div><div class="fy-col-labels">${months.map(m=>`<span>${+m.slice(5)}월</span>`).join('')}</div>`};
+      amtEl.innerHTML=cols(x=>x?.a||0,wonCompact,'원');cntEl.innerHTML=cols(x=>x?.c||0,fmt,'건');
+      $('dmFyAmtSub').textContent=`${fy.label} 월별 · 단위 원`;$('dmFyCntSub').textContent=`${fy.label} 월별 · 기안(No.) 기준`;
+    }else{
+      const ent=Object.entries(map);
+      const rowsHtml=(key,fmtV)=>{const s=[...ent].sort((a,b)=>b[1][key]-a[1][key]||a[0].localeCompare(b[0],'ko')),top=s.slice(0,FY_TOP),max=Math.max(1,...top.map(x=>x[1][key]));if(!top.length)return'<div class="fy-empty">데이터가 없습니다.</div>';return`<div class="fy-rows">${top.map(([k,v])=>`<div class="fy-row" data-tip="${esc(`<b>${esc(k)}</b>${amountOnly?'':` · ${fmt(v.c)}건`} · ${fmt(v.a)}원`)}"><span class="fy-row-name" title="${esc(k)}">${esc(k)}</span><div class="fy-row-track"><div class="fy-row-bar" style="width:${v[key]/max*100}%"></div></div><span class="fy-row-val">${fmtV(v[key])}</span></div>`).join('')}</div>${s.length>FY_TOP?`<div class="fy-more">상위 ${FY_TOP}개 표시 · 전체 ${fmt(s.length)}개는 아래 '전체 표 보기'</div>`:''}`};
+      amtEl.innerHTML=rowsHtml('a',v=>fmt(v)+'원');cntEl.innerHTML=amountOnly?'':rowsHtml('c',v=>fmt(v)+'건');
+      $('dmFyAmtSub').textContent=`${fy.label} · 금액 순 상위 ${FY_TOP}`;$('dmFyCntSub').textContent=`${fy.label} · 건수 순 상위 ${FY_TOP}`;
+    }
+    bindTips(amtEl);bindTips(cntEl);
+  }
+
   function populateDamageDatalists(){
     const all=read().damage?.rows||[];
     const fill=(id,idx)=>{
@@ -7143,6 +7173,7 @@ setTimeout(initInventoryColumnResize,0);
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
     $('archiveType')?.addEventListener('change',renderDataArchive);
     $('diMonth')?.addEventListener('change',renderDamageInsight);
+    document.querySelectorAll('.fy-tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.fy-tab').forEach(x=>x.classList.toggle('active',x===b));$('dmFyGroup').value=b.dataset.fyGroup;renderDamageFY()}));
     $('msMonth')?.addEventListener('change',()=>renderMisshipCompare(read().misship?.rows||[]));
     $('mrRun')?.addEventListener('click',renderMisshipRecords);
     ['mrStatus','mrStart','mrEnd'].forEach(id=>$(id)?.addEventListener('change',renderMisshipRecords));
@@ -8228,6 +8259,41 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   if(window.lucide)lucide.createIcons();
 })();
 </script>
+<style id="damage-fy-style">
+/* 파손 현황(FY): 기준 탭 + 금액/건수 막대 그래프 2개 + 접는 표 */
+#damageAnalyticsView{--fy-ink:#191f28;--fy-ink-2:#4e5968;--fy-muted:#8b95a1;--fy-line:#eef0f3;--fy-grid:#f0f2f4;--fy-bar:#2a78d6;--fy-bar-hover:#1f63b8;}
+.fy-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 14px;padding:4px;background:#f2f4f6;border-radius:12px;width:fit-content;max-width:100%;}
+.fy-tab{border:0;background:transparent;padding:8px 16px;border-radius:9px;font:inherit;font-size:14px;font-weight:700;color:var(--fy-ink-2);cursor:pointer;}
+.fy-tab:hover{color:var(--fy-ink);}
+.fy-tab.active{background:#fff;color:var(--fy-ink);box-shadow:0 1px 3px rgba(20,30,40,.12);}
+.fy-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.fy-charts.single{grid-template-columns:minmax(0,1fr);}
+@media(max-width:1100px){.fy-charts{grid-template-columns:1fr;}}
+.fy-chart{border:1px solid var(--fy-line);border-radius:16px;padding:18px 20px;min-width:0;background:#fff;}
+.fy-chart-head{display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
+.fy-chart-head b{font-size:14px;font-weight:800;color:var(--fy-ink);}
+.fy-chart-head span{font-size:12px;color:var(--fy-muted);}
+/* 월별 세로 막대 */
+.fy-cols{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end;height:200px;border-bottom:1px solid #dfe3e8;background:repeating-linear-gradient(to top,transparent 0,transparent 49px,var(--fy-grid) 49px,var(--fy-grid) 50px);}
+.fy-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;}
+.fy-col-val{font-size:11px;color:var(--fy-ink-2);font-weight:700;margin-bottom:4px;white-space:nowrap;}
+.fy-col-bar{width:min(28px,70%);background:var(--fy-bar);border-radius:4px 4px 0 0;min-height:0;}
+.fy-col:hover .fy-col-bar,.fy-row:hover .fy-row-bar{background:var(--fy-bar-hover);}
+.fy-col-labels{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;margin-top:6px;}
+.fy-col-labels span{font-size:11px;color:var(--fy-muted);text-align:center;}
+/* 순위 가로 막대 */
+.fy-rows{display:flex;flex-direction:column;gap:8px;}
+.fy-row{display:grid;grid-template-columns:minmax(80px,140px) minmax(0,1fr) auto;align-items:center;gap:10px;}
+.fy-row-name{font-size:13px;color:var(--fy-ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fy-row-track{height:14px;}
+.fy-row-bar{height:100%;background:var(--fy-bar);border-radius:0 4px 4px 0;min-width:2px;}
+.fy-row-val{font-size:13px;font-weight:800;color:var(--fy-ink);white-space:nowrap;}
+.fy-more{margin-top:8px;font-size:12px;color:var(--fy-muted);}
+.fy-empty{padding:40px 0;text-align:center;color:var(--fy-muted);font-size:13px;}
+.fy-table-toggle{margin-top:16px;}
+.fy-table-toggle summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--fy-ink-2);padding:6px 2px;width:fit-content;}
+.fy-table-toggle[open] summary{margin-bottom:10px;}
+</style>
 <style id="misship-visual-style">
 /* 칸이 적은 집계표: 표 폭을 내용에 맞추고 남는 폭은 오른쪽 여백으로 둠 (공통 표 최소 폭 920px 해제) */
 #appShell .data-table-wrap.fit-table{width:fit-content;max-width:100%;}
