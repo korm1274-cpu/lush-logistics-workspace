@@ -5398,6 +5398,36 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v88-cumulative-productivity-refine">
+/* V88 — cumulative productivity: query controls separated from KPI summary */
+#statusBoardView .cumulative-overview-card{padding-bottom:20px!important}
+#statusBoardView .cumulative-overview-head{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:18px!important}
+#statusBoardView .cumulative-overview-head>div:first-child{min-width:0}
+#statusBoardView .cumulative-query-area{display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+#statusBoardView .cumulative-query-field{display:flex;flex-direction:column;gap:5px}
+#statusBoardView .cumulative-query-field span{font-size:10px;font-weight:850;color:#737b75}
+#statusBoardView .cumulative-query-field input{height:38px;min-width:142px;padding:0 10px;border:1px solid #dde2dd;border-radius:9px;background:#fff;font-size:12px;color:#283029}
+#statusBoardView .cumulative-query-area .status-filter-btn{height:38px;align-self:flex-end}
+#statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin-top:18px!important}
+#statusBoardView .cumulative-summary-grid .status-summary{min-height:104px!important}
+#statusBoardView .cumulative-summary-grid .status-summary strong{white-space:nowrap}
+#statusBoardView .cumulative-summary-grid .status-summary small{display:block;margin:6px 0 0!important}
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table th:first-child,
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table td:first-child{text-align:center!important}
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table td:not(:first-child){text-align:right!important;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){
+  #statusBoardView .cumulative-overview-head{align-items:flex-start!important;flex-direction:column!important}
+  #statusBoardView .cumulative-query-area{width:100%;justify-content:flex-end}
+  #statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:640px){
+  #statusBoardView .cumulative-query-area{justify-content:flex-start}
+  #statusBoardView .cumulative-query-field{flex:1 1 calc(50% - 4px)}
+  #statusBoardView .cumulative-query-field input{width:100%;min-width:0}
+  #statusBoardView .cumulative-summary-grid{grid-template-columns:1fr!important}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -5659,23 +5689,29 @@ html,body{max-width:100%;overflow-x:hidden}
           </div>
 
           <div class="productivity-section" data-productivity-section="cumulative">
-            <div class="status-card">
-              <div class="status-card-title"><h3>누계 생산성</h3><small>월 단위 누계 기준 · 일자별 분석은 상세조회에서 확인합니다.</small></div>
-              <div class="status-filter-cards">
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작월</span><input type="month" id="cumStartDate"><small>비우면 최초 월부터</small></div>
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료월</span><input type="month" id="cumEndDate"><small>비우면 최신 월까지</small></div>
-                <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
-                <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
+            <div class="status-card cumulative-overview-card">
+              <div class="status-card-title cumulative-overview-head">
+                <div>
+                  <h3>누계 생산성</h3>
+                  <small id="cumViewLabel">전체 누계 · 월 기준</small>
+                </div>
+                <div class="cumulative-query-area" aria-label="누계 생산성 기간 조회">
+                  <label class="cumulative-query-field"><span>시작월</span><input type="month" id="cumStartDate"></label>
+                  <label class="cumulative-query-field"><span>종료월</span><input type="month" id="cumEndDate"></label>
+                  <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
+                  <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
+                </div>
+              </div>
+              <div class="status-summary-grid cumulative-summary-grid">
+                <div class="status-summary"><span>총 소요시간</span><strong id="cumElapsed">-</strong><small>작업시간 합계</small></div>
+                <div class="status-summary"><span>총 투입인원</span><strong id="cumStaff">0</strong><small>명</small></div>
+                <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
+                <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
               </div>
             </div>
             <div class="cum-layout">
+              <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>총 소요시간</th><th>총 투입인원</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
               <div class="chart-card"><div class="status-card-title"><h3 id="cumChartTitle">월별 생산성 추이</h3><small id="cumChartHint">월 평균 · EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
-              <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
-            </div>
-            <div class="status-summary-grid">
-              <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
-              <div class="status-summary"><span>누계 투입 인시</span><strong id="cumLabor">0</strong><small>인·시간</small></div>
-              <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
             </div>
           </div>
 
@@ -9881,6 +9917,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderCumulative(){
     var startMonth=q('#cumStartDate').value||'';
     var endMonth=q('#cumEndDate').value||'';
+    if(startMonth&&endMonth&&startMonth>endMonth){
+      var swap=startMonth;startMonth=endMonth;endMonth=swap;
+      q('#cumStartDate').value=startMonth;q('#cumEndDate').value=endMonth;
+    }
     var allRows=dateRowsInRange('','');
     var monthly={};
 
@@ -9888,30 +9928,41 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       var month=x.date.slice(0,7);
       if(startMonth&&month<startMonth)return;
       if(endMonth&&month>endMonth)return;
-      if(!monthly[month])monthly[month]={qty:0,labor:0};
-      monthly[month].qty+=x.summary.qty;
-      monthly[month].labor+=x.summary.labor;
+      if(!monthly[month])monthly[month]={qty:0,labor:0,elapsedMinutes:0,staff:0};
+      var staff=Number(x.record&&x.record.staff||0);
+      var elapsedMinutes=productivityElapsedMinutes(x.record&&x.record.startTime,x.record&&x.record.endTime);
+      var labor=(elapsedMinutes>0&&staff>0)?(elapsedMinutes/60)*staff:Number(x.summary.labor||0);
+      monthly[month].qty+=Number(x.summary.qty||0);
+      monthly[month].labor+=labor;
+      monthly[month].elapsedMinutes+=elapsedMinutes;
+      monthly[month].staff+=staff;
     });
 
-    var labels=[],values=[],body='',sumQty=0,sumLabor=0;
+    var labels=[],values=[],body='',sumQty=0,sumLabor=0,sumElapsedMinutes=0,sumStaff=0;
     Object.keys(monthly).sort().forEach(function(month){
       var m=monthly[month];
       var rate=m.labor>0?m.qty/m.labor:0;
-      sumQty+=m.qty;sumLabor+=m.labor;
+      sumQty+=m.qty;
+      sumLabor+=m.labor;
+      sumElapsedMinutes+=m.elapsedMinutes;
+      sumStaff+=m.staff;
       labels.push(month.replace('-','.'));
       values.push(rate);
-      body+='<tr><td>'+month.replace('-','.')+'</td><td>'+fmt(m.qty)+'</td><td>'+fmt(Math.round(m.labor*10)/10)+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>';
+      body+='<tr><td>'+month.replace('-','.')+'</td><td>'+fmt(m.qty)+'</td><td>'+productivityElapsedLabel(m.elapsedMinutes)+'</td><td>'+fmt(m.staff)+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>';
     });
 
+    var periodText=(startMonth||endMonth)?((startMonth||'최초 월')+' ~ '+(endMonth||'최신 월')):'전체 누계';
     q('#cumChartTitle').textContent='월별 생산성 추이';
     q('#cumChartHint').textContent='월 평균 · EA/인·시간';
     q('#cumTableTitle').textContent='월별 생산성 현황';
     q('#cumPeriodColumn').textContent='월';
-    q('#cumPeriodLabel').textContent=(startMonth||endMonth)?((startMonth||'최초 월')+' ~ '+(endMonth||'최신 월')):'전체 누계 · 월 기준';
+    q('#cumPeriodLabel').textContent=periodText+' · 월 기준';
+    if(q('#cumViewLabel'))q('#cumViewLabel').textContent=periodText+' · 월 기준';
 
-    q('#cumMonthBody').innerHTML=body||'<tr><td colspan="4" class="data-empty">누계 데이터가 없습니다.</td></tr>';
+    q('#cumMonthBody').innerHTML=body||'<tr><td colspan="5" class="data-empty">누계 데이터가 없습니다.</td></tr>';
+    q('#cumElapsed').textContent=productivityElapsedLabel(sumElapsedMinutes);
+    q('#cumStaff').textContent=fmt(sumStaff);
     q('#cumQty').textContent=fmt(sumQty);
-    q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);
     q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
     drawChart('cumMonthChart',labels,values,'#cumMonthEmpty');
   }
