@@ -11055,6 +11055,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var before=(document.getElementById('requestStoreName')||{}).value;
     setTimeout(function(){var now=(document.getElementById('requestStoreName')||{}).value;if(before&&!now)showTab('pending')},0);
   },true);
+  /* 메뉴를 거치지 않고 열 때도(메인 화면 링크 등) 러쉬 테마 적용 */
+  var origOpen=window.openOutboundRequestManager;
+  if(typeof origOpen==='function')window.openOutboundRequestManager=function(){var r=origOpen.apply(this,arguments);var sh=document.getElementById('appShell');if(sh){sh.classList.add('on-lush');sh.classList.remove('on-dashboard')}return r};
   /* 저장·동기화로 데이터가 바뀌면 처리 대기도 같이 갱신 */
   var orig=window.renderTodayOutboundRequests;
   if(typeof orig==='function')window.renderTodayOutboundRequests=function(){var r=orig.apply(this,arguments);try{renderBoard()}catch(e){}return r};
@@ -11135,5 +11138,28 @@ window.__mobileChartLegend=function(chart,canvas){
   }catch(e){}
 };
 </script>
+<style id="rq-list-layout">
+/* 등록된 출고 요청: 매장명 칸이 끝없이 넓어지지 않게(구분·상태·관리가 매장명 가까이) */
+#outboundRequestManager .request-manager-list-head,#outboundRequestManager .request-manager-item{grid-template-columns:150px minmax(160px,260px) 90px 80px 120px!important;justify-content:start!important;}
+@media (max-width:900px){
+  #outboundRequestManager .request-manager-list-head{display:none!important;}
+  /* 휴대폰: 1줄 매장명(+특이사항) / 2줄 요청일·구분·상태·관리 */
+  #outboundRequestManager .request-manager-item{grid-template-columns:minmax(0,1fr) auto auto auto!important;gap:6px 6px!important;padding:12px 12px!important;align-items:center!important;}
+  #outboundRequestManager .request-manager-item>span:nth-child(2){grid-column:1/-1!important;grid-row:1!important;font-size:14px!important;}
+  #outboundRequestManager .request-manager-item>span:nth-child(1){grid-row:2!important;font-size:12px!important;color:#6b7684!important;min-width:0!important;}
+  #outboundRequestManager .request-manager-item>.request-type-badge{grid-row:2!important;font-size:11.5px!important;white-space:nowrap!important;}
+  #outboundRequestManager .request-manager-item>button[data-toggle]{grid-row:2!important;height:30px!important;padding:0 10px!important;font-size:12px!important;}
+  #outboundRequestManager .request-manager-item>span:last-child{grid-row:2!important;}
+  #outboundRequestManager .request-manager-item>span:last-child .btn{height:30px!important;padding:0 9px!important;font-size:12px!important;}
+  #outboundRequestManager .request-filter-row{display:grid!important;grid-template-columns:1fr 1fr!important;gap:6px!important;}
+  #outboundRequestManager .request-filter-row input{grid-column:1/-1!important;}
+  /* 기간별 출고 요청 현황: 1줄 전체, 2줄 대량·트래픽·본사·노즐/비닐 */
+  #outboundRequestManager .request-period-summary{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:6px!important;}
+  #outboundRequestManager .request-period-summary>.request-period-stat:first-child{grid-column:1/-1!important;}
+  #outboundRequestManager .request-period-stat{min-width:0!important;padding:10px 6px 10px 12px!important;}
+  #outboundRequestManager .request-period-stat span{font-size:11px!important;white-space:nowrap!important;}
+  #outboundRequestManager .request-period-stat b{font-size:20px!important;}
+}
+</style>
 </body>
 </html>
