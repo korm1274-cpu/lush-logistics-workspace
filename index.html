@@ -10200,9 +10200,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeText{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
   #appShell #dashboard #dashNoticeTitle{font-size:15px!important;line-height:1.4!important;}
   #appShell #dashboard #dashNoticeText{font-size:12.5px!important;margin-top:3px!important;}
+  /* 메인 카드 안쪽 여백 축소: 겹겹의 여백 때문에 내용 폭이 좁아지지 않게 */
+  #appShell #dashboard .dash-section.dashboard-first-section{padding-left:14px!important;padding-right:14px!important;}
+  #appShell #dashboard .dashboard-info-panel{padding-left:12px!important;padding-right:12px!important;}
+  #appShell #dashboard .ops-todo-item{padding-left:6px!important;padding-right:6px!important;}
   /* 제품 확보 현황: 할 일·내용을 각각 한 줄로(길면 …) */
   #appShell #dashboard .ops-todo-item .todo-content{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13.5px!important;min-width:0!important;}
-  #appShell #dashboard .ops-todo-item .todo-note{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:12px!important;}
+  #appShell #dashboard .ops-todo-item .todo-note{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:10.5px!important;letter-spacing:-.04em!important;}
 
   /* 메인 배너 숫자 카드: 오른쪽으로 잘리지 않게 2개씩 두 줄 */
   #appShell .lush-hero-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;gap:10px!important;}
