@@ -5352,6 +5352,20 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v108-shipping-column-swap">
+#statusBoardView .shipping-workspace-split{
+  grid-template-columns:minmax(0,1fr) minmax(0,.86fr)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  grid-template-columns:minmax(0,1fr) minmax(0,.86fr)!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-workspace-split{grid-template-columns:1fr!important}
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -5533,6 +5547,19 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
 
             <div class="shipping-workspace-split">
+              <div class="shipping-store-board">
+                <div class="shipping-store-head">
+                  <div>
+                    <span>TODAY STORES</span>
+                    <h4>오늘 주문 매장</h4>
+                  </div>
+                  <div class="shipping-store-count"><b id="statusStoreCount">0</b><small>개 매장</small></div>
+                </div>
+                <div class="shipping-store-list" id="statusStoreProgressList">
+                  <div class="shipping-store-empty">오늘 주문 매장 데이터를 불러오는 중입니다.</div>
+                </div>
+              </div>
+
               <div class="shipping-overview-column">
                 <div class="shipping-progress-zone shipping-progress-main">
                   <div class="shipping-progress-label">금일 출고 진행률</div>
@@ -5555,19 +5582,6 @@ html,body{max-width:100%;overflow-x:hidden}
                     <strong id="statusEta">--:--</strong>
                     <small id="statusEtaNote">처리 속도 데이터 연동 후 계산</small>
                   </div>
-                </div>
-              </div>
-
-              <div class="shipping-store-board">
-                <div class="shipping-store-head">
-                  <div>
-                    <span>TODAY STORES</span>
-                    <h4>오늘 주문 매장</h4>
-                  </div>
-                  <div class="shipping-store-count"><b id="statusStoreCount">0</b><small>개 매장</small></div>
-                </div>
-                <div class="shipping-store-list" id="statusStoreProgressList">
-                  <div class="shipping-store-empty">오늘 주문 매장 데이터를 불러오는 중입니다.</div>
                 </div>
               </div>
             </div>
