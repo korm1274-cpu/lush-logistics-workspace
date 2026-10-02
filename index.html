@@ -10389,6 +10389,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #statusBoardView #storeHistoryDetailDate::-webkit-date-and-time-value{text-align:center!important;margin:0!important;}
   /* 매장별 출고물량 비교: 가로 막대(매장 수만큼 높이) */
   #statusBoardView .store-history-chart-wrap.m-bars{padding:4px 8px 12px!important;}
+  /* 오늘 생산성 제목줄: 제목은 왼쪽, '과거 투입 인원 수정'은 작게 오른쪽 끝 */
+  #appShell #statusBoardView .status-card-title.productivity-today-head{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;}
+  #appShell #statusBoardView .productivity-today-head>div{min-width:0!important;}
+  #appShell #statusBoardView .productivity-today-head #prodTodayLabel{white-space:nowrap!important;font-size:11.5px!important;}
+  #appShell #statusBoardView #openPastStaffEditor{margin:0 0 0 auto!important;flex:0 0 auto!important;width:auto!important;height:30px!important;min-height:0!important;padding:0 10px!important;font-size:12px!important;border-radius:8px!important;white-space:nowrap!important;}
   /* 오늘 생산성: 카드 6개를 3칸 x 2줄로 */
   #appShell #statusBoardView .productivity-today-toolbar{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
   #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric{min-width:0!important;min-height:0!important;padding:12px 8px!important;text-align:center!important;align-items:center!important;justify-content:center!important;}
