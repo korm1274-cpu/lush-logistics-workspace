@@ -5366,6 +5366,38 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 
+
+<style id="v109-shipping-store-meta-layout">
+#statusBoardView .shipping-store-inline-info{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  width:100%!important;
+}
+#statusBoardView .shipping-store-inline-left{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-qty{
+  margin-left:auto!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  color:#404640!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-qty{
+  color:#7b827d!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-qty{
+  color:#7d715e!important;
+}
+</style>
+
 </head>
 <body>
 <div class="app" id="appShell">
@@ -9673,7 +9705,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
             '<span class="shipping-store-name">'+esc(store.name||'-')+'</span>'+
             '<span class="shipping-store-state-wrap"><span class="shipping-store-status '+state+'">'+statusLabel+'</span><strong class="shipping-store-pct">'+Math.round(pct)+'%</strong></span>'+
           '</div>'+
-          '<div class="shipping-store-inline-info"><strong>'+fmt(store.box||0)+' BOX</strong><span>·</span><span>'+fmt(done)+' / '+fmt(total)+' EA</span><span>·</span><strong class="shipping-store-sku">'+fmt(store.sku||0)+' SKU</strong></div>'+
+          '<div class="shipping-store-inline-info"><span class="shipping-store-inline-left"><strong class="shipping-store-sku">'+fmt(store.sku||0)+' SKU</strong><span>·</span><strong>'+fmt(store.box||0)+' BOX</strong></span><span class="shipping-store-qty">'+fmt(done)+' / '+fmt(total)+' EA</span></div>'+
           '<div class="shipping-store-track"><span class="shipping-store-fill" style="width:'+pct.toFixed(1)+'%"></span></div>'+
         '</div>';
       }).join(''):'<div class="shipping-store-empty">오늘 주문 매장 데이터 연동 전입니다.</div>';
