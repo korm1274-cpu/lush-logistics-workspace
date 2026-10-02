@@ -5442,6 +5442,7 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .cumulative-summary-bar .prod-api-metric{border-right:0!important;border-bottom:1px solid #ecece8!important}
   #statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-bottom:0!important}
 }
+</style>
 
 <style id="v89-productivity-bar-and-filter-unify">
 /* 금일 생산성: 누계 생산성에서 확정한 한 줄 연결형 지표 바 스타일 */
@@ -5547,6 +5548,102 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+4){border-bottom:1px solid #ecece8!important}
 }
 </style>
+
+<style id="v90-productivity-alignment">
+/* 1) 금일/누계 상단 지표 바 높이와 내부 정렬 완전 통일 */
+#statusBoardView .today-summary-bar,
+#statusBoardView .cumulative-summary-bar{
+  min-height:92px!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric,
+#statusBoardView .cumulative-summary-bar .prod-api-metric{
+  height:92px!important;
+  min-height:92px!important;
+  padding:15px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>span,
+#statusBoardView .cumulative-summary-bar .prod-api-metric>span{
+  min-height:14px!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>small,
+#statusBoardView .cumulative-summary-bar .prod-api-metric>small{
+  min-height:12px!important;
+}
+
+/* 2) 금일/누계 상단 영역의 좌우 여백과 세로 간격 통일 */
+#statusBoardView [data-productivity-section="today"] .status-toolbar-card,
+#statusBoardView [data-productivity-section="cumulative"] .cumulative-overview-card{
+  padding-bottom:20px!important;
+}
+#statusBoardView [data-productivity-section="today"] .productivity-today-head,
+#statusBoardView [data-productivity-section="cumulative"] .cumulative-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView .today-summary-bar{
+  margin:0 22px!important;
+}
+#statusBoardView .cumulative-filter-cards{
+  margin:0!important;
+  padding:0 22px!important;
+}
+#statusBoardView .cumulative-overview-card .cumulative-summary-bar{
+  margin:14px 22px 0!important;
+}
+#statusBoardView [data-productivity-section="cumulative"] .status-filter-cards .status-filter-card{
+  margin-bottom:0!important;
+}
+
+/* 3) 금일/누계 분석 영역의 좌우 비율과 카드 높이 통일 */
+#statusBoardView [data-productivity-section="today"] .prod-layout,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout{
+  grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+  margin-top:16px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+#statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+  min-height:382px!important;
+  height:382px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+  height:310px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .status-table-scroll.compact,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .status-table-scroll.compact{
+  max-height:310px!important;
+}
+
+/* 좁은 화면에서는 기존처럼 한 열로 자연스럽게 전환 */
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="today"] .prod-layout,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout{
+    grid-template-columns:1fr!important;
+  }
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar{margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .cumulative-filter-cards{padding-left:12px!important;padding-right:12px!important}
+  #statusBoardView .cumulative-overview-card .cumulative-summary-bar{margin-left:12px!important;margin-right:12px!important}
+}
 </style>
 </head>
 <body>
