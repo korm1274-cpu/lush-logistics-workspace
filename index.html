@@ -10228,7 +10228,24 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell .view.active .data-filter-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important;min-width:0!important;box-sizing:border-box;}
   #appShell .view.active .data-filter-row .field{width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;flex:0 0 auto!important;height:auto!important;min-height:0!important;}
   #appShell .view.active .data-filter-row input,#appShell .view.active .data-filter-row select{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
-  #appShell .view.active .data-filter-row .btn{width:100%!important;flex:0 0 auto!important;}
+  /* 조회·전체 버튼: 전체 폭 대신 가운데에 적당한 폭, 글자 가운데 */
+  #appShell .view.active .data-filter-row .btn{width:auto!important;min-width:140px!important;flex:0 0 auto!important;align-self:center!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding-left:28px!important;padding-right:28px!important;}
+  /* iPhone 날짜·월 칸이 기본 폭을 고집해 카드 밖으로 튀어나가지 않게 */
+  #appShell .view.active input[type=date],#appShell .view.active input[type=month]{-webkit-appearance:none!important;appearance:none!important;display:block!important;min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;text-align:left!important;}
+  #appShell .view.active input[type=date]::-webkit-date-and-time-value,#appShell .view.active input[type=month]::-webkit-date-and-time-value{text-align:left;}
+  /* 기준월 + [전체]: 겹치지 않게 월 칸은 남는 폭만, 버튼은 고정 폭 */
+  #appShell .ms-period{width:100%!important;}
+  #appShell .ms-period .field{flex:1 1 auto!important;min-width:0!important;}
+  #appShell .ms-period .btn{flex:0 0 auto!important;min-width:64px!important;}
+  #appShell .view.active .panel-head:has(.ms-period){flex-wrap:wrap!important;gap:10px!important;}
+  /* 도넛 + 범례: 휴대폰에서는 위아래로, 범례는 전체 폭 */
+  #appShell .ms-donut-wrap{flex-direction:column!important;align-items:stretch!important;gap:14px!important;}
+  #appShell .ms-donut{align-self:center!important;}
+  #appShell .ms-legend{width:100%!important;max-width:none!important;}
+  #appShell .ms-legend-row{grid-template-columns:10px minmax(0,1fr) auto auto!important;font-size:13px!important;}
+  #appShell .ms-legend-row span{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+  /* 파손 FY 탭 글자 가운데 정렬 */
+  #appShell .fy-tab{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
   /* 표는 카드 안에서 가로로 밀어서 볼 수 있게 */
   #appShell .view.active .data-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
 }
