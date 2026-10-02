@@ -5593,8 +5593,8 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card">
               <div class="status-card-title"><h3>누계 생산성</h3><small>기본적으로 전체 누계를 표시하고, 필요할 때만 특정 기간을 조회합니다.</small></div>
               <div class="status-filter-cards">
-                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="cumStartDate"><small>비우면 최초 데이터부터</small></div>
-                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="cumEndDate"><small>비우면 최신 데이터까지</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="cumStartDate"><small>비우면 최초 데이터부터</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="cumEndDate"><small>비우면 최신 데이터까지</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
                 <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
               </div>
@@ -10372,6 +10372,19 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #dashboard #todayRequestGrid .request-mini-card{display:none!important;}
   #appShell #dashboard #todayRequestGrid .request-mini-card.m-show{display:flex!important;}
   #appShell #dashboard #todayRequestGrid:not(:has(.m-show)){display:none!important;}
+}
+</style>
+<style id="cum-date-compact">
+/* 누계 생산성 시작일·종료일: '기간 조회'·'전체 누계' 버튼과 같은 높이(40px)로 한 줄 */
+#appShell #statusBoardView .status-filter-card.cum-date-card{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;height:40px!important;min-height:0!important;padding:0 12px!important;box-sizing:border-box!important;}
+#appShell #statusBoardView .cum-date-card>span{margin:0!important;font-size:12px!important;white-space:nowrap!important;flex:0 0 auto!important;}
+#appShell #statusBoardView .cum-date-card>small{display:none!important;}
+#appShell #statusBoardView .cum-date-card>input{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0 4px!important;font-size:14px!important;line-height:32px!important;border:0!important;background:transparent!important;}
+#appShell #statusBoardView .status-filter-cards:has(.cum-date-card){align-items:center!important;}
+@media (max-width:900px){
+  /* 아이폰: 비어 있는 날짜칸이 높이 0으로 접혀 누를 수 없던 문제 → 최소 높이 지정 */
+  #appShell #statusBoardView .status-filter-card input[type="date"]{min-height:32px!important;width:100%!important;display:block!important;}
+  #appShell #statusBoardView .cum-date-card>input[type="date"]{display:block!important;width:auto!important;}
 }
 </style>
 <style id="mobile-desc-clean">
