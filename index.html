@@ -7029,7 +7029,7 @@ setTimeout(initInventoryColumnResize,0);
     const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${gridStart.getMonth()+1}월 ${gridStart.getDate()}일 ~ ${gridEnd.getMonth()+1}월 ${gridEnd.getDate()}일`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list;html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span><em class="dash-dow">${d.getMonth()+1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})</em></div><div class="dash-two-week-events">${visible.map((e,ix)=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}${ix>=2?' dash-extra':''}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list;const dayOff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''} ${(dayOff<0||dayOff>4)?'m-hide':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span><em class="dash-dow">${d.getMonth()+1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})</em></div><div class="dash-two-week-events">${visible.map((e,ix)=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}${ix>=2?' dash-extra':''}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey();
     const importedLeaveToday=(importEvents||[]).filter(e=>e.type==='import'&&String(e.source||'').includes('연차')&&eventCovers(e,today)).map(e=>{
       const m=String(e.title||'').match(/^(.*?)\s*연차\s*$/);
@@ -10174,23 +10174,36 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #dashboard .request-mini-header span{white-space:nowrap!important;writing-mode:horizontal-tb!important;font-size:12px!important;}
   #appShell #dashboard .request-row .store-name,#appShell #dashboard .request-row .doc-no{font-size:13px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;}
   #appShell #dashboard .request-row .request-state-btn{width:60px!important;min-width:60px!important;font-size:12px!important;}
-  /* 스케줄(2주 달력): 7칸 달력 대신 날짜별 목록. 일정은 모두 보이고 제목도 줄바꿈 */
+  /* 스케줄(2주 달력): 휴대폰에서는 오늘~+4일 5일만 5칸 가로로. 칸마다 날짜(요일) + 그날 일정 전부(작은 글씨, 줄바꿈) */
   #appShell #dashboard .dashboard-two-week-weekhead{display:none!important;}
-  #appShell #dashboard .dashboard-two-week-grid{display:block!important;min-width:0!important;}
   #appShell #dashboard .dashboard-two-week-calendar,#appShell #dashboard .dashboard-month-calendar{overflow:visible!important;min-width:0!important;}
-  #appShell #dashboard .dash-two-week-day{display:grid!important;grid-template-columns:78px minmax(0,1fr)!important;gap:10px!important;min-height:0!important;padding:10px 12px!important;border-left:0!important;border-right:0!important;}
-  #appShell #dashboard .dash-two-week-day.outside{display:grid!important;}
-  #appShell #dashboard .dash-two-week-date{display:block!important;align-self:start!important;padding-top:3px!important;}
+  #appShell #dashboard .dashboard-two-week-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-day.m-hide{display:none!important;}
+  #appShell #dashboard .dash-two-week-day{display:block!important;min-height:120px!important;padding:6px 4px!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-date{display:block!important;margin-bottom:5px!important;}
   #appShell #dashboard .dash-two-week-date b,#appShell #dashboard .dash-two-week-date>span{display:none!important;}
-  #appShell #dashboard .dash-two-week-date .dash-dow{display:block;font-style:normal;font-size:14px;font-weight:800;color:#191f28;white-space:nowrap;}
+  #appShell #dashboard .dash-two-week-date .dash-dow{display:block;font-style:normal;font-size:11.5px;font-weight:800;color:#191f28;white-space:nowrap;text-align:center;letter-spacing:-.03em;}
   #appShell #dashboard .dash-two-week-day.weekend .dash-dow{color:#d64545;}
-  #appShell #dashboard .dash-two-week-day.today .dash-dow{color:#fff;background:#1d1d1b;border-radius:8px;padding:2px 6px;width:fit-content;}
+  #appShell #dashboard .dash-two-week-day.today .dash-dow{color:#fff;background:#1d1d1b;border-radius:6px;padding:2px 0;}
   #appShell #dashboard .dash-two-week-day .dash-extra{display:flex!important;}
   #appShell #dashboard .dash-two-week-day .dash-more{display:none!important;}
-  #appShell #dashboard .dash-two-week-events{display:grid!important;gap:5px!important;min-width:0!important;}
-  #appShell #dashboard .dash-two-week-event{max-width:100%!important;}
-  #appShell #dashboard .dash-two-week-event span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-all!important;font-size:13px!important;line-height:1.35!important;}
-  #appShell #dashboard .dash-two-week-day:not(:has(.dash-two-week-event)) .dash-two-week-events::after{content:"일정 없음";font-size:12px;color:#adb5bd;}
+  #appShell #dashboard .dash-two-week-events{display:grid!important;gap:3px!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-event{max-width:100%!important;padding:3px 4px!important;border-radius:5px!important;}
+  #appShell #dashboard .dash-two-week-event span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-all!important;font-size:10px!important;line-height:1.3!important;letter-spacing:-.03em;}
+  #appShell #dashboard .dash-two-week-day:not(:has(.dash-two-week-event)) .dash-two-week-events::after{content:"-";display:block;text-align:center;font-size:11px;color:#c3c8cd;}
+  /* 팀 공지사항: '중요' 표시와 제목을 한 줄에, 제목·내용은 다음 줄로 넘기지 않음(길면 …), 아래 빈 공간 축소 */
+  #appShell #dashboard .dashboard-info-panel{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .notice-board{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .notice-main{display:flex!important;align-items:flex-start!important;gap:8px!important;min-height:0!important;padding:12px 14px!important;}
+  #appShell #dashboard .notice-main>div{min-width:0!important;flex:1 1 auto!important;}
+  #appShell #dashboard .notice-pin{flex:0 0 auto!important;}
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeText{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
+  #appShell #dashboard #dashNoticeTitle{font-size:15px!important;line-height:1.4!important;}
+  #appShell #dashboard #dashNoticeText{font-size:12.5px!important;margin-top:3px!important;}
+  /* 제품 확보 현황: 할 일·내용을 각각 한 줄로(길면 …) */
+  #appShell #dashboard .ops-todo-item .todo-content{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13.5px!important;min-width:0!important;}
+  #appShell #dashboard .ops-todo-item .todo-note{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:12px!important;}
+
   /* 메인 배너 숫자 카드: 오른쪽으로 잘리지 않게 2개씩 두 줄 */
   #appShell .lush-hero-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;gap:10px!important;}
   #appShell .lush-hero-stat{min-width:0!important;padding:10px 12px!important;}
