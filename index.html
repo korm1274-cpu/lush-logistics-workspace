@@ -5614,8 +5614,8 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card">
               <div class="status-card-title"><h3>상세조회</h3><small>필요한 경우에만 기간을 지정하여 일자별 상세 데이터를 조회합니다.</small></div>
               <div class="status-filter-cards">
-                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="detailStartDate"><small>조회 시작일</small></div>
-                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="detailEndDate"><small>조회 종료일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="detailStartDate"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="detailEndDate"><small>조회 종료일</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="detailSearchBtn">조회</button>
               </div>
             </div>
@@ -5697,8 +5697,8 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card">
               <div class="status-card-title"><h3>제품별 출고현황</h3><small>제품군 구성과 EA / G 출고량 변화를 확인합니다.</small></div>
               <div class="status-filter-cards product-analysis-filters">
-                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="productAnalysisStart"><small>비우면 전체 기간</small></div>
-                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="productAnalysisEnd"><small>비우면 전체 기간</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="productAnalysisStart"><small>비우면 전체 기간</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="productAnalysisEnd"><small>비우면 전체 기간</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="productAnalysisSearch">조회</button>
                 <button type="button" class="btn status-filter-btn" id="productAnalysisAll">전체</button>
               </div>
@@ -5748,9 +5748,9 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card">
               <div class="status-card-title"><h3>제품 상세조회</h3><small>특정 제품의 기간별 출고 추이와 매장별 출고량을 확인합니다.</small></div>
               <div class="status-filter-cards product-detail-filters">
-                <div class="prod-api-metric status-filter-card product-search-card"><span>제품 검색</span><input id="productDetailQuery" list="productDetailList" placeholder="제품코드 또는 제품명"><datalist id="productDetailList"></datalist><small>제품 선택</small></div>
-                <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="productDetailStart"><small>조회 시작일</small></div>
-                <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="productDetailEnd"><small>조회 종료일</small></div>
+                <div class="prod-api-metric status-filter-card product-search-card cum-date-card"><span>제품 검색</span><input id="productDetailQuery" list="productDetailList" placeholder="제품코드 또는 제품명"><datalist id="productDetailList"></datalist><small>제품 선택</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="productDetailStart"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="productDetailEnd"><small>조회 종료일</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="productDetailSearch">조회</button>
               </div>
             </div>
@@ -5772,9 +5772,9 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card">
               <div class="status-card-title"><h3>일자별 상세조회</h3><small>선택한 날짜의 매장별·제품별 실제 출고수량을 조회합니다.</small></div>
               <div class="status-filter-cards product-date-filters">
-                <div class="prod-api-metric status-filter-card"><span>조회일자</span><input type="date" id="productDateDetailDate"><small>날짜 선택</small></div>
-                <div class="prod-api-metric status-filter-card"><span>매장</span><select id="productDateDetailStore"><option value="">전체 매장</option></select><small>매장 필터</small></div>
-                <div class="prod-api-metric status-filter-card product-search-card"><span>제품 검색</span><input id="productDateDetailQuery" placeholder="제품코드 또는 제품명"><small>선택 입력</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>조회일자</span><input type="date" id="productDateDetailDate"><small>날짜 선택</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>매장</span><select id="productDateDetailStore"><option value="">전체 매장</option></select><small>매장 필터</small></div>
+                <div class="prod-api-metric status-filter-card product-search-card cum-date-card"><span>제품 검색</span><input id="productDateDetailQuery" placeholder="제품코드 또는 제품명"><small>선택 입력</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="productDateDetailSearch">조회</button>
               </div>
             </div>
@@ -10379,7 +10379,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell #statusBoardView .status-filter-card.cum-date-card{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;height:40px!important;min-height:0!important;padding:0 12px!important;box-sizing:border-box!important;}
 #appShell #statusBoardView .cum-date-card>span{margin:0!important;font-size:12px!important;white-space:nowrap!important;flex:0 0 auto!important;}
 #appShell #statusBoardView .cum-date-card>small{display:none!important;}
-#appShell #statusBoardView .cum-date-card>input{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0 4px!important;font-size:14px!important;line-height:32px!important;border:0!important;background:transparent!important;}
+#appShell #statusBoardView .cum-date-card>input,#appShell #statusBoardView .cum-date-card>select{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0 4px!important;font-size:14px!important;line-height:32px!important;border:0!important;background:transparent!important;}
 #appShell #statusBoardView .status-filter-cards:has(.cum-date-card){align-items:center!important;}
 @media (max-width:900px){
   /* 아이폰: 비어 있는 날짜칸이 높이 0으로 접혀 누를 수 없던 문제 → 최소 높이 지정 */
