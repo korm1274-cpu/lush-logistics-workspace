@@ -5387,6 +5387,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
       <div class="dash-section">
         <div class="dash-section-head"><div><h3>금주 출고 요청</h3></div></div>
+        <div class="req-m-tabs" id="reqMobileTabs" role="tablist"><button type="button" data-req-tab="bulk">대량<em data-req-tab-count="bulk"></em></button><button type="button" data-req-tab="traffic">트래픽<em data-req-tab-count="traffic"></em></button><button type="button" data-req-tab="hq">본사<em data-req-tab-count="hq"></em></button><button type="button" data-req-tab="nozzle">노즐/비닐<em data-req-tab-count="nozzle"></em></button></div>
         <div class="request-card-grid" id="todayRequestGrid">
           <div class="request-mini-card" data-request-type="bulk">
             <div class="request-mini-head">
@@ -10300,6 +10301,24 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell.mobile-nav-open #navContainer .nav-group-direct.m-current>.nav-root{color:#e87ba4!important;}
 }
 </style>
+<style id="notice-reqtab-style">
+/* 메인 공지: 누르면 제목 전체 보기 */
+#appShell #dashboard .notice-board .notice-main{cursor:pointer;}
+#appShell #dashboard .notice-board .notice-main.n-open #dashNoticeTitle,#appShell #dashboard .notice-board .notice-main.n-open #dashNoticeTitle2{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;}
+.req-m-tabs{display:none;}
+@media (max-width:900px){
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeTitle2{font-size:13.5px!important;}
+  /* 금주 출고 요청: 모바일은 선택한 종류만 표시(기본은 모두 숨김) */
+  #appShell #dashboard .req-m-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px;}
+  #appShell #dashboard .req-m-tabs button{height:38px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;padding:0 4px;}
+  #appShell #dashboard .req-m-tabs button em{font-style:normal;font-size:11px;color:#e87ba4;}
+  #appShell #dashboard .req-m-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+  #appShell #dashboard .req-m-tabs button.on em{color:#f6b6cf;}
+  #appShell #dashboard #todayRequestGrid .request-mini-card{display:none!important;}
+  #appShell #dashboard #todayRequestGrid .request-mini-card.m-show{display:flex!important;}
+  #appShell #dashboard #todayRequestGrid:not(:has(.m-show)){display:none!important;}
+}
+</style>
 <style id="mobile-desc-clean">
 @media (max-width:900px){
   /* 모바일: 제목 옆·아래 설명 문구는 숨기고 제목은 한 줄로 */
@@ -10727,6 +10746,31 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var start=active&&menus.find(function(x){return x.kind==='view'&&x.target===active.id&&x.visible});
   if(start)current={group:start.group,menuId:start.id};
   render();
+})();
+</script>
+<script id="notice-reqtab-script">
+(function(){
+  var $=function(id){return document.getElementById(id)};
+  /* 공지 누르면 제목 전체 보기 / 다시 누르면 접기 */
+  document.addEventListener('click',function(e){
+    var n=e.target.closest&&e.target.closest('#dashboard .notice-board .notice-main');
+    if(n){n.classList.toggle('n-open');return}
+    var b=e.target.closest&&e.target.closest('#reqMobileTabs [data-req-tab]');
+    if(!b)return;
+    var t=b.getAttribute('data-req-tab'),on=!b.classList.contains('on');
+    document.querySelectorAll('#reqMobileTabs [data-req-tab]').forEach(function(x){x.classList.toggle('on',on&&x===b)});
+    document.querySelectorAll('#todayRequestGrid .request-mini-card').forEach(function(c){c.classList.toggle('m-show',on&&c.getAttribute('data-request-type')===t)});
+  });
+  /* 탭에 종류별 건수 표시 */
+  function syncCounts(){
+    document.querySelectorAll('#reqMobileTabs [data-req-tab-count]').forEach(function(em){
+      var badge=document.querySelector('#todayRequestGrid [data-request-count="'+em.getAttribute('data-req-tab-count')+'"]');
+      var n=badge?parseInt(badge.textContent,10)||0:0;em.textContent=n?String(n):'';
+    });
+  }
+  var grid=$('todayRequestGrid');
+  if(grid&&window.MutationObserver)new MutationObserver(syncCounts).observe(grid,{subtree:true,childList:true,characterData:true});
+  syncCounts();
 })();
 </script>
 </body>
