@@ -11141,6 +11141,9 @@ window.__mobileChartLegend=function(chart,canvas){
 <style id="rq-list-layout">
 /* 등록된 출고 요청: 매장명 칸이 끝없이 넓어지지 않게(구분·상태·관리가 매장명 가까이) */
 #outboundRequestManager .request-manager-list-head,#outboundRequestManager .request-manager-item{grid-template-columns:150px minmax(160px,260px) 90px 80px 120px!important;justify-content:start!important;}
+/* 기간별 출고 요청 현황(PC·휴대폰 공통): 1줄 전체, 2줄 대량·트래픽·본사·노즐/비닐 */
+#outboundRequestManager .request-period-summary{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;}
+#outboundRequestManager .request-period-summary>.request-period-stat:first-child{grid-column:1/-1!important;}
 @media (max-width:900px){
   #outboundRequestManager .request-manager-list-head{display:none!important;}
   /* 휴대폰: 1줄 매장명(+특이사항) / 2줄 요청일·구분·상태·관리 */
