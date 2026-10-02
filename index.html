@@ -5357,7 +5357,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="lush-hero" aria-label="오늘의 인사">
         <div class="lush-hero-text">
           <div class="lush-hero-date" id="heroDate"></div>
-          <h2 class="lush-hero-hello">오늘도 힘차게, 우리 함께 화이팅해요!</h2>
+          <h2 class="lush-hero-hello">오늘도 힘차게,<br class="m-only-br"> 우리 함께 화이팅해요!</h2>
           <p class="lush-hero-sub">LUSH 물류팀의 하루를 응원합니다.</p>
         </div>
         <div class="lush-hero-stats">
@@ -10158,12 +10158,16 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell.on-lush #scheduleManagerView .master-event{border-radius:8px!important;padding:5px 7px!important;font-size:12px!important;border-left:3px solid currentColor!important;}
 </style>
 <style id="mobile-dashboard-fix">
+/* 메인 배너 인사말: 휴대폰에서만 '오늘도 힘차게,' 뒤에서 줄바꿈 */
+.m-only-br{display:none;}
+@media(max-width:900px){.m-only-br{display:inline;}}
 /* 파손 분석 휴대폰 탭은 데스크톱에서 숨김 */
 #diMobileTabs{display:none;}
 /* 팀 공지사항 2개 표시: 칸 높이는 내용에 맞추고, 두 번째 공지의 표시는 회색(첫 번째 '중요'와 구분) */
 #appShell #dashboard .notice-board{display:flex!important;flex-direction:column!important;gap:10px!important;}
 #appShell #dashboard .notice-board .notice-main{min-height:0!important;height:auto!important;flex:0 0 auto!important;}
 #appShell #dashboard .notice-second .notice-pin{background:#e9ecef!important;color:#4e5968!important;}
+#appShell #dashboard .notice-board .notice-main[hidden]{display:none!important;}
 /* 데스크톱: 2주 달력은 칸마다 일정 2개 + "+N건", 휴대폰용 요일 표시는 숨김 */
 .dash-two-week-day .dash-extra{display:none!important;}
 .dash-two-week-date .dash-dow{display:none;}
