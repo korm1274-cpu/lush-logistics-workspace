@@ -5669,8 +5669,8 @@ html,body{max-width:100%;overflow-x:hidden}
               </div>
             </div>
             <div class="cum-layout">
-              <div class="chart-card"><div class="status-card-title"><h3>일자별 생산성 추이</h3><small>EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
-              <div class="table-card"><div class="status-card-title"><h3>일자별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th>일자</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
+              <div class="chart-card"><div class="status-card-title"><h3 id="cumChartTitle">월별 생산성 추이</h3><small id="cumChartHint">월 평균 · EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>투입 인시</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
             </div>
             <div class="status-summary-grid">
               <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
@@ -9879,15 +9879,50 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     return{s:s,e:e};
   }
   function renderCumulative(){
-    var range=normalizeDateRange('#cumStartDate','#cumEndDate'),rows=dateRowsInRange(range.s,range.e);
+    var range=normalizeDateRange('#cumStartDate','#cumEndDate');
+    var hasRange=!!(range.s||range.e);
+    var rows=dateRowsInRange(range.s,range.e);
     var labels=[],values=[],body='',sumQty=0,sumLabor=0;
-    rows.forEach(function(x){
-      labels.push(x.date.slice(5).replace('-','/'));values.push(x.summary.rate);sumQty+=x.summary.qty;sumLabor+=x.summary.labor;
-      body+='<tr><td>'+x.date+'</td><td>'+fmt(x.summary.qty)+'</td><td>'+fmt(Math.round(x.summary.labor*10)/10)+'</td><td>'+(x.summary.rate?fmt(Math.round(x.summary.rate)):'-')+'</td></tr>';
-    });
+
+    rows.forEach(function(x){sumQty+=x.summary.qty;sumLabor+=x.summary.labor;});
+
+    if(hasRange){
+      rows.forEach(function(x){
+        labels.push(x.date.slice(5).replace('-','/'));
+        values.push(x.summary.rate);
+        body+='<tr><td>'+x.date+'</td><td>'+fmt(x.summary.qty)+'</td><td>'+fmt(Math.round(x.summary.labor*10)/10)+'</td><td>'+(x.summary.rate?fmt(Math.round(x.summary.rate)):'-')+'</td></tr>';
+      });
+      q('#cumChartTitle').textContent='기간별 생산성 추이';
+      q('#cumChartHint').textContent='선택 기간 일자별 · EA/인·시간';
+      q('#cumTableTitle').textContent='기간별 생산성 현황';
+      q('#cumPeriodColumn').textContent='일자';
+      q('#cumPeriodLabel').textContent=(range.s||'최초')+' ~ '+(range.e||'최신');
+    }else{
+      var monthly={};
+      rows.forEach(function(x){
+        var month=x.date.slice(0,7);
+        if(!monthly[month])monthly[month]={qty:0,labor:0};
+        monthly[month].qty+=x.summary.qty;
+        monthly[month].labor+=x.summary.labor;
+      });
+      Object.keys(monthly).sort().forEach(function(month){
+        var m=monthly[month];
+        var rate=m.labor>0?m.qty/m.labor:0;
+        labels.push(month.replace('-','.'));
+        values.push(rate);
+        body+='<tr><td>'+month.replace('-','.')+'</td><td>'+fmt(m.qty)+'</td><td>'+fmt(Math.round(m.labor*10)/10)+'</td><td>'+(rate?fmt(Math.round(rate)):'-')+'</td></tr>';
+      });
+      q('#cumChartTitle').textContent='월별 생산성 추이';
+      q('#cumChartHint').textContent='월 평균 · EA/인·시간';
+      q('#cumTableTitle').textContent='월별 생산성 현황';
+      q('#cumPeriodColumn').textContent='월';
+      q('#cumPeriodLabel').textContent='전체 누계 · 월 기준';
+    }
+
     q('#cumMonthBody').innerHTML=body||'<tr><td colspan="4" class="data-empty">누계 데이터가 없습니다.</td></tr>';
-    q('#cumPeriodLabel').textContent=(range.s||range.e)?((range.s||'최초')+' ~ '+(range.e||'최신')):'전체 누계';
-    q('#cumQty').textContent=fmt(sumQty);q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
+    q('#cumQty').textContent=fmt(sumQty);
+    q('#cumLabor').textContent=fmt(Math.round(sumLabor*10)/10);
+    q('#cumRate').textContent=fmt(sumLabor>0?Math.round(sumQty/sumLabor):0);
     drawChart('cumMonthChart',labels,values,'#cumMonthEmpty');
   }
   q('#cumSearchBtn').addEventListener('click',renderCumulative);
