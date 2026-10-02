@@ -5992,6 +5992,106 @@ html,body{max-width:100%;overflow-x:hidden}
   }
 }
 </style>
+
+<style id="v95-boxcount-module">
+#statusBoardView .boxcount-subtabs{
+  display:flex;align-items:center;gap:4px;width:max-content;max-width:100%;margin:0 0 14px;padding:3px;overflow-x:auto;
+}
+#statusBoardView .boxcount-subtab{
+  flex:0 0 auto;min-height:35px;padding:7px 10px;border:1px solid transparent;border-radius:6px;background:transparent;
+  color:#666662;font-size:12.5px;font-weight:520;cursor:pointer;white-space:nowrap;
+}
+#statusBoardView .boxcount-subtab:hover{background:#f0f0ed;color:#111}
+#statusBoardView .boxcount-subtab.active{background:#e9e9e5;color:#111;font-weight:700}
+#statusBoardView .boxcount-section{display:none}
+#statusBoardView .boxcount-section.active{display:block}
+#statusBoardView .boxcount-overview-card{padding-bottom:20px!important}
+#statusBoardView .boxcount-data-state{
+  padding:6px 9px;border:1px solid #dedfdc;border-radius:999px;color:#7b827d;font-size:10px;font-weight:800;white-space:nowrap;
+}
+#statusBoardView .boxcount-summary-bar{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 22px;padding:0;
+}
+#statusBoardView .boxcount-summary-bar>div{
+  min-height:92px;padding:15px 16px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #ecece8;
+}
+#statusBoardView .boxcount-summary-bar>div:last-child{border-right:0}
+#statusBoardView .boxcount-summary-bar span{font-size:11px;color:#737b75;font-weight:850}
+#statusBoardView .boxcount-summary-bar strong{display:flex;align-items:baseline;gap:5px;margin-top:7px;font-size:24px;line-height:1.1;letter-spacing:-.035em}
+#statusBoardView .boxcount-summary-bar strong em{font-style:normal;font-size:11px;color:#8a918c;font-weight:750}
+#statusBoardView .boxcount-summary-bar small{margin-top:6px;font-size:10px;color:#929893}
+#statusBoardView .boxcount-summary-bar .boxcount-store-strong{font-size:19px}
+#statusBoardView .boxcount-weekday-bar{
+  display:flex;gap:4px;width:max-content;max-width:100%;margin:16px 0 12px;padding:3px;overflow-x:auto;
+}
+#statusBoardView .boxcount-weekday{
+  min-width:74px;padding:8px 11px;border:0;border-radius:6px;background:transparent;color:#666662;font-size:12px;font-weight:650;cursor:pointer;
+}
+#statusBoardView .boxcount-weekday:hover{background:#f0f0ed}
+#statusBoardView .boxcount-weekday.active{background:#1d1d1b;color:#fff}
+#statusBoardView .boxcount-route-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;
+}
+#statusBoardView .boxcount-route-card{
+  min-width:0;background:#fff;border:1.5px solid var(--status-issue-kraft,#d8d0c2);border-radius:14px;overflow:hidden;
+}
+#statusBoardView .boxcount-route-head{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid #ecece8;
+}
+#statusBoardView .boxcount-route-head b{font-size:14px}
+#statusBoardView .boxcount-route-head small{font-size:10px;color:#8a918c}
+#statusBoardView .boxcount-store-list{padding:2px 14px 10px}
+#statusBoardView .boxcount-store-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:44px;padding:8px 0;border-bottom:1px solid #eeeeea;
+}
+#statusBoardView .boxcount-store-row:last-child{border-bottom:0}
+#statusBoardView .boxcount-store-row span{min-width:0;font-size:11.5px;font-weight:760;line-height:1.35}
+#statusBoardView .boxcount-store-row strong{font-size:16px;white-space:nowrap}
+#statusBoardView .boxcount-store-row strong small{margin-left:3px;font-size:9px;color:#909690}
+#statusBoardView .boxcount-store-note{
+  grid-column:1/-1;margin-top:-5px;color:#92785f;font-size:9px;font-weight:700;
+}
+#statusBoardView .boxcount-unassigned,
+#statusBoardView .boxcount-alias-note{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:12px 15px;border:1px solid #e3e3df;border-radius:10px;background:#fafaf8;
+}
+#statusBoardView .boxcount-unassigned span,
+#statusBoardView .boxcount-alias-note span{font-size:10px;color:#7b827d;font-weight:850}
+#statusBoardView .boxcount-unassigned b,
+#statusBoardView .boxcount-alias-note b{font-size:11px}
+#statusBoardView .boxcount-unassigned small{font-size:9px;color:#929893}
+#statusBoardView .boxcount-detail-table,#statusBoardView .boxcount-manual-table{margin-top:16px}
+#statusBoardView .boxcount-manual-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(320px,.6fr);gap:18px;padding:0 22px 20px}
+#statusBoardView .boxcount-manual-form{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+#statusBoardView .boxcount-manual-form .status-filter-card{flex:1 1 170px!important}
+#statusBoardView .boxcount-name-manager{border-left:1px solid #ecece8;padding-left:18px}
+#statusBoardView .boxcount-name-manager>div:first-child span{display:block;font-size:12px;font-weight:850}
+#statusBoardView .boxcount-name-manager>div:first-child small{display:block;margin-top:4px;font-size:10px;color:#858c86}
+#statusBoardView .boxcount-name-add{display:flex;gap:7px;margin-top:12px}
+#statusBoardView .boxcount-name-add input{flex:1;min-width:0;height:38px;border:1px solid #dde2dd;border-radius:8px;padding:0 10px}
+#statusBoardView .boxcount-name-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#statusBoardView .boxcount-name-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #e0e2df;border-radius:999px;font-size:10px;background:#fff}
+#statusBoardView .boxcount-name-chip button{border:0;background:transparent;color:#999;cursor:pointer;padding:0}
+@media(max-width:1280px){
+  #statusBoardView .boxcount-route-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  #statusBoardView .boxcount-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #statusBoardView .boxcount-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(2n){border-right:0}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(-n+2){border-bottom:1px solid #ecece8}
+  #statusBoardView .boxcount-manual-layout{grid-template-columns:1fr}
+  #statusBoardView .boxcount-name-manager{border-left:0;border-top:1px solid #ecece8;padding:16px 0 0}
+}
+@media(max-width:620px){
+  #statusBoardView .boxcount-subtabs{width:100%}
+  #statusBoardView .boxcount-route-grid{grid-template-columns:1fr}
+  #statusBoardView .boxcount-summary-bar{grid-template-columns:1fr;margin-left:12px;margin-right:12px}
+  #statusBoardView .boxcount-summary-bar>div{border-right:0;border-bottom:1px solid #ecece8}
+  #statusBoardView .boxcount-summary-bar>div:last-child{border-bottom:0}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(-n+2){border-bottom:1px solid #ecece8}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -6151,6 +6251,7 @@ html,body{max-width:100%;overflow-x:hidden}
           <button type="button" class="status-board-tab active" data-status-tab="shipping">출고 현황</button>
           <button type="button" class="status-board-tab" data-status-tab="productivity">생산성</button>
           <button type="button" class="status-board-tab" data-status-tab="storehistory">매장별 처리이력</button>
+          <button type="button" class="status-board-tab" data-status-tab="boxcount">매장별 박스수량</button>
           <button type="button" class="status-board-tab" data-status-tab="products">제품별 출고현황</button>
         </div>
 
@@ -6374,6 +6475,99 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-table-scroll store-history-scroll">
               <table class="status-data-table"><thead><tr><th>일자</th><th>매장</th><th>총 출고량</th><th>처리수량</th><th>시작</th><th>완료</th><th>소요시간</th><th>상태</th></tr></thead>
               <tbody id="storeHistoryBody"><tr><td colspan="8" class="data-empty" style="text-align:center">조회할 날짜를 선택해주세요.</td></tr></tbody></table>
+            </div>
+          </div>
+        </div>
+
+        <div class="status-panel" data-status-panel="boxcount">
+          <div class="boxcount-subtabs" role="tablist" aria-label="매장별 박스수량 세부 메뉴">
+            <button type="button" class="boxcount-subtab active" data-boxcount-view="cumulative">누계</button>
+            <button type="button" class="boxcount-subtab" data-boxcount-view="detail">상세조회</button>
+            <button type="button" class="boxcount-subtab" data-boxcount-view="manual">기타 박스 등록</button>
+          </div>
+
+          <div class="boxcount-section active" data-boxcount-section="cumulative">
+            <div class="status-card boxcount-overview-card">
+              <div class="status-card-title">
+                <div><h3>매장별 박스수량 누계</h3><small id="boxcountPeriodLabel">올해 기준 · 요일/호차별 자동 집계</small></div>
+                <span class="boxcount-data-state">자동 집계 데이터 연동 전</span>
+              </div>
+              <div class="boxcount-summary-bar">
+                <div><span>총 박스수</span><strong><b id="boxcountTotal">0</b><em>BOX</em></strong><small>자동 + 기타 등록 합계</small></div>
+                <div><span>출고 매장</span><strong><b id="boxcountStores">0</b><em>개</em></strong><small>선택 기준 출고 매장</small></div>
+                <div><span>매장당 평균</span><strong><b id="boxcountAvg">0</b><em>BOX</em></strong><small>출고 매장 기준</small></div>
+                <div><span>최대 박스 매장</span><strong class="boxcount-store-strong"><b id="boxcountTopStore">-</b></strong><small id="boxcountTopValue">0 BOX</small></div>
+              </div>
+            </div>
+
+            <div class="boxcount-weekday-bar" id="boxcountWeekdayBar" role="tablist" aria-label="배송 요일">
+              <button type="button" class="boxcount-weekday active" data-box-day="월요일">월요일</button>
+              <button type="button" class="boxcount-weekday" data-box-day="화요일">화요일</button>
+              <button type="button" class="boxcount-weekday" data-box-day="수요일">수요일</button>
+              <button type="button" class="boxcount-weekday" data-box-day="목요일">목요일</button>
+              <button type="button" class="boxcount-weekday" data-box-day="금요일">금요일</button>
+            </div>
+
+            <div class="boxcount-route-grid" id="boxcountRouteGrid"></div>
+
+            <div class="boxcount-unassigned">
+              <span>미배정 매장</span>
+              <b>강릉모노그램</b>
+              <small>배송 요일/호차 확정 후 자동 그룹에 포함</small>
+            </div>
+            <div class="boxcount-alias-note">
+              <span>매장명 자동 통합</span>
+              <b>스타필드 수원 스파 → 스타필드 수원</b>
+              <b>압구정 스파 → 압구정 1호</b>
+            </div>
+          </div>
+
+          <div class="boxcount-section" data-boxcount-section="detail">
+            <div class="status-card">
+              <div class="status-card-title"><h3>박스수량 상세조회</h3><small>기간·요일·호차·매장 기준으로 실제 박스 이력을 조회합니다.</small></div>
+              <div class="status-filter-cards boxcount-detail-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="boxDetailStart"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="boxDetailEnd"><small>조회 종료일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>요일</span><select id="boxDetailDay"><option value="">전체 요일</option></select><small>배송 요일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>호차</span><select id="boxDetailRoute"><option value="">전체 호차</option></select><small>1~4호차 / 택배</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>매장</span><select id="boxDetailStore"><option value="">전체 매장</option></select><small>표준 매장명 기준</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="boxDetailSearch">조회</button>
+              </div>
+            </div>
+            <div class="table-card boxcount-detail-table">
+              <div class="status-card-title"><h3>기간별 박스 이력</h3><small id="boxDetailResultLabel">자동 집계 데이터 연동 후 표시됩니다.</small></div>
+              <div class="status-table-scroll">
+                <table class="status-data-table">
+                  <thead><tr><th>일자</th><th>요일</th><th>호차</th><th>매장</th><th>박스수</th><th>구분</th></tr></thead>
+                  <tbody id="boxDetailBody"><tr><td colspan="6" class="data-empty" style="text-align:center">조회할 기간을 선택해주세요.</td></tr></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <div class="boxcount-section" data-boxcount-section="manual">
+            <div class="status-card">
+              <div class="status-card-title"><h3>기타 박스 등록</h3><small>자동으로 받을 수 없는 박스는 고정 네임을 등록한 뒤 일자별로 기록합니다.</small></div>
+              <div class="boxcount-manual-layout">
+                <div class="boxcount-manual-form">
+                  <div class="prod-api-metric status-filter-card cum-date-card"><span>일자</span><input type="date" id="boxManualDate"><small>박스 발생일</small></div>
+                  <div class="prod-api-metric status-filter-card cum-date-card"><span>고정 네임</span><select id="boxManualName"><option value="">고정 네임 선택</option></select><small>등록된 이름 사용</small></div>
+                  <div class="prod-api-metric status-filter-card cum-date-card"><span>박스수</span><input type="number" min="1" step="1" id="boxManualQty" placeholder="0"><small>BOX 단위</small></div>
+                  <div class="prod-api-metric status-filter-card cum-date-card"><span>메모</span><input type="text" id="boxManualMemo" placeholder="선택 입력"><small>필요 시 입력</small></div>
+                  <button type="button" class="btn primary status-filter-btn" id="boxManualSave">등록</button>
+                </div>
+                <div class="boxcount-name-manager">
+                  <div><span>고정 네임 관리</span><small>자동 집계가 불가능한 박스 구분명을 미리 등록합니다.</small></div>
+                  <div class="boxcount-name-add"><input type="text" id="boxManualNewName" placeholder="예: 샘플 박스"><button type="button" class="btn" id="boxManualNameAdd">추가</button></div>
+                  <div class="boxcount-name-list" id="boxManualNameList"><span class="muted">등록된 고정 네임이 없습니다.</span></div>
+                </div>
+              </div>
+            </div>
+            <div class="table-card boxcount-manual-table">
+              <div class="status-card-title"><h3>기타 박스 등록 이력</h3><small>브라우저에 임시 저장됩니다.</small></div>
+              <div class="status-table-scroll">
+                <table class="status-data-table"><thead><tr><th>일자</th><th>고정 네임</th><th>박스수</th><th>메모</th><th>관리</th></tr></thead><tbody id="boxManualBody"></tbody></table>
+              </div>
             </div>
           </div>
         </div>
@@ -10251,9 +10445,134 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     qa('.status-panel').forEach(function(p){p.classList.toggle('active',p.dataset.statusPanel===name)});
     if(name==='productivity'){setProductivityView('today');renderCumulative();}
     if(name==='storehistory')renderStoreHistory();
+    if(name==='boxcount')renderBoxcountCumulative();
     if(name==='products')renderProductOutboundAnalysis();
   }
   qa('.status-board-tab').forEach(function(b){b.addEventListener('click',function(){activateTab(b.dataset.statusTab)})});
+
+  var BOXCOUNT_SCHEDULE={
+    '월요일':{
+      '1호차':[{name:'롯데 월드몰'},{name:'압구정 1호'}],
+      '2호차':[{name:'강남역'},{name:'본사'}],
+      '3호차':[{name:'스타필드 코엑스'},{name:'롯데 청량리'}],
+      '4호차':[{name:'천안 아산'},{name:'스타필드 안성'},{name:'커넥트 청주'}],
+      '택배':[{name:'현대 충청'},{name:'제주 송당'},{name:'롯데 부산본점'},{name:'롯데 광복'},{name:'신세계 광주'}]
+    },
+    '화요일':{
+      '1호차':[{name:'타임스트림',note:'1·3주차 격주 배송'},{name:'롯데 영등포'},{name:'롯데 동탄'}],
+      '2호차':[{name:'롯데 강남'},{name:'신세계 강남'},{name:'롯데 노원'},{name:'본사'}],
+      '3호차':[{name:'롯데 수지몰'},{name:'타임빌라스 수원'},{name:'AK수원'}],
+      '4호차':[{name:'신세계 대전'},{name:'롯데 대전'},{name:'갤러리아 타임월드'}],
+      '택배':[{name:'신세계 김해'},{name:'신세계 마산'},{name:'롯데 창원'},{name:'제주 산방산'}]
+    },
+    '수요일':{
+      '1호차':[{name:'스타필드 고양'},{name:'롯데 일산'},{name:'본사'}],
+      '2호차':[{name:'명동'},{name:'신세계 본점'}],
+      '3호차':[{name:'스타필드 수원'},{name:'갤러리아 광교'},{name:'롯데 평촌'}],
+      '4호차':[{name:'타임스퀘어',note:'1·3주차'},{name:'롯데 인천',note:'1·3주차'},{name:'홍대',note:'2·4주차'},{name:'롯데 본점',note:'2·4주차'}],
+      '택배':[{name:'현대 울산'},{name:'롯데 울산'},{name:'롯데 동부산'},{name:'신세계 센텀'}]
+    },
+    '목요일':{
+      '1호차':[{name:'성수'},{name:'롯데 미아'},{name:'현대 미아'}],
+      '2호차':[{name:'현대 송도'},{name:'현대 중동'},{name:'롯데 중동'}],
+      '3호차':[{name:'현대 신촌'},{name:'IFC'},{name:'본사'}],
+      '4호차':[{name:'두물머리'},{name:'스타필드 하남'},{name:'현대 천호'}],
+      '택배':[{name:'롯데 광주'},{name:'롯데 전주'},{name:'신세계 대구'},{name:'롯데 대구'},{name:'현대 대구'}]
+    },
+    '금요일':{
+      '1호차':[{name:'롯데 잠실'},{name:'현대 스페이스원'},{name:'신세계 의정부'}],
+      '2호차':[{name:'AK분당'},{name:'신세계 사우스시티'},{name:'현대 판교'}],
+      '3호차':[{name:'현대 목동'},{name:'마곡 원그르브'},{name:'롯데 김포'}],
+      '4호차':[{name:'용산 아이파크'},{name:'이태원'},{name:'본사'}],
+      '택배':[]
+    }
+  };
+  var BOXCOUNT_ALIASES={'스타필드 수원 스파':'스타필드 수원','압구정 스파':'압구정 1호'};
+  var boxcountSelectedDay='월요일';
+  var BOXCOUNT_MANUAL_NAMES_KEY='lushBoxcountManualNamesV1';
+  var BOXCOUNT_MANUAL_ROWS_KEY='lushBoxcountManualRowsV1';
+
+  function boxcountRead(key,fallback){
+    try{var v=JSON.parse(localStorage.getItem(key)||'null');return v==null?fallback:v}catch(e){return fallback}
+  }
+  function boxcountWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
+  function boxcountAllStores(){
+    var set={};
+    Object.keys(BOXCOUNT_SCHEDULE).forEach(function(day){
+      Object.keys(BOXCOUNT_SCHEDULE[day]).forEach(function(route){
+        BOXCOUNT_SCHEDULE[day][route].forEach(function(x){set[x.name]=true});
+      });
+    });
+    return Object.keys(set).sort();
+  }
+  function renderBoxcountCumulative(){
+    var grid=q('#boxcountRouteGrid');if(!grid)return;
+    var day=BOXCOUNT_SCHEDULE[boxcountSelectedDay]||{};
+    qa('.boxcount-weekday').forEach(function(b){b.classList.toggle('active',b.dataset.boxDay===boxcountSelectedDay)});
+    var routes=['1호차','2호차','3호차','4호차','택배'];
+    grid.innerHTML=routes.map(function(route){
+      var stores=day[route]||[];
+      return '<div class="boxcount-route-card"><div class="boxcount-route-head"><b>'+route+'</b><small>'+stores.length+'개 매장</small></div><div class="boxcount-store-list">'+
+        (stores.length?stores.map(function(x){
+          return '<div class="boxcount-store-row"><span>'+esc(x.name)+'</span><strong>0 <small>BOX</small></strong>'+(x.note?'<div class="boxcount-store-note">'+esc(x.note)+'</div>':'')+'</div>';
+        }).join(''):'<div class="data-empty" style="padding:18px 0;text-align:center">배송 매장 없음</div>')+
+      '</div></div>';
+    }).join('');
+    q('#boxcountTotal').textContent='0';q('#boxcountStores').textContent='0';q('#boxcountAvg').textContent='0';q('#boxcountTopStore').textContent='-';q('#boxcountTopValue').textContent='0 BOX';
+  }
+  function setBoxcountView(view){
+    qa('.boxcount-subtab').forEach(function(b){b.classList.toggle('active',b.dataset.boxcountView===view)});
+    qa('.boxcount-section').forEach(function(p){p.classList.toggle('active',p.dataset.boxcountSection===view)});
+    if(view==='cumulative')renderBoxcountCumulative();
+    if(view==='detail')initBoxcountDetailFilters();
+    if(view==='manual')renderBoxcountManual();
+  }
+  qa('.boxcount-subtab').forEach(function(b){b.addEventListener('click',function(){setBoxcountView(b.dataset.boxcountView)})});
+  qa('.boxcount-weekday').forEach(function(b){b.addEventListener('click',function(){boxcountSelectedDay=b.dataset.boxDay;renderBoxcountCumulative()})});
+
+  function initBoxcountDetailFilters(){
+    var day=q('#boxDetailDay'),route=q('#boxDetailRoute'),store=q('#boxDetailStore');
+    if(day&&day.options.length===1)Object.keys(BOXCOUNT_SCHEDULE).forEach(function(x){day.insertAdjacentHTML('beforeend','<option value="'+esc(x)+'">'+esc(x)+'</option>')});
+    if(route&&route.options.length===1)['1호차','2호차','3호차','4호차','택배'].forEach(function(x){route.insertAdjacentHTML('beforeend','<option value="'+esc(x)+'">'+esc(x)+'</option>')});
+    if(store&&store.options.length===1)boxcountAllStores().forEach(function(x){store.insertAdjacentHTML('beforeend','<option value="'+esc(x)+'">'+esc(x)+'</option>')});
+  }
+  if(q('#boxDetailSearch'))q('#boxDetailSearch').addEventListener('click',function(){
+    var start=q('#boxDetailStart').value||'',end=q('#boxDetailEnd').value||'';
+    if(!start||!end){if(typeof toastMsg==='function')toastMsg('시작일과 종료일을 선택해주세요.');return}
+    q('#boxDetailResultLabel').textContent=start+' ~ '+end+' · 자동 집계 데이터 연동 전';
+    q('#boxDetailBody').innerHTML='<tr><td colspan="6" class="data-empty" style="text-align:center">자동 박스수량 데이터 연동 후 조회 결과가 표시됩니다.</td></tr>';
+  });
+
+  function renderBoxcountManual(){
+    var names=boxcountRead(BOXCOUNT_MANUAL_NAMES_KEY,[]),rows=boxcountRead(BOXCOUNT_MANUAL_ROWS_KEY,[]);
+    var sel=q('#boxManualName'),list=q('#boxManualNameList'),body=q('#boxManualBody');
+    if(sel)sel.innerHTML='<option value="">고정 네임 선택</option>'+names.map(function(n){return '<option value="'+esc(n)+'">'+esc(n)+'</option>'}).join('');
+    if(list)list.innerHTML=names.length?names.map(function(n){return '<span class="boxcount-name-chip">'+esc(n)+'<button type="button" data-box-name-remove="'+esc(n)+'">×</button></span>'}).join(''):'<span class="muted">등록된 고정 네임이 없습니다.</span>';
+    if(body)body.innerHTML=rows.length?rows.slice().reverse().map(function(r,idx){
+      var realIndex=rows.length-1-idx;
+      return '<tr><td>'+esc(r.date)+'</td><td>'+esc(r.name)+'</td><td>'+fmt(r.qty)+'</td><td>'+esc(r.memo||'-')+'</td><td><button type="button" class="btn sm" data-box-row-remove="'+realIndex+'">삭제</button></td></tr>';
+    }).join(''):'<tr><td colspan="5" class="data-empty" style="text-align:center">등록된 기타 박스가 없습니다.</td></tr>';
+    qa('[data-box-name-remove]',list||document).forEach(function(btn){btn.onclick=function(){
+      var remove=btn.dataset.boxNameRemove;var next=boxcountRead(BOXCOUNT_MANUAL_NAMES_KEY,[]).filter(function(n){return n!==remove});boxcountWrite(BOXCOUNT_MANUAL_NAMES_KEY,next);renderBoxcountManual();
+    }});
+    qa('[data-box-row-remove]',body||document).forEach(function(btn){btn.onclick=function(){
+      var arr=boxcountRead(BOXCOUNT_MANUAL_ROWS_KEY,[]),i=Number(btn.dataset.boxRowRemove);if(i>=0&&i<arr.length){arr.splice(i,1);boxcountWrite(BOXCOUNT_MANUAL_ROWS_KEY,arr);renderBoxcountManual()}
+    }});
+  }
+  if(q('#boxManualNameAdd'))q('#boxManualNameAdd').addEventListener('click',function(){
+    var input=q('#boxManualNewName'),name=(input.value||'').trim();if(!name)return;
+    var names=boxcountRead(BOXCOUNT_MANUAL_NAMES_KEY,[]);if(names.indexOf(name)<0){names.push(name);boxcountWrite(BOXCOUNT_MANUAL_NAMES_KEY,names)}
+    input.value='';renderBoxcountManual();
+  });
+  if(q('#boxManualSave'))q('#boxManualSave').addEventListener('click',function(){
+    var date=q('#boxManualDate').value||'',name=q('#boxManualName').value||'',qty=Number(q('#boxManualQty').value||0),memo=(q('#boxManualMemo').value||'').trim();
+    if(!date||!name||qty<=0){if(typeof toastMsg==='function')toastMsg('일자, 고정 네임, 박스수를 입력해주세요.');return}
+    var rows=boxcountRead(BOXCOUNT_MANUAL_ROWS_KEY,[]);rows.push({date:date,name:name,qty:qty,memo:memo});boxcountWrite(BOXCOUNT_MANUAL_ROWS_KEY,rows);
+    q('#boxManualQty').value='';q('#boxManualMemo').value='';renderBoxcountManual();
+    if(typeof toastMsg==='function')toastMsg('기타 박스가 등록되었습니다.');
+  });
+  initBoxcountDetailFilters();
+  renderBoxcountManual();
 
   var shippingProgressFrame=null,shippingProgressTimer=null;
   function animateShippingProgress(target){
