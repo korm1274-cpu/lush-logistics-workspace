@@ -5442,6 +5442,111 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .cumulative-summary-bar .prod-api-metric{border-right:0!important;border-bottom:1px solid #ecece8!important}
   #statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-bottom:0!important}
 }
+
+<style id="v89-productivity-bar-and-filter-unify">
+/* 금일 생산성: 누계 생산성에서 확정한 한 줄 연결형 지표 바 스타일 */
+#statusBoardView .today-summary-bar{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:0 22px 20px!important;
+  padding:0!important;
+  border:1px solid #e2e2de!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric{
+  min-width:0!important;
+  min-height:92px!important;
+  padding:15px 16px!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric:last-child{border-right:0!important}
+#statusBoardView .today-summary-bar .prod-api-metric>span{
+  font-size:11px!important;
+  color:#737b75!important;
+  font-weight:850!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>strong{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:5px!important;
+  margin-top:7px!important;
+  font-size:24px!important;
+  line-height:1.1!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>strong b{font-size:inherit!important}
+#statusBoardView .today-summary-bar .prod-api-metric>strong em{
+  font-style:normal!important;
+  font-size:11px!important;
+  color:#8a918c!important;
+  font-weight:750!important;
+  letter-spacing:-.01em!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>small{
+  display:block!important;
+  margin-top:6px!important;
+  font-size:10px!important;
+  color:#929893!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap{
+  margin-top:5px!important;
+  min-height:30px!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:5px!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap input{
+  width:72px!important;
+  height:30px!important;
+  padding:0 6px!important;
+  border:0!important;
+  border-bottom:1px solid #d9ddd9!important;
+  border-radius:0!important;
+  background:transparent!important;
+  font-size:24px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+  color:#202821!important;
+  text-align:left!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap b{
+  font-size:11px!important;
+  color:#8a918c!important;
+  font-weight:750!important;
+}
+
+/* 누계 생산성 조회: 상세조회와 동일한 필터 카드 구조 */
+#statusBoardView .cumulative-filter-cards{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+#statusBoardView .cumulative-overview-card>.status-card-title{
+  padding-bottom:12px!important;
+}
+#statusBoardView .cumulative-overview-card .cumulative-summary-bar{
+  margin-top:16px!important;
+}
+
+@media(max-width:1280px){
+  #statusBoardView .today-summary-bar{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){border-right:0!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+3){border-bottom:1px solid #ecece8!important}
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){border-right:1px solid #ecece8!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(2n){border-right:0!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+4){border-bottom:1px solid #ecece8!important}
+}
+</style>
 </style>
 </head>
 <body>
@@ -5681,7 +5786,7 @@ html,body{max-width:100%;overflow-x:hidden}
                 </div>
                 <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
               </div>
-              <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar">
+              <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar today-summary-bar">
                 <div class="prod-api-metric productivity-metric-time"><span>출고 시작</span><strong id="prodStartTimeDisplay">--:--</strong><small>기존 연동 데이터</small></div>
                 <div class="prod-api-metric productivity-metric-time"><span>출고 종료</span><strong id="prodEndTimeDisplay">--:--</strong><small>기존 연동 데이터</small></div>
                 <div class="prod-api-metric productivity-metric-elapsed"><span>총 소요시간</span><strong id="prodElapsedDisplay">-</strong><small>시작~종료 자동 계산</small></div>
@@ -5705,17 +5810,15 @@ html,body{max-width:100%;overflow-x:hidden}
 
           <div class="productivity-section" data-productivity-section="cumulative">
             <div class="status-card cumulative-overview-card">
-              <div class="status-card-title cumulative-overview-head">
-                <div>
-                  <h3>누계 생산성</h3>
-                  <small id="cumViewLabel">전체 누계 · 월 기준</small>
-                </div>
-                <div class="cumulative-query-area" aria-label="누계 생산성 기간 조회">
-                  <label class="cumulative-query-field"><span>시작월</span><input type="month" id="cumStartDate"></label>
-                  <label class="cumulative-query-field"><span>종료월</span><input type="month" id="cumEndDate"></label>
-                  <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
-                  <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
-                </div>
+              <div class="status-card-title">
+                <h3>누계 생산성</h3>
+                <small id="cumViewLabel">전체 누계 · 월 기준</small>
+              </div>
+              <div class="status-filter-cards cumulative-filter-cards">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작월</span><input type="month" id="cumStartDate"><small>조회 시작월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료월</span><input type="month" id="cumEndDate"><small>조회 종료월</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="cumSearchBtn">기간 조회</button>
+                <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
               </div>
               <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar cumulative-summary-bar">
                 <div class="prod-api-metric productivity-metric-elapsed"><span>총 소요시간</span><strong id="cumElapsed">-</strong><small>작업시간 합계</small></div>
