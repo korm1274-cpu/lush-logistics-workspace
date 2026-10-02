@@ -6307,6 +6307,36 @@ html,body{max-width:100%;overflow-x:hidden}
   }
 }
 </style>
+
+<style id="v98-boxcount-query-match-cumulative">
+#statusBoardView .boxcount-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView .boxcount-cumulative-filters{
+  margin:0!important;
+  padding:0 22px!important;
+}
+#statusBoardView .boxcount-cumulative-filters .status-filter-card{
+  margin-bottom:0!important;
+}
+#statusBoardView .boxcount-cumulative-filters .status-filter-btn{
+  align-self:center!important;
+  height:40px!important;
+  margin-top:0!important;
+}
+#statusBoardView .boxcount-period-controls,
+#statusBoardView .boxcount-period-input,
+#statusBoardView .boxcount-period-btn{
+  all:unset;
+}
+@media(max-width:700px){
+  #statusBoardView .boxcount-cumulative-filters{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -6703,23 +6733,25 @@ html,body{max-width:100%;overflow-x:hidden}
 
           <div class="boxcount-section active" data-boxcount-section="cumulative">
             <div class="status-card boxcount-overview-card">
-              <div class="status-card-title boxcount-overview-head">
+              <div class="status-card-title">
                 <div>
                   <h3>매장별 박스수량 누계</h3>
                   <small id="boxcountPeriodLabel">전체 누계 · 요일/호차별 자동 집계</small>
                 </div>
-                <div class="boxcount-period-controls" aria-label="박스수량 누계 기간 조회">
-                  <label class="boxcount-period-input">
-                    <span>시작월</span>
-                    <input type="month" id="boxcountStartMonth">
-                  </label>
-                  <label class="boxcount-period-input">
-                    <span>종료월</span>
-                    <input type="month" id="boxcountEndMonth">
-                  </label>
-                  <button type="button" class="btn primary boxcount-period-btn" id="boxcountPeriodSearch">기간 조회</button>
-                  <button type="button" class="btn boxcount-period-btn" id="boxcountAll">전체 누계</button>
+              </div>
+              <div class="status-filter-cards boxcount-cumulative-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card">
+                  <span>시작월</span>
+                  <input type="month" id="boxcountStartMonth">
+                  <small>조회 시작월</small>
                 </div>
+                <div class="prod-api-metric status-filter-card cum-date-card">
+                  <span>종료월</span>
+                  <input type="month" id="boxcountEndMonth">
+                  <small>조회 종료월</small>
+                </div>
+                <button type="button" class="btn primary status-filter-btn" id="boxcountPeriodSearch">기간 조회</button>
+                <button type="button" class="btn status-filter-btn" id="boxcountAll">전체 누계</button>
               </div>
 
               <div class="boxcount-summary-bar">
