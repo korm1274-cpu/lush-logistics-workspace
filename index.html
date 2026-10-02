@@ -10168,6 +10168,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell #dashboard .notice-board .notice-main{min-height:0!important;height:auto!important;flex:0 0 auto!important;}
 #appShell #dashboard .notice-second .notice-pin{background:#e9ecef!important;color:#4e5968!important;}
 #appShell #dashboard .notice-board .notice-main[hidden]{display:none!important;}
+/* 공지 앞의 '중요'/'공지' 표시는 쓰지 않음 */
+#appShell #dashboard .notice-board .notice-pin{display:none!important;}
 /* 데스크톱: 2주 달력은 칸마다 일정 2개 + "+N건", 휴대폰용 요일 표시는 숨김 */
 .dash-two-week-day .dash-extra{display:none!important;}
 .dash-two-week-date .dash-dow{display:none;}
