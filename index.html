@@ -7029,7 +7029,7 @@ setTimeout(initInventoryColumnResize,0);
     const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${gridStart.getMonth()+1}월 ${gridStart.getDate()}일 ~ ${gridEnd.getMonth()+1}월 ${gridEnd.getDate()}일`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list.slice(0,2);html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span></div><div class="dash-two-week-events">${visible.map(e=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list;html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span><em class="dash-dow">${d.getMonth()+1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})</em></div><div class="dash-two-week-events">${visible.map((e,ix)=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}${ix>=2?' dash-extra':''}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey();
     const importedLeaveToday=(importEvents||[]).filter(e=>e.type==='import'&&String(e.source||'').includes('연차')&&eventCovers(e,today)).map(e=>{
       const m=String(e.title||'').match(/^(.*?)\s*연차\s*$/);
@@ -10151,6 +10151,47 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell.on-lush #scheduleManagerView .master-calendar-day.today{box-shadow:none!important;background:#fff4f7!important;}
 #appShell.on-lush #scheduleManagerView .master-calendar-day.today .master-day-num{background:var(--lush-ink);color:#fff!important;}
 #appShell.on-lush #scheduleManagerView .master-event{border-radius:8px!important;padding:5px 7px!important;font-size:12px!important;border-left:3px solid currentColor!important;}
+</style>
+<style id="mobile-dashboard-fix">
+/* 데스크톱: 2주 달력은 칸마다 일정 2개 + "+N건", 휴대폰용 요일 표시는 숨김 */
+.dash-two-week-day .dash-extra{display:none!important;}
+.dash-two-week-date .dash-dow{display:none;}
+/* 휴대폰(900px 이하)에서 메인 화면이 잘리지 않도록 */
+@media(max-width:900px){
+  /* 제품 확보 현황: 내용은 한 줄 전체, 입고요청일·상태는 아래 줄. 목록 높이 제한 해제 */
+  #appShell #dashboard .ops-todo-list{max-height:none!important;overflow:visible!important;padding-right:0!important;}
+  #appShell #dashboard .ops-todo-item{grid-template-columns:auto auto 1fr!important;row-gap:8px!important;column-gap:8px!important;}
+  #appShell #dashboard .ops-todo-item .todo-content{grid-column:1 / -1!important;font-size:14px!important;}
+  #appShell #dashboard .ops-todo-item .todo-indate.empty{display:none!important;}
+  #appShell #dashboard .ops-todo-item .todo-indate{grid-column:1!important;grid-row:2!important;}
+  #appShell #dashboard .ops-todo-item .badge{grid-column:2!important;grid-row:2!important;justify-self:start!important;}
+  #appShell #dashboard .ops-todo-item:has(.todo-indate.empty) .badge{grid-column:1!important;}
+  /* 금주 출고 요청: 매장명 칸을 넓게, 요청일자·처리 칸은 필요한 만큼만 */
+  #appShell #dashboard .request-card-grid{padding-left:0!important;padding-right:0!important;}
+  #appShell #dashboard .request-mini-card{padding-left:14px!important;padding-right:14px!important;}
+  #appShell #dashboard .request-mini-table{padding-left:0!important;padding-right:0!important;}
+  #appShell #appShell #dashboard .request-mini-header,#appShell #dashboard .request-mini-header,#appShell #dashboard .request-row{grid-template-columns:minmax(0,1fr) 50px 62px!important;gap:6px!important;}
+  #appShell #dashboard .request-mini-header span{white-space:nowrap!important;writing-mode:horizontal-tb!important;font-size:12px!important;}
+  #appShell #dashboard .request-row .store-name,#appShell #dashboard .request-row .doc-no{font-size:13px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;}
+  #appShell #dashboard .request-row .request-state-btn{width:60px!important;min-width:60px!important;font-size:12px!important;}
+  /* 스케줄(2주 달력): 7칸 달력 대신 날짜별 목록. 일정은 모두 보이고 제목도 줄바꿈 */
+  #appShell #dashboard .dashboard-two-week-weekhead{display:none!important;}
+  #appShell #dashboard .dashboard-two-week-grid{display:block!important;min-width:0!important;}
+  #appShell #dashboard .dashboard-two-week-calendar,#appShell #dashboard .dashboard-month-calendar{overflow:visible!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-day{display:grid!important;grid-template-columns:78px minmax(0,1fr)!important;gap:10px!important;min-height:0!important;padding:10px 12px!important;border-left:0!important;border-right:0!important;}
+  #appShell #dashboard .dash-two-week-day.outside{display:grid!important;}
+  #appShell #dashboard .dash-two-week-date{display:block!important;align-self:start!important;padding-top:3px!important;}
+  #appShell #dashboard .dash-two-week-date b,#appShell #dashboard .dash-two-week-date>span{display:none!important;}
+  #appShell #dashboard .dash-two-week-date .dash-dow{display:block;font-style:normal;font-size:14px;font-weight:800;color:#191f28;white-space:nowrap;}
+  #appShell #dashboard .dash-two-week-day.weekend .dash-dow{color:#d64545;}
+  #appShell #dashboard .dash-two-week-day.today .dash-dow{color:#fff;background:#1d1d1b;border-radius:8px;padding:2px 6px;width:fit-content;}
+  #appShell #dashboard .dash-two-week-day .dash-extra{display:flex!important;}
+  #appShell #dashboard .dash-two-week-day .dash-more{display:none!important;}
+  #appShell #dashboard .dash-two-week-events{display:grid!important;gap:5px!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-event{max-width:100%!important;}
+  #appShell #dashboard .dash-two-week-event span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-all!important;font-size:13px!important;line-height:1.35!important;}
+  #appShell #dashboard .dash-two-week-day:not(:has(.dash-two-week-event)) .dash-two-week-events::after{content:"일정 없음";font-size:12px;color:#adb5bd;}
+}
 </style>
 <style id="floor-dash-style">
 /* 현장 대시보드: 물류 현장 모니터에 띄워두는 용도 — 멀리서도 읽히는 큰 숫자, 어두운 칠판 배경 */
