@@ -5355,6 +5355,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="mobile-title-wrap"><div><div class="eyebrow">LUSH KOREA · LOGISTICS TEAM</div><h1 id="pageTitle">TODAY · LOGISTICS</h1></div></div>
       <div class="top-actions">
         <div class="base-tools" id="baseTools">
+        <button type="button" class="base-tool" id="pwaTestNotifyBtn" title="PWA 테스트 알림">테스트 알림</button>
         <button type="button" class="base-tool" id="baseNoticeBtn" title="알림센터">🔔 <span class="base-count" id="baseNoticeCount">0</span></button>
         <button type="button" class="base-tool" id="baseSyncBtn" title="구글시트(입고·출고) 즉시 연동 후 팀 공유 데이터 새로고침">↻ 동기화</button>
       </div>
@@ -11214,6 +11215,38 @@ window.__mobileChartLegend=function(chart,canvas){
   else window.addEventListener('load',function(){setTimeout(restore,0)});
 })();
 </script>
+<script>
+(function(){
+  var btn=document.getElementById('pwaTestNotifyBtn');
+  if(!btn)return;
+  btn.addEventListener('click', async function(){
+    if(!('Notification' in window)){
+      alert('이 기기에서는 알림을 지원하지 않습니다.');
+      return;
+    }
+    var permission=Notification.permission;
+    if(permission!=='granted'){
+      permission=await Notification.requestPermission();
+    }
+    if(permission!=='granted'){
+      alert('알림 권한을 허용해야 테스트할 수 있습니다.');
+      return;
+    }
+    try{
+      var reg=await navigator.serviceWorker.ready;
+      await reg.showNotification('LUSH Logistics', {
+        body:'송용주 바보',
+        icon:'./app-icon.svg',
+        badge:'./app-icon.svg',
+        tag:'lush-test-notification'
+      });
+    }catch(e){
+      new Notification('LUSH Logistics',{body:'송용주 바보',icon:'./app-icon.svg'});
+    }
+  });
+})();
+</script>
+
 <script>
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
