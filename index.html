@@ -10191,6 +10191,29 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #dashboard .dash-two-week-event{max-width:100%!important;}
   #appShell #dashboard .dash-two-week-event span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-all!important;font-size:13px!important;line-height:1.35!important;}
   #appShell #dashboard .dash-two-week-day:not(:has(.dash-two-week-event)) .dash-two-week-events::after{content:"일정 없음";font-size:12px;color:#adb5bd;}
+  /* 메인 배너 숫자 카드: 오른쪽으로 잘리지 않게 2개씩 두 줄 */
+  #appShell .lush-hero-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;gap:10px!important;}
+  #appShell .lush-hero-stat{min-width:0!important;padding:10px 12px!important;}
+  #appShell .lush-hero-stat small{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;}
+  #appShell .lush-hero-stat b{font-size:24px!important;}
+  #appShell .lush-hero-stat span{font-size:12px!important;}
+  /* 햄버거 버튼: 다른 규칙의 translate(-50%,-50%) 때문에 머리 영역 위로 올라가 있던 것을 세로 가운데로 */
+  #appShell #desktopSidebarBtn,.app #desktopSidebarBtn{transform:none!important;top:11px!important;}
+  /* 현황판: 화면 안 탭 줄은 숨기고 햄버거 메뉴의 '현황판' 아래로 옮김 */
+  #appShell #statusBoardView .status-board-tabs{display:none!important;}
+  /* 파손 FY: 집계 기준 탭 5개를 한 줄로 */
+  #appShell .fy-tabs{flex-wrap:nowrap!important;width:100%!important;gap:2px!important;padding:3px!important;box-sizing:border-box;}
+  #appShell .fy-tab{flex:1 1 0;min-width:0;padding:8px 2px!important;font-size:12.5px!important;white-space:nowrap;letter-spacing:-.02em;}
+  #appShell .fy-col-labels span{font-size:10px!important;white-space:nowrap;letter-spacing:-.04em;}
+  #appShell .fy-col-val{font-size:9px!important;letter-spacing:-.04em;}
+  #appShell .fy-cols,#appShell .fy-col-labels{gap:3px!important;}
+  /* 조회 칸(날짜·입력)이 카드 밖으로 넘치지 않게 — 파손 상세조회 등 공통 */
+  #appShell .view.active .data-filter-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important;min-width:0!important;box-sizing:border-box;}
+  #appShell .view.active .data-filter-row .field{width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;flex:0 0 auto!important;height:auto!important;min-height:0!important;}
+  #appShell .view.active .data-filter-row input,#appShell .view.active .data-filter-row select{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
+  #appShell .view.active .data-filter-row .btn{width:100%!important;flex:0 0 auto!important;}
+  /* 표는 카드 안에서 가로로 밀어서 볼 수 있게 */
+  #appShell .view.active .data-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
 }
 </style>
 <style id="floor-dash-style">
@@ -10509,7 +10532,32 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         activateMenu(keep||items[0],null);
       };
     });
+    patchStatusBoardMobileMenu();
     markTopTab();
+  }
+  /* 휴대폰 햄버거 메뉴: '현황판' 아래에 화면 안 탭(출고 현황·생산성 등)을 넣어 바로 이동 (데스크톱은 왼쪽 메뉴가 같은 역할) */
+  function patchStatusBoardMobileMenu(){
+    var box=document.querySelector('#navContainer .nav-group[data-group="statusboard"]');
+    var holder=box&&box.querySelector('.nav-children');
+    var tabs=document.querySelectorAll('#statusBoardView .status-board-tab');
+    if(!holder||!tabs.length)return;
+    holder.innerHTML='';
+    var mark=function(){var cur=document.querySelector('#statusBoardView .status-board-tab.active');holder.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',!!cur&&b.dataset.statusTab===cur.dataset.statusTab&&!!document.querySelector('#statusBoardView.active'))})};
+    tabs.forEach(function(t){
+      var b=document.createElement('button');
+      b.type='button';b.className='nav-item';b.dataset.statusTab=t.dataset.statusTab;
+      b.innerHTML='<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label"></span>';
+      b.querySelector('.nav-child-label').textContent=t.textContent.trim();
+      b.onclick=function(){
+        var m=menus.find(function(x){return x.id==='statusboard-main'});
+        if(m)activateMenu(m,null);
+        t.click();
+        if(typeof closeMobileNav==='function')closeMobileNav();
+        mark();
+      };
+      holder.appendChild(b);
+    });
+    mark();
   }
 
   var origActivate=activateMenu;
