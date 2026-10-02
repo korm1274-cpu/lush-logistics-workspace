@@ -5409,6 +5409,15 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .cumulative-query-field span{font-size:10px;font-weight:850;color:#737b75}
 #statusBoardView .cumulative-query-field input{height:38px;min-width:142px;padding:0 10px;border:1px solid #dde2dd;border-radius:9px;background:#fff;font-size:12px;color:#283029}
 #statusBoardView .cumulative-query-area .status-filter-btn{height:38px;align-self:flex-end}
+#statusBoardView .cumulative-summary-bar{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:18px 0 0!important;padding:0!important;border:1px solid #e2e2de!important;border-radius:12px!important;overflow:hidden!important;background:#fff!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric{min-width:0!important;min-height:92px!important;padding:15px 18px!important;border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;background:#fff!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-right:0!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong{display:flex!important;align-items:baseline!important;gap:5px!important;margin-top:7px!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.035em!important;white-space:nowrap!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong b{font-size:inherit!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong em{font-style:normal!important;font-size:11px!important;color:#8a918c!important;font-weight:750!important;letter-spacing:-.01em!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>small{display:block!important;margin-top:6px!important;font-size:10px!important;color:#929893!important}
+
 #statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin-top:18px!important}
 #statusBoardView .cumulative-summary-grid .status-summary{min-height:104px!important}
 #statusBoardView .cumulative-summary-grid .status-summary strong{white-space:nowrap}
@@ -5420,12 +5429,18 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .cumulative-overview-head{align-items:flex-start!important;flex-direction:column!important}
   #statusBoardView .cumulative-query-area{width:100%;justify-content:flex-end}
   #statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .cumulative-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(2){border-right:0!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(-n+2){border-bottom:1px solid #ecece8!important}
 }
 @media(max-width:640px){
   #statusBoardView .cumulative-query-area{justify-content:flex-start}
   #statusBoardView .cumulative-query-field{flex:1 1 calc(50% - 4px)}
   #statusBoardView .cumulative-query-field input{width:100%;min-width:0}
   #statusBoardView .cumulative-summary-grid{grid-template-columns:1fr!important}
+  #statusBoardView .cumulative-summary-bar{grid-template-columns:1fr!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-bottom:0!important}
 }
 </style>
 </head>
@@ -5702,16 +5717,16 @@ html,body{max-width:100%;overflow-x:hidden}
                   <button type="button" class="btn status-filter-btn" id="cumAllBtn">전체 누계</button>
                 </div>
               </div>
-              <div class="status-summary-grid cumulative-summary-grid">
-                <div class="status-summary"><span>총 소요시간</span><strong id="cumElapsed">-</strong><small>작업시간 합계</small></div>
-                <div class="status-summary"><span>총 투입인원</span><strong id="cumStaff">0</strong><small>명</small></div>
-                <div class="status-summary"><span>누계 처리량</span><strong id="cumQty">0</strong><small>EA</small></div>
-                <div class="status-summary"><span>평균 생산성</span><strong id="cumRate">0</strong><small>EA/인·시간</small></div>
+              <div class="prod-toolbar prod-toolbar-readonly productivity-today-toolbar cumulative-summary-bar">
+                <div class="prod-api-metric productivity-metric-elapsed"><span>총 소요시간</span><strong id="cumElapsed">-</strong><small>작업시간 합계</small></div>
+                <div class="prod-api-metric productivity-metric-staff"><span>총 투입인원</span><strong><b id="cumStaff">0</b><em>명</em></strong><small>조회 기간 누적</small></div>
+                <div class="prod-api-metric productivity-metric-primary"><span>누계 처리량</span><strong><b id="cumQty">0</b><em>EA</em></strong><small>조회 기간 누계</small></div>
+                <div class="prod-api-metric productivity-metric-primary"><span>평균 생산성</span><strong><b id="cumRate">0</b><em>EA/인·시간</em></strong><small>조회 기간 평균</small></div>
               </div>
             </div>
             <div class="cum-layout">
-              <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>총 소요시간</th><th>총 투입인원</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
               <div class="chart-card"><div class="status-card-title"><h3 id="cumChartTitle">월별 생산성 추이</h3><small id="cumChartHint">월 평균 · EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">전체 누계 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>총 소요시간</th><th>총 투입인원</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
             </div>
           </div>
 
