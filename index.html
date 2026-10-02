@@ -5374,11 +5374,12 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="dashboard-panel-title" style="display:flex;align-items:center;justify-content:space-between"><div><h3>📢 팀 공지사항</h3></div><div class="notice-side" style="text-align:right"><span>최근 공지</span><b id="dashNoticeCount">0건</b></div></div>
             <div class="notice-board">
               <div class="notice-main" style="width:100%"><span class="notice-pin">중요</span><div><b id="dashNoticeTitle">등록된 주요 공지사항이 없습니다.</b><p id="dashNoticeText">일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.</p></div></div>
+              <div class="notice-main notice-second" id="dashNotice2" style="width:100%" hidden><span class="notice-pin">공지</span><div><b id="dashNoticeTitle2"></b><p id="dashNoticeText2"></p></div></div>
             </div>
           </div>
           <div class="dashboard-info-panel todo-panel">
             <div class="dashboard-panel-title"><div><h3>📦 제품 확보 현황</h3></div></div>
-            <div class="ops-todo-head"><div><span>일정 메뉴에서 등록 · 미완료 우선</span></div></div>
+            
             <div id="dashTodoList" class="ops-todo-list"><div class="data-empty">등록된 제품 확보 건이 없습니다.</div></div>
           </div>
         </div>
@@ -6049,6 +6050,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE INSIGHT</div><h2>파손 분석</h2><p>구글시트 '입고 파손' 기준으로 매장·출고방식·담당자·제품군별 파손 금액과 건수를 월별로 비교합니다. 건수는 기안(No.) 단위로 세고, 금액은 품목별 파손 합계를 더합니다. 도넛은 금액 비중입니다.</p></div></div>
       <div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 파손 비교 (전월 대비)</h3></div><div class="ms-period"><div class="field" style="margin:0"><label>기준월</label><input type="month" id="diMonth"></div><button type="button" class="btn" id="diAllBtn">전체</button></div></div>
         <div id="dmTip" class="ms-tip" hidden></div>
+        <div class="fy-tabs di-mtabs" id="diMobileTabs" role="tablist" aria-label="파손 분석 항목"><button type="button" class="fy-tab active" data-di-dim="manager">담당자별</button><button type="button" class="fy-tab" data-di-dim="category">제품군별</button><button type="button" class="fy-tab" data-di-dim="store">매장별</button><button type="button" class="fy-tab" data-di-dim="method">출고방식별</button></div>
         <div class="ms-sections" id="diSections"></div>
       </div>
     </div></section>
@@ -8432,6 +8434,8 @@ setTimeout(initInventoryColumnResize,0);
     host.innerHTML=DI_DIMS.map(dim=>`<div class="ms-section" data-dim="${dim.key}"><h4 class="ms-section-title">${dim.label}별${dim.amountOnly?' <small style="font-size:12px;color:#8a949e;font-weight:600">(금액 기준)</small>':''}</h4><div class="ms-section-grid"><div class="ms-card"><div class="ms-card-head"><b>${dim.label}별 파손 금액 비중</b><span>${esc(label)}</span></div><div class="ms-donut-wrap"><div class="ms-donut"></div><div class="ms-legend"></div></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>${dim.label}</th><th class="num">비중</th><th class="num">${esc(label)} 금액</th>${dim.amountOnly?'':`<th class="num">건수</th>`}<th class="num">${esc(pm)} 금액</th><th class="num">전월 대비</th></tr></thead><tbody></tbody></table></div></div></div>`).join('');
     DI_DIMS.forEach(dim=>{
       const sec=host.querySelector(`[data-dim="${dim.key}"]`),cur=diGroup(curRows,dim.idx),prv=diGroup(prvRows,dim.idx);
+      // 휴대폰: 상단 탭에서 고른 항목만 표시(기본 담당자별). 데스크톱은 CSS에서 모두 표시
+      sec.classList.toggle('di-off',dim.key!==(renderDamageInsight.mobileDim||'manager'));
       diDonut(sec,dim,cur,null,totalAmt,totalCases,label);
       const share=a=>totalAmt?(a/totalAmt*100).toFixed(1)+'%':'-';
       const row=(k,a,c,pa,bold)=>`<tr${bold?' style="font-weight:800;background:#f8f9fa"':''}><td>${esc(k)}</td><td class="num">${share(a)}</td><td class="num">${fmt(a)}원</td>${dim.amountOnly?'':`<td class="num">${fmt(c)}건</td>`}<td class="num">${fmt(pa)}원</td>${(a||pa)?diMoveCell(a,pa):'<td class="num">-</td>'}</tr>`;
@@ -8833,6 +8837,7 @@ setTimeout(initInventoryColumnResize,0);
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
     $('archiveType')?.addEventListener('change',renderDataArchive);
     $('diMonth')?.addEventListener('change',renderDamageInsight);
+    document.querySelectorAll('#diMobileTabs [data-di-dim]').forEach(b=>b.addEventListener('click',()=>{renderDamageInsight.mobileDim=b.dataset.diDim;document.querySelectorAll('#diMobileTabs [data-di-dim]').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('#diSections .ms-section').forEach(s=>s.classList.toggle('di-off',s.dataset.dim!==b.dataset.diDim))}));
     $('diAllBtn')?.addEventListener('click',()=>{$('diMonth').value='';renderDamageInsight()});
     $('msAllBtn')?.addEventListener('click',()=>{$('msMonth').value='';renderMisshipCompare(read().misship?.rows||[])});
     document.querySelectorAll('.fy-tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.fy-tab').forEach(x=>x.classList.toggle('active',x===b));$('dmFyGroup').value=b.dataset.fyGroup;renderDamageFY()}));
@@ -8908,7 +8913,7 @@ $('oosExport')?.addEventListener('click',exportOos);$('boxGridLoadBtn')?.addEven
  const todoSort=(a,b)=>Number(a.done)-Number(b.done)||((a.inDate||'9999')<(b.inDate||'9999')?-1:(a.inDate||'9999')>(b.inDate||'9999')?1:0)||(String(b.date)>String(a.date)?1:String(b.date)<String(a.date)?-1:0);
  function inDateLabel(x){if(!x.inDate)return'';const d=new Date(x.inDate+'T00:00:00'),w='일월화수목금토'[d.getDay()];return`${d.getMonth()+1}/${d.getDate()}(${w})`}
  function inDateHtml(x){if(!x.inDate)return'<span class="todo-indate empty"></span>';const t=todayYmd(),late=!x.done&&x.inDate<t,today=!x.done&&x.inDate===t;return`<span class="todo-indate${late?' late':today?' today':''}" title="입고요청일 ${esc(x.inDate)}">입고요청 ${esc(inDateLabel(x))}${late?' · 지남':today?' · 오늘':''}</span>`}
- function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort(todoSort);if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';if($('dashTodoList')){$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="todo-content">${esc(x.content)}${x.note?`<small class="todo-note">${esc(x.note)}</small>`:''}</span>${inDateHtml(x)}<button type="button" class="badge ${x.done?'':'info'}" data-dash-todo-toggle="${esc(x.id)}" style="cursor:pointer;border:0">${x.done?'완료':'미완료'}</button></div>`).join(''):'<div class="data-empty">등록된 제품 확보 건이 없습니다.</div>';$('dashTodoList').querySelectorAll('[data-dash-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.dashTodoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()})}}
+ function renderDashboard(){const n=read(NOTICE,[]),t=read(TODO,[]).sort(todoSort);if($('dashNoticeCount'))$('dashNoticeCount').textContent=n.length+'건';if($('dashNoticeTitle'))$('dashNoticeTitle').textContent=n[0]?.title||'등록된 주요 공지사항이 없습니다.';if($('dashNoticeText'))$('dashNoticeText').textContent=n[0]?.content||'일정 메뉴의 공지 등록에서 공지를 관리할 수 있습니다.';/* 최근 공지 2개까지 표시: 두 번째 공지가 있으면 아래에 한 줄 더 */if($('dashNotice2')){const s=n[1];$('dashNotice2').hidden=!s;if(s){$('dashNoticeTitle2').textContent=s.title||'';$('dashNoticeText2').textContent=s.content||''}}if($('dashTodoList')){$('dashTodoList').innerHTML=t.length?t.slice(0,12).map(x=>`<div class="ops-todo-item ${x.done?'done':''}" style="grid-template-columns:90px 1fr auto"><span class="todo-content">${esc(x.content)}${x.note?`<small class="todo-note">${esc(x.note)}</small>`:''}</span>${inDateHtml(x)}<button type="button" class="badge ${x.done?'':'info'}" data-dash-todo-toggle="${esc(x.id)}" style="cursor:pointer;border:0">${x.done?'완료':'미완료'}</button></div>`).join(''):'<div class="data-empty">등록된 제품 확보 건이 없습니다.</div>';$('dashTodoList').querySelectorAll('[data-dash-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.dashTodoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()})}}
  function renderNoticeManager(){const body=$('noticeMgrBody');if(!body)return;const a=read(NOTICE,[]);body.innerHTML=a.length?a.map(x=>`<tr><td>${esc(x.date||'')}</td><td><b>${esc(x.title||'')}</b></td><td>${esc(x.content||'')}</td><td>${esc(x.author||'')}</td><td style="white-space:nowrap"><button class="btn" data-notice-edit="${x.id}">수정</button> <button class="btn" data-notice-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="5" class="data-empty">등록된 공지가 없습니다.</td></tr>';body.querySelectorAll('[data-notice-edit]').forEach(b=>b.onclick=()=>startNoticeEdit(b.dataset.noticeEdit));body.querySelectorAll('[data-notice-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 공지를 삭제하시겠습니까?'))return;if(editingNotice===b.dataset.noticeDel)endNoticeEdit();save(NOTICE,a.filter(x=>x.id!==b.dataset.noticeDel));renderAll()})}
  function renderTodoManager(){const body=$('todoMgrBody');if(!body)return;const a=read(TODO,[]).sort(todoSort);body.innerHTML=a.length?a.map(x=>`<tr><td>${esc((x.date||'').slice(0,10))}</td><td style="white-space:nowrap">${x.inDate?esc(x.inDate):'-'}</td><td><b>${esc(x.content||'')}</b></td><td>${esc(x.note||'')}</td><td><button class="btn" data-todo-toggle="${x.id}">${x.done?'완료':'미완료'}</button></td><td style="white-space:nowrap"><button class="btn" data-todo-edit="${x.id}">수정</button> <button class="btn" data-todo-del="${x.id}">삭제</button></td></tr>`).join(''):'<tr><td colspan="6" class="data-empty">등록된 할 일이 없습니다.</td></tr>';body.querySelectorAll('[data-todo-toggle]').forEach(b=>b.onclick=()=>{const arr=read(TODO,[]),x=arr.find(v=>v.id===b.dataset.todoToggle);if(x)x.done=!x.done;save(TODO,arr);renderAll()});body.querySelectorAll('[data-todo-edit]').forEach(b=>b.onclick=()=>startTodoEdit(b.dataset.todoEdit));body.querySelectorAll('[data-todo-del]').forEach(b=>b.onclick=()=>{if(!confirm('이 할 일을 삭제하시겠습니까?'))return;if(editingTodo===b.dataset.todoDel)endTodoEdit();save(TODO,read(TODO,[]).filter(x=>x.id!==b.dataset.todoDel));renderAll()})}
  /* 공지·할 일 수정: 목록의 '수정'을 누르면 위 입력칸에 내용을 불러오고, 저장 시 같은 항목을 덮어씀 */
@@ -10153,6 +10158,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell.on-lush #scheduleManagerView .master-event{border-radius:8px!important;padding:5px 7px!important;font-size:12px!important;border-left:3px solid currentColor!important;}
 </style>
 <style id="mobile-dashboard-fix">
+/* 파손 분석 휴대폰 탭은 데스크톱에서 숨김 */
+#diMobileTabs{display:none;}
+/* 팀 공지사항 2개 표시: 칸 높이는 내용에 맞추고, 두 번째 공지의 표시는 회색(첫 번째 '중요'와 구분) */
+#appShell #dashboard .notice-board{display:flex!important;flex-direction:column!important;gap:10px!important;}
+#appShell #dashboard .notice-board .notice-main{min-height:0!important;height:auto!important;flex:0 0 auto!important;}
+#appShell #dashboard .notice-second .notice-pin{background:#e9ecef!important;color:#4e5968!important;}
 /* 데스크톱: 2주 달력은 칸마다 일정 2개 + "+N건", 휴대폰용 요일 표시는 숨김 */
 .dash-two-week-day .dash-extra{display:none!important;}
 .dash-two-week-date .dash-dow{display:none;}
@@ -10197,9 +10208,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #dashboard .notice-main{display:flex!important;align-items:flex-start!important;gap:8px!important;min-height:0!important;padding:12px 14px!important;}
   #appShell #dashboard .notice-main>div{min-width:0!important;flex:1 1 auto!important;}
   #appShell #dashboard .notice-pin{flex:0 0 auto!important;}
-  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeText{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
-  #appShell #dashboard #dashNoticeTitle{font-size:15px!important;line-height:1.4!important;}
-  #appShell #dashboard #dashNoticeText{font-size:12.5px!important;margin-top:3px!important;}
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeTitle2,#appShell #dashboard #dashNoticeText2{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeTitle2{font-size:15px!important;line-height:1.4!important;}
+  #appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeText2{font-size:12.5px!important;margin-top:3px!important;}
   /* 메인 카드 안쪽 여백 축소: 겹겹의 여백 때문에 내용 폭이 좁아지지 않게 */
   #appShell #dashboard .dash-section.dashboard-first-section{padding-left:14px!important;padding-right:14px!important;}
   #appShell #dashboard .dashboard-info-panel{padding-left:12px!important;padding-right:12px!important;}
@@ -10218,6 +10229,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell #desktopSidebarBtn,.app #desktopSidebarBtn{transform:none!important;top:11px!important;}
   /* 현황판: 화면 안 탭 줄은 숨기고 햄버거 메뉴의 '현황판' 아래로 옮김 */
   #appShell #statusBoardView .status-board-tabs{display:none!important;}
+  /* 파손 분석: 상단 탭에서 고른 항목 하나만 표시 */
+  #appShell #diMobileTabs{display:flex!important;margin:4px 0 14px!important;}
+  #appShell #diSections .ms-section.di-off{display:none!important;}
+  #appShell #diSections .ms-section{margin-top:0!important;padding-top:0!important;border-top:0!important;}
   /* 파손 FY: 집계 기준 탭 5개를 한 줄로 */
   #appShell .fy-tabs{flex-wrap:nowrap!important;width:100%!important;gap:2px!important;padding:3px!important;box-sizing:border-box;}
   #appShell .fy-tab{flex:1 1 0;min-width:0;padding:8px 2px!important;font-size:12.5px!important;white-space:nowrap;letter-spacing:-.02em;}
