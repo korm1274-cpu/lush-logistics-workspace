@@ -6880,11 +6880,11 @@ setTimeout(initInventoryColumnResize,0);
   function openOriginal(r){if(r?.url)window.open(r.url,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
   function renderType(type){
     const{start,end}=thisWeekRange();
-    const all=getRequests().filter(r=>r&&r.type===type&&(r.status||"미처리")!=="처리완료"&&(Array.isArray(r.requestDates)&&r.requestDates.some(d=>d>=start&&d<=end)))
-      .map(r=>({...r,__weekDate:(r.requestDates||[]).filter(d=>d>=start&&d<=end).sort()[0]}))
+    const all=getRequests().filter(r=>r&&r.type===type&&!["처리완료","완료"].includes(r.status||"미처리"))
+      .map(r=>({...r,__weekDate:[...(r.requestDates||[])].sort()[0]||""}))
       .sort((a,b)=>{const A=String(a.__weekDate),B=String(b.__weekDate);return A>B?1:A<B?-1:0});
     const list=document.querySelector(`[data-request-list="${type}"]`),count=document.querySelector(`[data-request-count="${type}"]`);if(count)count.textContent=`${all.length}건`;if(!list)return;
-    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>이번 주 등록된 미처리 요청이 없습니다.</button>';return}
+    if(!all.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>미처리 요청이 없습니다.</button>';return}
     list.innerHTML=all.slice(0,6).map(r=>`<div class="request-row" data-request-id="${escText(r.id)}" title="매장명을 클릭하면 등록된 URL로 이동합니다."><button type="button" class="request-link-cell store-name" data-open-original="${escText(r.id)}">${escText(r.storeName||"-")}</button><button type="button" class="request-link-cell doc-no" data-open-original="${escText(r.id)}">${escText(String(r.__weekDate||"").slice(5).replace("-","/"))}</button><span class="status-cell"><button type="button" class="btn complete-btn" data-complete-request="${escText(r.id)}">완료 처리</button></span></div>`).join("");
     list.querySelectorAll("[data-open-original]").forEach(b=>b.onclick=e=>{e.stopPropagation();openOriginal(all.find(r=>r.id===b.dataset.openOriginal))});
     list.querySelectorAll("[data-complete-request]").forEach(b=>b.onclick=e=>{e.stopPropagation();completeRequest(b.dataset.completeRequest)});
@@ -10062,10 +10062,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   function renderWeeklyRequests(){
     var range=weekRange(),all=getRequests();
     ['bulk','traffic','hq','nozzle'].forEach(function(type){
-      var rows=all.filter(function(r){return r&&r.type===type&&Array.isArray(r.requestDates)&&r.requestDates.some(function(d){return d>=range.start&&d<=range.end})}).map(function(r){var ds=r.requestDates.filter(function(d){return d>=range.start&&d<=range.end}).sort();var copy=Object.assign({},r);copy.__weekDate=ds[0]||'';return copy}).sort(function(a,b){return String(a.__weekDate).localeCompare(String(b.__weekDate))});
+      /* 메인 출고 요청: 미처리 건은 요청일과 상관없이 모두 표시(완료 건은 숨김) */
+      var rows=all.filter(function(r){return r&&r.type===type&&r.status!=='처리완료'&&r.status!=='완료'}).map(function(r){var ds=(Array.isArray(r.requestDates)?r.requestDates:[]).slice().sort();var copy=Object.assign({},r);copy.__weekDate=ds[0]||'';return copy}).sort(function(a,b){return String(a.__weekDate).localeCompare(String(b.__weekDate))});
       var list=q('[data-request-list="'+type+'"]'),count=q('[data-request-count="'+type+'"]');if(count)count.textContent=rows.length+'건';if(!list)return;
-      if(!rows.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>이번 주 등록된 요청이 없습니다.</button>';return}
-      list.innerHTML=rows.slice(0,6).map(function(r){var done=r.status==='처리완료'||r.status==='완료';return '<div class="request-row"><button type="button" class="request-link-cell store-name" data-v80-open="'+esc(r.id)+'">'+esc(r.storeName||'-')+'</button><span class="doc-no">'+esc(String(r.__weekDate||'').slice(5).replace('-','/'))+'</span><span class="status-cell"><button type="button" class="request-state-btn '+(done?'done':'')+'" data-v80-state="'+esc(r.id)+'">'+(done?'완료':'미완료')+'</button></span></div>'}).join('');
+      if(!rows.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>미처리 요청이 없습니다.</button>';return}
+      list.innerHTML=rows.map(function(r){var done=r.status==='처리완료'||r.status==='완료';return '<div class="request-row"><button type="button" class="request-link-cell store-name" data-v80-open="'+esc(r.id)+'">'+esc(r.storeName||'-')+'</button><span class="doc-no">'+esc(String(r.__weekDate||'').slice(5).replace('-','/'))+'</span><span class="status-cell"><button type="button" class="request-state-btn '+(done?'done':'')+'" data-v80-state="'+esc(r.id)+'">'+(done?'완료':'미완료')+'</button></span></div>'}).join('');
       qa('[data-v80-open]',list).forEach(function(b){b.onclick=function(){var r=rows.find(function(x){return String(x.id)===String(b.dataset.v80Open)});if(r&&r.url)window.open(r.url,'_blank','noopener');else if(typeof toastMsg==='function')toastMsg('등록된 원본 URL이 없습니다.')}});
       qa('[data-v80-state]',list).forEach(function(b){b.onclick=function(){
         var data=getRequests(),idx=data.findIndex(function(x){return String(x.id)===String(b.dataset.v80State)});if(idx<0)return;var done=data[idx].status==='처리완료'||data[idx].status==='완료';
