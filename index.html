@@ -5622,7 +5622,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
         <div class="status-panel" data-status-panel="productivity">
           <div class="productivity-subtabs" role="tablist" aria-label="생산성 세부 메뉴">
-            <button type="button" class="productivity-subtab active" data-productivity-view="today">오늘 생산성</button>
+            <button type="button" class="productivity-subtab active" data-productivity-view="today">금일 생산성</button>
             <button type="button" class="productivity-subtab" data-productivity-view="cumulative">누계 생산성</button>
             <button type="button" class="productivity-subtab" data-productivity-view="detail">상세조회</button>
           </div>
@@ -5631,8 +5631,8 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="status-card status-toolbar-card">
               <div class="status-card-title productivity-today-head">
                 <div>
-                  <h3>오늘 생산성</h3>
-                  <small id="prodTodayLabel">오늘 기준 · 출고 시작 후 작업경과별 생산성</small>
+                  <h3>금일 생산성</h3>
+                  <small id="prodTodayLabel">금일 기준 · 12:00~13:00 점심시간 제외</small>
                 </div>
                 <button type="button" class="btn productivity-history-staff-btn" id="openPastStaffEditor">과거 투입 인원 수정</button>
               </div>
@@ -9735,6 +9735,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
 
   function timeToMinutes(v){if(!v||String(v).indexOf(':')<0)return null;var p=String(v).split(':');return Number(p[0])*60+Number(p[1])}
+  function productiveMinutesBetween(startMin,endMin){
+    if(startMin==null||endMin==null||!isFinite(startMin)||!isFinite(endMin))return 0;
+    if(endMin<startMin)endMin+=1440;
+    var total=Math.max(0,endMin-startMin);
+    var lunchStart=12*60,lunchEnd=13*60;
+    var overlap=Math.max(0,Math.min(endMin,lunchEnd)-Math.max(startMin,lunchStart));
+    return Math.max(0,total-overlap);
+  }
   function minutesToTime(m){if(m==null||!isFinite(m))return '-';m=((Math.round(m)%1440)+1440)%1440;return pad(Math.floor(m/60))+':'+pad(m%60)}
   function bucketActualTime(startTime,index){var start=timeToMinutes(startTime);if(start==null)return '-';var starts=[0,.5,1,2,3,4,5,6],ends=[.5,1,2,3,4,5,6,7];return minutesToTime(start+starts[index]*60)+'~'+minutesToTime(start+ends[index]*60)}
   var productivityView='today';
