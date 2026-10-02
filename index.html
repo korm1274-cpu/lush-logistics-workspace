@@ -10250,6 +10250,29 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   #appShell .view.active .data-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
 }
 </style>
+<style id="mobile-full-menu">
+/* 휴대폰 메뉴(A안): 머리 영역 아래를 덮는 검은 전체 화면 메뉴 + 아래로 펼쳐지는 부항목 + 현재 위치 핑크 표시 */
+@media(max-width:900px){
+  #appShell.mobile-nav-open #navContainer{display:block!important;position:fixed!important;top:56px!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;min-width:0!important;max-width:none!important;max-height:none!important;height:auto!important;padding:8px 0 40px!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;background:#1d1d1b!important;background-image:radial-gradient(circle at 88% 92%,rgba(232,123,164,.22) 0 46px,transparent 47px),radial-gradient(circle at 70% 98%,rgba(27,175,122,.18) 0 26px,transparent 27px)!important;background-attachment:local!important;box-shadow:none!important;border:0!important;z-index:9999!important;}
+  #appShell.mobile-nav-open .sidebar-overlay{display:none!important;}
+  body:has(#appShell.mobile-nav-open){overflow:hidden!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group,#appShell.mobile-nav-open #navContainer .nav-group-direct{display:block!important;position:static!important;width:100%!important;border-bottom:1px solid rgba(255,255,255,.08)!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;height:auto!important;min-height:0!important;padding:16px 22px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:17px!important;font-weight:800!important;line-height:1.2!important;text-align:left!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root:after{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root .nav-root-icon{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root em{display:inline-block!important;font-style:normal!important;font-size:18px!important;color:#8b867d!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-root em{color:#e87ba4!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-root{color:#e87ba4!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group-direct .nav-root em{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-children{display:none!important;position:static!important;width:auto!important;max-width:none!important;margin:0 0 10px!important;padding:0 14px 0 22px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-children{display:block!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item{position:relative!important;display:block!important;width:100%!important;padding:11px 14px!important;margin:0!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#cfcac0!important;font-size:15px!important;font-weight:600!important;text-align:left!important;white-space:normal!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item .nav-child-dot{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item.m-active,#appShell.mobile-nav-open #navContainer .nav-item.active{background:rgba(232,123,164,.16)!important;color:#fff!important;font-weight:800!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item.m-active::before,#appShell.mobile-nav-open #navContainer .nav-item.active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:2px;background:#e87ba4;}
+  #appShell.mobile-nav-open #navContainer .nav-group-direct.m-current>.nav-root{color:#e87ba4!important;}
+}
+</style>
 <style id="floor-dash-style">
 /* 현장 대시보드: 물류 현장 모니터에 띄워두는 용도 — 멀리서도 읽히는 큰 숫자, 어두운 칠판 배경 */
 .floor-board{background:#1d1d1b;color:#fff;border-radius:20px;padding:28px 32px 32px;min-height:calc(100vh - 150px);box-sizing:border-box;}
@@ -10569,6 +10592,19 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     patchStatusBoardMobileMenu();
     markTopTab();
   }
+  /* 휴대폰 전체 화면 메뉴: 열 때 지금 보고 있는 메뉴의 그룹을 펼치고 해당 항목을 핑크로 표시 */
+  function markMobileCurrent(){
+    var nav=document.getElementById('navContainer');if(!nav)return;
+    nav.querySelectorAll('.nav-item.m-active').forEach(function(b){b.classList.remove('m-active')});
+    nav.querySelectorAll('.nav-group.m-current').forEach(function(g){g.classList.remove('m-current')});
+    if(!current.group)return;
+    var box=nav.querySelector('.nav-group[data-group="'+current.group+'"]');if(!box)return;
+    box.classList.add('m-current');
+    var item=current.menuId&&box.querySelector('.nav-item[data-menu-id="'+current.menuId+'"]');if(item)item.classList.add('m-active');
+    if(!box.classList.contains('nav-group-direct')){nav.querySelectorAll('.nav-group.open').forEach(function(g){if(g!==box){g.classList.remove('open')}});box.classList.add('open');var em=box.querySelector(':scope > .nav-root em');if(em)em.textContent='⌄'}
+  }
+  var mBtn=document.getElementById('desktopSidebarBtn');
+  if(mBtn)mBtn.addEventListener('click',function(){setTimeout(function(){if(shell.classList.contains('mobile-nav-open')&&!isDesktop())markMobileCurrent()},0)});
   /* 휴대폰 햄버거 메뉴: '현황판' 아래에 화면 안 탭(출고 현황·생산성 등)을 넣어 바로 이동 (데스크톱은 왼쪽 메뉴가 같은 역할) */
   function patchStatusBoardMobileMenu(){
     var box=document.querySelector('#navContainer .nav-group[data-group="statusboard"]');
