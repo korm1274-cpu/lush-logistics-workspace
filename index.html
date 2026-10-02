@@ -7033,7 +7033,7 @@ setTimeout(initInventoryColumnResize,0);
     const events=allEventsForYears([...new Set([gridStart.getFullYear(),y,gridEnd.getFullYear()])]);
     if($('dashboardWeekRange'))$('dashboardWeekRange').textContent=`${gridStart.getMonth()+1}월 ${gridStart.getDate()}일 ~ ${gridEnd.getMonth()+1}월 ${gridEnd.getDate()}일`;
     const grid=$('dashboardTwoWeekCalendar');
-    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list;const dayOff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''} ${(dayOff<0||dayOff>4)?'m-hide':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span><em class="dash-dow">${d.getMonth()+1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})</em></div><div class="dash-two-week-events">${visible.map((e,ix)=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}${ix>=2?' dash-extra':''}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
+    if(grid){let html='';for(let i=0;i<DAYS;i++){const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort),visible=list;const dayOff=Math.round((new Date(d.getFullYear(),d.getMonth(),d.getDate())-new Date(now.getFullYear(),now.getMonth(),now.getDate()))/864e5);html+=`<div class="dash-two-week-day ${list.length?'hover-tip-target':''} ${key===todayKey()?'today':''} ${(d.getDay()===0||d.getDay()===6)?'weekend':''} ${dayOff<0?'m-hide':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="dash-two-week-date"><b>${d.getDate()}</b><span>${(i===0||d.getDate()===1)?`${d.getMonth()+1}월`:''}</span><em class="dash-dow">${d.getMonth()+1}/${d.getDate()} (${'일월화수목금토'[d.getDay()]})</em></div><div class="dash-two-week-events">${visible.map((e,ix)=>{const [,title]=eventLabel(e);return `<div class="dash-two-week-event ${e.type}${importSourceClass(e)}${ix>=2?' dash-extra':''}" title="${escHtml(title)}"><span>${escHtml(title)}</span></div>`}).join('')}${list.length>2?`<small class="dash-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+${list.length-2}건</small>`:''}</div></div>`}grid.innerHTML=html}
     const attendance=getEvents().filter(e=>absenceTypes.has(e.type)),today=todayKey();
     const importedLeaveToday=(importEvents||[]).filter(e=>e.type==='import'&&String(e.source||'').includes('연차')&&eventCovers(e,today)).map(e=>{
       const m=String(e.title||'').match(/^(.*?)\s*연차\s*$/);
@@ -10305,6 +10305,23 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 </style>
 <style id="mgr-list-mobile">
 @media (max-width:900px){
+  /* 스케줄: 오늘부터 5일씩 보이고, 옆으로 밀면 다음 날짜 */
+  #appShell #dashboard .dashboard-two-week-grid{grid-template-columns:none!important;grid-auto-flow:column!important;grid-auto-columns:20%!important;overflow-x:auto!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #appShell #dashboard .dashboard-two-week-grid::-webkit-scrollbar{display:none;}
+  #appShell #dashboard .dashboard-two-week-grid>.dash-two-week-day{scroll-snap-align:start;}
+  /* 이번 달 입출고 현황: 입고·출고 카드를 한 줄로 */
+  #appShell #dashboard .monthly-grid{display:grid!important;grid-template-columns:minmax(0,2fr) minmax(0,1fr)!important;gap:8px!important;}
+  #appShell #dashboard .monthly-card{min-width:0!important;min-height:0!important;height:auto!important;padding:12px 10px!important;}
+  #appShell #dashboard .monthly-stats,#appShell #dashboard .monthly-stats>div{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .monthly-head h4{font-size:14px!important;margin:0 0 6px!important;}
+  #appShell #dashboard .monthly-stats{display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(0,1fr)!important;grid-template-columns:none!important;gap:6px!important;}
+  #appShell #dashboard .monthly-head{padding:0!important;margin:0!important;min-height:0!important;}
+  #appShell #dashboard .monthly-stats>div{border-left:0!important;text-align:center!important;}
+  #appShell #dashboard .monthly-stats>div{min-width:0!important;padding:8px!important;}
+  #appShell #dashboard .monthly-stats span{font-size:11px!important;white-space:nowrap!important;}
+  #appShell #dashboard .monthly-stats b{font-size:17px!important;white-space:nowrap!important;letter-spacing:-.02em!important;}
+  #appShell #dashboard .monthly-stats small{font-size:11px!important;}
+  #appShell #dashboard .monthly-stats .muted,#appShell #dashboard .monthly-foot{display:none!important;}
   /* 공지 등록·제품 확보 등록 목록: 모바일은 표 대신 카드로 */
   #appShell #noticeMgrBody,#appShell #todoMgrBody{display:block;}
   #appShell #noticeMgrBody tr,#appShell #todoMgrBody tr{display:grid;align-items:center;gap:6px 8px;padding:13px 14px;border-bottom:1px solid #eee8dc;}
