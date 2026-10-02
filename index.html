@@ -5681,6 +5681,75 @@ html,body{max-width:100%;overflow-x:hidden}
   }
 }
 </style>
+
+<style id="v92-productivity-borderless-and-taller">
+/* 금일 생산성 요약 바도 누계와 동일하게 외곽선 없이 내부 구분선만 유지 */
+#statusBoardView .today-summary-bar{
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric{
+  background:transparent!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric:last-child{
+  border-right:0!important;
+}
+
+/* 금일/누계 추이·현황 카드 세로 길이 확대 */
+#statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+#statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+  min-height:470px!important;
+  height:470px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+  height:396px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .status-table-scroll.compact,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .status-table-scroll.compact{
+  max-height:396px!important;
+}
+
+@media(max-width:1280px){
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){
+    border-right:0!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+3){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+    height:330px!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){
+    border-right:1px solid #ecece8!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(2n){
+    border-right:0!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+4){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
