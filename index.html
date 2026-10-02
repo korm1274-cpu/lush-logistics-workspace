@@ -5576,8 +5576,8 @@ html,body{max-width:100%;overflow-x:hidden}
                 <div class="prod-api-metric productivity-metric-primary"><span>생산성</span><strong><b id="prodTodayRate">-</b><em>EA/인·시간</em></strong><small>처리량 ÷ 총 투입 인시</small></div>
               </div>
               <div class="past-staff-editor" id="pastStaffEditor" hidden>
-                <div class="prod-api-metric status-filter-card"><span>수정 일자</span><input type="date" id="pastStaffDate"><small>과거 날짜 선택</small></div>
-                <div class="prod-api-metric status-filter-card"><span>투입 인원</span><input type="number" id="pastStaffCount" min="1" step="1" inputmode="numeric" placeholder="인원"><small>해당 날짜 인원</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>수정 일자</span><input type="date" id="pastStaffDate"><small>과거 날짜 선택</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>투입 인원</span><input type="number" id="pastStaffCount" min="1" step="1" inputmode="numeric" placeholder="인원"><small>해당 날짜 인원</small></div>
                 <button type="button" class="btn primary status-filter-btn" id="pastStaffSave">저장</button>
                 <button type="button" class="btn status-filter-btn" id="pastStaffClose">닫기</button>
               </div>
@@ -5640,9 +5640,9 @@ html,body{max-width:100%;overflow-x:hidden}
               </div>
             </div>
             <div class="status-filter-cards store-history-toolbar">
-              <div class="prod-api-metric status-filter-card"><span>시작일</span><input type="date" id="storeHistoryStart"><small>조회 시작일</small></div>
-              <div class="prod-api-metric status-filter-card"><span>종료일</span><input type="date" id="storeHistoryEnd"><small>조회 종료일</small></div>
-              <div class="prod-api-metric status-filter-card store-select-field" id="storeHistoryStoreField" hidden><span>상세 매장</span><select id="storeHistoryStore"></select><small>매장 선택</small></div>
+              <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="storeHistoryStart"><small>조회 시작일</small></div>
+              <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="storeHistoryEnd"><small>조회 종료일</small></div>
+              <div class="prod-api-metric status-filter-card store-select-field cum-date-card" id="storeHistoryStoreField" hidden><span>상세 매장</span><select id="storeHistoryStore"></select><small>매장 선택</small></div>
               <button type="button" class="btn primary status-filter-btn" id="storeHistorySearchBtn">조회</button>
             </div>
           </div>
@@ -10379,6 +10379,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #appShell #statusBoardView .status-filter-card.cum-date-card{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;height:40px!important;min-height:0!important;padding:0 12px!important;box-sizing:border-box!important;}
 #appShell #statusBoardView .cum-date-card>span{margin:0!important;font-size:12px!important;white-space:nowrap!important;flex:0 0 auto!important;}
 #appShell #statusBoardView .cum-date-card>small{display:none!important;}
+#appShell #statusBoardView .status-filter-card.cum-date-card[hidden]{display:none!important;}
 #appShell #statusBoardView .cum-date-card>input,#appShell #statusBoardView .cum-date-card>select{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0 4px!important;font-size:14px!important;line-height:32px!important;border:0!important;background:transparent!important;}
 #appShell #statusBoardView .status-filter-cards:has(.cum-date-card){align-items:center!important;}
 @media (max-width:900px){
