@@ -10501,10 +10501,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 .fy-table-toggle[open] summary{margin-bottom:10px;}
 </style>
 <style id="misship-visual-style">
-/* 미완료 오출고: 중요 항목이라 제목과 건수를 크게 */
-#appShell .mr-pending-panel .panel-head h3{font-size:22px!important;line-height:1.3!important;display:flex!important;align-items:baseline!important;gap:8px!important;}
-#appShell .mr-pending-panel #mrPendingTitleCount{font-size:28px!important;font-weight:900!important;letter-spacing:-.02em!important;}
-@media (max-width:900px){#appShell .mr-pending-panel .panel-head h3{font-size:19px!important;}#appShell .mr-pending-panel #mrPendingTitleCount{font-size:24px!important;}}
+/* 미완료 오출고: 중요 항목이라 제목과 건수를 조금 크게(같은 크기) */
+#appShell .mr-pending-panel .panel-head h3{font-size:19px!important;line-height:1.3!important;display:flex!important;align-items:baseline!important;gap:4px!important;}
+#appShell .mr-pending-panel #mrPendingTitleCount{font-size:inherit!important;font-weight:800!important;}
+@media (max-width:900px){#appShell .mr-pending-panel .panel-head h3{font-size:17px!important;}}
 /* 미완료 오출고 카드의 담당자 선택: 제목 글씨에 맞춘 작은 크기 */
 #appShell #mrPendingMgr.mr-pending-mgr{height:30px!important;min-height:30px!important;width:auto!important;min-width:0!important;max-width:220px;padding:0 28px 0 10px!important;font-size:13px!important;font-weight:600!important;border-radius:8px!important;border:1px solid #d9dde1!important;background-color:#fff!important;align-self:center;}
 /* 기준월 + [전체] 버튼. 전체 기간 모드(ms-all-mode)에서는 전월·전월 대비 칸을 숨김 */
