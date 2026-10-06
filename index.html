@@ -6733,6 +6733,29 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .boxcount-store-search input{flex:1;width:auto}
 }
 </style>
+<style id="v112-unified-analysis">
+#statusBoardView .analysis-two-col{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:16px;margin-top:16px}
+#statusBoardView .analysis-three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(5,minmax(0,1fr))!important;margin-top:14px!important}
+#statusBoardView .analysis-rank-list{padding:2px 18px 16px}
+#statusBoardView .analysis-rank-list>div{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;min-height:38px;border-bottom:1px solid #efefeb;font-size:11px}
+#statusBoardView .analysis-rank-list>div:last-child{border-bottom:0}
+#statusBoardView .analysis-rank-list b{font-size:10px;color:#8a918c}
+#statusBoardView .analysis-rank-list span{font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#statusBoardView .analysis-rank-list strong{font-size:11px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+#statusBoardView .boxcount-cumulative-change-block{display:none!important}
+#statusBoardView .boxcount-cumulative-no-month-change>div:nth-child(3){display:none!important}
+#statusBoardView .boxcount-cumulative-no-month-change{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#statusBoardView .boxcount-weekday-radials{min-height:250px;align-content:center}
+#statusBoardView .boxcount-detail-history-scroll{max-height:420px!important;overflow-y:auto!important}
+#statusBoardView .boxcount-detail-history-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none}
+#statusBoardView .draggable-tab.tab-dragging{opacity:.48}
+#statusBoardView .draggable-tab.tab-drop-before{box-shadow:inset 2px 0 #222}
+#statusBoardView .draggable-tab.tab-drop-after{box-shadow:inset -2px 0 #222}
+@media(max-width:1100px){#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .analysis-three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){#statusBoardView .analysis-two-col,#statusBoardView .analysis-three-col{grid-template-columns:1fr}#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -6962,6 +6985,8 @@ html,body{max-width:100%;overflow-x:hidden}
           <div class="productivity-subtabs" role="tablist" aria-label="생산성 세부 메뉴">
             <button type="button" class="productivity-subtab active" data-productivity-view="today">금일 생산성</button>
             <button type="button" class="productivity-subtab" data-productivity-view="cumulative">누계 생산성</button>
+            <button type="button" class="productivity-subtab" data-productivity-view="monthly">월간 분석</button>
+            <button type="button" class="productivity-subtab" data-productivity-view="analysis">생산성 분석</button>
             <button type="button" class="productivity-subtab" data-productivity-view="detail">상세조회</button>
           </div>
 
@@ -7018,6 +7043,53 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="cum-layout">
               <div class="chart-card"><div class="status-card-title"><h3 id="cumChartTitle">월별 생산성 추이</h3><small id="cumChartHint">월 평균 · EA/인·시간</small></div><div class="chart-wrap"><canvas id="cumMonthChart"></canvas><div class="chart-empty" id="cumMonthEmpty">생산성 데이터가 없습니다.</div></div></div>
               <div class="table-card"><div class="status-card-title"><h3 id="cumTableTitle">월별 생산성 현황</h3><small id="cumPeriodLabel">올해 기준 · 월 기준</small></div><div class="status-table-scroll compact"><table class="status-data-table"><thead><tr><th id="cumPeriodColumn">월</th><th>처리량(EA)</th><th>총 소요시간</th><th>총 투입인원</th><th>생산성</th></tr></thead><tbody id="cumMonthBody"></tbody></table></div></div>
+            </div>
+          </div>
+
+          <div class="productivity-section" data-productivity-section="monthly">
+            <div class="status-card analysis-standard-head">
+              <div class="status-card-title"><div><h3>월간 생산성 분석</h3><small>선택 월의 전체 생산성 지표를 비교월과 동일한 기준으로 확인합니다.</small></div></div>
+              <div class="status-filter-cards">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>기준월</span><input type="month" id="prodMonthlyBase"><small>분석할 월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>비교월</span><input type="month" id="prodMonthlyCompare"><small>전월 외 다른 월도 선택 가능</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="prodMonthlyRun">조회</button>
+              </div>
+              <div class="boxcount-summary-bar analysis-five-kpi">
+                <div><span>처리량</span><strong><b id="prodMonthlyQty">0</b><em>EA</em></strong><small>기준월 합계</small></div>
+                <div><span>평균 생산성</span><strong><b id="prodMonthlyRate">0</b><em>EA/인·시간</em></strong><small>기준월 평균</small></div>
+                <div><span>최고 생산성</span><strong><b id="prodMonthlyHigh">0</b><em>EA/인·시간</em></strong><small id="prodMonthlyHighDate">-</small></div>
+                <div><span>최저 생산성</span><strong><b id="prodMonthlyLow">0</b><em>EA/인·시간</em></strong><small id="prodMonthlyLowDate">-</small></div>
+                <div><span>비교월 대비</span><strong><b id="prodMonthlyDelta">0</b><em>%</em></strong><small id="prodMonthlyCompareLabel">-</small></div>
+              </div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="chart-card"><div class="status-card-title"><h3>일별 생산성 추이</h3><small id="prodMonthlyTrendHint">기준월</small></div><div class="chart-wrap"><canvas id="prodMonthlyChart"></canvas><div class="chart-empty" id="prodMonthlyEmpty">데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>요일별 평균 생산성</h3><small>0 이하 데이터 제외</small></div><div class="analysis-rank-list" id="prodMonthlyWeekday"></div></div>
+            </div>
+          </div>
+
+          <div class="productivity-section" data-productivity-section="analysis">
+            <div class="status-card analysis-standard-head">
+              <div class="status-card-title"><div><h3>생산성 분석</h3><small>목표값 없이 실제 처리 결과의 추이와 변동을 분석합니다.</small></div></div>
+              <div class="status-filter-cards">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="prodAnalysisStart"><small>기본: 올해 1월 1일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="prodAnalysisEnd"><small>기본: 오늘</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="prodAnalysisRun">조회</button>
+              </div>
+              <div class="boxcount-summary-bar">
+                <div><span>평균 생산성</span><strong><b id="prodAnalysisAvg">0</b><em>EA/인·시간</em></strong><small>선택 기간</small></div>
+                <div><span>최고 생산성</span><strong><b id="prodAnalysisHigh">0</b><em>EA/인·시간</em></strong><small id="prodAnalysisHighDate">-</small></div>
+                <div><span>최저 생산성</span><strong><b id="prodAnalysisLow">0</b><em>EA/인·시간</em></strong><small id="prodAnalysisLowDate">-</small></div>
+                <div><span>변동폭</span><strong><b id="prodAnalysisRange">0</b><em>EA/인·시간</em></strong><small>최고 - 최저</small></div>
+              </div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="chart-card"><div class="status-card-title"><h3>생산성 추이</h3><small>실제 일별 생산성</small></div><div class="chart-wrap"><canvas id="prodAnalysisChart"></canvas><div class="chart-empty" id="prodAnalysisEmpty">데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>요일별 평균</h3><small>실제 처리 결과 기준</small></div><div class="analysis-rank-list" id="prodAnalysisWeekday"></div></div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="table-card"><div class="status-card-title"><h3>상승 TOP 5</h3><small>직전 처리일 대비</small></div><div class="analysis-rank-list" id="prodAnalysisUp"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>하락 TOP 5</h3><small>직전 처리일 대비</small></div><div class="analysis-rank-list" id="prodAnalysisDown"></div></div>
             </div>
           </div>
 
@@ -7125,6 +7197,7 @@ html,body{max-width:100%;overflow-x:hidden}
         <div class="status-panel" data-status-panel="boxcount">
           <div class="boxcount-subtabs" role="tablist" aria-label="매장별 박스수량 세부 메뉴">
             <button type="button" class="boxcount-subtab active" data-boxcount-view="cumulative">누계</button>
+            <button type="button" class="boxcount-subtab" data-boxcount-view="monthly">월간 분석</button>
             <button type="button" class="boxcount-subtab" data-boxcount-view="weekday">요일 분석</button>
             <button type="button" class="boxcount-subtab" data-boxcount-view="store">매장 분석</button>
             <button type="button" class="boxcount-subtab" data-boxcount-view="detail">상세조회</button>
@@ -7156,6 +7229,33 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
           </div>
 
+          <div class="boxcount-section" data-boxcount-section="monthly">
+            <div class="status-card boxcount-analysis-head">
+              <div class="status-card-title"><div><h3>출고 박스 월간 분석</h3><small>기준월의 누계 분석 항목을 동일하게 보고 비교월과 변화를 확인합니다.</small></div></div>
+              <div class="status-filter-cards boxcount-analysis-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>기준월</span><input type="month" id="boxMonthlyBase"><small>분석할 월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>비교월</span><input type="month" id="boxMonthlyCompare"><small>전월 외 월도 선택 가능</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="boxMonthlyRun">조회</button>
+              </div>
+            </div>
+            <div class="boxcount-summary-bar analysis-five-kpi">
+              <div><span>총 박스수</span><strong><b id="boxMonthlyTotal">0</b><em>BOX</em></strong><small>기준월 합계</small></div>
+              <div><span>출고 매장</span><strong><b id="boxMonthlyStores">0</b><em>개</em></strong><small>0 이하 제외</small></div>
+              <div><span>매장당 평균</span><strong><b id="boxMonthlyAvg">0</b><em>BOX</em></strong><small>출고 매장 기준</small></div>
+              <div><span>최대 박스 매장</span><strong><b id="boxMonthlyTopStore">-</b></strong><small id="boxMonthlyTopQty">0 BOX</small></div>
+              <div><span>비교월 대비</span><strong><b id="boxMonthlyDelta">0</b><em>%</em></strong><small id="boxMonthlyCompareLabel">-</small></div>
+            </div>
+            <div class="analysis-three-col">
+              <div class="table-card"><div class="status-card-title"><h3>매장 상위 TOP 5</h3><small>기준월 · 0 이하 제외</small></div><div class="analysis-rank-list" id="boxMonthlyTop"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>매장 하위 TOP 5</h3><small>기준월 · 0 이하 제외</small></div><div class="analysis-rank-list" id="boxMonthlyBottom"></div></div>
+              <div class="chart-card boxcount-radial-card"><div class="status-card-title"><h3>요일별 구성비</h3><small>기준월</small></div><div class="boxcount-radial-grid" id="boxMonthlyWeekday"></div></div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="table-card"><div class="status-card-title"><h3>급증 TOP 5</h3><small id="boxMonthlyIncreaseHint">비교월 대비</small></div><div class="analysis-rank-list" id="boxMonthlyIncrease"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>급감 TOP 5</h3><small id="boxMonthlyDecreaseHint">비교월 대비</small></div><div class="analysis-rank-list" id="boxMonthlyDecrease"></div></div>
+            </div>
+          </div>
+
           <div class="boxcount-section" data-boxcount-section="weekday">
             <div class="status-card boxcount-analysis-head">
               <div class="status-card-title"><div><h3>요일 분석</h3><small id="boxWeekdayPeriodLabel">올해 기준 · 요일별 운영 패턴</small></div></div>
@@ -7168,12 +7268,9 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
 
             <div class="boxcount-feature-grid">
-              <div class="chart-card boxcount-donut-card boxcount-weekday-donut-card">
+              <div class="chart-card boxcount-radial-card boxcount-weekday-donut-card">
                 <div class="status-card-title"><h3>요일별 박스 구성비</h3><small id="boxWeekdayDonutHint">올해 기준 · BOX</small></div>
-                <div class="boxcount-weekday-donut-wrap">
-                  <canvas id="boxWeekdayDonut"></canvas>
-                  <div class="chart-empty" id="boxWeekdayDonutEmpty">박스 데이터가 없습니다.</div>
-                </div>
+                <div class="boxcount-radial-grid boxcount-weekday-radials" id="boxWeekdayRadialGrid"><div class="data-empty">박스 데이터가 없습니다.</div></div>
               </div>
               <div class="table-card boxcount-key-card">
                 <div class="status-card-title"><h3>요일별 주요 지표</h3><small>선택 기간 기준</small></div>
@@ -7186,7 +7283,7 @@ html,body{max-width:100%;overflow-x:hidden}
               </div>
             </div>
 
-            <div class="boxcount-triple-grid">
+            <div class="boxcount-triple-grid boxcount-cumulative-no-month-change">
               <div class="table-card boxcount-mini-panel">
                 <div class="status-card-title"><h3>요일별 평균 박스</h3><small>월 평균 · BOX</small></div>
                 <div class="boxcount-rank-list" id="boxWeekdayAvgList"></div>
@@ -7242,7 +7339,7 @@ html,body{max-width:100%;overflow-x:hidden}
               </div>
             </div>
 
-            <div class="boxcount-triple-grid">
+            <div class="boxcount-triple-grid boxcount-cumulative-change-block">
               <div class="table-card boxcount-mini-panel">
                 <div class="status-card-title"><h3>전월 대비 급증 TOP 5</h3><small id="boxStoreIncreaseHint">최근 월 기준</small></div>
                 <div class="boxcount-rank-list" id="boxStoreIncreaseList"></div>
@@ -7307,7 +7404,7 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
             <div class="table-card boxcount-detail-table">
               <div class="status-card-title"><h3>기간별 박스 이력</h3><small id="boxDetailResultLabel">조회 조건을 선택해주세요.</small></div>
-              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>일자</th><th>요일</th><th>박스수</th><th>상세</th></tr></thead><tbody id="boxDetailBody"><tr><td colspan="4" class="data-empty">조회 조건을 선택해주세요.</td></tr></tbody></table></div>
+              <div class="status-table-scroll boxcount-detail-history-scroll"><table class="status-data-table"><thead><tr><th>일자</th><th>요일</th><th>박스수</th><th>상세</th></tr></thead><tbody id="boxDetailBody"><tr><td colspan="4" class="data-empty">조회 조건을 선택해주세요.</td></tr></tbody></table></div>
             </div>
             <div class="table-card boxcount-detail-expanded" id="boxDetailExpanded" hidden>
               <div class="status-card-title"><div><h3>박스 처리 상세</h3><small id="boxDetailExpandedTitle">-</small></div><button type="button" class="btn" id="boxDetailExpandedClose">닫기</button></div>
@@ -11646,7 +11743,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(typeof Chart==='undefined'){if(window.ensureChart)window.ensureChart().then(function(){setBoxcountView('cumulative')});return}
     if(boxcountCharts[key])boxcountCharts[key].destroy();
     var sets=datasets||[{data:values,borderWidth:2,pointRadius:3,tension:.25}];
-    boxcountCharts[key]=new Chart(canvas,{type:'line',data:{labels:labels,datasets:sets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:sets.length>1,position:'bottom'}},scales:{y:{beginAtZero:true,grid:{color:'#eeeeea'}},x:{grid:{display:false}}}}});
+    var xTicks={autoSkip:true,maxTicksLimit:key==='detailTrend'?(labels.length<=14?labels.length:labels.length<=45?10:12):12};
+    boxcountCharts[key]=new Chart(canvas,{type:'line',data:{labels:labels,datasets:sets},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:sets.length>1,position:'bottom'},tooltip:{callbacks:key==='detailTrend'?{title:function(items){return items&&items[0]?labels[items[0].dataIndex]:''},label:function(ctx){return fmt(ctx.raw)+' BOX'}}:{}}},scales:{y:{beginAtZero:true,grid:{color:'#eeeeea'}},x:{grid:{display:false},ticks:xTicks}}}});
   }
   function boxcountDrawDonut(key,canvasId,emptyId,labels,values){
     var canvas=q('#'+canvasId),empty=q('#'+emptyId);if(!canvas)return;
@@ -11739,7 +11837,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       var vals=months.map(function(m){return boxcountDayMonthQty(day,m)}),total=vals.reduce(function(a,b){return a+b},0),avg=vals.length?Math.round(total/vals.length):0,max=vals.length?Math.max.apply(null,vals):0,min=vals.length?Math.min.apply(null,vals):0;
       return{day:day,vals:vals,total:total,avg:avg,range:max-min};
     });
-    boxcountDrawWeekdayDonut(rows.map(function(x){return x.day.replace('요일','')}),rows.map(function(x){return x.total}));
+    var weekdayGrand=rows.reduce(function(a,x){return a+x.total},0),weekdayColors=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8'];
+    q('#boxWeekdayRadialGrid').innerHTML=rows.length?rows.map(function(x,i){return boxcountRadialHtml(x.day.replace('요일',''),x.total,weekdayGrand,weekdayColors[i%weekdayColors.length])}).join(''):'<div class="data-empty">박스 데이터가 없습니다.</div>';
     var ordered=rows.slice().sort(function(a,b){return b.total-a.total}),max=ordered[0]||{},min=ordered[ordered.length-1]||{},avgMax=rows.slice().sort(function(a,b){return b.avg-a.avg})[0]||{},vol=rows.slice().sort(function(a,b){return b.range-a.range})[0]||{};
     q('#boxWeekdayMaxDay').textContent=max.day||'-';q('#boxWeekdayMaxQty').textContent=fmt(max.total||0)+' BOX';
     q('#boxWeekdayMinDay').textContent=min.day||'-';q('#boxWeekdayMinQty').textContent=fmt(min.total||0)+' BOX';
@@ -11851,12 +11950,32 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     qa('.boxcount-subtab').forEach(function(b){b.classList.toggle('active',b.dataset.boxcountView===view)});
     qa('.boxcount-section').forEach(function(p){p.classList.toggle('active',p.dataset.boxcountSection===view)});
     if(view==='cumulative')renderBoxcountCumulative();
+    if(view==='monthly')renderBoxcountMonthly();
     if(view==='weekday')renderBoxcountWeekday();
     if(view==='store')renderBoxcountStore();
     if(view==='settings')renderBoxcountSettings();
     if(view==='manual')renderBoxcountManual();
   }
   qa('.boxcount-subtab').forEach(function(b){b.addEventListener('click',function(){setBoxcountView(b.dataset.boxcountView)})});
+
+  function renderBoxcountMonthly(){
+    var base=q('#boxMonthlyBase');if(!base)return;if(!base.value)base.value=today.slice(0,7);
+    var cmp=q('#boxMonthlyCompare');if(!cmp.value)cmp.value=boxcountPrevMonth(base.value);
+    var stores=boxcountAllStores(),cur=stores.map(function(name){return{name:name,value:boxcountStoreMonthQty(name,base.value)}}).filter(function(x){return x.value>0}),old={};stores.forEach(function(name){old[name]=boxcountStoreMonthQty(name,cmp.value)});
+    var total=cur.reduce(function(a,x){return a+x.value},0),oldTotal=stores.reduce(function(a,n){return a+(old[n]||0)},0),avg=cur.length?Math.round(total/cur.length):0,top=cur.slice().sort(function(a,b){return b.value-a.value})[0],delta=oldTotal?((total-oldTotal)/oldTotal*100):0;
+    q('#boxMonthlyTotal').textContent=fmt(total);q('#boxMonthlyStores').textContent=fmt(cur.length);q('#boxMonthlyAvg').textContent=fmt(avg);q('#boxMonthlyTopStore').textContent=top?top.name:'-';q('#boxMonthlyTopQty').textContent=fmt(top?top.value:0)+' BOX';q('#boxMonthlyDelta').textContent=(delta>0?'+':'')+delta.toFixed(1);q('#boxMonthlyCompareLabel').textContent=base.value+' vs '+cmp.value;
+    var top5=cur.slice().sort(function(a,b){return b.value-a.value}).slice(0,5),bottom5=cur.slice().sort(function(a,b){return a.value-b.value}).slice(0,5);
+    q('#boxMonthlyTop').innerHTML=prodRankHtml(top5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
+    q('#boxMonthlyBottom').innerHTML=prodRankHtml(bottom5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
+    var days=Object.keys(BOXCOUNT_SCHEDULE),dayVals=days.map(function(day){return{name:day,value:boxcountDayMonthQty(day,base.value)}}),dayTotal=dayVals.reduce(function(a,x){return a+x.value},0),colors=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8'];
+    q('#boxMonthlyWeekday').innerHTML=dayVals.map(function(x,i){return boxcountRadialHtml(x.name.replace('요일',''),x.value,dayTotal,colors[i%colors.length])}).join('');
+    var changes=stores.map(function(name){var a=boxcountStoreMonthQty(name,base.value),b=boxcountStoreMonthQty(name,cmp.value),diff=a-b,pct=b?diff/b*100:0;return{name:name,a:a,b:b,diff:diff,pct:pct}}).filter(function(x){return x.a>0&&x.b>0});
+    var inc=changes.filter(function(x){return x.diff>0}).sort(function(a,b){return b.pct-a.pct}).slice(0,5),dec=changes.filter(function(x){return x.diff<0}).sort(function(a,b){return a.pct-b.pct}).slice(0,5),lab=base.value+' vs '+cmp.value;
+    q('#boxMonthlyIncreaseHint').textContent=lab;q('#boxMonthlyDecreaseHint').textContent=lab;
+    q('#boxMonthlyIncrease').innerHTML=prodRankHtml(inc,function(x){return '+'+x.pct.toFixed(1)+'% / +'+fmt(x.diff)+' BOX'});
+    q('#boxMonthlyDecrease').innerHTML=prodRankHtml(dec,function(x){return x.pct.toFixed(1)+'% / '+fmt(x.diff)+' BOX'});
+  }
+  if(q('#boxMonthlyRun'))q('#boxMonthlyRun').addEventListener('click',renderBoxcountMonthly);
 
   function applyMonthFilter(startId,endId,period,modeSetter,render){
     var s1=q('#'+startId).value||'',e=q('#'+endId).value||'';
@@ -11895,10 +12014,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(start>end){var t=start;start=end;end=t;q('#boxDetailStart').value=start;q('#boxDetailEnd').value=end}
     var rows=boxcountGenerateDetailRows(start,end,dayFilter,routeFilter,storeFilter),total=rows.reduce(function(a,r){return a+r.qty},0),stores=new Set(rows.map(function(r){return r.store})).size;
     var grouped={};rows.forEach(function(r){if(!grouped[r.date])grouped[r.date]={date:r.date,day:r.day,qty:0,rows:[]};grouped[r.date].qty+=r.qty;grouped[r.date].rows.push(r)});
-    var dayRows=Object.keys(grouped).sort().reverse().map(function(k){return grouped[k]}),avg=dayRows.length?Math.round(total/dayRows.length):0;
+    var dayRows=Object.keys(grouped).sort().map(function(k){return grouped[k]}),avg=dayRows.length?Math.round(total/dayRows.length):0;
     q('#boxDetailTotal').textContent=fmt(total);q('#boxDetailCount').textContent=fmt(dayRows.length);q('#boxDetailStores').textContent=fmt(stores);q('#boxDetailAvg').textContent=fmt(avg);
     q('#boxDetailResultLabel').textContent=start+' ~ '+end+' · '+fmt(dayRows.length)+'일';
-    var dates=dayRows.slice().reverse().map(function(r){return r.date});
+    var dates=dayRows.map(function(r){return r.date});
     q('#boxDetailTrendHint').textContent=start+' ~ '+end;
     boxcountDraw('detailTrend','boxDetailTrendChart','boxDetailTrendEmpty',dates,dates.map(function(d){return grouped[d].qty}));
     var byRoute={};rows.forEach(function(r){byRoute[r.route]=(byRoute[r.route]||0)+r.qty});
@@ -12159,6 +12278,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     qa('.productivity-section').forEach(function(p){p.classList.toggle('active',p.dataset.productivitySection===productivityView)});
     if(productivityView==='today')renderProductivity();
     if(productivityView==='cumulative')renderCumulative();
+    if(productivityView==='monthly')renderProductivityMonthly();
+    if(productivityView==='analysis')renderProductivityAnalysis();
   }
   qa('.productivity-subtab').forEach(function(b){b.addEventListener('click',function(){setProductivityView(b.dataset.productivityView)})});
 
@@ -12377,6 +12498,55 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     cumulativeViewMode='all';
     renderCumulative();
   });
+
+  var prodMonthlyChartRef=null,prodAnalysisChartRef=null;
+  function monthBefore(m){var p=String(m||'').split('-'),d=new Date(Number(p[0]),Number(p[1]||1)-2,1);return d.getFullYear()+'-'+pad(d.getMonth()+1)}
+  function prodMonthRows(month){if(!month)return[];return dateRowsInRange(month+'-01',month+'-31')}
+  function prodMetricsForRows(rows){
+    return rows.map(function(x){var m=detailRowMetrics(x.record);return{date:x.date,qty:m.qty,rate:m.rate,staff:m.staff,labor:m.labor}}).filter(function(x){return x.rate>0});
+  }
+  function prodRankHtml(rows,valueFn){
+    return rows.map(function(x,i){return '<div><b>'+(i+1)+'</b><span>'+esc(x.name||x.date||'-')+'</span><strong>'+esc(valueFn(x))+'</strong></div>'}).join('')||'<div class="data-empty">데이터가 없습니다.</div>';
+  }
+  function prodDrawAnalysisChart(canvasId,emptyId,refName,rows){
+    var canvas=q('#'+canvasId),empty=q('#'+emptyId);if(!canvas)return;
+    if(empty)empty.style.display=rows.length?'none':'grid';
+    if(typeof Chart==='undefined'){if(window.ensureChart)window.ensureChart().then(function(){if(refName==='monthly')renderProductivityMonthly();else renderProductivityAnalysis()});return}
+    if(refName==='monthly'&&prodMonthlyChartRef)prodMonthlyChartRef.destroy();
+    if(refName==='analysis'&&prodAnalysisChartRef)prodAnalysisChartRef.destroy();
+    var chart=new Chart(canvas,{type:'line',data:{labels:rows.map(function(x){return x.date.slice(5).replace('-','/')}),datasets:[{data:rows.map(function(x){return Math.round(x.rate)}),borderWidth:2,pointRadius:2,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eeeeea'}},x:{grid:{display:false},ticks:{autoSkip:true,maxTicksLimit:12}}}}});
+    if(refName==='monthly')prodMonthlyChartRef=chart;else prodAnalysisChartRef=chart;
+  }
+  function productivityAggregateMonth(month){
+    var rows=prodMetricsForRows(prodMonthRows(month)),qty=rows.reduce(function(a,x){return a+x.qty},0),labor=rows.reduce(function(a,x){return a+x.labor},0);
+    return{rows:rows,qty:qty,rate:labor>0?qty/labor:0};
+  }
+  function renderProductivityMonthly(){
+    var base=q('#prodMonthlyBase');if(!base)return;
+    if(!base.value)base.value=today.slice(0,7);
+    var cmp=q('#prodMonthlyCompare');if(!cmp.value)cmp.value=monthBefore(base.value);
+    var a=productivityAggregateMonth(base.value),b=productivityAggregateMonth(cmp.value),ordered=a.rows.slice().sort(function(x,y){return y.rate-x.rate}),high=ordered[0],low=ordered[ordered.length-1],delta=b.rate?((a.rate-b.rate)/b.rate*100):0;
+    q('#prodMonthlyQty').textContent=fmt(a.qty);q('#prodMonthlyRate').textContent=fmt(Math.round(a.rate||0));q('#prodMonthlyHigh').textContent=fmt(Math.round(high?high.rate:0));q('#prodMonthlyLow').textContent=fmt(Math.round(low?low.rate:0));q('#prodMonthlyHighDate').textContent=high?high.date:'-';q('#prodMonthlyLowDate').textContent=low?low.date:'-';q('#prodMonthlyDelta').textContent=(delta>0?'+':'')+delta.toFixed(1);q('#prodMonthlyCompareLabel').textContent=base.value+' vs '+cmp.value;q('#prodMonthlyTrendHint').textContent=base.value;
+    var wd=['일','월','화','수','목','금','토'],map={};a.rows.forEach(function(x){var d=new Date(x.date+'T00:00:00').getDay(),k=wd[d];if(!map[k])map[k]=[];map[k].push(x.rate)});
+    var wk=Object.keys(map).map(function(k){return{name:k+'요일',value:map[k].reduce(function(s,v){return s+v},0)/map[k].length}}).filter(function(x){return x.value>0}).sort(function(x,y){return y.value-x.value});
+    q('#prodMonthlyWeekday').innerHTML=prodRankHtml(wk,function(x){return fmt(Math.round(x.value))+' EA/인·시간'});
+    prodDrawAnalysisChart('prodMonthlyChart','prodMonthlyEmpty','monthly',a.rows);
+  }
+  function renderProductivityAnalysis(){
+    var s=q('#prodAnalysisStart'),e=q('#prodAnalysisEnd');if(!s)return;
+    if(!s.value)s.value=today.slice(0,4)+'-01-01';if(!e.value)e.value=today;
+    if(s.value>e.value){var t=s.value;s.value=e.value;e.value=t}
+    var rows=prodMetricsForRows(dateRowsInRange(s.value,e.value)),rates=rows.map(function(x){return x.rate}),avg=rates.length?rates.reduce(function(a,b){return a+b},0)/rates.length:0,high=rows.slice().sort(function(a,b){return b.rate-a.rate})[0],low=rows.slice().sort(function(a,b){return a.rate-b.rate})[0];
+    q('#prodAnalysisAvg').textContent=fmt(Math.round(avg));q('#prodAnalysisHigh').textContent=fmt(Math.round(high?high.rate:0));q('#prodAnalysisLow').textContent=fmt(Math.round(low?low.rate:0));q('#prodAnalysisRange').textContent=fmt(Math.round((high?high.rate:0)-(low?low.rate:0)));q('#prodAnalysisHighDate').textContent=high?high.date:'-';q('#prodAnalysisLowDate').textContent=low?low.date:'-';
+    var wd=['일','월','화','수','목','금','토'],map={};rows.forEach(function(x){var k=wd[new Date(x.date+'T00:00:00').getDay()]+'요일';if(!map[k])map[k]=[];map[k].push(x.rate)});var wk=Object.keys(map).map(function(k){return{name:k,value:map[k].reduce(function(a,b){return a+b},0)/map[k].length}}).sort(function(a,b){return b.value-a.value});q('#prodAnalysisWeekday').innerHTML=prodRankHtml(wk,function(x){return fmt(Math.round(x.value))+' EA/인·시간'});
+    var changes=[];for(var i=1;i<rows.length;i++){var diff=rows[i].rate-rows[i-1].rate,pct=rows[i-1].rate?diff/rows[i-1].rate*100:0;changes.push({date:rows[i].date,diff:diff,pct:pct})}
+    var up=changes.filter(function(x){return x.diff>0}).sort(function(a,b){return b.pct-a.pct}).slice(0,5),down=changes.filter(function(x){return x.diff<0}).sort(function(a,b){return a.pct-b.pct}).slice(0,5);
+    q('#prodAnalysisUp').innerHTML=prodRankHtml(up,function(x){return '+'+x.pct.toFixed(1)+'% / +'+fmt(Math.round(x.diff))});
+    q('#prodAnalysisDown').innerHTML=prodRankHtml(down,function(x){return x.pct.toFixed(1)+'% / '+fmt(Math.round(x.diff))});
+    prodDrawAnalysisChart('prodAnalysisChart','prodAnalysisEmpty','analysis',rows);
+  }
+  if(q('#prodMonthlyRun'))q('#prodMonthlyRun').addEventListener('click',renderProductivityMonthly);
+  if(q('#prodAnalysisRun'))q('#prodAnalysisRun').addEventListener('click',renderProductivityAnalysis);
 
   var selectedDetailDate='';
   function detailRowMetrics(r){
