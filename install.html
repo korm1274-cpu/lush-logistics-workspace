@@ -34,8 +34,16 @@
     li{margin:0 0 13px;line-height:1.65;font-size:13px}
     .note{margin-top:17px;padding:13px 14px;border-radius:10px;background:#fafaf8;color:#71716d;font-size:11px;line-height:1.6}
     .status{margin-top:14px;color:#666;font-size:11px}
+    .copy-card{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:22px;padding:14px 15px;border:1px solid #e2e2de;border-radius:12px;background:#fafaf8}
+    .copy-card>div{min-width:0}
+    .copy-card span{display:block;color:#7c7c77;font-size:10px;font-weight:850;margin-bottom:5px}
+    .copy-card b{display:block;max-width:700px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
+    .notify-card{margin-top:18px}
+    .notify-card h2{margin:0;font-size:18px}
+    .notify-steps{margin-top:14px;padding-left:20px}
+    .notify-steps li{margin-bottom:10px}
     .footer{margin-top:16px;text-align:center;color:#8a8a85;font-size:10px}
-    @media(max-width:760px){.wrap{padding:20px 14px 42px}.hero{padding:22px}.grid{grid-template-columns:1fr}h1{font-size:24px}.btn{flex:1 1 auto}}
+    @media(max-width:760px){.wrap{padding:20px 14px 42px}.hero{padding:22px}.grid{grid-template-columns:1fr}h1{font-size:24px}.copy-card{align-items:stretch;flex-direction:column}.copy-card b{white-space:normal;word-break:break-all}.btn{width:100%}}
   </style>
 </head>
 <body>
@@ -46,21 +54,22 @@
         <div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div>
       </div>
       <h1>LUSH Logistics 앱 설치 안내</h1>
-      <p class="lead">별도 앱스토어 파일을 받는 방식이 아니라, 현재 웹 워크스페이스를 휴대폰 홈 화면에 설치해 앱처럼 사용할 수 있습니다.</p>
-      <div class="actions">
-        <button class="btn primary" id="androidInstallBtn" type="button">Android 설치</button>
-        <a class="btn" href="./">워크스페이스 열기</a>
+      <p class="lead">LUSH Logistics Workspace를 모바일에 설치하면 일반 앱처럼 실행할 수 있습니다. 아래 주소를 복사해 모바일 브라우저에서 접속한 뒤 기기별 설치 방법을 따라주세요.</p>
+      <div class="copy-card">
+        <div>
+          <span>접속 주소</span>
+          <b id="installUrlText">-</b>
+        </div>
+        <button class="btn primary" id="copyInstallUrl" type="button">복사</button>
       </div>
-      <div class="status" id="installStatus">기기 환경을 확인 중입니다.</div>
     </section>
 
     <section class="grid">
       <article class="card">
         <div class="card-head"><h2>Android 설치 방법</h2><span class="badge">Chrome 권장</span></div>
         <ol>
-          <li>Chrome에서 이 설치 안내 페이지를 엽니다.</li>
-          <li>상단의 <b>Android 설치</b> 버튼을 누릅니다. 설치 창이 뜨면 <b>설치</b>를 선택합니다.</li>
-          <li>버튼으로 설치 창이 뜨지 않는 경우 Chrome 우측 상단 <b>⋮ 메뉴</b>를 누릅니다.</li>
+          <li>위의 접속 주소를 복사하여 <b>Chrome</b>에서 엽니다.</li>
+          <li>Chrome 우측 상단의 <b>⋮ 메뉴</b>를 누릅니다.</li>
           <li><b>설치 및 바로가기 만들기</b>를 선택합니다.</li>
           <li>표시되는 메뉴에서 <b>앱 설치</b>를 선택한 뒤 설치를 진행합니다.</li>
           <li>설치 후 <b>LUSH Logistics</b> 아이콘으로 실행합니다.</li>
@@ -71,7 +80,7 @@
       <article class="card">
         <div class="card-head"><h2>iPhone / iOS 설치 방법</h2><span class="badge">Safari 사용</span></div>
         <ol>
-          <li>iPhone의 <b>Safari</b>에서 이 설치 안내 페이지를 엽니다.</li>
+          <li>위의 접속 주소를 복사하여 iPhone의 <b>Safari</b>에서 엽니다.</li>
           <li>화면 하단 또는 상단의 <b>공유 버튼</b>을 누릅니다.</li>
           <li>공유 메뉴에서 <b>홈 화면에 추가</b>를 선택합니다.</li>
           <li>우측 상단의 <b>추가</b>를 누릅니다.</li>
@@ -82,72 +91,39 @@
     </section>
 
 
-    <section class="card" style="margin-top:18px">
-      <div class="card-head"><h2>QR 코드로 설치 페이지 열기</h2><span class="badge">모바일 접속용</span></div>
-      <p style="margin:0;color:#74746f;font-size:13px;line-height:1.65">PC에서 아래 QR 코드를 휴대폰 카메라로 스캔하면 현재 설치 안내 페이지를 바로 열 수 있습니다.</p>
-      <div style="display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-top:18px">
-        <img id="installQr" alt="LUSH Logistics 설치 페이지 QR 코드" width="190" height="190" style="border:1px solid #e2e2de;border-radius:14px;padding:10px;background:#fff">
-        <div>
-          <div id="installQrUrl" style="max-width:560px;word-break:break-all;color:#666;font-size:11px;line-height:1.6"></div>
-          <div class="actions" style="margin-top:12px">
-            <a class="btn" href="./qr.html">QR 코드 크게 보기</a>
-          </div>
-        </div>
-      </div>
+    <section class="card notify-card">
+      <div class="card-head"><h2>설치 후 알림 테스트</h2><span class="badge">필수 확인</span></div>
+      <p style="margin:0;color:#74746f;font-size:13px;line-height:1.65">향후 LUSH Logistics에서 푸시 알림 기능을 사용할 예정입니다. 설치가 끝나면 아래 순서대로 알림 수신 여부를 확인해주세요.</p>
+      <ol class="notify-steps">
+        <li>설치한 <b>LUSH Logistics</b>를 실행합니다.</li>
+        <li>웹페이지 상단의 <b>테스트 알림</b> 버튼을 누릅니다.</li>
+        <li><b>테스트알람 입니다.</b> 메시지가 표시되면 정상입니다.</li>
+        <li>알림이 오지 않는 경우 휴대폰의 <b>설정 → 알림</b>에서 Chrome, Safari 또는 LUSH Logistics의 알림 권한이 허용되어 있는지 확인해주세요.</li>
+        <li>브라우저에서 알림 권한 요청이 표시되면 <b>허용</b>을 선택해주세요.</li>
+      </ol>
+      <div class="note">알림 권한이 차단되어 있으면 향후 푸시 알림도 수신되지 않을 수 있으므로 설치 후 테스트를 권장합니다.</div>
     </section>
 
     <div class="footer">LUSH Korea · Logistics Team</div>
   </main>
 
   <script>
-    let deferredPrompt=null;
-    const btn=document.getElementById('androidInstallBtn');
-    const status=document.getElementById('installStatus');
-
-    window.addEventListener('beforeinstallprompt',function(e){
-      e.preventDefault();
-      deferredPrompt=e;
-      btn.disabled=false;
-      status.textContent='Android 설치가 가능합니다.';
-    });
-
-    btn.addEventListener('click',async function(){
-      if(deferredPrompt){
-        deferredPrompt.prompt();
-        const choice=await deferredPrompt.userChoice;
-        status.textContent=choice.outcome==='accepted'?'설치를 진행했습니다.':'설치가 취소되었습니다.';
-        deferredPrompt=null;
-        return;
-      }
-      const ua=navigator.userAgent||'';
-      if(/iPhone|iPad|iPod/i.test(ua)){
-        status.textContent='iOS에서는 Safari의 공유 버튼 → 홈 화면에 추가를 이용해주세요.';
-      }else{
-        status.textContent='Chrome 메뉴에서 설치 및 바로가기 만들기 → 앱 설치를 선택해주세요.';
-      }
-    });
-
-    window.addEventListener('appinstalled',function(){
-      status.textContent='LUSH Logistics 앱 설치가 완료되었습니다.';
-    });
-
     const installUrl=new URL('./install.html',window.location.href).href;
-    const qr=document.getElementById('installQr');
-    const qrUrl=document.getElementById('installQrUrl');
-    if(qr){
-      qr.src='https://api.qrserver.com/v1/create-qr-code/?size=380x380&margin=10&data='+encodeURIComponent(installUrl);
-    }
-    if(qrUrl)qrUrl.textContent=installUrl;
-
-    if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches){
-      status.textContent='이미 앱으로 설치되어 실행 중입니다.';
-      btn.disabled=true;
-    }else{
-      btn.disabled=false;
-      const ua=navigator.userAgent||'';
-      if(/iPhone|iPad|iPod/i.test(ua)) status.textContent='iOS에서는 Safari 공유 버튼 → 홈 화면에 추가로 설치해주세요.';
-      else status.textContent='Android는 Chrome에서 바로 설치할 수 있습니다.';
-    }
+    const urlText=document.getElementById('installUrlText');
+    const copyBtn=document.getElementById('copyInstallUrl');
+    if(urlText)urlText.textContent=installUrl;
+    if(copyBtn)copyBtn.addEventListener('click',async function(){
+      try{
+        await navigator.clipboard.writeText(installUrl);
+        copyBtn.textContent='복사됨';
+        setTimeout(function(){copyBtn.textContent='복사'},1400);
+      }catch(e){
+        const ta=document.createElement('textarea');
+        ta.value=installUrl;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove();
+        copyBtn.textContent='복사됨';
+        setTimeout(function(){copyBtn.textContent='복사'},1400);
+      }
+    });
   </script>
 </body>
 </html>
