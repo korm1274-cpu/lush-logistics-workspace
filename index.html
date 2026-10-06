@@ -7593,12 +7593,12 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     
         <div class="status-panel" data-status-panel="outboundanalysis">
-          <div class="outbound-analysis-subtabs boxcount-subtabs" role="tablist" aria-label="출고 분석 세부 메뉴">
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab active" data-outbound-analysis-view="overview">전체 분석</button>
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="store">매장 분석</button>
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="product">제품 분석</button>
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="monthly">월간 분석</button>
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="detail">상세조회</button>
+          <div class="outbound-analysis-subtabs" role="tablist" aria-label="출고 분석 세부 메뉴">
+            <button type="button" class="outbound-analysis-subtab active" data-outbound-analysis-view="overview">전체 분석</button>
+            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="store">매장 분석</button>
+            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="product">제품 분석</button>
+            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="monthly">월간 분석</button>
+            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="detail">상세조회</button>
           </div>
 
           <div class="outbound-analysis-section active" data-outbound-analysis-section="overview">
@@ -7620,7 +7620,7 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
             <div class="analysis-two-col outbound-overview-main">
               <div class="chart-card"><div class="status-card-title"><h3>전체 출고 추이</h3><small>환산 EA 기준</small></div><div class="chart-wrap"><canvas id="outOverviewChart"></canvas><div class="chart-empty" id="outOverviewEmpty">데이터가 없습니다.</div></div></div>
-              <div class="table-card"><div class="status-card-title"><h3>월별 출고 현황</h3><small>누계 조회기간 내 월별 현황</small></div><div class="status-table-scroll outbound-month-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>월</th><th>환산 EA</th><th>원본 수량</th><th>SKU</th><th>전월 대비</th><th>전년 동월 대비</th></tr></thead><tbody id="outOverviewMonthBody"></tbody></table></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>월별 출고 현황</h3><small>누계 조회기간 내 월별 원본 현황 · 변화 비교는 월간 분석에서 확인</small></div><div class="status-table-scroll outbound-month-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>월</th><th>환산 EA</th><th>원본 수량</th><th>SKU</th></tr></thead><tbody id="outOverviewMonthBody"></tbody></table></div></div>
             </div>
             <div class="analysis-two-col">
               <div class="chart-card"><div class="status-card-title"><h3>제품군 구성비</h3><small>환산 EA · 출고 SKU 수 함께 표시</small></div><div class="boxcount-radial-grid outbound-category-radials" id="outOverviewCategory"></div></div>
@@ -14885,7 +14885,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     if(ref==='overview')overviewChart=ch;if(ref==='store')storeChart=ch;if(ref==='product')productChart=ch;
   }
   function renderOverview(){
-    var body=months.map(function(m,i){var v=monthVals[i],prev=i?((v-monthVals[i-1])/monthVals[i-1]*100):0,yoy=i>=0?((i%3)-1)*4.1:0;return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(v)+'</td><td>EA '+fmt(Math.round(v*.64))+' · G '+fmt(Math.round(v*3.5))+'</td><td>총 '+(430+i*11)+' · EA '+(310+i*8)+' · G '+(120+i*3)+'</td><td>'+(i?(prev>0?'+':'')+prev.toFixed(1)+'%':'-')+'</td><td>'+(yoy>0?'+':'')+yoy.toFixed(1)+'%</td></tr>'}).join('');
+    var body=months.map(function(m,i){var v=monthVals[i];return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(v)+'</td><td>EA '+fmt(Math.round(v*.64))+' · G '+fmt(Math.round(v*3.5))+'</td><td>총 '+(430+i*11)+' · EA '+(310+i*8)+' · G '+(120+i*3)+'</td></tr>'}).join('');
     q('#outOverviewMonthBody').innerHTML=body;drawLine('outOverviewChart',months.map(function(x){return x.replace('-','.')}),monthVals,'overview');
     var cats=[['부자재',310200,188],['Bath',226800,142],['Body',164400,108],['Gift',121900,82],['Hair/기타',161320,92]],total=cats.reduce(function(a,x){return a+x[1]},0),colors=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8'];
     q('#outOverviewCategory').innerHTML=cats.map(function(x,i){var pct=x[1]/total*100;return '<div class="boxcount-radial-item"><div class="boxcount-radial-gauge" style="--radial:'+pct.toFixed(1)+'%;--radial-color:'+colors[i]+'"><div><b>'+pct.toFixed(1)+'%</b><small>'+fmt(x[2])+' SKU</small></div></div><strong>'+x[0]+'</strong></div>'}).join('');
