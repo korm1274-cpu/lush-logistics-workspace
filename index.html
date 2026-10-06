@@ -11523,8 +11523,12 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       qa('[data-v80-state]',list).forEach(function(b){b.onclick=function(){
         var data=getRequests(),idx=data.findIndex(function(x){return String(x.id)===String(b.dataset.v80State)});if(idx<0)return;var done=data[idx].status==='처리완료'||data[idx].status==='완료';
         var ok=confirm(done?'해당 요청을 미완료 상태로 되돌리시겠습니까?':'해당 요청을 완료 처리하시겠습니까?');if(!ok)return;
+        var go=function(){
         data[idx].status=done?'미처리':'처리완료';data[idx].updatedAt=new Date().toISOString();if(done)delete data[idx].completedAt;else data[idx].completedAt=new Date().toISOString();saveRequests(data);renderWeeklyRequests();renderShipping();
         if(typeof window.refreshOutboundRequestManager==='function')window.refreshOutboundRequestManager();if(typeof toastMsg==='function')toastMsg(done?'미완료로 변경했습니다.':'완료 처리했습니다.');
+        };
+        /* 완료 처리하면 줄이 거품처럼 톡 터지며 사라진 뒤 반영 */
+        if(!done&&window.__bubblePop)window.__bubblePop(b.closest('.request-row')||b,go);else go();
       }});
     });
   }
@@ -12492,7 +12496,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(d){
       if(!confirm('해당 요청을 완료 처리하시겠습니까?'))return;
       var card=d.closest('.rq-item'),doneId=d.getAttribute('data-rq-done');
-      if(card&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){card.classList.add('rq-leaving');setTimeout(function(){completeRq(doneId)},380)}else completeRq(doneId);
+      if(card&&window.__bubblePop)window.__bubblePop(card,function(){completeRq(doneId)});else completeRq(doneId);
       return;
     }
   });
@@ -12896,6 +12900,38 @@ if ('serviceWorker' in navigator) {
   if(list&&window.MutationObserver)new MutationObserver(function(){todoCheer()}).observe(list,{childList:true});
   todoCheer();
 })();
+</script>
+<style id="logistics-bg-pattern">
+/* 모든 화면 회색 배경: 물류 아이콘(상자·팔레트·트럭·지게차·배스밤·배송 경로) 선 그림을 아주 옅게 반복 */
+#appShell .main,#appShell.on-lush .main,#appShell.on-dashboard .main{
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='260' height='260' viewBox='0 0 260 260'%3E%3Cg fill='none' stroke='%231d1d1b' stroke-opacity='.075' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 36l20-10 20 10v22l-20 10-20-10z M22 36l20 10 20-10 M42 46v22 M32 31l20 10'/%3E%3Crect x='150' y='34' width='48' height='24' rx='2'/%3E%3Cpath d='M146 62h56 M146 69h56 M152 62v7 M174 62v7 M196 62v7 M162 34v24 M186 34v24'/%3E%3Crect x='26' y='146' width='44' height='24' rx='2'/%3E%3Cpath d='M70 154h13l9 9v7H70z M75 157h7l5 5h-12z'/%3E%3Ccircle cx='39' cy='174' r='5'/%3E%3Ccircle cx='82' cy='174' r='5'/%3E%3Cpath d='M150 178v-34h18l9 17v17 M150 160h27 M190 138v42 M190 178h20 M190 150h8'/%3E%3Ccircle cx='157' cy='180' r='5'/%3E%3Ccircle cx='173' cy='180' r='5'/%3E%3Ccircle cx='118' cy='112' r='12'/%3E%3Cpath d='M109 108c5 3 12 3 18 0 M113 118c3 2 7 2 10 0'/%3E%3Ccircle cx='226' cy='118' r='4'/%3E%3Ccircle cx='236' cy='104' r='2.5'/%3E%3Ccircle cx='98' cy='228' r='5'/%3E%3Cpath d='M14 226c26-18 50 8 72-6' stroke-dasharray='4 6'/%3E%3Cpath d='M214 230c-4-8-14-8-14-16a7 7 0 0 1 14 0c0 8-10 8-14 16' transform='translate(14 -6)'/%3E%3Cpath d='M118 30l6-8 6 8 M124 22v18' /%3E%3C/g%3E%3C/svg%3E")!important;
+  background-repeat:repeat!important;background-size:260px 260px!important;
+}
+@media (max-width:900px){#appShell .main,#appShell.on-lush .main,#appShell.on-dashboard .main{background-size:210px 210px!important;}}
+
+/* 완료 처리: 거품처럼 부풀었다가 톡 터지며 사라짐 + 작은 거품이 사방으로 튐 + '완료!' 표시 */
+.bubble-pop{animation:bubblePop .7s cubic-bezier(.3,.7,.4,1) forwards!important;pointer-events:none;transform-origin:center;}
+@keyframes bubblePop{0%{transform:scale(1);opacity:1;}28%{transform:scale(1.06);background:#fde7f0;box-shadow:0 0 0 6px rgba(232,123,164,.35);border-radius:14px;}55%{transform:scale(1.03);opacity:1;}100%{transform:scale(.15);opacity:0;}}
+.bubble-pop-dot{position:fixed;z-index:10060;border-radius:50%;pointer-events:none;animation:bubbleDot .75s cubic-bezier(.2,.8,.3,1) forwards;}
+@keyframes bubbleDot{0%{transform:translate(-50%,-50%) scale(.4);opacity:1;}100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) scale(1);opacity:0;}}
+.bubble-pop-done{position:fixed;z-index:10061;pointer-events:none;transform:translate(-50%,-50%);font-size:15px;font-weight:900;color:#e87ba4;background:#fff;border:2px solid #e87ba4;border-radius:999px;padding:4px 12px;white-space:nowrap;animation:bubbleDone .9s ease-out forwards;}
+@keyframes bubbleDone{0%{opacity:0;transform:translate(-50%,-30%) scale(.7);}25%{opacity:1;transform:translate(-50%,-50%) scale(1.08);}100%{opacity:0;transform:translate(-50%,-160%) scale(1);}}
+</style>
+<script id="bubble-pop-script">
+/* 완료 처리 연출: el을 거품처럼 터뜨린 뒤 done() 실행 (동작 줄이기 설정이면 바로 실행) */
+window.__bubblePop=function(el,done){
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!el||reduce){done&&done();return}
+  var r=el.getBoundingClientRect(),cx=r.left+r.width/2,cy=r.top+r.height/2,cols=['#e87ba4','#1baf7a','#eda100','#8a6fd1'];
+  el.classList.add('bubble-pop');
+  for(var i=0;i<14;i++){
+    var d=document.createElement('span'),a=(Math.PI*2*i/14)+Math.random()*.4,dist=Math.max(r.width/2,60)*(0.7+Math.random()*.6),sz=5+Math.round(Math.random()*7);
+    d.className='bubble-pop-dot';d.style.cssText='left:'+cx+'px;top:'+cy+'px;width:'+sz+'px;height:'+sz+'px;background:'+cols[i%4]+';--dx:'+Math.round(Math.cos(a)*dist)+'px;--dy:'+Math.round(Math.sin(a)*dist*.6)+'px;animation-delay:'+(180+Math.round(Math.random()*80))+'ms';
+    document.body.appendChild(d);setTimeout(function(n){return function(){n.remove()}}(d),1200);
+  }
+  var t=document.createElement('span');t.className='bubble-pop-done';t.textContent='✔ 완료!';t.style.left=cx+'px';t.style.top=cy+'px';document.body.appendChild(t);setTimeout(function(){t.remove()},1000);
+  setTimeout(function(){done&&done()},700);
+};
 </script>
 </body>
 </html>
