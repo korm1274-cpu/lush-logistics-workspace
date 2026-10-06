@@ -13356,5 +13356,43 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 /* 담당자 재고파일: 인쇄 버튼을 '파일 업로드' 오른쪽으로 옮김(클릭 기능은 그대로 따라감) */
 (function(){var p=document.getElementById('printInventory'),u=document.getElementById('uploadOwnerInventory');if(p&&u)u.insertAdjacentElement('afterend',p)})();
 </script>
+<style id="type-scale-unify">
+/* ── 글씨 크기 통일(전체 화면 공통) ──
+   PC:   조회칸 이름표 12 · 입력값 14 · 조회 버튼 14 · 카드 제목 17 · 숫자칸 이름 13 · 숫자 26 · 단위/설명 12
+   휴대폰: 조회칸 이름표 11 · 입력값 13 · 조회 버튼 13 · 카드 제목 16 · 숫자칸 이름 11.5 · 숫자 20 · 단위/설명 10.5
+   (휴대폰에서 칸을 좁게 맞춘 일부 조회 줄은 그 화면 설정을 그대로 씀) */
+:root{--t-label:12px;--t-input:14px;--t-btn:14px;--t-title:17px;--t-kpi-label:13px;--t-kpi-num:26px;--t-kpi-small:12px;}
+@media (max-width:900px){:root{--t-label:11px;--t-input:13px;--t-btn:13px;--t-title:16px;--t-kpi-label:11.5px;--t-kpi-num:20px;--t-kpi-small:10.5px;}}
+
+/* 조회칸 이름표(시작일·종료일·차수·검색 등) */
+#appShell .view .field>label,#appShell .view .status-filter-card>span,#appShell .view .request-period-control>label,
+#appShell .view .inventory-date-control>label,#appShell .view .inventory-history-label,#appShell .view .ms-period label{font-size:var(--t-label)!important;font-weight:700!important;color:#6b7684!important;letter-spacing:0!important;}
+/* 입력값 */
+#appShell .view .field input,#appShell .view .field select,#appShell .view .field textarea,#appShell .view .status-filter-card input,#appShell .view .status-filter-card select,
+#appShell .view .request-period-control input,#appShell .view .inventory-filterbar select,#appShell .view .inventory-filterbar input,
+#appShell .view .request-filter-row select,#appShell .view .request-filter-row input,#appShell .view .saved-date-select,#appShell .view .inventory-date-control input{font-size:var(--t-input)!important;}
+/* 조회·전체 등 조회 줄 버튼 */
+#appShell .view .data-filter-row .btn,#appShell .view .status-filter-btn,#appShell .view #requestPeriodApplyBtn,#appShell .view .ms-period .btn{font-size:var(--t-btn)!important;font-weight:800!important;}
+/* 카드 제목 */
+#appShell .view .panel-head h3,#appShell .view .status-card-title h3,#appShell .view .dashboard-panel-title h3,#appShell .view .dash-section-head h3,
+#appShell .view .request-period-head h3,#appShell .view .request-register-head h3,#appShell .view .request-form-head h3,#appShell .view .table-card>.status-card-title h3,
+#appShell .view .chart-card>.status-card-title h3,#appShell .view .schedule-title-line h3,#appShell .view .ms-card-head b,#appShell .view .shipping-store-head h4{font-size:var(--t-title)!important;font-weight:800!important;}
+/* 숫자 요약칸: 이름 · 숫자 · 단위/설명 */
+#appShell .view .kpi>span,#appShell .view .inventory-metric>span,#appShell .view .request-period-stat>span,#appShell .view .monthly-stats span,#appShell .view .boxcount-summary-bar span,#appShell .view .boxcount-store-summary span{font-size:var(--t-kpi-label)!important;font-weight:700!important;}
+#appShell .view .kpi b,#appShell .view .inventory-metric b,#appShell .view .request-period-stat b,#appShell .view .monthly-stats b,#appShell .view .boxcount-summary-bar b,#appShell .view .boxcount-store-summary b{font-size:var(--t-kpi-num)!important;font-weight:800!important;}
+/* 메인화면은 개별 설정이 더 강해서 따로 맞춤(휴대폰 이번 달 입출고는 좁은 칸에 맞춘 크기 유지) */
+#appShell #dashboard .dashboard-panel-title h3,#appShell #dashboard .dash-section-head h3,#appShell #dashboard .schedule-title-line h3{font-size:var(--t-title)!important;}
+@media (min-width:901px){
+  #appShell #dashboard .monthly-stats span{font-size:var(--t-kpi-label)!important;}
+  #appShell #dashboard .monthly-stats b{font-size:var(--t-kpi-num)!important;}
+  #appShell #dashboard .monthly-stats small{font-size:var(--t-kpi-small)!important;}
+}
+@media (max-width:900px){
+  /* 숫자칸이 4개 이상인 화면(품절 재고 분석 등)은 휴대폰에서 2칸씩, 긴 이름은 줄바꿈 */
+  #appShell .view .kpis.data-kpis:has(> .kpi:nth-child(4)){grid-auto-flow:row!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+  #appShell .view .kpis.data-kpis>.kpi>span{white-space:normal!important;word-break:keep-all!important;}
+}
+#appShell .view .kpi small,#appShell .view .inventory-metric small,#appShell .view .request-period-stat small,#appShell .view .monthly-stats small,#appShell .view .boxcount-summary-bar small,#appShell .view .boxcount-summary-bar em,#appShell .view .boxcount-store-summary small{font-size:var(--t-kpi-small)!important;}
+</style>
 </body>
 </html>
