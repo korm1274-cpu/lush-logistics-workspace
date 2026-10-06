@@ -6408,55 +6408,67 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 <style id="v101-admin-menu-manager">
-#admin-menus .menu-admin-grid{grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr)!important;align-items:start!important}
+#admin-menus .menu-admin-grid{grid-template-columns:minmax(620px,1.55fr) minmax(360px,.85fr)!important;align-items:start!important;gap:14px!important}
 #admin-menus .menu-group-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 14px}
 #admin-menus .menu-group-tab{display:inline-flex;align-items:center;gap:6px;border:1px solid #e1e3df;background:#fff;color:#60655f;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800}
 #admin-menus .menu-group-tab small{display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#f0f1ee;color:#777;font-size:9px}
 #admin-menus .menu-group-tab.active{background:#1d1d1b;color:#fff;border-color:#1d1d1b}
 #admin-menus .menu-group-tab.active small{background:rgba(255,255,255,.15);color:#fff}
-#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #e8e9e5;border-radius:12px;background:#fafbf9;margin-bottom:8px}
-#admin-menus .menu-group-summary b{display:block;font-size:13px}
-#admin-menus .menu-group-summary small{display:block;margin-top:3px;color:#8a918c;font-size:10px}
-#admin-menus .menu-group-summary>span{color:#8a918c;font-size:10px}
-#admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:8px}
-#admin-menus .menu-manage-row{display:grid;grid-template-columns:90px minmax(170px,1.25fr) minmax(160px,.9fr) 64px 72px;gap:10px;align-items:center;padding:12px;border:1px solid #e5e6e2;border-radius:12px;background:#fff}
+#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border:1px solid #e8e9e5;border-radius:10px;background:#fafbf9;margin-bottom:8px}
+#admin-menus .menu-group-summary b{display:block;font-size:12px}
+#admin-menus .menu-group-summary small{display:inline;margin-left:7px;color:#8a918c;font-size:9px}
+#admin-menus .menu-group-summary>span{color:#8a918c;font-size:9px}
+#admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:5px}
+#admin-menus .menu-manage-head{display:grid;grid-template-columns:70px minmax(150px,1fr) 150px 112px 60px;gap:8px;align-items:center;padding:0 10px 3px;color:#8a918c;font-size:9px;font-weight:800}
+#admin-menus .menu-manage-head span:nth-child(4),#admin-menus .menu-manage-head span:nth-child(5){text-align:center}
+#admin-menus .menu-manage-row{display:grid;grid-template-columns:70px minmax(150px,1fr) 150px 112px 60px;gap:8px;align-items:center;min-height:52px;padding:8px 10px;border:1px solid #e7e8e4;border-radius:9px;background:#fff}
 #admin-menus .menu-manage-row.dragging{opacity:.45}
 #admin-menus .menu-manage-row.drag-over{border-color:#e87ba4;box-shadow:0 0 0 2px rgba(232,123,164,.12)}
-#admin-menus .menu-order-controls{display:flex;align-items:center;gap:4px}
-#admin-menus .menu-drag-handle{cursor:grab;color:#9a9f99;font-weight:900;letter-spacing:-2px;padding-right:4px}
-#admin-menus .menu-order-btn{width:26px;height:28px;border:1px solid #e3e5e1;border-radius:7px;background:#fafbf9;color:#4f544f;font-weight:900}
+#admin-menus .menu-order-controls{display:flex;align-items:center;gap:3px}
+#admin-menus .menu-drag-handle{cursor:grab;color:#a2a7a1;font-weight:900;letter-spacing:-2px;padding-right:3px}
+#admin-menus .menu-order-btn{width:24px;height:26px;border:1px solid #e3e5e1;border-radius:6px;background:#fafbf9;color:#4f544f;font-size:11px;font-weight:900}
 #admin-menus .menu-order-btn:disabled{opacity:.28;cursor:default}
 #admin-menus .menu-edit-main,#admin-menus .menu-edit-group,#admin-menus .menu-edit-visible{min-width:0}
-#admin-menus .menu-manage-row label{display:block;margin-bottom:5px;color:#7b827c;font-size:9px;font-weight:800}
-#admin-menus .menu-manage-row input,#admin-menus .menu-manage-row select{width:100%;height:34px;border:1px solid #dfe2dd;border-radius:8px;background:#fff;padding:0 9px;font-size:11px;font-weight:750;color:#222}
-#admin-menus .menu-manage-row small{display:block;margin-top:4px;color:#989e98;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-#admin-menus .menu-edit-visible{text-align:center}
-#admin-menus .menu-edit-visible .toggle{margin:1px auto 0}
-#admin-menus .menu-edit-actions{display:flex;justify-content:flex-end}
+#admin-menus .menu-manage-row input,#admin-menus .menu-manage-row select{width:100%;height:32px;border:1px solid #e1e3df;border-radius:7px;background:#fff;padding:0 8px;font-size:10.5px;font-weight:750;color:#222}
+#admin-menus .menu-edit-main small{display:none}
+#admin-menus .menu-edit-group small{display:none}
+#admin-menus .menu-edit-visible{display:flex;align-items:center;justify-content:center;gap:7px;text-align:center}
+#admin-menus .menu-edit-visible .toggle{margin:0}
+#admin-menus .visibility-state{min-width:38px;font-size:9px;font-weight:850;color:#777;text-align:left;white-space:nowrap}
+#admin-menus .visibility-state.on{color:#1d1d1b}
+#admin-menus .menu-edit-actions{display:flex;justify-content:center}
+#admin-menus .menu-edit-actions .btn.sm,#admin-menus .group-actions .btn.sm{min-width:48px;height:29px;padding:0 8px;font-size:9px}
 #admin-menus .menu-manage-empty{padding:36px 16px;text-align:center;border:1px dashed #dadcd7;border-radius:12px;color:#929892;font-size:11px}
-#admin-menus .group-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;margin:16px 0 12px}
-#admin-menus .group-add-row input{height:38px;border:1px solid #dfe2dd;border-radius:8px;padding:0 10px;font-size:11px;font-weight:750}
-#admin-menus .group-manage-list{display:flex;flex-direction:column;gap:8px}
-#admin-menus .group-manage-row{display:grid;grid-template-columns:74px minmax(120px,1fr) 54px 70px;gap:8px;align-items:center;padding:10px;border:1px solid #e5e6e2;border-radius:11px;background:#fff}
-#admin-menus .group-manage-row label{display:block;margin-bottom:4px;color:#7b827c;font-size:9px;font-weight:800}
-#admin-menus .group-manage-row input{width:100%;height:32px;border:1px solid #dfe2dd;border-radius:8px;padding:0 8px;font-size:11px;font-weight:750}
-#admin-menus .group-order-controls{display:flex;gap:4px;align-items:center}
-#admin-menus .group-visible{text-align:center}
-#admin-menus .group-visible .toggle{margin:0 auto}
-#admin-menus .group-actions{display:flex;justify-content:flex-end}
+#admin-menus .group-manager-card{padding:18px!important}
+#admin-menus .group-manager-card>p{max-width:420px;font-size:10px;line-height:1.55}
+#admin-menus .group-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;margin:14px 0 12px}
+#admin-menus .group-add-row input{height:36px;border:1px solid #dfe2dd;border-radius:8px;padding:0 10px;font-size:10.5px;font-weight:750}
+#admin-menus .group-manage-list{display:flex;flex-direction:column;gap:5px}
+#admin-menus .group-manage-head{display:grid;grid-template-columns:60px minmax(110px,1fr) 108px 58px;gap:7px;padding:0 9px 3px;color:#8a918c;font-size:9px;font-weight:800}
+#admin-menus .group-manage-head span:nth-child(3),#admin-menus .group-manage-head span:nth-child(4){text-align:center}
+#admin-menus .group-manage-row{display:grid;grid-template-columns:60px minmax(110px,1fr) 108px 58px;gap:7px;align-items:center;min-height:48px;padding:7px 9px;border:1px solid #e7e8e4;border-radius:9px;background:#fff}
+#admin-menus .group-manage-row input{width:100%;height:31px;border:1px solid #e1e3df;border-radius:7px;padding:0 8px;font-size:10.5px;font-weight:750}
+#admin-menus .group-order-controls{display:flex;gap:3px;align-items:center}
+#admin-menus .group-visible{display:flex;align-items:center;justify-content:center;gap:7px;text-align:center}
+#admin-menus .group-visible .toggle{margin:0}
+#admin-menus .group-actions{display:flex;justify-content:center}
 @media(max-width:1150px){
  #admin-menus .menu-admin-grid{grid-template-columns:1fr!important}
- #admin-menus .menu-manage-row{grid-template-columns:82px minmax(150px,1.2fr) minmax(140px,1fr) 58px 64px}
+ #admin-menus .menu-manage-head,#admin-menus .menu-manage-row{grid-template-columns:70px minmax(150px,1fr) 150px 112px 60px}
 }
 @media(max-width:700px){
  #admin-menus .menu-group-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
  #admin-menus .menu-group-tab{flex:0 0 auto}
  #admin-menus .menu-group-summary{align-items:flex-start;flex-direction:column}
- #admin-menus .menu-manage-row{grid-template-columns:74px 1fr 58px;gap:8px}
+ #admin-menus .menu-manage-head,#admin-menus .group-manage-head{display:none}
+ #admin-menus .menu-manage-row{grid-template-columns:62px 1fr 108px;gap:7px}
  #admin-menus .menu-edit-main{grid-column:2/4}
  #admin-menus .menu-edit-group{grid-column:1/4}
- #admin-menus .menu-edit-visible{grid-column:1/2}
+ #admin-menus .menu-edit-visible{grid-column:1/3;justify-content:flex-start}
  #admin-menus .menu-edit-actions{grid-column:3/4}
+ #admin-menus .group-manage-row{grid-template-columns:60px 1fr 108px;gap:7px}
+ #admin-menus .group-visible{grid-column:1/3;justify-content:flex-start}
+ #admin-menus .group-actions{grid-column:3/4}
 }
 </style>
 </head>
@@ -8060,17 +8072,14 @@ function moveGroup(id,dir){
 }
 function renderGroupsTable(){
   const holder=document.getElementById("groupManageList");if(!holder)return;
-  holder.innerHTML=GROUPS.map((g,pos)=>`
+  holder.innerHTML=`<div class="group-manage-head"><span>순서</span><span>대분류명</span><span>표시 상태</span><span>관리</span></div>`+GROUPS.map((g,pos)=>`
     <div class="group-manage-row">
       <div class="group-order-controls">
         <button type="button" class="menu-order-btn" data-group-up="${g.id}" ${pos===0?"disabled":""}>↑</button>
         <button type="button" class="menu-order-btn" data-group-down="${g.id}" ${pos===GROUPS.length-1?"disabled":""}>↓</button>
       </div>
-      <div>
-        <label>대분류명</label>
-        <input data-group-label="${g.id}" value="${esc(g.label)}" ${g.protected?"":" "} />
-      </div>
-      <div class="group-visible"><label>표시</label><button class="toggle ${g.visible!==false?"on":""}" data-group-toggle="${g.id}" ${g.protected?"disabled":""}></button></div>
+      <div><input aria-label="대분류명" data-group-label="${g.id}" value="${esc(g.label)}" /></div>
+      <div class="group-visible"><button class="toggle ${g.visible!==false?"on":""}" data-group-toggle="${g.id}" ${g.protected?"disabled":""}></button><span class="visibility-state ${g.visible!==false?"on":""}">${g.visible!==false?"표시 중":"숨김"}</span></div>
       <div class="group-actions">${g.protected?'<span class="muted">고정</span>':`<button class="btn remove sm" data-group-del="${g.id}">삭제</button>`}</div>
     </div>`).join("");
   holder.querySelectorAll("[data-group-label]").forEach(input=>input.onchange=()=>{
@@ -8127,24 +8136,16 @@ function renderMenusTable(){
   }
   if(document.getElementById("menuGroupTitle"))document.getElementById("menuGroupTitle").textContent=(g?g.label:adminMenuGroup)+" 메뉴";
   if(document.getElementById("menuGroupCount"))document.getElementById("menuGroupCount").textContent=list.length+"개 항목";
-  menuRows.innerHTML=list.length?list.map((m,pos)=>`
+  menuRows.innerHTML=list.length?`<div class="menu-manage-head"><span>순서</span><span>메뉴명</span><span>대분류</span><span>표시 상태</span><span>관리</span></div>`+list.map((m,pos)=>`
     <div class="menu-manage-row" draggable="true" data-menu-drag="${m.id}">
       <div class="menu-order-controls">
         <span class="menu-drag-handle" title="드래그하여 순서 변경">⋮⋮</span>
         <button type="button" class="menu-order-btn" data-menu-up="${m.id}" ${pos===0?"disabled":""}>↑</button>
         <button type="button" class="menu-order-btn" data-menu-down="${m.id}" ${pos===list.length-1?"disabled":""}>↓</button>
       </div>
-      <div class="menu-edit-main">
-        <label>메뉴명</label>
-        <input class="inline-input menuLabel" data-menu-label="${m.id}" value="${esc(m.label)}">
-        <small>${kindLabel(m)}</small>
-      </div>
-      <div class="menu-edit-group">
-        <label>상위 메뉴</label>
-        <select data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select>
-        <small>${m.protected?"필수 메뉴 · 이동 불가":"선택한 메뉴 아래로 이동"}</small>
-      </div>
-      <div class="menu-edit-visible"><label>표시</label><button class="toggle ${m.visible?"on":""}" data-menu-toggle="${m.id}"></button></div>
+      <div class="menu-edit-main"><input aria-label="메뉴명" class="inline-input menuLabel" data-menu-label="${m.id}" value="${esc(m.label)}"></div>
+      <div class="menu-edit-group"><select aria-label="대분류" data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select></div>
+      <div class="menu-edit-visible"><button class="toggle ${m.visible?"on":""}" data-menu-toggle="${m.id}"></button><span class="visibility-state ${m.visible?"on":""}">${m.visible?"표시 중":"숨김"}</span></div>
       <div class="menu-edit-actions">${m.protected?'<span class="muted">고정</span>':`<button class="btn remove sm" data-menu-del="${m.id}">삭제</button>`}</div>
     </div>`).join(""):'<div class="menu-manage-empty">이 상위 메뉴에 등록된 항목이 없습니다.</div>';
 
