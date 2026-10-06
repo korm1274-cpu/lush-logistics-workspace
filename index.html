@@ -15273,7 +15273,6 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
       tab.classList.add('draggable-tab');
       tab.addEventListener('pointerdown',function(e){begin(tab,e)});
     });
-    box.addEventListener('pointermove',move,{passive:false});
     document.addEventListener('pointermove',move,{passive:false});
     document.addEventListener('pointerup',end);
     document.addEventListener('pointercancel',end);
