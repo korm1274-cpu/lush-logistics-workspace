@@ -35,7 +35,24 @@ module.exports = async (req, res) => {
       if (typeof body === 'string') {
         try { body = JSON.parse(body); } catch {}
       }
-      const value = JSON.stringify(body || {});
+      body = body && typeof body === 'object' ? body : {};
+      // 구글시트 자동연동 항목(오출고·파손·입고·출고 등)은 다른 기기가 예전 사본을 통째로 올려도
+      // 서버에 있는 더 최신 데이터(updatedAt 기준)가 지워지지 않도록 항목별로 최신 쪽을 유지합니다.
+      try {
+        const cr = await fetchWithTimeout(`${KV_URL}/get/${KEY}`, { headers: { Authorization: `Bearer ${KV_TOKEN}` } });
+        const cj = await cr.json();
+        const current = cj && cj.result ? JSON.parse(cj.result) : null;
+        if (current && typeof current === 'object') {
+          const SHEET_KEYS = ['misship', 'damage', 'inbound', 'outbound', 'inboundMonthlySummary', 'outboundMonthlySummary'];
+          SHEET_KEYS.filter(k => k in body).forEach(k => {
+            const cur = current[k], inc = body[k];
+            const ct = cur && typeof cur === 'object' ? Date.parse(cur.updatedAt || '') : NaN;
+            const it = inc && typeof inc === 'object' ? Date.parse(inc.updatedAt || '') : NaN;
+            if (Number.isFinite(ct) && Number.isFinite(it) && ct > it) body[k] = cur;
+          });
+        }
+      } catch (e) { /* 비교 실패 시에는 받은 그대로 저장 */ }
+      const value = JSON.stringify(body);
       const r = await fetchWithTimeout(`${KV_URL}/set/${KEY}`, {
         method: 'POST',
         headers: {

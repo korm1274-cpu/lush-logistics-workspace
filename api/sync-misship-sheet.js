@@ -37,6 +37,11 @@ function fetchWithTimeout(url, options) {
   return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
 }
 
+// 구글 '웹에 게시' CSV가 캐시된 예전 내용을 주지 않도록 매번 다른 주소로 요청
+function noCache(url) {
+  return url + (url.includes('?') ? '&' : '?') + '_ts=' + Date.now();
+}
+
 function parseCSV(text) {
   const rows = [];
   let row = [], field = '', inQuotes = false;
@@ -108,7 +113,7 @@ module.exports = async (req, res) => {
   if (!SHEET_URL) return res.status(200).json({ success: false, notConfigured: true, error: 'MISSHIP_SHEET_CSV_URL 환경변수가 설정되지 않았습니다.' });
 
   try {
-    const sheetRes = await fetchWithTimeout(SHEET_URL, {});
+    const sheetRes = await fetchWithTimeout(noCache(SHEET_URL), { cache: 'no-store' });
     if (!sheetRes.ok) throw new Error(`오출고 시트를 불러오지 못했습니다 (HTTP ${sheetRes.status}). 공유 설정을 확인해주세요.`);
     const values = parseCSV(await sheetRes.text());
     const { rows, headerFound, columnIndex } = convert(values);

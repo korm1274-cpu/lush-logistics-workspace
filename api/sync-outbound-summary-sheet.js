@@ -20,6 +20,11 @@ function fetchWithTimeout(url, options) {
   return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
 }
 
+// 구글 '웹에 게시' CSV가 캐시된 예전 내용을 주지 않도록 매번 다른 주소로 요청
+function noCache(url) {
+  return url + (url.includes('?') ? '&' : '?') + '_ts=' + Date.now();
+}
+
 function parseCSV(text) {
   const rows = [];
   let row = [], field = '', inQuotes = false;
@@ -66,7 +71,7 @@ module.exports = async (req, res) => {
   if (!SUMMARY_URL) return res.status(500).json({ success: false, error: 'OUTBOUND_SUMMARY_SHEET_CSV_URL 환경변수가 설정되지 않았습니다.' });
 
   try {
-    const sumRes = await fetchWithTimeout(SUMMARY_URL, {});
+    const sumRes = await fetchWithTimeout(noCache(SUMMARY_URL), { cache: 'no-store' });
     if (!sumRes.ok) throw new Error(`요약 시트를 불러오지 못했습니다 (HTTP ${sumRes.status}). 공유 설정을 확인해주세요.`);
     const csv = await sumRes.text();
     const allRows = parseCSV(csv);

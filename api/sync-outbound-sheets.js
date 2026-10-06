@@ -24,6 +24,11 @@ function fetchWithTimeout(url, options) {
   return fetch(url, { ...options, signal: ctrl.signal }).finally(() => clearTimeout(timer));
 }
 
+// 구글 '웹에 게시' CSV가 캐시된 예전 내용을 주지 않도록 매번 다른 주소로 요청
+function noCache(url) {
+  return url + (url.includes('?') ? '&' : '?') + '_ts=' + Date.now();
+}
+
 // 쉼표로 구분된 값 안에 콤마·줄바꿈이 큰따옴표로 감싸져 있는 경우까지 처리하는 간단한 CSV 파서
 function parseCSV(text) {
   const rows = [];
@@ -122,8 +127,8 @@ module.exports = async (req, res) => {
   try {
     // 1) 구글시트 2개를 CSV로 받아옵니다.
     const [outRes, excRes] = await Promise.all([
-      fetchWithTimeout(OUT_URL, {}),
-      fetchWithTimeout(EXC_URL, {})
+      fetchWithTimeout(noCache(OUT_URL), { cache: 'no-store' }),
+      fetchWithTimeout(noCache(EXC_URL), { cache: 'no-store' })
     ]);
     if (!outRes.ok) throw new Error(`출고 시트를 불러오지 못했습니다 (HTTP ${outRes.status}). 링크 공유 설정을 확인해주세요.`);
     if (!excRes.ok) throw new Error(`출고제외 시트를 불러오지 못했습니다 (HTTP ${excRes.status}). 링크 공유 설정을 확인해주세요.`);
