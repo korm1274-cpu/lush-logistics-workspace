@@ -12701,7 +12701,7 @@ if ('serviceWorker' in navigator) {
 /* 메인 첫 화면 연출: 배스밤 버블(C) + 숫자 카운트업(B) + 카드 순서대로 떠오르기(A) */
 .lush-hero.has-bubbles{background-image:none!important;}
 .lush-hero .hero-bubble{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
-.lush-hero>*:not(.hero-bubble):not(.hero-fizz){position:relative;z-index:1;}
+.lush-hero>*:not(.hero-bubble):not(.hero-fizz):not(.hero-truck):not(.hero-road){position:relative;z-index:1;}
 .lush-hero .hero-bubble.b1{width:92px;height:92px;left:calc(92% - 46px);top:calc(18% - 46px);background:rgba(232,123,164,.28);}
 .lush-hero .hero-bubble.b2{width:60px;height:60px;left:calc(84% - 30px);top:calc(86% - 30px);background:rgba(27,175,122,.22);}
 .lush-hero .hero-bubble.b3{width:36px;height:36px;left:calc(97% - 18px);top:calc(70% - 18px);background:rgba(237,161,0,.22);}
@@ -12761,6 +12761,49 @@ if ('serviceWorker' in navigator) {
     setTimeout(function(){document.documentElement.classList.remove('dash-intro');parts.forEach(function(el){el.classList.remove('intro-rise');el.style.animationDelay=''});[].slice.call(hero.querySelectorAll('.hero-fizz')).forEach(function(f){f.remove()})},2200);
   }
   if(document.readyState==='complete')setTimeout(play,60);else window.addEventListener('load',function(){setTimeout(play,60)});
+})();
+</script>
+<style id="hero-truck-style">
+/* 메인 배너 아래쪽: 점선 도로 위로 러쉬 배송 트럭이 천천히 지나감(물류 느낌) */
+#appShell #dashboard .lush-hero{padding-bottom:50px!important;}
+.lush-hero .hero-road{position:absolute;left:0;right:0;bottom:12px;height:0;border-top:2px dashed rgba(228,217,199,.32);z-index:0;pointer-events:none;}
+.lush-hero .hero-truck{position:absolute;bottom:13px;left:-100px;width:88px;height:42px;z-index:0;pointer-events:none;opacity:.9;}
+.lush-hero .hero-truck svg{display:block;width:100%;height:100%;overflow:visible;}
+.lush-hero .hero-truck .puff{position:absolute;left:-6px;bottom:6px;width:7px;height:7px;border-radius:50%;background:rgba(228,217,199,.35);opacity:0;}
+@media (prefers-reduced-motion:no-preference){
+  .lush-hero .hero-truck{animation:truckDrive 26s linear infinite;}
+  .lush-hero .hero-truck svg{animation:truckBump .6s ease-in-out infinite;}
+  .lush-hero .hero-truck .wheel{animation:truckWheel .7s linear infinite;transform-box:fill-box;transform-origin:center;}
+  .lush-hero .hero-truck .puff{animation:truckPuff 1.4s ease-out infinite;}
+  .lush-hero .hero-truck .puff.p2{animation-delay:.7s;}
+}
+@media (prefers-reduced-motion:reduce){.lush-hero .hero-truck{left:auto;right:28%;}}
+@keyframes truckDrive{0%{left:-100px;}100%{left:calc(100% + 20px);}}
+@keyframes truckBump{0%,100%{transform:translateY(0);}50%{transform:translateY(-1px);}}
+@keyframes truckWheel{to{transform:rotate(360deg);}}
+@keyframes truckPuff{0%{opacity:.7;transform:translate(0,0) scale(.5);}100%{opacity:0;transform:translate(-16px,-8px) scale(1.4);}}
+@media (max-width:900px){
+  #appShell #dashboard .lush-hero{padding-bottom:46px!important;}
+  .lush-hero .hero-truck{width:58px;height:28px;bottom:11px;}
+  .lush-hero .hero-road{bottom:10px;}
+}
+</style>
+<script id="hero-truck-script">
+(function(){
+  var hero=document.querySelector('#dashboard .lush-hero');if(!hero)return;
+  var road=document.createElement('span');road.className='hero-road';road.setAttribute('aria-hidden','true');
+  var truck=document.createElement('span');truck.className='hero-truck';truck.setAttribute('aria-hidden','true');
+  truck.innerHTML='<span class="puff"></span><span class="puff p2"></span>'+
+    '<svg viewBox="0 0 72 34" xmlns="http://www.w3.org/2000/svg">'+
+      /* 짐칸 */'<rect x="1" y="2" width="44" height="22" rx="3" fill="#f3eee6"/>'+
+      /* 러쉬 분홍 띠 + 상자 */'<rect x="1" y="17" width="44" height="3" fill="#e87ba4"/>'+
+      '<rect x="8" y="7" width="9" height="7" rx="1" fill="none" stroke="#c9b99f" stroke-width="1.4"/><rect x="21" y="7" width="9" height="7" rx="1" fill="none" stroke="#c9b99f" stroke-width="1.4"/>'+
+      /* 운전석 */'<path d="M47 8h12l8 9v7H47z" fill="#e4d9c7"/><path d="M50 11h8l5 6H50z" fill="#1d1d1b" opacity=".75"/>'+
+      '<rect x="65" y="19" width="4" height="2" rx="1" fill="#eda100"/>'+
+      /* 바퀴 */'<g class="wheel"><circle cx="13" cy="27" r="5" fill="#1d1d1b" stroke="#e4d9c7" stroke-width="2"/><path d="M13 23v8M9 27h8" stroke="#e4d9c7" stroke-width="1"/></g>'+
+      '<g class="wheel"><circle cx="56" cy="27" r="5" fill="#1d1d1b" stroke="#e4d9c7" stroke-width="2"/><path d="M56 23v8M52 27h8" stroke="#e4d9c7" stroke-width="1"/></g>'+
+    '</svg>';
+  hero.insertBefore(truck,hero.firstChild);hero.insertBefore(road,hero.firstChild);
 })();
 </script>
 </body>
