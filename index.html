@@ -11688,7 +11688,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         ctx.restore();
       }
     };
-    boxcountCharts.weekdayDonut=new Chart(canvas,{type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:labels.map(function(_,i){return palette[i%palette.length]}),borderWidth:3,borderColor:'#fff',hoverOffset:5}]},plugins:[directLabelPlugin],options:{responsive:true,maintainAspectRatio:false,cutout:'58%',layout:{padding:14},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var v=Number(ctx.raw)||0,pct=total?(v/total*100):0;return ctx.label+' · '+fmt(v)+' BOX · '+pct.toFixed(1)+'%'}}}}}});
+    boxcountCharts.weekdayDonut=new Chart(canvas,{type:'pie',data:{labels:labels,datasets:[{data:values,backgroundColor:labels.map(function(_,i){return palette[i%palette.length]}),borderWidth:3,borderColor:'#fff',hoverOffset:5}]},plugins:[directLabelPlugin],options:{responsive:true,maintainAspectRatio:false,layout:{padding:14},plugins:{legend:{display:false},tooltip:{callbacks:{label:function(ctx){var v=Number(ctx.raw)||0,pct=total?(v/total*100):0;return ctx.label+' · '+fmt(v)+' BOX · '+pct.toFixed(1)+'%'}}}}}});
   }
   function boxcountRankRows(rows,mode){
     if(!rows.length)return '<div class="data-empty">데이터가 없습니다.</div>';
