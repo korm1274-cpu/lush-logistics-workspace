@@ -12061,7 +12061,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     ev.forEach(function(e){var t=e.title||'',m,re=/(\d+(?:\.\d+)?)\s*(?:팔렛|파렛|PLT)/gi;while((m=re.exec(t)))pallets+=parseFloat(m[1]);var b=/(\d+)\s*박스/g;while((m=b.exec(t)))boxes+=parseInt(m[1],10)});
     var staffEl=$('todayOperatingCount');
     var wk=weekRangeKST(),byType={};
-    ['bulk','traffic','hq','nozzle'].forEach(function(type){var rows=reqs.filter(function(r){return r&&r.type===type&&(r.requestDates||[]).some(function(d){return d>=wk.start&&d<=wk.end})});byType[type]={total:rows.length,pending:rows.filter(function(r){return!isDone(r)}).length}});
+    /* 메인 '출고 요청'과 같은 기준: 요청일과 상관없이 미처리 전체. 지연(요청일이 모두 지남)·오늘 요청 건수도 함께 */
+    ['bulk','traffic','hq','nozzle'].forEach(function(type){var rows=reqs.filter(function(r){return r&&r.type===type&&!isDone(r)});byType[type]={total:rows.length,late:rows.filter(function(r){var ds=(r.requestDates||[]).slice().sort();return ds.length&&ds[ds.length-1]<today}).length,today:rows.filter(function(r){return(r.requestDates||[]).indexOf(today)>=0}).length}});
     return{today:today,req:req,pendingAll:pendingAll,todo:todo,pallets:pallets,boxes:boxes,inboundEvents:ev,staff:staffEl?staffEl.textContent.trim():'-',week:wk,byType:byType};
   }
   window.getTodayOpsStats=stats;
@@ -12102,8 +12103,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     $('floorInboundTile').title=window.inboundEventsTitle(s);
     $('floorTodo').textContent=s.todo;$('floorStaff').textContent=s.staff;
     var md=function(d){return(+d.slice(5,7))+'/'+(+d.slice(8,10))};
-    $('floorWeek').textContent='('+md(s.week.start)+' ~ '+md(s.week.end)+')';
-    Object.keys(s.byType).forEach(function(t){var v=s.byType[t],b=document.querySelector('[data-floor-type="'+t+'"]'),p=document.querySelector('[data-floor-pending="'+t+'"]');if(b)b.textContent=v.total;if(p){p.textContent=v.pending?'미처리 '+v.pending+'건':'모두 처리 완료';p.classList.toggle('alert',v.pending>0)}});
+    $('floorWeek').textContent='(미처리)';
+    Object.keys(s.byType).forEach(function(t){var v=s.byType[t],b=document.querySelector('[data-floor-type="'+t+'"]'),p=document.querySelector('[data-floor-pending="'+t+'"]');if(b)b.textContent=v.total;if(p){p.textContent=!v.total?'모두 처리 완료':v.late?'지연 '+v.late+'건':v.today?'오늘 '+v.today+'건':'처리 대기';p.classList.toggle('alert',v.late>0)}});
     $('floorUpdated').textContent='마지막 갱신 '+new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date());
   }
   function tick(){
