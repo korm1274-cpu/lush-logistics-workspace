@@ -6421,27 +6421,34 @@ html,body{max-width:100%;overflow-x:hidden}
 #admin-menus .menu-group-tab.active{background:#222;color:#fff;border-color:#222}
 #admin-menus .menu-group-tab.active small{background:rgba(255,255,255,.18);color:#fff}
 #admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;height:38px;padding:0 11px;border:1px solid #e7e8e5;border-radius:8px;background:#fafbf9;margin-bottom:6px}
-#admin-menus .menu-group-summary b{font-size:12px}
-#admin-menus .menu-group-summary small{margin-left:7px;color:#919691;font-size:9px}
-#admin-menus .menu-group-summary>span{color:#969b96;font-size:9px}
+#admin-menus .menu-group-summary b{font-size:12px;font-weight:700}
+#admin-menus .menu-group-summary small{margin-left:7px;color:#919691;font-size:9px;font-weight:500}
+#admin-menus .menu-group-summary>span{color:#969b96;font-size:9px;font-weight:500}
 #admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:4px}
 #admin-menus .menu-simple-row{border:1px solid #e7e8e5;border-radius:8px;background:#fff;overflow:hidden}
-#admin-menus .menu-simple-main{display:grid;grid-template-columns:70px minmax(180px,1fr) 96px 58px;gap:10px;align-items:center;min-height:46px;padding:7px 10px;white-space:nowrap}
-#admin-menus .menu-order-controls{display:flex;align-items:center;gap:3px}
-#admin-menus .menu-drag-handle{cursor:grab;color:#a5aaa5;font-weight:900;letter-spacing:-2px;padding-right:2px}
-#admin-menus .menu-order-btn{width:20px;height:22px;border:1px solid #e0e3df;border-radius:5px;background:#fafbf9;color:#555;font-size:9px;font-weight:900;padding:0}
+#admin-menus .menu-simple-main{display:grid;grid-template-columns:72px minmax(180px,1.15fr) 110px 150px minmax(210px,1fr) 58px;gap:10px;align-items:center;min-height:58px;padding:8px 10px;white-space:nowrap}
+#admin-menus .menu-order-controls{display:grid;grid-template-columns:22px 22px;grid-template-rows:22px 22px;gap:3px;align-items:center;justify-content:center}
+#admin-menus .menu-drag-handle{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:22px;height:47px;cursor:grab;color:#a5aaa5;font-weight:700;letter-spacing:-2px;padding:0}
+#admin-menus .menu-order-btn{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #e0e3df;border-radius:5px;background:#fafbf9;color:#555;font-size:10px;font-weight:700;line-height:1;padding:0;text-align:center}
 #admin-menus .menu-order-btn:disabled{opacity:.25}
-#admin-menus .menu-simple-name{min-width:0;font-size:12px;font-weight:800;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#admin-menus .menu-simple-visible{display:flex;align-items:center;justify-content:center;gap:5px}
+#admin-menus .menu-simple-name{min-width:0;font-size:12px;font-weight:650;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#admin-menus .menu-simple-visible{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px}
+#admin-menus .menu-field-title{display:block;color:#7e847f;font-size:8.5px;font-weight:600;line-height:1;white-space:nowrap}
+#admin-menus .menu-field-body{display:flex;align-items:center;gap:5px;min-height:24px}
 #admin-menus .menu-simple-visible .toggle,#admin-menus .group-visible .toggle{width:31px;height:17px;margin:0;background:#c7ccc7!important;border:1px solid #b9bfb9!important}
 #admin-menus .menu-simple-visible .toggle:after,#admin-menus .group-visible .toggle:after{top:2px;left:2px;width:11px;height:11px;background:#fff!important}
 #admin-menus .menu-simple-visible .toggle.on,#admin-menus .group-visible .toggle.on{background:#222!important;border-color:#222!important}
 #admin-menus .menu-simple-visible .toggle.on:after,#admin-menus .group-visible .toggle.on:after{left:16px}
-#admin-menus .visibility-state{min-width:22px;font-size:8px;font-weight:900;color:#8a908a}
+#admin-menus .visibility-state{min-width:22px;font-size:8.5px;font-weight:650;color:#8a908a}
 #admin-menus .visibility-state.on{color:#222}
-#admin-menus .menu-setting-btn{height:28px;padding:0 9px;border:1px solid #dfe2de;border-radius:6px;background:#fafbf9;color:#555;font-size:10px;font-weight:800}
+#admin-menus .menu-inline-group select{width:100%;height:28px;border:1px solid #dfe2de;border-radius:6px;background:#fff;padding:0 7px;font-size:9.5px;font-weight:500;color:#444}
+#admin-menus .menu-inline-permissions{display:flex;align-items:center;gap:4px;white-space:nowrap}
+#admin-menus .permission-mini{height:26px;min-width:50px;padding:0 7px;border:1px solid #d7dbd7;border-radius:6px;background:#fff;color:#767c76;font-size:8.5px;font-weight:600}
+#admin-menus .permission-mini.on{background:#222;border-color:#222;color:#fff}
+#admin-menus .menu-inline-actions{display:flex;align-items:center;justify-content:center}
+#admin-menus .menu-inline-actions .btn{height:26px;min-width:46px;padding:0 7px;font-size:8.5px;font-weight:600;border-radius:6px}
 #admin-menus .menu-simple-row.open .menu-setting-btn{background:#222;color:#fff;border-color:#222}
-#admin-menus .menu-detail-panel{display:none;grid-template-columns:minmax(180px,1fr) 170px minmax(220px,1fr) auto;gap:10px;align-items:end;padding:11px;border-top:1px solid #eceeeb;background:#fafbf9}
+#admin-menus .menu-detail-panel{display:none!important}
 #admin-menus .menu-simple-row.open .menu-detail-panel{display:grid}
 #admin-menus .menu-detail-field label{display:block;margin-bottom:5px;color:#848a84;font-size:9px;font-weight:800}
 #admin-menus .menu-detail-field input,#admin-menus .menu-detail-field select{width:100%;height:30px;border:1px solid #dfe2de;border-radius:6px;background:#fff;padding:0 8px;font-size:10px;font-weight:700}
@@ -8177,27 +8184,28 @@ function renderMenusTable(){
           <button type="button" class="menu-order-btn" data-menu-up="${m.id}" ${pos===0?"disabled":""}>↑</button>
           <button type="button" class="menu-order-btn" data-menu-down="${m.id}" ${pos===list.length-1?"disabled":""}>↓</button>
         </div>
-        <div class="menu-simple-name" title="${esc(m.label)}">${esc(m.label)}</div>
-        <div class="menu-simple-visible"><button class="toggle ${m.visible?"on":""}" data-menu-toggle="${m.id}"></button><span class="visibility-state ${m.visible?"on":""}">${m.visible?"ON":"OFF"}</span></div>
-        <button type="button" class="menu-setting-btn" data-menu-setting="${m.id}">설정</button>
-      </div>
-      <div class="menu-detail-panel">
-        <div class="menu-detail-field"><label>메뉴명</label><input data-menu-label="${m.id}" value="${esc(m.label)}"></div>
-        <div class="menu-detail-field"><label>대분류</label><select data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select></div>
-        <div class="menu-detail-field"><label>접근 권한</label><div class="menu-detail-permissions">${["leader","editor","restricted"].map(r=>`<button type="button" class="permission-mini ${m.roles.includes(r)?"on":""}" data-menu-role-id="${m.id}" data-menu-role="${r}">${r==="leader"?"팀 리더":r==="editor"?"팀원":"제한 열람"}</button>`).join("")}</div></div>
-        <div>${m.protected?'<span class="muted">필수 메뉴</span>':`<button class="btn remove menu-detail-delete" data-menu-del="${m.id}">삭제</button>`}</div>
+        <div>
+          <span class="menu-field-title">메뉴명</span>
+          <div class="menu-simple-name" title="${esc(m.label)}">${esc(m.label)}</div>
+        </div>
+        <div class="menu-simple-visible">
+          <span class="menu-field-title">메뉴 활성화</span>
+          <div class="menu-field-body"><button class="toggle ${m.visible?"on":""}" data-menu-toggle="${m.id}"></button><span class="visibility-state ${m.visible?"on":""}">${m.visible?"ON":"OFF"}</span></div>
+        </div>
+        <div class="menu-inline-group">
+          <span class="menu-field-title">대분류</span>
+          <select aria-label="대분류" data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select>
+        </div>
+        <div>
+          <span class="menu-field-title">접근 권한</span>
+          <div class="menu-inline-permissions">${["leader","editor","restricted"].map(r=>`<button type="button" class="permission-mini ${m.roles.includes(r)?"on":""}" data-menu-role-id="${m.id}" data-menu-role="${r}">${r==="leader"?"팀 리더":r==="editor"?"팀원":"제한 열람"}</button>`).join("")}</div>
+        </div>
+        <div class="menu-inline-actions">
+          ${m.protected?'<span class="muted">고정</span>':`<button class="btn remove" data-menu-del="${m.id}">삭제</button>`}
+        </div>
       </div>
     </div>`).join(""):'<div class="menu-manage-empty">이 대분류에 등록된 메뉴가 없습니다.</div>';
 
-  menuRows.querySelectorAll("[data-menu-setting]").forEach(btn=>btn.onclick=()=>{
-    const row=btn.closest(".menu-simple-row"),open=row.classList.contains("open");
-    menuRows.querySelectorAll(".menu-simple-row.open").forEach(x=>x.classList.remove("open"));
-    if(!open)row.classList.add("open");
-  });
-  menuRows.querySelectorAll("[data-menu-label]").forEach(x=>x.onchange=()=>{
-    const m=menus.find(v=>v.id===x.dataset.menuLabel);if(!m)return;const name=x.value.trim();if(!name){x.value=m.label;return}
-    m.label=name;m.adminManaged=true;saveMenus();syncStatusTabLabels();renderNav();renderPermissions();renderMenusTable();toastMsg("메뉴명을 변경했습니다.");
-  });
   menuRows.querySelectorAll("[data-menu-toggle]").forEach(b=>b.onclick=()=>{
     const m=menus.find(v=>v.id===b.dataset.menuToggle);if(!m)return;m.visible=!m.visible;m.adminManaged=true;saveMenus();renderNav();renderMenusTable();toastMsg(m.visible?"메뉴를 표시합니다.":"메뉴를 숨겼습니다.");
   });
