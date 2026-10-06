@@ -13409,7 +13409,14 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #appShell .view .data-filter-row .field>input,#appShell .view .data-filter-row .field>select{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:38px!important;min-height:0!important;margin:0!important;padding:0 2px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
 #appShell .view .data-filter-row .field>input:focus,#appShell .view .data-filter-row .field>select:focus{outline:none!important;}
 #appShell .view .data-filter-row .field:focus-within{border-color:#e87ba4!important;}
-#appShell .view .data-filter-row>.btn{height:40px!important;min-height:0!important;margin:0!important;padding:0 16px!important;border-radius:10px!important;align-self:center!important;}
+#appShell .view .data-filter-row>.btn{height:40px!important;min-height:0!important;margin:0!important;padding:0 16px!important;border-radius:8px!important;align-self:center!important;}
+/* 글자 모양까지 현황판과 똑같이: 이름표 12px·700·회색, 입력값 900·먹색, 버튼 800 · 모서리 8px */
+#appShell .view .data-filter-row .field>input,#appShell .view .data-filter-row .field>select,
+#appShell .view .status-filter-card>input,#appShell .view .status-filter-card>select,
+#appShell #outboundRequestManager .request-period-control>input{font-weight:900!important;color:#1d1d1b!important;font-family:inherit!important;}
+#appShell .view .data-filter-row .field>input::placeholder,#appShell .view .status-filter-card>input::placeholder{font-weight:700!important;color:#a3abb3!important;}
+#appShell .view .data-filter-row .field>label,#appShell .view .status-filter-card>span,#appShell #outboundRequestManager .request-period-control>label{font-weight:700!important;color:#6b7684!important;font-family:inherit!important;}
+#appShell .view .data-filter-row>.btn,#appShell .view .status-filter-btn,#appShell #outboundRequestManager #requestPeriodApplyBtn{font-weight:800!important;border-radius:8px!important;font-family:inherit!important;}
 /* 트래픽 기간별 현황 조회 칸도 같은 모양 */
 #appShell #outboundRequestManager .request-period-control{display:flex!important;align-items:center!important;gap:8px!important;height:40px!important;padding:0 12px!important;border:1px solid #e4d9c7!important;border-radius:12px!important;background:#fff!important;box-sizing:border-box!important;}
 #appShell #outboundRequestManager .request-period-control>label{margin:0!important;white-space:nowrap!important;}
