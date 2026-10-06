@@ -6721,6 +6721,18 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .boxcount-weekday-donut-wrap{position:relative;height:292px;padding:8px 18px 18px}
 #statusBoardView .boxcount-weekday-donut-wrap canvas{max-height:100%;max-width:100%}
 </style>
+<style id="v109-boxcount-store-search">
+#statusBoardView .boxcount-store-compare-head{align-items:center!important;gap:16px}
+#statusBoardView .boxcount-store-search{margin-left:auto;display:flex;align-items:center;gap:9px}
+#statusBoardView .boxcount-store-search span{font-size:10px;color:#7d847f;font-weight:850;white-space:nowrap}
+#statusBoardView .boxcount-store-search input{width:190px;height:36px;border:1px solid #dfe1dd;border-radius:9px;background:#fafaf8;padding:0 11px;font:inherit;font-size:11px;outline:none}
+#statusBoardView .boxcount-store-search input:focus{border-color:#8f9691;background:#fff;box-shadow:0 0 0 3px rgba(47,111,98,.07)}
+@media(max-width:700px){
+  #statusBoardView .boxcount-store-compare-head{align-items:flex-start!important;flex-direction:column!important}
+  #statusBoardView .boxcount-store-search{margin-left:0;width:100%}
+  #statusBoardView .boxcount-store-search input{flex:1;width:auto}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -7253,8 +7265,11 @@ html,body{max-width:100%;overflow-x:hidden}
               <button type="button" class="btn boxcount-compare-toggle" id="boxStoreCompareToggle"><span>전체 매장 비교 조회</span><b aria-hidden="true">⌄</b></button>
             </div>
             <div class="table-card boxcount-store-compare" id="boxStoreComparePanel" hidden>
-              <div class="status-card-title"><h3>전체 매장 비교</h3><small id="boxStoreCompareHint">선택 기간 기준</small></div>
-              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>순위</th><th>매장</th><th>요일</th><th>호차</th><th>박스수</th><th>비중</th><th>전월 대비</th><th>상세</th></tr></thead><tbody id="boxStoreCompareBody"></tbody></table></div>
+              <div class="status-card-title boxcount-store-compare-head">
+                <div><h3>전체 매장 비교</h3><small id="boxStoreCompareHint">선택 기간 기준</small></div>
+                <label class="boxcount-store-search"><span>매장 검색</span><input type="search" id="boxStoreCompareSearch" placeholder="매장명 입력"></label>
+              </div>
+              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>매장</th><th>요일</th><th>호차</th><th>박스수</th><th>비중</th><th>전월 대비</th><th>상세</th></tr></thead><tbody id="boxStoreCompareBody"></tbody></table></div>
             </div>
 
             <div class="table-card boxcount-store-detail-panel" id="boxStoreDetailPanel" hidden>
@@ -11776,7 +11791,14 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 
     q('#boxStoreCompareHint').textContent=label+' · '+fmt(stores.length)+'개 매장';
     var compareRows=totals.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ko')});
-    q('#boxStoreCompareBody').innerHTML=compareRows.map(function(x,i){var ch=changes.find(function(v){return v.name===x.name})||{},share=grand?(x.total/grand*100).toFixed(1):'0.0',tone=(ch.pct||0)>0?'up':(ch.pct||0)<0?'down':'flat';return '<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td><span class="boxcount-mom '+tone+'">'+boxcountSigned(ch.pct||0,'%')+'</span></td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('');
+    function renderStoreCompareRows(){
+      var keyword=(q('#boxStoreCompareSearch')?q('#boxStoreCompareSearch').value:'').trim().toLowerCase();
+      var filtered=keyword?compareRows.filter(function(x){return x.name.toLowerCase().includes(keyword)}):compareRows;
+      q('#boxStoreCompareBody').innerHTML=filtered.map(function(x){var ch=changes.find(function(v){return v.name===x.name})||{},share=grand?(x.total/grand*100).toFixed(1):'0.0',tone=(ch.pct||0)>0?'up':(ch.pct||0)<0?'down':'flat';return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td><span class="boxcount-mom '+tone+'">'+boxcountSigned(ch.pct||0,'%')+'</span></td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('')||'<tr><td colspan="7" class="data-empty">검색 결과가 없습니다.</td></tr>';
+      bindStoreDetailLinks(q('#boxStoreComparePanel'));
+    }
+    renderStoreCompareRows();
+    if(q('#boxStoreCompareSearch'))q('#boxStoreCompareSearch').oninput=renderStoreCompareRows;
     q('#boxStoreComparePanel').hidden=!boxStoreCompareOpen;
     q('#boxStoreCompareToggle').innerHTML='<span>'+(boxStoreCompareOpen?'전체 매장 비교 닫기':'전체 매장 비교 조회')+'</span><b aria-hidden="true">'+(boxStoreCompareOpen?'⌃':'⌄')+'</b>';
     bindStoreDetailLinks(q('[data-boxcount-section="store"]'));
