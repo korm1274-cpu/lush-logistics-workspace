@@ -34,7 +34,7 @@
     </section>
   </main>
   <script>
-    const target=new URL('./install.html',window.location.href).href;
+    const target='https://lush-logistics-workspace.vercel.app/install.html';
     document.getElementById('qrTarget').textContent=target;
     const qrSrc='https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=12&data='+encodeURIComponent(target);
     document.getElementById('qrImage').src=qrSrc;
