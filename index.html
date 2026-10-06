@@ -11590,6 +11590,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var boxWeekdayPeriod={start:'',end:''},boxWeekdayViewMode='year';
   var boxStorePeriod={start:'',end:''},boxStoreViewMode='year';
   var boxStoreCompareOpen=false;
+  var boxStoreDetailReturnY=null,boxDetailExpandedReturnY=null;
 
   function boxcountRead(key,fallback){try{var v=JSON.parse(localStorage.getItem(key)||'null');return v==null?fallback:v}catch(e){return fallback}}
   function boxcountWrite(key,value){try{localStorage.setItem(key,JSON.stringify(value))}catch(e){}}
@@ -11713,7 +11714,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     }).join('');
   }
   function bindStoreDetailLinks(root){
-    qa('.box-store-detail-link',root||document).forEach(function(btn){btn.onclick=function(){var name=btn.dataset.storeDetail;if(name)renderBoxStoreDetail(name)}});
+    qa('.box-store-detail-link',root||document).forEach(function(btn){btn.onclick=function(){var name=btn.dataset.storeDetail;if(name){boxStoreDetailReturnY=window.scrollY;renderBoxStoreDetail(name)}}});
   }
 
   function renderBoxcountCumulative(){
@@ -11869,7 +11870,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   if(q('#boxStoreSearch'))q('#boxStoreSearch').addEventListener('click',function(){applyMonthFilter('boxStoreStartMonth','boxStoreEndMonth',boxStorePeriod,function(v){boxStoreViewMode=v},renderBoxcountStore)});
   if(q('#boxStoreAll'))q('#boxStoreAll').addEventListener('click',function(){q('#boxStoreStartMonth').value='';q('#boxStoreEndMonth').value='';boxStorePeriod={start:'',end:''};boxStoreViewMode='all';renderBoxcountStore()});
   if(q('#boxStoreCompareToggle'))q('#boxStoreCompareToggle').addEventListener('click',function(){boxStoreCompareOpen=!boxStoreCompareOpen;renderBoxcountStore();if(boxStoreCompareOpen)q('#boxStoreComparePanel').scrollIntoView({behavior:'smooth',block:'nearest'})});
-  if(q('#boxStoreDetailClose'))q('#boxStoreDetailClose').addEventListener('click',function(){q('#boxStoreDetailPanel').hidden=true});
+  if(q('#boxStoreDetailClose'))q('#boxStoreDetailClose').addEventListener('click',function(){
+    q('#boxStoreDetailPanel').hidden=true;
+    if(boxStoreDetailReturnY!=null){var y=boxStoreDetailReturnY;boxStoreDetailReturnY=null;requestAnimationFrame(function(){window.scrollTo({top:y,behavior:'smooth'})})}
+  });
 
   function boxcountGenerateDetailRows(start,end,dayFilter,routeFilter,storeFilter){
     var actual=[];
@@ -11907,6 +11911,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
       var detailRows=Object.keys(detailMap).map(function(k){return detailMap[k]}).sort(function(a,b){var rc=a.route.localeCompare(b.route,'ko');return rc||a.store.localeCompare(b.store,'ko')});
       q('#boxDetailExpandedTitle').textContent=dayRow.date+' · '+dayRow.day+' · '+fmt(dayRow.qty)+' BOX';
       q('#boxDetailExpandedBody').innerHTML='<div class="boxcount-expanded-table"><table class="status-data-table"><thead><tr><th>호차</th><th>매장</th><th>박스수</th></tr></thead><tbody>'+detailRows.map(function(r){return '<tr><td>'+esc(r.route)+'</td><td>'+esc(r.store)+'</td><td>'+fmt(r.qty)+'</td></tr>'}).join('')+'</tbody></table></div>';
+      boxDetailExpandedReturnY=window.scrollY;
       q('#boxDetailExpanded').hidden=false;q('#boxDetailExpanded').scrollIntoView({behavior:'smooth',block:'nearest'});
     }});
   }
@@ -11916,7 +11921,10 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#boxDetailTotal').textContent='-';q('#boxDetailCount').textContent='-';q('#boxDetailStores').textContent='-';q('#boxDetailAvg').textContent='-';q('#boxDetailResultLabel').textContent='조회 조건을 선택해주세요.';q('#boxDetailBody').innerHTML='<tr><td colspan="4" class="data-empty">조회 조건을 선택해주세요.</td></tr>';
     if(boxcountCharts.detailTrend){boxcountCharts.detailTrend.destroy();boxcountCharts.detailTrend=null}q('#boxDetailTrendEmpty').style.display='grid';q('#boxDetailRouteRadialGrid').innerHTML='<div class="data-empty">조회 조건을 선택해주세요.</div>';
   });
-  if(q('#boxDetailExpandedClose'))q('#boxDetailExpandedClose').addEventListener('click',function(){q('#boxDetailExpanded').hidden=true});
+  if(q('#boxDetailExpandedClose'))q('#boxDetailExpandedClose').addEventListener('click',function(){
+    q('#boxDetailExpanded').hidden=true;
+    if(boxDetailExpandedReturnY!=null){var y=boxDetailExpandedReturnY;boxDetailExpandedReturnY=null;requestAnimationFrame(function(){window.scrollTo({top:y,behavior:'smooth'})})}
+  });
 
   var boxSettingsEditing=null;
   function saveBoxcountSchedule(){
