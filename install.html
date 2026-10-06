@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111111">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="LUSH Logistics">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./app-icon.svg" type="image/svg+xml">
+  <title>LUSH Logistics 앱 설치 안내</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f5f5f2;color:#1d1d1b;font-family:"Pretendard","Noto Sans KR",Arial,sans-serif}
+    .wrap{max-width:980px;margin:0 auto;padding:42px 22px 64px}
+    .hero{background:#fff;border:1px solid #e2e2de;border-radius:18px;padding:30px}
+    .brand{display:flex;align-items:center;gap:12px;margin-bottom:20px}
+    .brand img{width:46px;height:46px;border-radius:12px;background:#111;padding:7px}
+    .brand b{display:block;font-size:18px;letter-spacing:.08em}
+    .brand small{display:block;margin-top:4px;color:#85857f;font-size:11px}
+    h1{margin:0;font-size:30px;letter-spacing:-.04em}
+    .lead{margin:10px 0 0;color:#74746f;font-size:14px;line-height:1.65}
+    .actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:24px}
+    .btn{height:42px;padding:0 16px;border:1px solid #d9d9d4;border-radius:9px;background:#fff;color:#1d1d1b;font-weight:800;font-size:13px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}
+    .btn.primary{background:#111;color:#fff;border-color:#111}
+    .btn[disabled]{opacity:.45;cursor:default}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:18px}
+    .card{background:#fff;border:1px solid #e2e2de;border-radius:16px;padding:24px}
+    .card-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}
+    .card h2{margin:0;font-size:18px}
+    .badge{font-size:10px;font-weight:850;padding:6px 8px;border-radius:999px;background:#f0f0ed;color:#666}
+    ol{margin:0;padding-left:20px}
+    li{margin:0 0 13px;line-height:1.65;font-size:13px}
+    .note{margin-top:17px;padding:13px 14px;border-radius:10px;background:#fafaf8;color:#71716d;font-size:11px;line-height:1.6}
+    .status{margin-top:14px;color:#666;font-size:11px}
+    .footer{margin-top:16px;text-align:center;color:#8a8a85;font-size:10px}
+    @media(max-width:760px){.wrap{padding:20px 14px 42px}.hero{padding:22px}.grid{grid-template-columns:1fr}h1{font-size:24px}.btn{flex:1 1 auto}}
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="hero">
+      <div class="brand">
+        <img src="./app-icon.svg" alt="LUSH Logistics">
+        <div><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div>
+      </div>
+      <h1>LUSH Logistics 앱 설치 안내</h1>
+      <p class="lead">별도 앱스토어 파일을 받는 방식이 아니라, 현재 웹 워크스페이스를 휴대폰 홈 화면에 설치해 앱처럼 사용할 수 있습니다.</p>
+      <div class="actions">
+        <button class="btn primary" id="androidInstallBtn" type="button">Android 설치</button>
+        <a class="btn" href="./">워크스페이스 열기</a>
+      </div>
+      <div class="status" id="installStatus">기기 환경을 확인 중입니다.</div>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="card-head"><h2>Android 설치 방법</h2><span class="badge">Chrome 권장</span></div>
+        <ol>
+          <li>Chrome에서 이 설치 안내 페이지를 엽니다.</li>
+          <li>상단의 <b>Android 설치</b> 버튼을 누릅니다. 설치 창이 뜨면 <b>설치</b>를 선택합니다.</li>
+          <li>버튼으로 설치 창이 뜨지 않는 경우 Chrome 우측 상단 <b>⋮ 메뉴</b>를 누릅니다.</li>
+          <li><b>앱 설치</b> 또는 <b>홈 화면에 추가</b>를 선택합니다.</li>
+          <li>설치 후 홈 화면의 <b>LUSH Logistics</b> 아이콘으로 실행합니다.</li>
+        </ol>
+        <div class="note">Chrome 버전에 따라 메뉴 이름이 ‘앱 설치’ 또는 ‘홈 화면에 추가’로 다르게 표시될 수 있습니다.</div>
+      </article>
+
+      <article class="card">
+        <div class="card-head"><h2>iPhone / iOS 설치 방법</h2><span class="badge">Safari 사용</span></div>
+        <ol>
+          <li>iPhone의 <b>Safari</b>에서 이 설치 안내 페이지를 엽니다.</li>
+          <li>화면 하단 또는 상단의 <b>공유 버튼</b>을 누릅니다.</li>
+          <li>공유 메뉴에서 <b>홈 화면에 추가</b>를 선택합니다.</li>
+          <li>우측 상단의 <b>추가</b>를 누릅니다.</li>
+          <li>홈 화면의 <b>LUSH Logistics</b> 아이콘으로 실행합니다.</li>
+        </ol>
+        <div class="note">iOS는 일반 파일 다운로드 방식이 아니라 Safari의 ‘홈 화면에 추가’ 기능으로 설치합니다.</div>
+      </article>
+    </section>
+
+    <div class="footer">LUSH Korea · Logistics Team</div>
+  </main>
+
+  <script>
+    let deferredPrompt=null;
+    const btn=document.getElementById('androidInstallBtn');
+    const status=document.getElementById('installStatus');
+
+    window.addEventListener('beforeinstallprompt',function(e){
+      e.preventDefault();
+      deferredPrompt=e;
+      btn.disabled=false;
+      status.textContent='Android 설치가 가능합니다.';
+    });
+
+    btn.addEventListener('click',async function(){
+      if(deferredPrompt){
+        deferredPrompt.prompt();
+        const choice=await deferredPrompt.userChoice;
+        status.textContent=choice.outcome==='accepted'?'설치를 진행했습니다.':'설치가 취소되었습니다.';
+        deferredPrompt=null;
+        return;
+      }
+      const ua=navigator.userAgent||'';
+      if(/iPhone|iPad|iPod/i.test(ua)){
+        status.textContent='iOS에서는 Safari의 공유 버튼 → 홈 화면에 추가를 이용해주세요.';
+      }else{
+        status.textContent='Chrome 메뉴에서 앱 설치 또는 홈 화면에 추가를 선택해주세요.';
+      }
+    });
+
+    window.addEventListener('appinstalled',function(){
+      status.textContent='LUSH Logistics 앱 설치가 완료되었습니다.';
+    });
+
+    if(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches){
+      status.textContent='이미 앱으로 설치되어 실행 중입니다.';
+      btn.disabled=true;
+    }else{
+      btn.disabled=false;
+      const ua=navigator.userAgent||'';
+      if(/iPhone|iPad|iPod/i.test(ua)) status.textContent='iOS에서는 Safari 공유 버튼 → 홈 화면에 추가로 설치해주세요.';
+      else status.textContent='Android는 Chrome에서 바로 설치할 수 있습니다.';
+    }
+  </script>
+</body>
+</html>
