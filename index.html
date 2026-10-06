@@ -12844,33 +12844,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   aside.id='sideSubNav';aside.setAttribute('aria-label','하위 메뉴');
   shell.appendChild(aside);
   var current={group:null,menuId:null};
+  var ACTIVE_MENU_KEY='lush_active_menu_v1';
   var isDesktop=function(){return window.matchMedia('(min-width:901px)').matches};
 
   function groupItems(gid){
     var list=menus.filter(function(m){return m.group===gid&&m.visible});
     if(gid!=='admin')return list.filter(function(m){return canAccess(m)});
     return (typeof currentRole!=='undefined'&&currentRole==='admin')?list:[];
-  }
-  /* 현황판은 메뉴가 하나뿐이지만 화면 안에 탭(출고 현황·생산성 등)이 있으므로, 그 탭들을 왼쪽 메뉴로 보여줌 */
-  function renderStatusTabs(g){
-    var tabs=document.querySelectorAll('#statusBoardView .status-board-tab');
-    if(!tabs.length)return false;
-    aside.innerHTML='';
-    aside.appendChild(makeTitle(g));
-    tabs.forEach(function(t){
-      var b=document.createElement('button');
-      b.type='button';b.className='side-subnav-item'+(t.classList.contains('active')?' active':'');
-      b.textContent=t.textContent.trim();
-      b.onclick=function(){
-        t.click();
-        aside.querySelectorAll('.side-subnav-item').forEach(function(x){x.classList.toggle('active',x===b)});
-      };
-      aside.appendChild(b);
-    });
-    shell.classList.add('has-side-subnav');
-    markTopTab();
-    if(window.lucide)lucide.createIcons();
-    return true;
   }
   function renderAdminTabs(g){
     var settings=document.getElementById('settings');
@@ -12959,9 +12939,15 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var origActivate=activateMenu;
   window.activateMenu=activateMenu=function(m,el){
     var ok=typeof canAccess!=='function'||canAccess(m);
-    /* 화면 쪽 코드에서 오류가 나더라도 왼쪽 메뉴는 그려지도록 finally에서 처리 */
+    /* 모든 메뉴는 동일하게 마지막 선택 menuId를 저장하고 좌측 하위 메뉴를 갱신 */
     try{return origActivate.apply(this,arguments)}
-    finally{if(ok&&m){current={group:m.group,menuId:m.id};render()}}
+    finally{
+      if(ok&&m){
+        current={group:m.group,menuId:m.id};
+        try{localStorage.setItem(ACTIVE_MENU_KEY,m.id)}catch(e){}
+        render();
+      }
+    }
   };
   /* 대시보드 카드 등에서 메뉴를 거치지 않고 화면을 바로 여는 경우에도 왼쪽 메뉴를 맞춰줌 */
   var origShow=showView;
@@ -12984,19 +12970,17 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   syncDashTheme();
 
   patchTopTabs();
-  var active=document.querySelector('.view.active');
-  var start=null;
-  if(active&&active.id==='statusBoardView'){
-    var activeStatusTab=active.querySelector('.status-board-tab.active')||active.querySelector('.status-board-tab');
-    var activeStatusKey=activeStatusTab&&activeStatusTab.getAttribute('data-status-tab');
-    start=activeStatusKey&&menus.find(function(x){
-      return x.kind==='statusTab'&&x.group==='statusboard'&&x.statusTab===activeStatusKey&&x.visible;
-    });
+  var savedMenuId='';
+  try{savedMenuId=localStorage.getItem(ACTIVE_MENU_KEY)||''}catch(e){}
+  var start=savedMenuId&&menus.find(function(x){return x.id===savedMenuId&&x.visible&&canAccess(x)});
+  if(start){
+    activateMenu(start,null);
   }else{
-    start=active&&menus.find(function(x){return x.kind==='view'&&x.target===active.id&&x.visible});
+    var active=document.querySelector('.view.active');
+    start=active&&menus.find(function(x){return x.kind==='view'&&x.target===active.id&&x.visible&&canAccess(x)});
+    if(start)current={group:start.group,menuId:start.id};
+    render();
   }
-  if(start)current={group:start.group,menuId:start.id};
-  render();
 })();
 </script>
 <script id="ms-mobile-tabs">
