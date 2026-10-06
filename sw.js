@@ -1,20 +1,5 @@
 const VERSION = 'lush-logistics-pwa-test-v3';
 
-const DESKTOP_SIDEBAR_PATCH = `
-<script id="desktop-sidebar-refresh-fix">
-(function () {
-  function syncDesktopSidebarStyle() {
-    var legacyTopnav = document.getElementById('v70-dark-topnav');
-    if (!legacyTopnav) return;
-    legacyTopnav.disabled = window.matchMedia('(min-width: 901px)').matches;
-  }
-
-  syncDesktopSidebarStyle();
-  window.addEventListener('resize', syncDesktopSidebarStyle, { passive: true });
-})();
-<\/script>
-`;
-
 function applyWorkspacePatches(html) {
   // 누계 생산성 / 출고 박스 조회 버튼 명칭 통일
   html = html.replace(
@@ -99,10 +84,6 @@ async function fetchWithWorkspaceFixes(request) {
 
   let html = await response.text();
   html = applyWorkspacePatches(html);
-
-  if (!html.includes('desktop-sidebar-refresh-fix')) {
-    html = html.replace('</body>', DESKTOP_SIDEBAR_PATCH + '\n</body>');
-  }
 
   const headers = new Headers(response.headers);
   headers.delete('content-length');
