@@ -7269,7 +7269,7 @@ html,body{max-width:100%;overflow-x:hidden}
                 <div><h3>전체 매장 비교</h3><small id="boxStoreCompareHint">선택 기간 기준</small></div>
                 <label class="boxcount-store-search"><span>매장 검색</span><input type="search" id="boxStoreCompareSearch" placeholder="매장명 입력"></label>
               </div>
-              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>매장</th><th>요일</th><th>호차</th><th>박스수</th><th>비중</th><th>전월 대비</th><th>상세</th></tr></thead><tbody id="boxStoreCompareBody"></tbody></table></div>
+              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>매장</th><th>요일</th><th>호차</th><th>박스수</th><th>비중</th><th>상세</th></tr></thead><tbody id="boxStoreCompareBody"></tbody></table></div>
             </div>
 
             <div class="table-card boxcount-store-detail-panel" id="boxStoreDetailPanel" hidden>
@@ -11795,7 +11795,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     function renderStoreCompareRows(){
       var keyword=(q('#boxStoreCompareSearch')?q('#boxStoreCompareSearch').value:'').trim().toLowerCase();
       var filtered=keyword?compareRows.filter(function(x){return x.name.toLowerCase().includes(keyword)}):compareRows;
-      q('#boxStoreCompareBody').innerHTML=filtered.map(function(x){var ch=changes.find(function(v){return v.name===x.name})||{},share=grand?(x.total/grand*100).toFixed(1):'0.0',tone=(ch.pct||0)>0?'up':(ch.pct||0)<0?'down':'flat';return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td><span class="boxcount-mom '+tone+'">'+boxcountSigned(ch.pct||0,'%')+'</span></td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('')||'<tr><td colspan="7" class="data-empty">검색 결과가 없습니다.</td></tr>';
+      q('#boxStoreCompareBody').innerHTML=filtered.map(function(x){var share=grand?(x.total/grand*100).toFixed(1):'0.0';return '<tr><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('')||'<tr><td colspan="6" class="data-empty">검색 결과가 없습니다.</td></tr>';
       bindStoreDetailLinks(q('#boxStoreComparePanel'));
     }
     renderStoreCompareRows();
