@@ -6485,59 +6485,123 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(max-width:900px){#admin-menus .menu-manage-list{overflow-x:auto}#admin-menus .menu-column-head,#admin-menus .menu-simple-main{min-width:900px}}
 </style>
 
-<style id="v103-outbound-analysis">
-#statusBoardView .outbound-analysis-subtabs{display:flex;gap:6px;padding:6px;margin-bottom:16px;border:1px solid #e4e7e4;border-radius:12px;background:#f6f7f6;overflow-x:auto}
-#statusBoardView .outbound-analysis-subtab{flex:0 0 auto;min-height:38px;padding:0 16px;border:0;border-radius:8px;background:transparent;color:#59615b;font-size:12px;font-weight:650;white-space:nowrap}
-#statusBoardView .outbound-analysis-subtab.active{background:#fff;color:#111;box-shadow:0 1px 5px rgba(20,28,22,.08)}
-#statusBoardView .outbound-analysis-section{display:none}#statusBoardView .outbound-analysis-section.active{display:block}
-#statusBoardView .outbound-analysis-filter-card{margin-bottom:14px}
-#statusBoardView .outbound-analysis-demo{padding:5px 8px;border-radius:999px;background:#f2f3f1;color:#777;font-size:9px;font-weight:700}
-#statusBoardView .outbound-analysis-filters{padding-top:0!important}
-#statusBoardView .outbound-analysis-kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;padding:0 22px 20px}
-#statusBoardView .outbound-analysis-kpis>div{min-height:94px;padding:15px 16px;border:1px solid #e4e7e4;border-radius:10px;background:#fafbf9}
-#statusBoardView .outbound-analysis-kpis span{display:block;color:#727a74;font-size:10px;font-weight:600}
-#statusBoardView .outbound-analysis-kpis strong{display:block;margin-top:8px;color:#202520;font-size:25px;font-weight:750;letter-spacing:-.04em}
-#statusBoardView .outbound-analysis-kpis strong em{margin-left:4px;color:#858b86;font-size:10px;font-style:normal;font-weight:600}
-#statusBoardView .outbound-analysis-kpis small{display:block;margin-top:6px;color:#9a9f9b;font-size:9px}
+<style id="v104-outbound-analysis-aligned">
+/* 출고 분석은 생산성/출고 박스와 동일한 현황판 UI 체계를 사용 */
+#statusBoardView .outbound-analysis-subtabs{
+  display:flex!important;align-items:center!important;gap:4px!important;width:max-content!important;max-width:100%!important;
+  margin:0 0 14px!important;padding:3px!important;background:transparent!important;border:0!important;overflow-x:auto!important;
+}
+#statusBoardView .outbound-analysis-subtab{
+  flex:0 0 auto!important;min-height:35px!important;padding:7px 10px!important;border:1px solid transparent!important;
+  border-radius:6px!important;background:transparent!important;color:#666662!important;box-shadow:none!important;
+  font-size:12.5px!important;font-weight:520!important;white-space:nowrap!important;cursor:pointer!important;
+}
+#statusBoardView .outbound-analysis-subtab:hover{background:#f0f0ed!important;color:#111!important}
+#statusBoardView .outbound-analysis-subtab.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important}
+#statusBoardView .outbound-analysis-section{display:none}
+#statusBoardView .outbound-analysis-section.active{display:block}
+
+#statusBoardView .outbound-analysis-filter-card{padding-bottom:20px!important;margin-bottom:16px!important}
+#statusBoardView .outbound-analysis-filter-card>.status-card-title{margin-bottom:14px!important}
+#statusBoardView .outbound-analysis-demo{
+  padding:6px 9px!important;border:1px solid #dedfdc!important;border-radius:999px!important;
+  background:#fff!important;color:#7b827d!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important;
+}
+#statusBoardView .outbound-analysis-filters{margin:0!important;padding:0 22px!important}
+#statusBoardView .outbound-analysis-kpis{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  margin:14px 22px 0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+#statusBoardView .outbound-analysis-kpis>div{
+  height:92px!important;min-height:92px!important;padding:15px 16px!important;box-sizing:border-box!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;background:transparent!important;
+  border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;
+}
+#statusBoardView .outbound-analysis-kpis>div:last-child{border-right:0!important}
+#statusBoardView .outbound-analysis-kpis span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .outbound-analysis-kpis strong{display:flex!important;align-items:baseline!important;gap:5px!important;margin-top:7px!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.035em!important}
+#statusBoardView .outbound-analysis-kpis strong em{font-style:normal!important;font-size:11px!important;color:#8a918c!important;font-weight:750!important}
+#statusBoardView .outbound-analysis-kpis small{margin-top:6px!important;font-size:10px!important;color:#929893!important}
 #statusBoardView .down{color:#b65353!important}
-#statusBoardView .outbound-analysis-wide-card,#statusBoardView .outbound-analysis-card{border:1px solid #e3e6e3;border-radius:12px;background:#fff}
-#statusBoardView .outbound-analysis-wide-card{padding:18px 20px;margin-bottom:12px}
-#statusBoardView .outbound-analysis-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-#statusBoardView .outbound-analysis-card{padding:17px 18px;min-height:220px}
-#statusBoardView .outbound-analysis-card.clickable{cursor:pointer;transition:transform .15s ease,border-color .15s ease}
-#statusBoardView .outbound-analysis-card.clickable:hover{transform:translateY(-1px);border-color:#cdd4ce}
-#statusBoardView .outbound-analysis-card-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:14px}
-#statusBoardView .outbound-analysis-card-head h3{margin:0;font-size:14px;font-weight:700;color:#252a26}
-#statusBoardView .outbound-analysis-card-head small{display:block;margin-top:4px;color:#8a908b;font-size:9.5px}
-#statusBoardView .outbound-analysis-card-head>span,#statusBoardView .outbound-analysis-card-head>b{color:#667069;font-size:9.5px;font-weight:650}
-#statusBoardView .outbound-trend-demo{height:190px;display:flex;align-items:flex-end;gap:18px;padding:15px 10px 0;border-top:1px solid #f0f1ee}
-#statusBoardView .outbound-trend-demo>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:8px}
-#statusBoardView .outbound-trend-demo span{display:block;width:min(54px,70%);min-height:8px;background:#444b46;border-radius:5px 5px 2px 2px}
-#statusBoardView .outbound-trend-demo small,#statusBoardView .outbound-week-bars small{color:#858b86;font-size:9px}
-#statusBoardView .outbound-rank-list{display:flex;flex-direction:column;gap:3px}
-#statusBoardView .outbound-rank-list>div{display:grid;grid-template-columns:24px minmax(0,1fr) auto;align-items:center;min-height:30px;border-bottom:1px solid #f0f1ee;font-size:10px}
-#statusBoardView .outbound-rank-list b{color:#9aa09b;font-weight:650}#statusBoardView .outbound-rank-list span{color:#444b45}#statusBoardView .outbound-rank-list em{font-style:normal;color:#222;font-weight:650}
-#statusBoardView .outbound-category-demo{display:grid;grid-template-columns:150px 1fr;gap:22px;align-items:center}
-#statusBoardView .outbound-category-ring{width:132px;height:132px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#313834 0 44%,#6f7871 44% 65%,#a3aaa4 65% 80%,#c6cbc6 80% 91%,#e4e7e4 91% 100%)}
-#statusBoardView .outbound-category-ring:before{content:"";grid-area:1/1;width:82px;height:82px;border-radius:50%;background:#fff}
-#statusBoardView .outbound-category-ring>div{grid-area:1/1;z-index:1;text-align:center}#statusBoardView .outbound-category-ring b{display:block;font-size:19px}#statusBoardView .outbound-category-ring small{font-size:9px;color:#888}
-#statusBoardView .outbound-category-legend{display:flex;flex-direction:column;gap:8px}
-#statusBoardView .outbound-category-legend span{display:grid;grid-template-columns:8px 1fr auto;align-items:center;gap:7px;font-size:10px;color:#626963}
-#statusBoardView .outbound-category-legend i{width:7px;height:7px;border-radius:50%;background:#616963}
-#statusBoardView .outbound-category-legend b{font-weight:650;color:#222}
-#statusBoardView .outbound-change-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-#statusBoardView .outbound-change-grid>div{padding:14px;border:1px solid #ebedea;border-radius:9px;background:#fafbf9}
-#statusBoardView .outbound-change-grid span,#statusBoardView .outbound-change-grid small{display:block;color:#8a908b;font-size:9px}
-#statusBoardView .outbound-change-grid b{display:block;margin-top:8px;font-size:12px;color:#333}#statusBoardView .outbound-change-grid strong{display:block;margin-top:5px;font-size:20px;color:#31714a}
-#statusBoardView .outbound-change-list{display:flex;flex-direction:column;gap:7px}.outbound-change-list>div{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #eff1ee;font-size:10px}.outbound-change-list b{color:#31714a}
-#statusBoardView .outbound-week-bars{height:145px;display:flex;align-items:flex-end;gap:14px;padding-top:10px}
-#statusBoardView .outbound-week-bars>div{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:7px}
-#statusBoardView .outbound-week-bars span{display:block;width:60%;min-height:5px;border-radius:4px 4px 2px 2px;background:#565e58}
-#statusBoardView .outbound-concentration{display:flex;flex-direction:column;gap:18px;padding-top:6px}
-#statusBoardView .outbound-concentration>div{display:grid;grid-template-columns:1fr auto;gap:7px;font-size:10px}.outbound-concentration>div>div{grid-column:1/-1;height:7px;border-radius:999px;background:#eceeeb;overflow:hidden}.outbound-concentration i{display:block;height:100%;background:#4d554f;border-radius:999px}
-#statusBoardView .outbound-analysis-coming{padding:44px 20px;text-align:center;border:1px dashed #d8ddd9;border-radius:10px;background:#fafbf9}.outbound-analysis-coming b{display:block;font-size:15px}.outbound-analysis-coming span{display:block;margin-top:8px;color:#7d847e;font-size:11px}
-@media(max-width:980px){#statusBoardView .outbound-analysis-grid{grid-template-columns:1fr}#statusBoardView .outbound-analysis-kpis{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:620px){#statusBoardView .outbound-analysis-kpis{grid-template-columns:1fr}#statusBoardView .outbound-category-demo{grid-template-columns:1fr}.outbound-category-ring{margin:auto}}
+
+#statusBoardView .outbound-analysis-wide-card{margin-top:16px!important;min-height:360px!important;height:360px!important;box-sizing:border-box!important}
+#statusBoardView .outbound-analysis-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;margin-top:16px!important;
+}
+#statusBoardView .outbound-analysis-card{
+  min-height:300px!important;height:300px!important;box-sizing:border-box!important;
+}
+#statusBoardView .outbound-analysis-card.clickable{cursor:pointer!important}
+#statusBoardView .outbound-analysis-card.clickable:hover{background:#fafaf8!important}
+
+#statusBoardView .outbound-analysis-card-head{
+  display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;margin-bottom:14px!important;
+}
+#statusBoardView .outbound-analysis-card-head h3{margin:0!important;font-size:15px!important;font-weight:700!important;color:#222!important}
+#statusBoardView .outbound-analysis-card-head small{display:block!important;margin-top:4px!important;color:#8a8a85!important;font-size:10px!important}
+#statusBoardView .outbound-analysis-card-head>span,
+#statusBoardView .outbound-analysis-card-head>b{color:#777!important;font-size:10px!important;font-weight:650!important}
+
+#statusBoardView .outbound-trend-demo{
+  height:280px!important;display:flex!important;align-items:flex-end!important;gap:18px!important;padding:16px 12px 0!important;border-top:1px solid #eeeeea!important;
+}
+#statusBoardView .outbound-trend-demo>div{flex:1!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important}
+#statusBoardView .outbound-trend-demo span{display:block!important;width:min(54px,70%)!important;min-height:8px!important;background:#444b46!important;border-radius:3px 3px 0 0!important}
+#statusBoardView .outbound-trend-demo small,#statusBoardView .outbound-week-bars small{color:#858b86!important;font-size:9px!important}
+
+#statusBoardView .outbound-rank-list{display:flex!important;flex-direction:column!important}
+#statusBoardView .outbound-rank-list>div{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;align-items:center!important;min-height:38px!important;border-bottom:1px solid #eeeeea!important;font-size:10.5px!important}
+#statusBoardView .outbound-rank-list b{color:#929893!important;font-weight:700!important}
+#statusBoardView .outbound-rank-list span{color:#444b45!important}
+#statusBoardView .outbound-rank-list em{font-style:normal!important;color:#222!important;font-weight:700!important}
+
+#statusBoardView .outbound-category-demo{display:grid!important;grid-template-columns:145px 1fr!important;gap:22px!important;align-items:center!important;padding-top:8px!important}
+#statusBoardView .outbound-category-ring{width:132px!important;height:132px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:conic-gradient(#313834 0 44%,#6f7871 44% 65%,#a3aaa4 65% 80%,#c6cbc6 80% 91%,#e4e7e4 91% 100%)!important}
+#statusBoardView .outbound-category-ring:before{content:""!important;grid-area:1/1!important;width:82px!important;height:82px!important;border-radius:50%!important;background:#fff!important}
+#statusBoardView .outbound-category-ring>div{grid-area:1/1!important;z-index:1!important;text-align:center!important}
+#statusBoardView .outbound-category-ring b{display:block!important;font-size:19px!important}
+#statusBoardView .outbound-category-ring small{font-size:9px!important;color:#888!important}
+#statusBoardView .outbound-category-legend{display:flex!important;flex-direction:column!important;gap:9px!important}
+#statusBoardView .outbound-category-legend span{display:grid!important;grid-template-columns:8px 1fr auto!important;align-items:center!important;gap:7px!important;font-size:10px!important;color:#626963!important}
+#statusBoardView .outbound-category-legend i{width:7px!important;height:7px!important;border-radius:50%!important;background:#616963!important}
+#statusBoardView .outbound-category-legend b{font-weight:700!important;color:#222!important}
+
+#statusBoardView .outbound-change-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+#statusBoardView .outbound-change-grid>div{padding:14px 0!important;border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;background:transparent!important}
+#statusBoardView .outbound-change-grid>div:last-child{border-right:0!important;padding-left:14px!important}
+#statusBoardView .outbound-change-grid span,#statusBoardView .outbound-change-grid small{display:block!important;color:#8a908b!important;font-size:9.5px!important}
+#statusBoardView .outbound-change-grid b{display:block!important;margin-top:8px!important;font-size:12px!important;color:#333!important}
+#statusBoardView .outbound-change-grid strong{display:block!important;margin-top:5px!important;font-size:21px!important;color:#31714a!important}
+
+#statusBoardView .outbound-change-list{display:flex!important;flex-direction:column!important}
+#statusBoardView .outbound-change-list>div{display:flex!important;justify-content:space-between!important;padding:10px 0!important;border-bottom:1px solid #eeeeea!important;font-size:10.5px!important}
+#statusBoardView .outbound-change-list b{color:#31714a!important}
+#statusBoardView .outbound-week-bars{height:190px!important;display:flex!important;align-items:flex-end!important;gap:14px!important;padding-top:10px!important}
+#statusBoardView .outbound-week-bars>div{flex:1!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:center!important;gap:7px!important}
+#statusBoardView .outbound-week-bars span{display:block!important;width:60%!important;min-height:5px!important;border-radius:3px 3px 0 0!important;background:#565e58!important}
+#statusBoardView .outbound-concentration{display:flex!important;flex-direction:column!important;gap:24px!important;padding-top:12px!important}
+#statusBoardView .outbound-concentration>div{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important;font-size:11px!important}
+#statusBoardView .outbound-concentration>div>div{grid-column:1/-1!important;height:8px!important;border-radius:999px!important;background:#eceeeb!important;overflow:hidden!important}
+#statusBoardView .outbound-concentration i{display:block!important;height:100%!important;background:#4d554f!important;border-radius:999px!important}
+#statusBoardView .outbound-analysis-coming{padding:44px 20px!important;text-align:center!important;border:1px dashed #d8ddd9!important;border-radius:10px!important;background:#fafbf9!important}
+#statusBoardView .outbound-analysis-coming b{display:block!important;font-size:15px!important}
+#statusBoardView .outbound-analysis-coming span{display:block!important;margin-top:8px!important;color:#7d847e!important;font-size:11px!important}
+
+@media(max-width:980px){
+  #statusBoardView .outbound-analysis-grid{grid-template-columns:1fr!important}
+  #statusBoardView .outbound-analysis-card{height:auto!important;min-height:0!important}
+  #statusBoardView .outbound-analysis-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .outbound-analysis-kpis>div:nth-child(2n){border-right:0!important}
+}
+@media(max-width:620px){
+  #statusBoardView .outbound-analysis-subtabs{width:100%!important}
+  #statusBoardView .outbound-analysis-kpis{grid-template-columns:1fr!important;margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .outbound-analysis-kpis>div{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .outbound-analysis-kpis>div:last-child{border-bottom:0!important}
+  #statusBoardView .outbound-analysis-filters{padding-left:12px!important;padding-right:12px!important}
+  #statusBoardView .outbound-category-demo{grid-template-columns:1fr!important}
+  #statusBoardView .outbound-category-ring{margin:auto!important}
+}
 </style>
 </head>
 <body>
@@ -7175,11 +7239,11 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     
         <div class="status-panel" data-status-panel="outboundanalysis">
-          <div class="outbound-analysis-subtabs" role="tablist" aria-label="출고 분석 세부 메뉴">
-            <button type="button" class="outbound-analysis-subtab active" data-outbound-analysis-view="overview">종합 분석</button>
-            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="store">매장 분석</button>
-            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="product">제품 분석</button>
-            <button type="button" class="outbound-analysis-subtab" data-outbound-analysis-view="detail">상세조회</button>
+          <div class="outbound-analysis-subtabs boxcount-subtabs" role="tablist" aria-label="출고 분석 세부 메뉴">
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab active" data-outbound-analysis-view="overview">종합 분석</button>
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="store">매장 분석</button>
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="product">제품 분석</button>
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="detail">상세조회</button>
           </div>
 
           <div class="outbound-analysis-section active" data-outbound-analysis-section="overview">
@@ -7193,7 +7257,7 @@ html,body{max-width:100%;overflow-x:hidden}
                 <button type="button" class="btn primary status-filter-btn" id="outboundAnalysisRun">조회</button>
                 <button type="button" class="btn status-filter-btn" id="outboundAnalysisAll">전체</button>
               </div>
-              <div class="outbound-analysis-kpis">
+              <div class="outbound-analysis-kpis boxcount-summary-bar">
                 <div><span>총 출고량</span><strong>428,640<em>EA</em></strong><small>환산 EA 기준</small></div>
                 <div><span>출고 매장</span><strong>68<em>개</em></strong><small>선택 기간 기준</small></div>
                 <div><span>출고 SKU</span><strong>612<em>SKU</em></strong><small>중복 제거</small></div>
@@ -7201,7 +7265,7 @@ html,body{max-width:100%;overflow-x:hidden}
               </div>
             </div>
 
-            <div class="outbound-analysis-wide-card">
+            <div class="chart-card outbound-analysis-wide-card">
               <div class="outbound-analysis-card-head"><div><h3>출고량 추이</h3><small>최근 6개월 · 환산 EA</small></div><b>월별 추이</b></div>
               <div class="outbound-trend-demo" aria-label="월별 출고량 추이 데모">
                 <div><span style="height:54%"></span><small>4월</small></div><div><span style="height:68%"></span><small>5월</small></div><div><span style="height:82%"></span><small>6월</small></div><div><span style="height:91%"></span><small>7월</small></div><div><span style="height:100%"></span><small>8월</small></div><div><span style="height:76%"></span><small>9월</small></div>
@@ -7209,21 +7273,21 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
 
             <div class="outbound-analysis-grid">
-              <div class="outbound-analysis-card clickable" data-outbound-go="store">
+              <div class="table-card outbound-analysis-card clickable" data-outbound-go="store">
                 <div class="outbound-analysis-card-head"><div><h3>매장별 출고 분석</h3><small>출고량 TOP 5</small></div><span>매장 분석 →</span></div>
                 <div class="outbound-rank-list">
                   <div><b>1</b><span>강남역점</span><em>38,420 EA</em></div><div><b>2</b><span>롯데 월드몰</span><em>34,180 EA</em></div><div><b>3</b><span>스타필드 코엑스</span><em>31,760 EA</em></div><div><b>4</b><span>압구정1호</span><em>28,930 EA</em></div><div><b>5</b><span>신세계 강남</span><em>25,440 EA</em></div>
                 </div>
               </div>
 
-              <div class="outbound-analysis-card clickable" data-outbound-go="product">
+              <div class="table-card outbound-analysis-card clickable" data-outbound-go="product">
                 <div class="outbound-analysis-card-head"><div><h3>제품별 출고 분석</h3><small>출고량 TOP 5</small></div><span>제품 분석 →</span></div>
                 <div class="outbound-rank-list">
                   <div><b>1</b><span>쇼핑백 S</span><em>82,140 EA</em></div><div><b>2</b><span>쇼핑백 M</span><em>61,330 EA</em></div><div><b>3</b><span>배쓰밤 A</span><em>18,920 EA</em></div><div><b>4</b><span>솝 A</span><em>16,840 EA</em></div><div><b>5</b><span>기프트 A</span><em>14,520 EA</em></div>
                 </div>
               </div>
 
-              <div class="outbound-analysis-card">
+              <div class="table-card outbound-analysis-card">
                 <div class="outbound-analysis-card-head"><div><h3>제품군 구성</h3><small>전체 출고수량 비중</small></div></div>
                 <div class="outbound-category-demo">
                   <div class="outbound-category-ring"><div><b>428K</b><small>EA</small></div></div>
@@ -7233,7 +7297,7 @@ html,body{max-width:100%;overflow-x:hidden}
                 </div>
               </div>
 
-              <div class="outbound-analysis-card">
+              <div class="table-card outbound-analysis-card">
                 <div class="outbound-analysis-card-head"><div><h3>출고 변화 분석</h3><small>전월 대비 증가·감소 품목</small></div></div>
                 <div class="outbound-change-grid">
                   <div><span>증가 TOP</span><b>쇼핑백 S</b><strong>+34.8%</strong><small>외 4개 품목</small></div>
@@ -7241,17 +7305,17 @@ html,body{max-width:100%;overflow-x:hidden}
                 </div>
               </div>
 
-              <div class="outbound-analysis-card">
+              <div class="table-card outbound-analysis-card">
                 <div class="outbound-analysis-card-head"><div><h3>매장 변화 분석</h3><small>전월 대비 출고 변화</small></div></div>
                 <div class="outbound-change-list"><div><span>강남역점</span><b>+18.4%</b></div><div><span>롯데 월드몰</span><b>+11.2%</b></div><div><span>스타필드 코엑스</span><b class="down">-9.8%</b></div><div><span>압구정1호</span><b class="down">-15.1%</b></div></div>
               </div>
 
-              <div class="outbound-analysis-card">
+              <div class="table-card outbound-analysis-card">
                 <div class="outbound-analysis-card-head"><div><h3>요일별 출고 패턴</h3><small>평균 출고수량</small></div></div>
                 <div class="outbound-week-bars"><div><span style="height:74%"></span><small>월</small></div><div><span style="height:91%"></span><small>화</small></div><div><span style="height:61%"></span><small>수</small></div><div><span style="height:100%"></span><small>목</small></div><div><span style="height:82%"></span><small>금</small></div></div>
               </div>
 
-              <div class="outbound-analysis-card">
+              <div class="table-card outbound-analysis-card">
                 <div class="outbound-analysis-card-head"><div><h3>출고 집중도</h3><small>상위 그룹이 차지하는 비중</small></div></div>
                 <div class="outbound-concentration">
                   <div><span>TOP 10 매장</span><b>57.2%</b><div><i style="width:57.2%"></i></div></div>
