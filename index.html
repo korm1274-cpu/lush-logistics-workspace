@@ -6656,6 +6656,26 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .boxcount-key-grid>div:last-child{border-bottom:0!important}
 }
 </style>
+<style id="v106-boxcount-visual-refine">
+#statusBoardView .boxcount-compare-toggle{
+  min-width:220px!important;min-height:44px!important;padding:10px 18px!important;border:1px solid #1d1d1b!important;
+  background:#1d1d1b!important;color:#fff!important;border-radius:10px!important;font-weight:800!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;
+  box-shadow:0 5px 14px rgba(29,29,27,.12)!important;
+}
+#statusBoardView .boxcount-compare-toggle:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(29,29,27,.16)!important}
+#statusBoardView .boxcount-compare-toggle b{font-size:16px;line-height:1}
+#statusBoardView .boxcount-rank-row.is-up{background:rgba(43,122,87,.055)}
+#statusBoardView .boxcount-rank-row.is-down{background:rgba(177,72,62,.055)}
+#statusBoardView .boxcount-rank-row.is-up strong,#statusBoardView .boxcount-rank-row.is-up small{color:#287a57!important;font-weight:850}
+#statusBoardView .boxcount-rank-row.is-down strong,#statusBoardView .boxcount-rank-row.is-down small{color:#b1483e!important;font-weight:850}
+#statusBoardView .boxcount-mom{display:inline-flex;min-width:62px;justify-content:center;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:850}
+#statusBoardView .boxcount-mom.up{background:rgba(43,122,87,.09);color:#287a57}
+#statusBoardView .boxcount-mom.down{background:rgba(177,72,62,.09);color:#b1483e}
+#statusBoardView .boxcount-mom.flat{background:#f0f0ed;color:#747a76}
+#statusBoardView .boxcount-expanded-table{grid-column:1/-1;width:100%;overflow:auto}
+#statusBoardView .boxcount-expanded-table .status-data-table{min-width:520px}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -7127,7 +7147,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
             <div class="boxcount-analysis-layout boxcount-weekday-detail">
               <div class="chart-card"><div class="status-card-title"><h3>요일별 월간 추이</h3><small>요일을 비교하는 월별 추이</small></div><div class="chart-wrap boxcount-chart-wrap"><canvas id="boxWeekdayChart"></canvas><div class="chart-empty" id="boxWeekdayEmpty">박스 데이터가 없습니다.</div></div></div>
-              <div class="table-card"><div class="status-card-title"><h3>호차별 구성</h3><small>선택 기간 누계</small></div><div class="status-table-scroll compact boxcount-status-scroll"><table class="status-data-table"><thead><tr><th>요일</th><th>호차</th><th>매장 수</th><th>박스수</th></tr></thead><tbody id="boxWeekdayRouteBody"></tbody></table></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>요일별 구성</h3><small>선택 기간 누계</small></div><div class="status-table-scroll compact boxcount-status-scroll"><table class="status-data-table"><thead><tr><th>요일</th><th>운영 매장</th><th>누계 박스수</th><th>월평균</th></tr></thead><tbody id="boxWeekdayRouteBody"></tbody></table></div></div>
             </div>
           </div>
 
@@ -7176,7 +7196,7 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
 
             <div class="boxcount-on-demand">
-              <button type="button" class="btn" id="boxStoreCompareToggle">전체 매장 비교 조회</button>
+              <button type="button" class="btn boxcount-compare-toggle" id="boxStoreCompareToggle"><span>전체 매장 비교 조회</span><b aria-hidden="true">⌄</b></button>
             </div>
             <div class="table-card boxcount-store-compare" id="boxStoreComparePanel" hidden>
               <div class="status-card-title"><h3>전체 매장 비교</h3><small id="boxStoreCompareHint">선택 기간 기준</small></div>
@@ -7218,7 +7238,7 @@ html,body{max-width:100%;overflow-x:hidden}
             </div>
             <div class="table-card boxcount-detail-table">
               <div class="status-card-title"><h3>기간별 박스 이력</h3><small id="boxDetailResultLabel">조회 조건을 선택해주세요.</small></div>
-              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>일자</th><th>요일</th><th>호차</th><th>매장</th><th>박스수</th><th>상세</th></tr></thead><tbody id="boxDetailBody"><tr><td colspan="6" class="data-empty">조회 조건을 선택해주세요.</td></tr></tbody></table></div>
+              <div class="status-table-scroll"><table class="status-data-table"><thead><tr><th>일자</th><th>요일</th><th>박스수</th><th>상세</th></tr></thead><tbody id="boxDetailBody"><tr><td colspan="4" class="data-empty">조회 조건을 선택해주세요.</td></tr></tbody></table></div>
             </div>
             <div class="table-card boxcount-detail-expanded" id="boxDetailExpanded" hidden>
               <div class="status-card-title"><div><h3>박스 처리 상세</h3><small id="boxDetailExpandedTitle">-</small></div><button type="button" class="btn" id="boxDetailExpandedClose">닫기</button></div>
@@ -11558,7 +11578,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var has=values.some(function(v){return Number(v)>0});if(empty)empty.style.display=has?'none':'grid';
     if(typeof Chart==='undefined'){if(window.ensureChart)window.ensureChart().then(function(){});return}
     if(boxcountCharts[key])boxcountCharts[key].destroy();
-    boxcountCharts[key]=new Chart(canvas,{type:'doughnut',data:{labels:labels,datasets:[{data:values,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:10}}}}}});
+    var palette=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8','#b8ada0','#8ca7a0','#c7b784'];
+    boxcountCharts[key]=new Chart(canvas,{type:'doughnut',data:{labels:labels,datasets:[{data:values,backgroundColor:labels.map(function(_,i){return palette[i%palette.length]}),borderWidth:2,borderColor:'#fff',hoverOffset:4}]},options:{responsive:true,maintainAspectRatio:false,cutout:'66%',plugins:{legend:{display:true,position:'bottom',labels:{boxWidth:8,boxHeight:8,usePointStyle:true,font:{size:10}}}}}});
   }
   function boxcountPct(diff,base){
     if(!base)return diff>0?100:diff<0?-100:0;
@@ -11571,7 +11592,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(!rows.length)return '<div class="data-empty">데이터가 없습니다.</div>';
     return rows.map(function(x,i){
       var extra=x.extra||'';
-      return '<button type="button" class="boxcount-rank-row '+(x.store?'box-store-detail-link':'')+'" '+(x.store?'data-store-detail="'+esc(x.store)+'"':'')+'><span class="boxcount-rank-no">'+(i+1)+'</span><b>'+esc(x.name)+'</b><strong>'+esc(x.value)+'</strong>'+(extra?'<small>'+esc(extra)+'</small>':'')+'</button>';
+      return '<button type="button" class="boxcount-rank-row '+(x.tone?('is-'+x.tone+' '):'')+(x.store?'box-store-detail-link':'')+'" '+(x.store?'data-store-detail="'+esc(x.store)+'"':'')+'><span class="boxcount-rank-no">'+(i+1)+'</span><b>'+esc(x.name)+'</b><strong>'+esc(x.value)+'</strong>'+(extra?'<small>'+esc(extra)+'</small>':'')+'</button>';
     }).join('');
   }
   function bindStoreDetailLinks(root){
@@ -11612,7 +11633,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     days.forEach(function(day){routes.forEach(function(route){var stores=(BOXCOUNT_SCHEDULE[day]||{})[route]||[];if(!stores.length)return;var total=stores.reduce(function(sum,x){return sum+months.reduce(function(t,m){return t+boxcountStoreMonthQty(x.name,m)},0)},0);routeRows.push({day:day,route:route,stores:stores.length,total:total})})});
     routeRows.sort(function(a,b){return b.total-a.total});
     q('#boxWeekdayRouteList').innerHTML=boxcountRankRows(routeRows.slice(0,5).map(function(x){return{name:x.day.replace('요일','')+' · '+x.route,value:fmt(x.total)+' BOX',extra:fmt(x.stores)+'개 매장'}}));
-    q('#boxWeekdayRouteBody').innerHTML=routeRows.map(function(x){return '<tr><td>'+x.day+'</td><td>'+x.route+'</td><td>'+fmt(x.stores)+'</td><td>'+fmt(x.total)+'</td></tr>'}).join('')||'<tr><td colspan="4" class="data-empty">데이터가 없습니다.</td></tr>';
+    q('#boxWeekdayRouteBody').innerHTML=rows.map(function(x){var storeSet={};var schedule=BOXCOUNT_SCHEDULE[x.day]||{};Object.keys(schedule).forEach(function(route){(schedule[route]||[]).forEach(function(s){storeSet[s.name]=true})});return '<tr><td>'+x.day+'</td><td>'+fmt(Object.keys(storeSet).length)+'</td><td>'+fmt(x.total)+'</td><td>'+fmt(x.avg)+'</td></tr>'}).join('')||'<tr><td colspan="4" class="data-empty">데이터가 없습니다.</td></tr>';
 
     var latest=months[months.length-1]||today.slice(0,7),prev=boxcountPrevMonth(latest),changes=days.map(function(day){var cur=boxcountDayMonthQty(day,latest),old=boxcountDayMonthQty(day,prev),diff=cur-old,pct=boxcountPct(diff,old);return{day:day,cur:cur,old:old,diff:diff,pct:pct}});
     var inc=changes.slice().sort(function(a,b){return b.pct-a.pct})[0]||{},dec=changes.slice().sort(function(a,b){return a.pct-b.pct})[0]||{},curTotal=changes.reduce(function(a,x){return a+x.cur},0),oldTotal=changes.reduce(function(a,x){return a+x.old},0),totalPct=boxcountPct(curTotal-oldTotal,oldTotal);
@@ -11640,17 +11661,18 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var inc=changes.filter(function(x){return x.diff>0}).sort(function(a,b){return b.pct-a.pct||b.diff-a.diff}).slice(0,5),dec=changes.filter(function(x){return x.diff<0}).sort(function(a,b){return a.pct-b.pct||a.diff-b.diff}).slice(0,5);
     q('#boxStoreIncreaseHint').textContent=latest.replace('-','.')+' vs '+prev.replace('-','.');
     q('#boxStoreDecreaseHint').textContent=latest.replace('-','.')+' vs '+prev.replace('-','.');
-    q('#boxStoreIncreaseList').innerHTML=boxcountRankRows(inc.map(function(x){return{name:x.name,value:boxcountSigned(x.pct,'%'),extra:boxcountSigned(x.diff,' BOX'),store:x.name}}));
-    q('#boxStoreDecreaseList').innerHTML=boxcountRankRows(dec.map(function(x){return{name:x.name,value:boxcountSigned(x.pct,'%'),extra:boxcountSigned(x.diff,' BOX'),store:x.name}}));
+    q('#boxStoreIncreaseList').innerHTML=boxcountRankRows(inc.map(function(x){return{name:x.name,value:boxcountSigned(x.pct,'%'),extra:boxcountSigned(x.diff,' BOX'),store:x.name,tone:'up'}}));
+    q('#boxStoreDecreaseList').innerHTML=boxcountRankRows(dec.map(function(x){return{name:x.name,value:boxcountSigned(x.pct,'%'),extra:boxcountSigned(x.diff,' BOX'),store:x.name,tone:'down'}}));
     var highest=totals[0],maxInc=inc[0],maxDec=dec[0];
     q('#boxStoreHighestShare').textContent=highest?highest.name:'-';q('#boxStoreHighestShareValue').textContent=highest&&grand?((highest.total/grand*100).toFixed(1)+'%'):'-';
     q('#boxStoreMaxIncrease').textContent=maxInc?maxInc.name:'-';q('#boxStoreMaxIncreaseValue').textContent=maxInc?boxcountSigned(maxInc.pct,'%'):'-';
     q('#boxStoreMaxDecrease').textContent=maxDec?maxDec.name:'-';q('#boxStoreMaxDecreaseValue').textContent=maxDec?boxcountSigned(maxDec.pct,'%'):'-';
 
     q('#boxStoreCompareHint').textContent=label+' · '+fmt(stores.length)+'개 매장';
-    q('#boxStoreCompareBody').innerHTML=totals.map(function(x,i){var ch=changes.find(function(v){return v.name===x.name})||{},share=grand?(x.total/grand*100).toFixed(1):'0.0';return '<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td>'+boxcountSigned(ch.pct||0,'%')+'</td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('');
+    var compareRows=totals.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ko')});
+    q('#boxStoreCompareBody').innerHTML=compareRows.map(function(x,i){var ch=changes.find(function(v){return v.name===x.name})||{},share=grand?(x.total/grand*100).toFixed(1):'0.0',tone=(ch.pct||0)>0?'up':(ch.pct||0)<0?'down':'flat';return '<tr><td>'+(i+1)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.meta.day)+'</td><td>'+esc(x.meta.route)+'</td><td>'+fmt(x.total)+'</td><td>'+share+'%</td><td><span class="boxcount-mom '+tone+'">'+boxcountSigned(ch.pct||0,'%')+'</span></td><td><button type="button" class="btn sm box-store-detail-link" data-store-detail="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('');
     q('#boxStoreComparePanel').hidden=!boxStoreCompareOpen;
-    q('#boxStoreCompareToggle').textContent=boxStoreCompareOpen?'전체 매장 비교 닫기':'전체 매장 비교 조회';
+    q('#boxStoreCompareToggle').innerHTML='<span>'+(boxStoreCompareOpen?'전체 매장 비교 닫기':'전체 매장 비교 조회')+'</span><b aria-hidden="true">'+(boxStoreCompareOpen?'⌃':'⌄')+'</b>';
     bindStoreDetailLinks(q('[data-boxcount-section="store"]'));
   }
 
@@ -11739,22 +11761,31 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var start=q('#boxDetailStart').value||'',end=q('#boxDetailEnd').value||'',dayFilter=q('#boxDetailDay').value||'',routeFilter=q('#boxDetailRoute').value||'',storeFilter=q('#boxDetailStore').value||'';
     if(!start||!end){if(typeof toastMsg==='function')toastMsg('시작일과 종료일을 선택해주세요.');return}
     if(start>end){var t=start;start=end;end=t;q('#boxDetailStart').value=start;q('#boxDetailEnd').value=end}
-    var rows=boxcountGenerateDetailRows(start,end,dayFilter,routeFilter,storeFilter),total=rows.reduce(function(a,r){return a+r.qty},0),stores=new Set(rows.map(function(r){return r.store})).size,avg=rows.length?Math.round(total/rows.length):0;
-    q('#boxDetailTotal').textContent=fmt(total);q('#boxDetailCount').textContent=fmt(rows.length);q('#boxDetailStores').textContent=fmt(stores);q('#boxDetailAvg').textContent=fmt(avg);
-    q('#boxDetailResultLabel').textContent=start+' ~ '+end+' · '+fmt(rows.length)+'건';
-    var byDate={},byRoute={};rows.forEach(function(r){byDate[r.date]=(byDate[r.date]||0)+r.qty;byRoute[r.route]=(byRoute[r.route]||0)+r.qty});
-    var dates=Object.keys(byDate).sort();
+    var rows=boxcountGenerateDetailRows(start,end,dayFilter,routeFilter,storeFilter),total=rows.reduce(function(a,r){return a+r.qty},0),stores=new Set(rows.map(function(r){return r.store})).size;
+    var grouped={};rows.forEach(function(r){if(!grouped[r.date])grouped[r.date]={date:r.date,day:r.day,qty:0,rows:[]};grouped[r.date].qty+=r.qty;grouped[r.date].rows.push(r)});
+    var dayRows=Object.keys(grouped).sort().reverse().map(function(k){return grouped[k]}),avg=dayRows.length?Math.round(total/dayRows.length):0;
+    q('#boxDetailTotal').textContent=fmt(total);q('#boxDetailCount').textContent=fmt(dayRows.length);q('#boxDetailStores').textContent=fmt(stores);q('#boxDetailAvg').textContent=fmt(avg);
+    q('#boxDetailResultLabel').textContent=start+' ~ '+end+' · '+fmt(dayRows.length)+'일';
+    var dates=dayRows.slice().reverse().map(function(r){return r.date});
     q('#boxDetailTrendHint').textContent=start+' ~ '+end;
-    boxcountDraw('detailTrend','boxDetailTrendChart','boxDetailTrendEmpty',dates,dates.map(function(d){return byDate[d]}));
+    boxcountDraw('detailTrend','boxDetailTrendChart','boxDetailTrendEmpty',dates,dates.map(function(d){return grouped[d].qty}));
+    var byRoute={};rows.forEach(function(r){byRoute[r.route]=(byRoute[r.route]||0)+r.qty});
     var routeNames=Object.keys(byRoute).sort(function(a,b){return byRoute[b]-byRoute[a]});
     boxcountDrawDonut('detailDonut','boxDetailRouteDonut','boxDetailRouteEmpty',routeNames,routeNames.map(function(r){return byRoute[r]}));
-    q('#boxDetailBody').innerHTML=rows.map(function(r,i){return '<tr><td>'+r.date+'</td><td>'+r.day+'</td><td>'+r.route+'</td><td>'+esc(r.store)+'</td><td>'+fmt(r.qty)+'</td><td><button type="button" class="btn sm box-detail-view" data-box-detail="'+i+'">상세보기</button></td></tr>'}).join('')||'<tr><td colspan="6" class="data-empty">조회 결과가 없습니다.</td></tr>';
-    qa('.box-detail-view',q('#boxDetailBody')).forEach(function(btn){btn.onclick=function(){var r=rows[Number(btn.dataset.boxDetail)];q('#boxDetailExpandedTitle').textContent=r.date+' · '+r.store;q('#boxDetailExpandedBody').innerHTML='<div><span>요일</span><b>'+r.day+'</b></div><div><span>호차</span><b>'+r.route+'</b></div><div><span>박스수</span><b>'+fmt(r.qty)+' BOX</b></div><div><span>배송 기준</span><b>'+esc(r.note||'매주')+'</b></div>';q('#boxDetailExpanded').hidden=false;q('#boxDetailExpanded').scrollIntoView({behavior:'smooth',block:'nearest'})}});
+    q('#boxDetailBody').innerHTML=dayRows.map(function(r,i){return '<tr><td>'+r.date+'</td><td>'+r.day+'</td><td>'+fmt(r.qty)+'</td><td><button type="button" class="btn sm box-detail-view" data-box-detail="'+i+'">상세보기</button></td></tr>'}).join('')||'<tr><td colspan="4" class="data-empty">조회 결과가 없습니다.</td></tr>';
+    qa('.box-detail-view',q('#boxDetailBody')).forEach(function(btn){btn.onclick=function(){
+      var dayRow=dayRows[Number(btn.dataset.boxDetail)],detailMap={};
+      dayRow.rows.forEach(function(r){var key=r.route+'|'+r.store;if(!detailMap[key])detailMap[key]={route:r.route,store:r.store,qty:0};detailMap[key].qty+=r.qty});
+      var detailRows=Object.keys(detailMap).map(function(k){return detailMap[k]}).sort(function(a,b){var rc=a.route.localeCompare(b.route,'ko');return rc||a.store.localeCompare(b.store,'ko')});
+      q('#boxDetailExpandedTitle').textContent=dayRow.date+' · '+dayRow.day+' · '+fmt(dayRow.qty)+' BOX';
+      q('#boxDetailExpandedBody').innerHTML='<div class="boxcount-expanded-table"><table class="status-data-table"><thead><tr><th>호차</th><th>매장</th><th>박스수</th></tr></thead><tbody>'+detailRows.map(function(r){return '<tr><td>'+esc(r.route)+'</td><td>'+esc(r.store)+'</td><td>'+fmt(r.qty)+'</td></tr>'}).join('')+'</tbody></table></div>';
+      q('#boxDetailExpanded').hidden=false;q('#boxDetailExpanded').scrollIntoView({behavior:'smooth',block:'nearest'});
+    }});
   }
   if(q('#boxDetailSearch'))q('#boxDetailSearch').addEventListener('click',renderBoxcountDetail);
   if(q('#boxDetailReset'))q('#boxDetailReset').addEventListener('click',function(){
     ['boxDetailStart','boxDetailEnd'].forEach(function(id){q('#'+id).value=''});q('#boxDetailDay').value='';updateBoxDetailRouteOptions();updateBoxDetailStoreOptions();
-    q('#boxDetailTotal').textContent='-';q('#boxDetailCount').textContent='-';q('#boxDetailStores').textContent='-';q('#boxDetailAvg').textContent='-';q('#boxDetailResultLabel').textContent='조회 조건을 선택해주세요.';q('#boxDetailBody').innerHTML='<tr><td colspan="6" class="data-empty">조회 조건을 선택해주세요.</td></tr>';
+    q('#boxDetailTotal').textContent='-';q('#boxDetailCount').textContent='-';q('#boxDetailStores').textContent='-';q('#boxDetailAvg').textContent='-';q('#boxDetailResultLabel').textContent='조회 조건을 선택해주세요.';q('#boxDetailBody').innerHTML='<tr><td colspan="4" class="data-empty">조회 조건을 선택해주세요.</td></tr>';
     if(boxcountCharts.detailTrend){boxcountCharts.detailTrend.destroy();boxcountCharts.detailTrend=null}if(boxcountCharts.detailDonut){boxcountCharts.detailDonut.destroy();boxcountCharts.detailDonut=null}q('#boxDetailTrendEmpty').style.display='grid';q('#boxDetailRouteEmpty').style.display='grid';
   });
   if(q('#boxDetailExpandedClose'))q('#boxDetailExpandedClose').addEventListener('click',function(){q('#boxDetailExpanded').hidden=true});
