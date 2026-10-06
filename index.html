@@ -12675,13 +12675,13 @@ window.__mobileChartLegend=function(chart,canvas){
     try{
       var reg=await navigator.serviceWorker.ready;
       await reg.showNotification('LUSH Logistics', {
-        body:'송용주 바보',
+        body:'테스트알람 입니다.',
         icon:'./app-icon.svg',
         badge:'./app-icon.svg',
         tag:'lush-test-notification'
       });
     }catch(e){
-      new Notification('LUSH Logistics',{body:'송용주 바보',icon:'./app-icon.svg'});
+      new Notification('LUSH Logistics',{body:'테스트알람 입니다.',icon:'./app-icon.svg'});
     }
   });
 })();
