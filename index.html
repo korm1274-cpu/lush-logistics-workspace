@@ -6407,6 +6407,48 @@ html,body{max-width:100%;overflow-x:hidden}
   #statusBoardView .boxcount-settings-form{flex-wrap:wrap!important}
 }
 </style>
+<style id="v101-admin-menu-manager">
+#admin-menus .menu-admin-grid{grid-template-columns:minmax(0,1.7fr) minmax(300px,.8fr)!important;align-items:start!important}
+#admin-menus .menu-group-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0 14px}
+#admin-menus .menu-group-tab{display:inline-flex;align-items:center;gap:6px;border:1px solid #e1e3df;background:#fff;color:#60655f;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800}
+#admin-menus .menu-group-tab small{display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#f0f1ee;color:#777;font-size:9px}
+#admin-menus .menu-group-tab.active{background:#1d1d1b;color:#fff;border-color:#1d1d1b}
+#admin-menus .menu-group-tab.active small{background:rgba(255,255,255,.15);color:#fff}
+#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;border:1px solid #e8e9e5;border-radius:12px;background:#fafbf9;margin-bottom:8px}
+#admin-menus .menu-group-summary b{display:block;font-size:13px}
+#admin-menus .menu-group-summary small{display:block;margin-top:3px;color:#8a918c;font-size:10px}
+#admin-menus .menu-group-summary>span{color:#8a918c;font-size:10px}
+#admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:8px}
+#admin-menus .menu-manage-row{display:grid;grid-template-columns:90px minmax(170px,1.25fr) minmax(160px,.9fr) 64px 72px;gap:10px;align-items:center;padding:12px;border:1px solid #e5e6e2;border-radius:12px;background:#fff}
+#admin-menus .menu-manage-row.dragging{opacity:.45}
+#admin-menus .menu-manage-row.drag-over{border-color:#e87ba4;box-shadow:0 0 0 2px rgba(232,123,164,.12)}
+#admin-menus .menu-order-controls{display:flex;align-items:center;gap:4px}
+#admin-menus .menu-drag-handle{cursor:grab;color:#9a9f99;font-weight:900;letter-spacing:-2px;padding-right:4px}
+#admin-menus .menu-order-btn{width:26px;height:28px;border:1px solid #e3e5e1;border-radius:7px;background:#fafbf9;color:#4f544f;font-weight:900}
+#admin-menus .menu-order-btn:disabled{opacity:.28;cursor:default}
+#admin-menus .menu-edit-main,#admin-menus .menu-edit-group,#admin-menus .menu-edit-visible{min-width:0}
+#admin-menus .menu-manage-row label{display:block;margin-bottom:5px;color:#7b827c;font-size:9px;font-weight:800}
+#admin-menus .menu-manage-row input,#admin-menus .menu-manage-row select{width:100%;height:34px;border:1px solid #dfe2dd;border-radius:8px;background:#fff;padding:0 9px;font-size:11px;font-weight:750;color:#222}
+#admin-menus .menu-manage-row small{display:block;margin-top:4px;color:#989e98;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#admin-menus .menu-edit-visible{text-align:center}
+#admin-menus .menu-edit-visible .toggle{margin:1px auto 0}
+#admin-menus .menu-edit-actions{display:flex;justify-content:flex-end}
+#admin-menus .menu-manage-empty{padding:36px 16px;text-align:center;border:1px dashed #dadcd7;border-radius:12px;color:#929892;font-size:11px}
+@media(max-width:1150px){
+ #admin-menus .menu-admin-grid{grid-template-columns:1fr!important}
+ #admin-menus .menu-manage-row{grid-template-columns:82px minmax(150px,1.2fr) minmax(140px,1fr) 58px 64px}
+}
+@media(max-width:700px){
+ #admin-menus .menu-group-tabs{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px}
+ #admin-menus .menu-group-tab{flex:0 0 auto}
+ #admin-menus .menu-group-summary{align-items:flex-start;flex-direction:column}
+ #admin-menus .menu-manage-row{grid-template-columns:74px 1fr 58px;gap:8px}
+ #admin-menus .menu-edit-main{grid-column:2/4}
+ #admin-menus .menu-edit-group{grid-column:1/4}
+ #admin-menus .menu-edit-visible{grid-column:1/2}
+ #admin-menus .menu-edit-actions{grid-column:3/4}
+}
+</style>
 </head>
 <body>
 <div class="app" id="appShell">
@@ -7453,7 +7495,23 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="settings" class="view">
       <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button></div>
       <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
-      <div id="admin-menus" class="admin-section"><div class="admin-grid"><div class="admin-card"><h3>메뉴 구성</h3><p>메뉴명 수정, 표시/숨김, 신규 메뉴 추가를 Admin에서 직접 관리합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>그룹</th><th>메뉴명</th><th>유형</th><th>표시</th><th>관리</th></tr></thead><tbody id="menuRows"></tbody></table></div></div><div class="admin-card"><h3>새 메뉴 추가</h3><p>별도 코드 수정 없이 기본 메뉴를 추가할 수 있는 구조입니다.</p><div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div><div class="hint" style="margin-top:13px">Dashboard와 Admin은 운영 안전을 위해 삭제할 수 없고, 나머지 사용자 추가 메뉴는 자유롭게 삭제할 수 있습니다.</div></div></div></div>
+      <div id="admin-menus" class="admin-section">
+        <div class="admin-grid menu-admin-grid">
+          <div class="admin-card menu-structure-card">
+            <h3>메뉴 구성</h3>
+            <p>상위 메뉴별로 구성 항목을 확인하고, 메뉴명·순서·표시 여부를 관리합니다. 다른 상위 메뉴로 이동하면 해당 메뉴 아래에 묶여 표시됩니다.</p>
+            <div class="menu-group-tabs" id="menuGroupTabs"></div>
+            <div class="menu-group-summary"><div><b id="menuGroupTitle">메뉴</b><small id="menuGroupCount">0개 항목</small></div><span>↕ 순서 변경 · 상위 메뉴 이동 가능</span></div>
+            <div class="menu-manage-list" id="menuRows"></div>
+          </div>
+          <div class="admin-card">
+            <h3>새 메뉴 추가</h3>
+            <p>추가할 상위 메뉴를 선택하면 해당 메뉴의 마지막 항목으로 등록됩니다.</p>
+            <div class="form-grid"><div class="field"><label>상위 메뉴</label><select id="newMenuGroup"></select></div><div class="field"><label>페이지 유형</label><select id="newMenuType"><option value="blank">기본 페이지</option><option value="sheet">웹 시트</option><option value="inventoryOwner">재고 담당자 시트</option></select></div><div class="field full"><label>메뉴명</label><input id="newMenuName" placeholder="예: 반품 관리 / 대외비 보고자료"></div><div class="full"><button class="btn add" id="addMenuBtn">＋ 메뉴 추가</button></div></div>
+            <div class="hint" style="margin-top:13px">메인과 Admin의 필수 화면은 삭제·이동할 수 없습니다. 현황판의 세부 메뉴는 다른 상위 메뉴로 이동해 함께 묶을 수 있습니다.</div>
+          </div>
+        </div>
+      </div>
       <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
       <div id="admin-conversion" class="admin-section">
         <div class="unit-conversion-shell">
@@ -7499,10 +7557,15 @@ const USER_KEY="lush-logistics-v4-users";
 const HIST_KEY="lush-logistics-upload-history";
 const ROLE_LABEL={admin:"관리자",leader:"팀 리더",editor:"팀원",restricted:"제한 열람"};
 const GROUPS=[
- {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"traffic",label:"트래픽",icon:"signpost"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"floorboard",label:"대시보드",icon:"monitor"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard"},{id:"statusboard",label:"현황판",icon:"monitor-up"},{id:"inventory",label:"재고",icon:"package-search"},{id:"inbound",label:"입고",icon:"package-plus"},{id:"outbound",label:"출고",icon:"truck"},{id:"traffic",label:"트래픽",icon:"signpost"},{id:"schedule",label:"일정",icon:"calendar-days"},{id:"issues",label:"이슈",icon:"triangle-alert"},{id:"productivity",label:"생산성",icon:"gauge"},{id:"floorboard",label:"대시보드",icon:"monitor"},{id:"upload",label:"데이터",icon:"file-up"},{id:"admin",label:"Admin",icon:"settings-2"}
 ];
 const DEFAULT_MENUS=[
  {id:"dashboard-main",group:"dashboard",label:"메인 대시보드",kind:"view",target:"dashboard",visible:true,roles:["admin","leader","editor","restricted"],protected:true},
+ {id:"status-shipping",group:"statusboard",label:"출고 현황",kind:"statusTab",target:"statusBoardView",statusTab:"shipping",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"status-productivity",group:"statusboard",label:"생산성",kind:"statusTab",target:"statusBoardView",statusTab:"productivity",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"status-storehistory",group:"statusboard",label:"매장별 처리이력",kind:"statusTab",target:"statusBoardView",statusTab:"storehistory",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"status-boxcount",group:"statusboard",label:"출고 박스",kind:"statusTab",target:"statusBoardView",statusTab:"boxcount",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"status-products",group:"statusboard",label:"제품별 출고현황",kind:"statusTab",target:"statusBoardView",statusTab:"products",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"inv-total",group:"inventory",label:"총 재고파일",kind:"inventoryTotal",visible:true,roles:["admin","leader","editor"]},
  {id:"inv-oos",group:"inventory",label:"품절 재고 분석",kind:"view",target:"inventoryOosView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"inv-time",group:"inventory",label:"TIME (SOILD)",kind:"inventoryOwner",owner:"TIME (SOILD)",visible:true,roles:["admin","leader","editor"]},
@@ -7601,13 +7664,13 @@ function normalizeMenus(){
   for(const raw of menus){
     if(!raw||raw.id==="inv-gap"||raw.target==="inventoryAnalysis") continue;
     const m={...raw};
-    if(m.id==="schedule-todo"&&String(m.label||"").trim()==="할 일 등록") m.label="제품 확보 등록";
-    if(m.id==="out-request"&&String(m.label||"").trim()==="출고 요청 관리") m.label="트래픽 출고 요청";
+    if(!m.adminManaged&&m.id==="schedule-todo"&&String(m.label||"").trim()==="할 일 등록") m.label="제품 확보 등록";
+    if(!m.adminManaged&&m.id==="out-request"&&String(m.label||"").trim()==="출고 요청 관리") m.label="트래픽 출고 요청";
     if(m.group==="inventory"){
       const looksTotal=m.id==="inv-total"||m.kind==="inventoryTotal"||String(m.label||"").trim()==="총 재고파일";
       if(looksTotal){
         if(totalSeen) continue;
-        totalSeen=true; Object.assign(m,{id:"inv-total",group:"inventory",label:"총 재고파일",kind:"inventoryTotal"});
+        totalSeen=true; Object.assign(m,{id:"inv-total",group:"inventory",label:m.adminManaged?(m.label||"총 재고파일"):"총 재고파일",kind:"inventoryTotal"});
         delete m.owner; delete m.target; delete m.cat; delete m.sheet;
       }else if(m.owner||m.kind==="inventoryOwner"){
         m.kind="inventoryOwner"; m.owner=m.owner||m.label; delete m.target; delete m.cat; delete m.sheet;
@@ -7618,12 +7681,12 @@ function normalizeMenus(){
   if(!totalSeen){const base=structuredClone(DEFAULT_MENUS.find(m=>m.id==="inv-total"));const firstInv=cleaned.findIndex(m=>m.group==="inventory");cleaned.splice(firstInv<0?1:firstInv,0,base)}
 
   /* V52: 제거 대상 메뉴는 기존 localStorage에서도 정리 */
-  cleaned = cleaned.filter(m=>m.id!=="inv-sand" && m.group!=="attendance" && m.id!=="att-team" && m.id!=="issue-damage-analysis");
+  cleaned = cleaned.filter(m=>m.id!=="inv-sand" && m.group!=="attendance" && m.id!=="att-team" && m.id!=="issue-damage-analysis" && m.id!=="statusboard-main");
 
   /* V71: 기존 사용자에게도 '파손' 메뉴를 분석 화면으로 전환 */
   const damageMenu=cleaned.find(m=>m.id==="issue-damage");
   if(damageMenu){
-    damageMenu.kind="view"; damageMenu.target="damageAnalyticsView"; damageMenu.label="파손";
+    damageMenu.kind="view"; damageMenu.target="damageAnalyticsView"; if(!damageMenu.adminManaged)damageMenu.label="파손";
     damageMenu.roles=["admin","leader","editor","restricted"];
     delete damageMenu.cat; delete damageMenu.sheet;
   }
@@ -7649,7 +7712,7 @@ function normalizeMenus(){
   /* V38: 기존 사용자에게도 통합 일정을 전용 일정 관리 화면으로 전환 */
   const scheduleMenu=cleaned.find(m=>m.id==="schedule-main");
   if(scheduleMenu){
-    scheduleMenu.group="schedule"; scheduleMenu.label="통합 일정"; scheduleMenu.kind="scheduleManager";
+    if(!scheduleMenu.adminManaged){scheduleMenu.group="schedule"; scheduleMenu.label="통합 일정"} scheduleMenu.kind="scheduleManager";
     scheduleMenu.visible=true; scheduleMenu.roles=["admin","leader","editor","restricted"];
     delete scheduleMenu.cat; delete scheduleMenu.sheet; delete scheduleMenu.target;
   }
@@ -7659,34 +7722,37 @@ function normalizeMenus(){
   let basicMenu=cleaned.find(m=>m.id==="in-basic");
   if(!basicMenu){
     basicMenu={id:"in-basic",group:"inbound",label:"입고",kind:"view",target:"inboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]};
+    const firstInboundIdx=cleaned.findIndex(m=>m.group==="inbound");
+    cleaned.splice(firstInboundIdx>=0?firstInboundIdx:cleaned.length,0,basicMenu);
+  }else if(!basicMenu.adminManaged){
+    cleaned=cleaned.filter(m=>m.id!=="in-basic");
+    const firstInboundIdx=cleaned.findIndex(m=>m.group==="inbound");
+    cleaned.splice(firstInboundIdx>=0?firstInboundIdx:cleaned.length,0,basicMenu);
   }
-  /* V73: '입고'를 입고 그룹 맨 앞으로, '입고 분석' -> '입고 상세조회'로 이름 변경 */
-  cleaned=cleaned.filter(m=>m.id!=="in-basic");
-  const firstInboundIdx=cleaned.findIndex(m=>m.group==="inbound");
-  cleaned.splice(firstInboundIdx>=0?firstInboundIdx:cleaned.length,0,basicMenu);
+  /* V73: 과거 기본명만 보정하고, Admin에서 사용자가 변경한 이름·위치는 유지 */
   const inAnalysisMenu2=cleaned.find(m=>m.id==="in-analysis");
-  if(inAnalysisMenu2){inAnalysisMenu2.label="입고 상세조회"}
+  if(inAnalysisMenu2&&!inAnalysisMenu2.adminManaged){inAnalysisMenu2.label="입고 상세조회"}
   const inMonthMenu=cleaned.find(m=>m.id==="in-month");
   if(inMonthMenu){
-    inMonthMenu.group="inbound"; inMonthMenu.kind="inboundMonthly"; inMonthMenu.label=inMonthMenu.label||"월별 입고현황";
-    inMonthMenu.visible=true; delete inMonthMenu.cat; delete inMonthMenu.sheet; delete inMonthMenu.target;
+    if(!inMonthMenu.adminManaged){inMonthMenu.group="inbound";inMonthMenu.label=inMonthMenu.label||"월별 입고현황"}
+    inMonthMenu.kind="inboundMonthly";inMonthMenu.visible=true;delete inMonthMenu.cat;delete inMonthMenu.sheet;delete inMonthMenu.target;
   }
 
   /* V-out: '일일 출고관리' 시트 메뉴를 차수 없는 '출고' 상세화면으로 전환 (기존 사용자에게도 반영) */
   const outDailyMenu=cleaned.find(m=>m.id==="out-daily");
   if(outDailyMenu){
-    outDailyMenu.label="출고"; outDailyMenu.kind="view"; outDailyMenu.target="outboundBasicView";
+    if(!outDailyMenu.adminManaged)outDailyMenu.label="출고"; outDailyMenu.kind="view"; outDailyMenu.target="outboundBasicView";
     outDailyMenu.visible=true; outDailyMenu.roles=["admin","leader","editor","restricted"];
     delete outDailyMenu.cat; delete outDailyMenu.sheet;
   }
 
   /* V-out2: '출고 분석' -> '출고 상세조회'로 이름 변경 (기존 사용자에게도 반영) */
   const outAnalysisMenu2=cleaned.find(m=>m.id==="out-analysis");
-  if(outAnalysisMenu2){outAnalysisMenu2.label="출고 상세조회"}
+  if(outAnalysisMenu2&&!outAnalysisMenu2.adminManaged){outAnalysisMenu2.label="출고 상세조회"}
 
   /* V-out3: 'FS / 시즌 출고'를 '출고 박스 관리' 바로 오른쪽(다음)으로 이동 (기존 사용자에게도 반영) */
   const seasonIndex=cleaned.findIndex(m=>m.id==="out-season");
-  if(seasonIndex>=0){
+  if(seasonIndex>=0&&!cleaned[seasonIndex].adminManaged){
     const season=cleaned.splice(seasonIndex,1)[0];
     const boxIndex=cleaned.findIndex(m=>m.id==="out-box");
     cleaned.splice(boxIndex<0?cleaned.length:boxIndex+1,0,season);
@@ -7696,10 +7762,11 @@ function normalizeMenus(){
   const reqIndex=cleaned.findIndex(m=>m.id==="out-request");
   if(reqIndex>=0){
     const req=cleaned.splice(reqIndex,1)[0];
-    req.group="traffic"; req.label="트래픽 출고 요청"; req.kind="requestManager";
+    if(!req.adminManaged){req.group="traffic";req.label="트래픽 출고 요청"} req.kind="requestManager";
     req.visible=true; req.roles=["admin","leader","editor"];
     const firstTraffic=cleaned.findIndex(m=>m.group==="traffic");
-    cleaned.splice(firstTraffic<0?cleaned.length:firstTraffic,0,req);
+    if(req.adminManaged){const lastSame=cleaned.reduce((last,m,i)=>m.group===req.group?i:last,-1);cleaned.splice(lastSame<0?cleaned.length:lastSame+1,0,req)}
+    else cleaned.splice(firstTraffic<0?cleaned.length:firstTraffic,0,req);
   }
 
   menus=cleaned;
@@ -7714,7 +7781,8 @@ function toastMsg(m){toast.textContent=m;toast.classList.add("show");setTimeout(
 function canAccess(m){return currentRole==="admin"||m.roles.includes(currentRole)}
 function renderNav(){navContainer.innerHTML="";GROUPS.forEach((g)=>{let list=menus.filter(m=>m.group===g.id&&m.visible);if(g.id!=="admin")list=list.filter(m=>canAccess(m));else if(currentRole!=="admin")list=[];if(!list.length)return;const box=document.createElement("div");box.className="nav-group";box.dataset.group=g.id;if(g.id==="dashboard"&&list.length===1){box.classList.add("nav-group-direct");box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span></button>`;const only=list[0];box.querySelector(".nav-root").onclick=()=>activateMenu(only,box.querySelector(".nav-root"));box.querySelector(".nav-root").dataset.menuId=only.id;navContainer.appendChild(box);return}box.innerHTML=`<button class="nav-root"><span><span class="nav-root-icon"><i data-lucide="${g.icon}"></i></span>${g.label}</span><em>›</em></button><div class="nav-children"></div>`;box.querySelector(".nav-root").onclick=()=>{const willOpen=!box.classList.contains("open");navContainer.querySelectorAll(".nav-group.open").forEach(other=>{if(other!==box){other.classList.remove("open");const em=other.querySelector(":scope > .nav-root em");if(em)em.textContent="›"}});box.classList.toggle("open",willOpen);box.querySelector("em").textContent=willOpen?"⌄":"›"};const holder=box.querySelector(".nav-children");const addMenuButton=(m,target)=>{const b=document.createElement("button");b.className="nav-item";b.innerHTML=`<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label">${esc(m.label)}</span>`;b.dataset.menuId=m.id;b.onclick=()=>activateMenu(m,b);target.appendChild(b)};list.forEach(m=>addMenuButton(m,holder));navContainer.appendChild(box)});if(window.lucide)lucide.createIcons()}
 function showView(id,title,el){document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));document.getElementById(id).classList.add("active");pageTitle.textContent=title;document.querySelectorAll(".nav-item,.nav-group-direct .nav-root").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");currentSheet=null;if(id==="upload")renderHistory();if(id==="settings")renderAdmin();window.renderLazyViewIfNeeded?.(id)}
-function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}window.flushBoxPendingSave?.();navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
+function syncStatusTabLabels(){menus.filter(m=>m.kind==="statusTab").forEach(m=>{const b=document.querySelector('#statusBoardView .status-board-tab[data-status-tab="'+m.statusTab+'"]');if(b)b.textContent=m.label})}
+function activateMenu(m,el){if(!canAccess(m)){toastMsg("접근 권한이 없습니다.");return}window.flushBoxPendingSave?.();navContainer.querySelectorAll(".nav-group.open,.nav-folder.open").forEach(x=>x.classList.remove("open"));if(m.kind==="statusTab"){showView("statusBoardView",m.label,el);syncStatusTabLabels();const t=document.querySelector('#statusBoardView .status-board-tab[data-status-tab="'+m.statusTab+'"]');if(t)t.click()}else if(m.kind==="view")showView(m.target,m.label,el);else if(m.kind==="sheet")openSheet(m.cat,m.sheet,m.label,el);else if(m.kind==="inventoryOwner")openInventoryOwner(m.owner||m.label,m.label,el);else if(m.kind==="inventoryTotal")openInventoryTotal(m.label,el);else if(m.kind==="requestManager")openOutboundRequestManager(m.label,el);else if(m.kind==="scheduleManager")openScheduleManager(m.label,el);else if(m.kind==="inboundDaily")window.openInboundDailyView(m.label,el);else if(m.kind==="inboundMonthly")window.openInboundMonthlyView(m.label,el);else{blankTitle.textContent=m.label;showView("blankPage",m.label,el)}}
 function openSheet(cat,name,label,el){if(!db[cat])db[cat]={};if(!db[cat][name])db[cat][name]={cols:["항목","내용","비고"],rows:[]};currentSheet={cat,name};document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));sheetView.classList.add("active");pageTitle.textContent=label;document.querySelectorAll(".nav-item").forEach(x=>x.classList.remove("active"));if(el)el.classList.add("active");const group=GROUPS.find(g=>g.id===cat);crumb.innerHTML=`${group?group.label:cat} &nbsp;›&nbsp; <b>${label}</b>`;sheetTitle.textContent=label;renderSheet()}
 function renderSheet(){const s=db[currentSheet.cat][currentSheet.name];thead.innerHTML="<tr><th class=rownum>#</th>"+s.cols.map(c=>`<th>${esc(c)}</th>`).join("")+`<th style="width:64px">관리</th></tr>`;tbody.innerHTML=s.rows.map((r,ri)=>"<tr><td class=rownum>"+(ri+1)+"</td>"+s.cols.map((c,ci)=>`<td><input class="cell" data-r="${ri}" data-c="${ci}" value="${esc(r[ci])}"></td>`).join("")+`<td><button class="row-delete" data-row-del="${ri}">삭제</button></td></tr>`).join("");document.querySelectorAll(".cell").forEach(i=>i.oninput=()=>{db[currentSheet.cat][currentSheet.name].rows[+i.dataset.r][+i.dataset.c]=i.value;saveDb()});document.querySelectorAll("[data-row-del]").forEach(b=>b.onclick=()=>{const ri=+b.dataset.rowDel;if(!confirm(`${ri+1}행을 삭제할까요?`))return;s.rows.splice(ri,1);saveDb();renderSheet();toastMsg("행을 삭제했습니다.")});rowCount.textContent=`${s.rows.length} rows · ${s.cols.length} columns`;saveState.textContent="자동 저장됨";saveBadge.textContent="AUTO SAVE"}
 addRow.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];s.rows.push(Array(s.cols.length).fill(""));saveDb();renderSheet();toastMsg("새 행을 추가했습니다.")};exportCsv.onclick=()=>{if(!currentSheet)return;const s=db[currentSheet.cat][currentSheet.name];const csv=[s.cols,...s.rows].map(r=>r.map(x=>`"${String(x??"").replaceAll('"','""')}"`).join(",")).join("\n");download(currentSheet.name+".csv",new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}))};
@@ -7964,9 +8032,84 @@ document.querySelectorAll(".dataFile").forEach(inp=>{inp.onchange=()=>window.FIL
 function renderAdmin(){renderUsers();renderMenusTable();renderPermissions();newMenuGroup.innerHTML=GROUPS.filter(g=>!["dashboard","admin"].includes(g.id)).map(g=>`<option value="${g.id}">${g.label}</option>`).join("")}
 function renderUsers(){userRows.innerHTML=users.map((u,i)=>`<tr><td>${esc(u.name)}</td><td>${esc(u.email)}</td><td><select class="roleSel" data-i="${i}"><option value="admin" ${u.role==="admin"?"selected":""}>관리자</option><option value="leader" ${u.role==="leader"?"selected":""}>팀 리더</option><option value="editor" ${u.role==="editor"?"selected":""}>팀원</option><option value="restricted" ${u.role==="restricted"?"selected":""}>제한 열람</option></select></td><td><span class="badge ${u.active?"":"danger"}">${u.active?"사용":"중지"}</span></td></tr>`).join("");document.querySelectorAll(".roleSel").forEach(s=>s.onchange=()=>{users[+s.dataset.i].role=s.value;saveUsers();toastMsg("사용자 역할을 변경했습니다.")})}
 addUserBtn.onclick=()=>{const name=newUserName.value.trim(),email=newUserEmail.value.trim();if(!name||!email){toastMsg("이름과 이메일을 입력해주세요.");return}users.push({name,email,role:newUserRole.value,active:true});saveUsers();newUserName.value="";newUserEmail.value="";renderUsers();toastMsg("사용자를 추가했습니다.")};
-function kindLabel(m){return m.kind==="sheet"?"웹 시트":m.kind==="inventoryOwner"?"재고 담당자 시트":m.kind==="inventoryTotal"?"총 재고":m.kind==="inboundDaily"?"일일 입고 자동집계":m.kind==="inboundMonthly"?"월별 입고 자동집계":m.kind==="view"?"기본 화면":"기본 페이지"}
-function renderMenusTable(){menuRows.innerHTML=menus.map((m,i)=>{const g=GROUPS.find(x=>x.id===m.group);return `<tr><td>${g?g.label:m.group}</td><td><input class="inline-input menuLabel" data-i="${i}" value="${esc(m.label)}"></td><td>${kindLabel(m)}</td><td><button class="toggle ${m.visible?"on":""}" data-toggle="${i}"></button></td><td>${m.protected?'<span class="muted">고정</span>':`<button class="btn remove sm" data-del="${i}">− 삭제</button>`}</td></tr>`}).join("");document.querySelectorAll(".menuLabel").forEach(x=>x.onchange=()=>{menus[+x.dataset.i].label=x.value.trim()||menus[+x.dataset.i].label;saveMenus();renderNav();renderPermissions();toastMsg("메뉴명을 변경했습니다.")});document.querySelectorAll("[data-toggle]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.toggle];m.visible=!m.visible;saveMenus();renderNav();renderMenusTable();toastMsg(m.visible?"메뉴를 표시합니다.":"메뉴를 숨겼습니다.")});document.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{menus.splice(+b.dataset.del,1);saveMenus();renderNav();renderMenusTable();renderPermissions();toastMsg("메뉴를 삭제했습니다.")})}
-addMenuBtn.onclick=()=>{const name=newMenuName.value.trim();if(!name){toastMsg("메뉴 이름을 입력해주세요.");return}const id="custom-"+Date.now();const group=newMenuGroup.value,kind=newMenuType.value;const m={id,group,label:name,kind:kind==="sheet"?"sheet":kind==="inventoryOwner"?"inventoryOwner":"blank",visible:true,roles:["admin","leader","editor"]};if(kind==="sheet"){m.cat=group;m.sheet=name;if(!db[group])db[group]={};db[group][name]={cols:["항목","내용","비고"],rows:[]};localStorage.setItem(DATA_KEY,JSON.stringify(db))}else if(kind==="inventoryOwner"){m.group="inventory";m.owner=name;if(!inventoryDb.owners[name])inventoryDb.owners[name]={label:name,snapshots:{}};saveInventoryDb()}menus.push(m);saveMenus();newMenuName.value="";renderNav();renderMenusTable();renderPermissions();toastMsg("새 메뉴를 추가했습니다.")};
+function kindLabel(m){return m.kind==="statusTab"?"현황판 화면":m.kind==="sheet"?"웹 시트":m.kind==="inventoryOwner"?"재고 담당자 시트":m.kind==="inventoryTotal"?"총 재고":m.kind==="inboundDaily"?"일일 입고 자동집계":m.kind==="inboundMonthly"?"월별 입고 자동집계":m.kind==="view"?"기본 화면":"기본 페이지"}
+let adminMenuGroup="statusboard";
+function menuGroupOptions(selected,includeAdmin=true){return GROUPS.filter(g=>includeAdmin||g.id!=="admin").map(g=>`<option value="${g.id}" ${g.id===selected?"selected":""}>${esc(g.label)}</option>`).join("")}
+function moveMenuWithinGroup(id,dir){
+  const m=menus.find(x=>x.id===id);if(!m)return;
+  const ids=menus.filter(x=>x.group===m.group).map(x=>x.id),p=ids.indexOf(id),swap=p+dir;
+  if(p<0||swap<0||swap>=ids.length)return;
+  const a=menus.findIndex(x=>x.id===id),b=menus.findIndex(x=>x.id===ids[swap]);
+  [menus[a],menus[b]]=[menus[b],menus[a]];m.adminManaged=true;saveMenus();renderNav();renderMenusTable();
+}
+function moveMenuToGroup(id,group){
+  const idx=menus.findIndex(x=>x.id===id);if(idx<0)return;
+  const m=menus[idx];if(m.protected)return;
+  menus.splice(idx,1);m.group=group;m.adminManaged=true;
+  let last=-1;menus.forEach((x,i)=>{if(x.group===group)last=i});
+  menus.splice(last<0?menus.length:last+1,0,m);saveMenus();adminMenuGroup=group;renderNav();renderMenusTable();renderPermissions();toastMsg("상위 메뉴를 이동했습니다.");
+}
+function renderMenusTable(){
+  if(!GROUPS.some(g=>g.id===adminMenuGroup))adminMenuGroup=GROUPS[0]?.id||"dashboard";
+  const tabs=document.getElementById("menuGroupTabs"),g=GROUPS.find(x=>x.id===adminMenuGroup),list=menus.filter(m=>m.group===adminMenuGroup);
+  if(tabs){
+    tabs.innerHTML=GROUPS.map(x=>`<button type="button" class="menu-group-tab ${x.id===adminMenuGroup?"active":""}" data-menu-group="${x.id}">${esc(x.label)}<small>${menus.filter(m=>m.group===x.id).length}</small></button>`).join("");
+    tabs.querySelectorAll("[data-menu-group]").forEach(b=>b.onclick=()=>{adminMenuGroup=b.dataset.menuGroup;renderMenusTable()});
+  }
+  if(document.getElementById("menuGroupTitle"))document.getElementById("menuGroupTitle").textContent=(g?g.label:adminMenuGroup)+" 메뉴";
+  if(document.getElementById("menuGroupCount"))document.getElementById("menuGroupCount").textContent=list.length+"개 항목";
+  menuRows.innerHTML=list.length?list.map((m,pos)=>`
+    <div class="menu-manage-row" draggable="true" data-menu-drag="${m.id}">
+      <div class="menu-order-controls">
+        <span class="menu-drag-handle" title="드래그하여 순서 변경">⋮⋮</span>
+        <button type="button" class="menu-order-btn" data-menu-up="${m.id}" ${pos===0?"disabled":""}>↑</button>
+        <button type="button" class="menu-order-btn" data-menu-down="${m.id}" ${pos===list.length-1?"disabled":""}>↓</button>
+      </div>
+      <div class="menu-edit-main">
+        <label>메뉴명</label>
+        <input class="inline-input menuLabel" data-menu-label="${m.id}" value="${esc(m.label)}">
+        <small>${kindLabel(m)}</small>
+      </div>
+      <div class="menu-edit-group">
+        <label>상위 메뉴</label>
+        <select data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select>
+        <small>${m.protected?"필수 메뉴 · 이동 불가":"선택한 메뉴 아래로 이동"}</small>
+      </div>
+      <div class="menu-edit-visible"><label>표시</label><button class="toggle ${m.visible?"on":""}" data-menu-toggle="${m.id}"></button></div>
+      <div class="menu-edit-actions">${m.protected?'<span class="muted">고정</span>':`<button class="btn remove sm" data-menu-del="${m.id}">삭제</button>`}</div>
+    </div>`).join(""):'<div class="menu-manage-empty">이 상위 메뉴에 등록된 항목이 없습니다.</div>';
+
+  menuRows.querySelectorAll("[data-menu-label]").forEach(x=>x.onchange=()=>{
+    const m=menus.find(v=>v.id===x.dataset.menuLabel);if(!m)return;
+    const name=x.value.trim();if(!name){x.value=m.label;return}
+    m.label=name;m.adminManaged=true;saveMenus();syncStatusTabLabels();renderNav();renderPermissions();renderMenusTable();toastMsg("메뉴명을 변경했습니다.");
+  });
+  menuRows.querySelectorAll("[data-menu-toggle]").forEach(b=>b.onclick=()=>{
+    const m=menus.find(v=>v.id===b.dataset.menuToggle);if(!m)return;m.visible=!m.visible;m.adminManaged=true;saveMenus();renderNav();renderMenusTable();toastMsg(m.visible?"메뉴를 표시합니다.":"메뉴를 숨겼습니다.");
+  });
+  menuRows.querySelectorAll("[data-menu-del]").forEach(b=>b.onclick=()=>{
+    const i=menus.findIndex(v=>v.id===b.dataset.menuDel);if(i<0)return;if(!confirm(menus[i].label+" 메뉴를 삭제할까요?"))return;
+    menus.splice(i,1);saveMenus();renderNav();renderMenusTable();renderPermissions();toastMsg("메뉴를 삭제했습니다.");
+  });
+  menuRows.querySelectorAll("[data-menu-up]").forEach(b=>b.onclick=()=>moveMenuWithinGroup(b.dataset.menuUp,-1));
+  menuRows.querySelectorAll("[data-menu-down]").forEach(b=>b.onclick=()=>moveMenuWithinGroup(b.dataset.menuDown,1));
+  menuRows.querySelectorAll("[data-menu-move]").forEach(sel=>sel.onchange=()=>moveMenuToGroup(sel.dataset.menuMove,sel.value));
+
+  let dragId=null;
+  menuRows.querySelectorAll("[data-menu-drag]").forEach(row=>{
+    row.ondragstart=e=>{dragId=row.dataset.menuDrag;row.classList.add("dragging");if(e.dataTransfer)e.dataTransfer.effectAllowed="move"};
+    row.ondragend=()=>{dragId=null;row.classList.remove("dragging");menuRows.querySelectorAll(".drag-over").forEach(x=>x.classList.remove("drag-over"))};
+    row.ondragover=e=>{e.preventDefault();if(dragId&&dragId!==row.dataset.menuDrag)row.classList.add("drag-over")};
+    row.ondragleave=()=>row.classList.remove("drag-over");
+    row.ondrop=e=>{
+      e.preventDefault();row.classList.remove("drag-over");if(!dragId||dragId===row.dataset.menuDrag)return;
+      const from=menus.findIndex(x=>x.id===dragId),to=menus.findIndex(x=>x.id===row.dataset.menuDrag);if(from<0||to<0)return;
+      const moved=menus[from];if(moved.group!==adminMenuGroup)return;
+      menus.splice(from,1);const target=menus.findIndex(x=>x.id===row.dataset.menuDrag);menus.splice(target,0,moved);moved.adminManaged=true;saveMenus();renderNav();renderMenusTable();
+    };
+  });
+}
+addMenuBtn.onclick=()=>{const name=newMenuName.value.trim();if(!name){toastMsg("메뉴 이름을 입력해주세요.");return}const id="custom-"+Date.now();const group=newMenuGroup.value,kind=newMenuType.value;const m={id,group,label:name,kind:kind==="sheet"?"sheet":kind==="inventoryOwner"?"inventoryOwner":"blank",visible:true,roles:["admin","leader","editor"],adminManaged:true};if(kind==="sheet"){m.cat=group;m.sheet=name;if(!db[group])db[group]={};db[group][name]={cols:["항목","내용","비고"],rows:[]};localStorage.setItem(DATA_KEY,JSON.stringify(db))}else if(kind==="inventoryOwner"){m.group="inventory";m.owner=name;if(!inventoryDb.owners[name])inventoryDb.owners[name]={label:name,snapshots:{}};saveInventoryDb()}let lastGroup=-1;menus.forEach((x,i)=>{if(x.group===m.group)lastGroup=i});menus.splice(lastGroup<0?menus.length:lastGroup+1,0,m);saveMenus();adminMenuGroup=m.group;newMenuName.value="";renderNav();renderMenusTable();renderPermissions();toastMsg("새 메뉴를 추가했습니다.")};
 function renderPermissions(){permissionRows.innerHTML=menus.filter(m=>m.group!=="admin").map((m,i)=>{const idx=menus.indexOf(m);return `<tr><td><b>${esc(m.label)}</b></td><td><span class="badge">항상 허용</span></td>${["leader","editor","restricted"].map(r=>`<td><button class="role-pill ${m.roles.includes(r)?"on":""}" data-pidx="${idx}" data-role="${r}">${m.roles.includes(r)?"허용":"차단"}</button></td>`).join("")}</tr>`}).join("");document.querySelectorAll("[data-pidx]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.pidx],r=b.dataset.role;if(m.roles.includes(r))m.roles=m.roles.filter(x=>x!==r);else m.roles.push(r);if(!m.roles.includes("admin"))m.roles.push("admin");saveMenus();renderPermissions();renderNav();toastMsg(`${ROLE_LABEL[r]} 권한을 변경했습니다.`)})}
 document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active");if(b.dataset.admin==="conversion"&&typeof renderUnitConversionAdmin==="function")renderUnitConversionAdmin()});
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","메인",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
@@ -10798,17 +10941,8 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     }
   })();
 
-  /* Add one direct top-level status-board menu without changing existing menu behavior. */
-  if(typeof GROUPS!=='undefined'&&!GROUPS.some(function(g){return g.id==='statusboard'})){
-    var dashboardIndex=GROUPS.findIndex(function(g){return g.id==='dashboard'});
-    GROUPS.splice(dashboardIndex+1,0,{id:'statusboard',label:'현황판',icon:'monitor-up'});
-  }
-  if(typeof menus!=='undefined'&&!menus.some(function(m){return m.id==='statusboard-main'})){
-    var item={id:'statusboard-main',group:'statusboard',label:'현황판',kind:'view',target:'statusBoardView',visible:true,roles:['admin','leader','editor','restricted'],protected:true};
-    var dashLast=-1;menus.forEach(function(m,i){if(m.group==='dashboard')dashLast=i});
-    menus.splice(dashLast+1,0,item);
-    if(typeof saveMenus==='function')saveMenus();
-  }
+  /* 현황판 세부 화면은 실제 메뉴 항목(statusTab)으로 관리되어 Admin에서 이름·순서·상위 메뉴를 바꿀 수 있습니다. */
+  if(typeof syncStatusTabLabels==='function')syncStatusTabLabels();
   if(typeof renderNav==='function')renderNav();
 
   function activateTab(name){
@@ -12371,7 +12505,6 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var items=current.group?groupItems(current.group):[];
     var g=GROUPS.find(function(x){return x.id===current.group});
     aside.innerHTML='';
-    if(g&&current.menuId==='statusboard-main'&&renderStatusTabs(g))return;
     if(!g||items.length<2){shell.classList.remove('has-side-subnav');markTopTab();return}
     aside.appendChild(makeTitle(g));
     items.forEach(function(m){
@@ -12418,29 +12551,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   var mBtn=document.getElementById('desktopSidebarBtn');
   if(mBtn)mBtn.addEventListener('click',function(){setTimeout(function(){if(shell.classList.contains('mobile-nav-open')&&!isDesktop())markMobileCurrent()},0)});
   /* 휴대폰 햄버거 메뉴: '현황판' 아래에 화면 안 탭(출고 현황·생산성 등)을 넣어 바로 이동 (데스크톱은 왼쪽 메뉴가 같은 역할) */
-  function patchStatusBoardMobileMenu(){
-    var box=document.querySelector('#navContainer .nav-group[data-group="statusboard"]');
-    var holder=box&&box.querySelector('.nav-children');
-    var tabs=document.querySelectorAll('#statusBoardView .status-board-tab');
-    if(!holder||!tabs.length)return;
-    holder.innerHTML='';
-    var mark=function(){var cur=document.querySelector('#statusBoardView .status-board-tab.active');holder.querySelectorAll('.nav-item').forEach(function(b){b.classList.toggle('active',!!cur&&b.dataset.statusTab===cur.dataset.statusTab&&!!document.querySelector('#statusBoardView.active'))})};
-    tabs.forEach(function(t){
-      var b=document.createElement('button');
-      b.type='button';b.className='nav-item';b.dataset.statusTab=t.dataset.statusTab;
-      b.innerHTML='<span class="nav-child-dot" aria-hidden="true"></span><span class="nav-child-label"></span>';
-      b.querySelector('.nav-child-label').textContent=t.textContent.trim();
-      b.onclick=function(){
-        var m=menus.find(function(x){return x.id==='statusboard-main'});
-        if(m)activateMenu(m,null);
-        t.click();
-        if(typeof closeMobileNav==='function')closeMobileNav();
-        mark();
-      };
-      holder.appendChild(b);
-    });
-    mark();
-  }
+  function patchStatusBoardMobileMenu(){/* 현황판도 일반 메뉴 항목으로 관리하므로 별도 하드코딩을 하지 않습니다. */}
 
   var origActivate=activateMenu;
   window.activateMenu=activateMenu=function(m,el){
