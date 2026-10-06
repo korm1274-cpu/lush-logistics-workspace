@@ -6408,53 +6408,66 @@ html,body{max-width:100%;overflow-x:hidden}
 }
 </style>
 <style id="v101-admin-menu-manager">
-#admin-menus .menu-admin-grid{grid-template-columns:minmax(580px,1.35fr) minmax(420px,1fr)!important;align-items:start!important;gap:14px!important}
-#admin-menus .menu-group-tabs{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 12px}
-#admin-menus .menu-group-tab{display:inline-flex;align-items:center;gap:6px;border:1px solid #e1e3df;background:#fff;color:#60655f;border-radius:999px;padding:8px 11px;font-size:11px;font-weight:800}
-#admin-menus .menu-group-tab small{display:grid;place-items:center;min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#f0f1ee;color:#777;font-size:9px}
+#admin-menus .menu-admin-grid{grid-template-columns:minmax(560px,1.3fr) minmax(400px,1fr)!important;align-items:start!important;gap:10px!important}
+#admin-menus .menu-group-tabs{display:flex;gap:5px;flex-wrap:wrap;margin:10px 0 9px}
+#admin-menus .menu-group-tab{display:inline-flex;align-items:center;gap:5px;border:1px solid #e1e3df;background:#fff;color:#60655f;border-radius:8px;padding:6px 9px;font-size:10px;font-weight:800}
+#admin-menus .menu-group-tab small{display:grid;place-items:center;min-width:16px;height:16px;padding:0 4px;border-radius:999px;background:#f0f1ee;color:#777;font-size:8px}
 #admin-menus .menu-group-tab.active{background:#1d1d1b;color:#fff;border-color:#1d1d1b}
 #admin-menus .menu-group-tab.active small{background:rgba(255,255,255,.15);color:#fff}
-#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;height:40px;padding:0 12px;border:1px solid #e8e9e5;border-radius:10px;background:#fafbf9;margin-bottom:8px}
+#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;gap:8px;height:34px;padding:0 10px;border:1px solid #e8e9e5;border-radius:8px;background:#fafbf9;margin-bottom:6px}
 #admin-menus .menu-group-summary b{display:block;font-size:12px}
 #admin-menus .menu-group-summary small{display:inline;margin-left:7px;color:#8a918c;font-size:9px}
 #admin-menus .menu-group-summary>span{color:#8a918c;font-size:9px}
 #admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:5px}
-#admin-menus .menu-manage-head{display:grid;grid-template-columns:70px minmax(130px,210px) minmax(120px,150px) 104px 58px;gap:8px;align-items:center;padding:0 10px 3px;color:#8a918c;font-size:9px;font-weight:800}
+#admin-menus .menu-manage-head{display:grid;grid-template-columns:62px minmax(120px,190px) minmax(110px,140px) 94px 52px;gap:6px;align-items:center;padding:0 8px 3px;color:#8a918c;font-size:8.5px;font-weight:800}
 #admin-menus .menu-manage-head span:nth-child(4),#admin-menus .menu-manage-head span:nth-child(5){text-align:center}
-#admin-menus .menu-manage-row{display:grid;grid-template-columns:70px minmax(130px,210px) minmax(120px,150px) 104px 58px;gap:8px;align-items:center;min-height:50px;padding:7px 10px;border:1px solid #e7e8e4;border-radius:9px;background:#fff}
+#admin-menus .menu-manage-row{display:grid;grid-template-columns:62px minmax(120px,190px) minmax(110px,140px) 94px 52px;gap:6px;align-items:center;min-height:42px;padding:5px 8px;border:1px solid #e7e8e4;border-radius:8px;background:#fff}
 #admin-menus .menu-manage-row.dragging{opacity:.45}
 #admin-menus .menu-manage-row.drag-over{border-color:#e87ba4;box-shadow:0 0 0 2px rgba(232,123,164,.12)}
 #admin-menus .menu-order-controls{display:flex;align-items:center;gap:3px}
 #admin-menus .menu-drag-handle{cursor:grab;color:#a2a7a1;font-weight:900;letter-spacing:-2px;padding-right:3px}
-#admin-menus .menu-order-btn{width:24px;height:26px;border:1px solid #e3e5e1;border-radius:6px;background:#fafbf9;color:#4f544f;font-size:11px;font-weight:900}
+#admin-menus .menu-order-btn{width:21px;height:23px;border:1px solid #e3e5e1;border-radius:5px;background:#fafbf9;color:#4f544f;font-size:10px;font-weight:900}
 #admin-menus .menu-order-btn:disabled{opacity:.28;cursor:default}
 #admin-menus .menu-edit-main,#admin-menus .menu-edit-group,#admin-menus .menu-edit-visible{min-width:0}
-#admin-menus .menu-manage-row input,#admin-menus .menu-manage-row select{width:100%;height:28px;border:1px solid #e1e3df;border-radius:6px;background:#fff;padding:0 7px;font-size:10px;font-weight:750;color:#222}
+#admin-menus .menu-manage-row input,#admin-menus .menu-manage-row select{width:100%;height:25px;border:1px solid #e1e3df;border-radius:6px;background:#fff;padding:0 6px;font-size:9.5px;font-weight:750;color:#222}
 #admin-menus .menu-edit-main small{display:none}
 #admin-menus .menu-edit-group small{display:none}
 #admin-menus .menu-edit-visible{display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
-#admin-menus .menu-edit-visible .toggle{margin:0}
+#admin-menus .menu-edit-visible .toggle,#admin-menus .group-visible .toggle{margin:0;background:#cfd4d0!important;border:1px solid #bfc5c0!important}
+#admin-menus .menu-edit-visible .toggle.on,#admin-menus .group-visible .toggle.on{background:#222!important;border-color:#222!important}
+#admin-menus .menu-edit-visible .toggle:after,#admin-menus .group-visible .toggle:after{background:#fff!important}
 #admin-menus .visibility-state{display:inline-flex;align-items:center;justify-content:center;min-width:28px;height:20px;padding:0 6px;border-radius:999px;background:#efefec;color:#8a8f89;font-size:8.5px;font-weight:900;letter-spacing:.2px;white-space:nowrap}
 #admin-menus .visibility-state.on{background:#1d1d1b;color:#fff}
 #admin-menus .menu-edit-actions{display:flex;justify-content:center}
 #admin-menus .menu-edit-actions .btn.sm,#admin-menus .group-actions .btn.sm{min-width:48px;height:29px;padding:0 8px;font-size:9px}
 #admin-menus .menu-manage-empty{padding:36px 16px;text-align:center;border:1px dashed #dadcd7;border-radius:12px;color:#929892;font-size:11px}
-#admin-menus .menu-structure-card,#admin-menus .group-manager-card{padding:18px!important}
-#admin-menus .menu-structure-card>h3,#admin-menus .group-manager-card>h3{margin:0 0 6px!important;font-size:15px!important;line-height:1.25!important}
-#admin-menus .menu-structure-card>p,#admin-menus .group-manager-card>p{min-height:32px;margin:0!important;font-size:10px!important;line-height:1.55!important;color:#777!important}
+#admin-menus .menu-structure-card,#admin-menus .group-manager-card,#admin-menus .menu-permission-card{padding:14px!important;border-radius:12px!important}
+#admin-menus .menu-structure-card>h3,#admin-menus .group-manager-card>h3,#admin-menus .menu-permission-card h3{margin:0 0 4px!important;font-size:13px!important;line-height:1.25!important}
+#admin-menus .menu-structure-card>p,#admin-menus .group-manager-card>p,#admin-menus .menu-permission-card p{min-height:26px;margin:0!important;font-size:9.5px!important;line-height:1.45!important;color:#777!important}
 #admin-menus .group-manager-card>p{max-width:none}
-#admin-menus .group-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:7px;height:40px;align-items:center;margin:14px 0 12px;padding:0 10px;border:1px solid #e8e9e5;border-radius:10px;background:#fafbf9}
-#admin-menus .group-add-row .btn{height:28px!important;min-height:28px!important;padding:0 10px!important;font-size:9.5px!important;border-radius:6px!important}
-#admin-menus .group-add-row input{height:28px;border:1px solid #dfe2dd;border-radius:6px;padding:0 7px;font-size:10px;font-weight:750;background:#fff}
+#admin-menus .group-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px;height:34px;align-items:center;margin:10px 0 9px;padding:0 8px;border:1px solid #e8e9e5;border-radius:8px;background:#fafbf9}
+#admin-menus .group-add-row .btn{height:24px!important;min-height:24px!important;padding:0 8px!important;font-size:9px!important;border-radius:5px!important}
+#admin-menus .group-add-row input{height:24px;border:1px solid #dfe2dd;border-radius:5px;padding:0 6px;font-size:9.5px;font-weight:750;background:#fff}
 #admin-menus .group-manage-list{display:flex;flex-direction:column;gap:5px}
-#admin-menus .group-manage-head{display:grid;grid-template-columns:60px minmax(110px,1fr) 108px 58px;gap:7px;padding:0 9px 3px;color:#8a918c;font-size:9px;font-weight:800}
+#admin-menus .group-manage-head{display:grid;grid-template-columns:54px minmax(100px,1fr) 94px 52px;gap:6px;padding:0 8px 3px;color:#8a918c;font-size:8.5px;font-weight:800}
 #admin-menus .group-manage-head span:nth-child(3),#admin-menus .group-manage-head span:nth-child(4){text-align:center}
-#admin-menus .group-manage-row{display:grid;grid-template-columns:60px minmax(110px,1fr) 108px 58px;gap:7px;align-items:center;min-height:48px;padding:7px 9px;border:1px solid #e7e8e4;border-radius:9px;background:#fff}
-#admin-menus .group-manage-row input{width:100%;height:28px;border:1px solid #e1e3df;border-radius:6px;padding:0 7px;font-size:10px;font-weight:750}
+#admin-menus .group-manage-row{display:grid;grid-template-columns:54px minmax(100px,1fr) 94px 52px;gap:6px;align-items:center;min-height:40px;padding:5px 8px;border:1px solid #e7e8e4;border-radius:8px;background:#fff}
+#admin-menus .group-manage-row input{width:100%;height:25px;border:1px solid #e1e3df;border-radius:6px;padding:0 6px;font-size:9.5px;font-weight:750}
 #admin-menus .group-order-controls{display:flex;gap:3px;align-items:center}
 #admin-menus .group-visible{display:flex;align-items:center;justify-content:center;gap:6px;text-align:center}
 #admin-menus .group-visible .toggle{margin:0}
 #admin-menus .group-actions{display:flex;justify-content:center}
+#admin-menus .menu-permission-card{grid-column:1/-1;margin-top:0}
+#admin-menus .menu-permission-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px}
+#admin-menus .menu-permission-table-wrap{overflow:auto;border:1px solid #e7e8e4;border-radius:9px}
+#admin-menus .menu-permission-table{font-size:9.5px}
+#admin-menus .menu-permission-table th{height:30px;background:#f7f8f6;color:#747b75;font-size:8.5px;font-weight:800}
+#admin-menus .menu-permission-table td{height:34px;padding:4px 8px}
+#admin-menus .menu-permission-table th:first-child,#admin-menus .menu-permission-table td:first-child{text-align:left}
+#admin-menus .menu-permission-table th:not(:first-child),#admin-menus .menu-permission-table td:not(:first-child){text-align:center}
+#admin-menus .menu-permission-table .role-pill{min-width:42px;height:22px;padding:0 7px;border-radius:999px;border:1px solid #d6dad6;background:#f1f2ef;color:#7a807a;font-size:8.5px;font-weight:850}
+#admin-menus .menu-permission-table .role-pill.on{background:#222!important;border-color:#222!important;color:#fff!important}
+#admin-menus .menu-permission-table .badge{padding:3px 7px;font-size:8.5px;background:#eceeeb;color:#555}
 @media(max-width:1150px){
  #admin-menus .menu-admin-grid{grid-template-columns:1fr!important}
  #admin-menus .menu-manage-head,#admin-menus .menu-manage-row{grid-template-columns:70px minmax(130px,210px) minmax(120px,150px) 104px 58px}
@@ -7518,7 +7531,7 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
     <section id="settings" class="view">
-      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="permissions">권한 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button></div>
+      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button></div>
       <div id="admin-users" class="admin-section active"><div class="admin-grid"><div class="admin-card"><h3>사용자 목록</h3><p>사용자별 기본 역할을 지정합니다. 현재는 UI 시뮬레이션이며 로그인 연동 후 실제 계정과 연결됩니다.</p><table class="admin-table"><thead><tr><th>이름</th><th>이메일</th><th>역할</th><th>상태</th></tr></thead><tbody id="userRows"></tbody></table></div><div class="admin-card"><h3>사용자 추가</h3><p>회사 계정 기반 사용자 등록을 가정한 관리 화면입니다.</p><div class="form-grid"><div class="field"><label>이름</label><input id="newUserName" placeholder="예: 홍길동"></div><div class="field"><label>역할</label><select id="newUserRole"><option value="leader">팀 리더</option><option value="editor">팀원</option><option value="restricted">제한 열람</option></select></div><div class="field full"><label>이메일</label><input id="newUserEmail" placeholder="name@company.com"></div><div class="full"><button class="btn primary" id="addUserBtn">+ 사용자 추가</button></div></div><div class="locked-note">현재 버전은 실제 인증이 연결되지 않은 프로토타입입니다. Supabase/Google 로그인 연결 후에는 이 이메일과 역할을 실제 접근 제어에 사용합니다.</div></div></div></div>
       <div id="admin-menus" class="admin-section">
         <div class="admin-grid menu-admin-grid">
@@ -7540,8 +7553,13 @@ html,body{max-width:100%;overflow-x:hidden}
             <div class="hint" style="margin-top:13px">메인과 Admin은 필수 대분류로 고정됩니다. 다른 대분류는 포함 메뉴를 모두 이동한 뒤 삭제할 수 있습니다.</div>
           </div>
         </div>
+        <div class="admin-card menu-permission-card">
+          <div class="menu-permission-head">
+            <div><h3>메뉴별 권한 관리</h3><p>메뉴별로 팀 리더·팀원·제한 열람 권한을 설정합니다. 관리자는 항상 접근 가능합니다.</p></div>
+          </div>
+          <div class="menu-permission-table-wrap"><table class="admin-table menu-permission-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div>
+        </div>
       </div>
-      <div id="admin-permissions" class="admin-section"><div class="admin-card"><h3>메뉴별 접근 권한</h3><p>메뉴마다 어떤 역할이 접근할 수 있는지 지정합니다. 관리자 권한은 항상 접근 가능합니다.</p><div style="overflow:auto"><table class="admin-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀 리더</th><th>팀원</th><th>제한 열람</th></tr></thead><tbody id="permissionRows"></tbody></table></div><div class="locked-note">중요: 현재 프로토타입에서는 메뉴 숨김/차단을 UI로 시뮬레이션합니다. 실제 대외비 보호는 로그인 + DB 권한(RLS) 연결 이후 적용해야 합니다.</div></div></div>
       <div id="admin-conversion" class="admin-section">
         <div class="unit-conversion-shell">
           <div class="unit-conversion-summary">
