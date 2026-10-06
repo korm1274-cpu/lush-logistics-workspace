@@ -10833,13 +10833,29 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     q('#boxStoreMonthBody').innerHTML=months.map(function(m,i){var diff=i?vals[i]-vals[i-1]:null;return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(vals[i])+'</td><td>'+(diff==null?'-':((diff>0?'+':'')+fmt(diff)))+'</td></tr>'}).join('');
     boxcountDraw('store','boxStoreChart','boxStoreEmpty',months.map(function(m){return m.replace('-','.')}),vals);
   }
+  function updateBoxDetailStoreOptions(){
+    var dDay=q('#boxDetailDay'),dRoute=q('#boxDetailRoute'),dStore=q('#boxDetailStore');if(!dStore)return;
+    var day=dDay?dDay.value:'',route=dRoute?dRoute.value:'',set={};
+    Object.keys(BOXCOUNT_SCHEDULE).forEach(function(dayName){
+      if(day&&dayName!==day)return;
+      Object.keys(BOXCOUNT_SCHEDULE[dayName]).forEach(function(routeName){
+        if(route&&routeName!==route)return;
+        (BOXCOUNT_SCHEDULE[dayName][routeName]||[]).forEach(function(x){set[x.name]=true});
+      });
+    });
+    var current=dStore.value,stores=Object.keys(set).sort();
+    dStore.innerHTML='<option value="">전체 매장</option>'+stores.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'}).join('');
+    if(current&&stores.indexOf(current)>=0)dStore.value=current;
+  }
   function initBoxcountFilters(){
-    var days=Object.keys(BOXCOUNT_SCHEDULE),stores=boxcountAllStores(),day=q('#boxWeekdaySelect'),store=q('#boxStoreSelect'),dDay=q('#boxDetailDay'),dRoute=q('#boxDetailRoute'),dStore=q('#boxDetailStore');
+    var days=Object.keys(BOXCOUNT_SCHEDULE),stores=boxcountAllStores(),day=q('#boxWeekdaySelect'),store=q('#boxStoreSelect'),dDay=q('#boxDetailDay'),dRoute=q('#boxDetailRoute');
     if(day)day.innerHTML=days.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'}).join('');
     if(store)store.innerHTML=stores.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'}).join('');
     if(dDay)dDay.innerHTML='<option value="">전체 요일</option>'+days.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'}).join('');
     if(dRoute)dRoute.innerHTML='<option value="">전체 호차</option>'+['1호차','2호차','3호차','4호차','택배'].map(function(x){return '<option value="'+x+'">'+x+'</option>'}).join('');
-    if(dStore)dStore.innerHTML='<option value="">전체 매장</option>'+stores.map(function(x){return '<option value="'+esc(x)+'">'+esc(x)+'</option>'}).join('');
+    updateBoxDetailStoreOptions();
+    if(dDay)dDay.addEventListener('change',updateBoxDetailStoreOptions);
+    if(dRoute)dRoute.addEventListener('change',updateBoxDetailStoreOptions);
   }
   function setBoxcountView(view){
     qa('.boxcount-subtab').forEach(function(b){b.classList.toggle('active',b.dataset.boxcountView===view)});
