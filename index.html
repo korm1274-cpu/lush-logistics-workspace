@@ -12955,7 +12955,7 @@ window.__bubblePop=function(el,done){
 /* ── 제목 아이콘 통일: 이모지 대신 러쉬 색 동그라미 + 선 아이콘 ── */
 #appShell .ux-ico{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:1.6em!important;height:1.6em!important;border-radius:50%!important;margin-right:.4em!important;vertical-align:-.35em;background:var(--ico-bg,#fde7f0)!important;color:var(--ico-fg,#c2477a)!important;flex:0 0 auto;padding:0!important;border:0!important;}
 #appShell .ux-ico svg{width:.92em!important;height:.92em!important;stroke-width:2.2;}
-#appShell .lush-hero .ux-ico,#appShell .data-workbench-head .ux-ico,#appShell .status-board-top .ux-ico{background:rgba(255,255,255,.14)!important;color:#fff!important;}
+#appShell .lush-hero .ux-ico,#appShell .data-workbench-head .ux-ico,#appShell .status-board-top .ux-ico,#appShell.on-lush .request-manager-top .ux-ico,#appShell.on-lush .schedule-head .ux-ico{background:rgba(255,255,255,.14)!important;color:#fff!important;}
 #appShell .request-empty-card{flex-direction:column!important;}
 
 /* ── 빈 화면: 글씨만 있던 곳에 빈 상자 그림 ── */
@@ -12994,6 +12994,25 @@ window.__bubblePop=function(el,done){
       h.insertBefore(s,h.firstChild);return true;
     });
   });
+  /* 재고·입고·트래픽·일정 화면 제목에도 같은 아이콘(메뉴 아이콘과 같은 모양) */
+  var TITLE_ICONS={'총 재고파일':['package-search','#e3f5ec','#11795a'],'담당자 재고파일':['package-search','#e3f5ec','#11795a'],'품절 재고 분석':['package-minus','#fdecec','#c93838'],
+    '입고':['package-plus','#fde7f0','#c2477a'],'월별 입고현황':['calendar-range','#fde7f0','#c2477a'],'일일 입고관리':['clipboard-list','#fde7f0','#c2477a'],'입고 상세조회':['search','#fde7f0','#c2477a'],
+    '트래픽 출고 요청':['signpost','#e3f5ec','#11795a'],'통합 일정':['calendar-days','#fff3d6','#9a6400'],'공지 등록':['megaphone','#fde7f0','#c2477a'],'제품 확보 등록':['package-check','#e3f5ec','#11795a']};
+  function addTitleIcon(h){
+    if(h.querySelector('.ux-ico'))return;
+    var key=h.textContent.trim(),m=TITLE_ICONS[key];
+    if(!m&&h.id==='inventoryOwnerTitle')m=TITLE_ICONS['담당자 재고파일'];
+    if(!m)return;
+    var sp=document.createElement('span');sp.className='ux-ico';sp.style.setProperty('--ico-bg',m[1]);sp.style.setProperty('--ico-fg',m[2]);sp.innerHTML='<i data-lucide="'+m[0]+'"></i>';
+    h.insertBefore(sp,h.firstChild);
+    if(window.lucide&&lucide.createIcons)try{lucide.createIcons()}catch(e){}
+  }
+  document.querySelectorAll('.view h2').forEach(function(h){
+    addTitleIcon(h);
+    /* 제목 글씨가 바뀌면(담당자 재고파일 등) 아이콘을 다시 붙임 */
+    if(window.MutationObserver)new MutationObserver(function(){addTitleIcon(h)}).observe(h,{childList:true});
+  });
+
   /* lucide 스크립트가 늦게 올라올 수 있어 준비될 때까지 몇 번 다시 그림 */
   (function draw(n){try{if(window.lucide&&lucide.createIcons){lucide.createIcons();if(!document.querySelector('.ux-ico i[data-lucide]'))return}}catch(e){}if(n<20)setTimeout(function(){draw(n+1)},250)})(0);
 
@@ -13032,25 +13051,17 @@ html[data-season="hanbok"] .lush-hero .hero-bubble.b3{background:rgba(250,200,40
 @media (prefers-reduced-motion:no-preference){.season-flake{animation:seasonFall linear infinite;}}
 @keyframes seasonFall{from{transform:translateY(-10px) rotate(0);}to{transform:translateY(260px) rotate(200deg);}}
 
-/* ── 현장 대시보드 TV 모드: 큰 글씨 + 화면 자동 전환 ── */
-.floor-tv-btn{margin-left:6px;}
-html.tv-mode #appShell .topbar,html.tv-mode #appShell .sidebar,html.tv-mode #appShell .side-subnav,html.tv-mode #syncIssueBar{display:none!important;}
-html.tv-mode #appShell .main{margin:0!important;padding:10px!important;width:100%!important;background:#111!important;}
-html.tv-mode #floorBoard{min-height:calc(100vh - 20px)!important;}
-html.tv-mode #floorBoard .floor-tile b{font-size:1.35em;}
-html.tv-mode #floorBoard{font-size:1.18em;}
-.tv-exit{position:fixed;right:18px;bottom:18px;z-index:10070;display:none;height:44px;padding:0 18px;border:0;border-radius:999px;background:#e87ba4;color:#fff;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 6px 18px rgba(0,0,0,.3);}
-html.tv-mode .tv-exit{display:inline-flex;align-items:center;gap:6px;}
-.tv-progress{position:fixed;left:0;top:0;height:4px;background:#e87ba4;z-index:10070;display:none;}
-html.tv-mode .tv-progress{display:block;}
 
 /* ── 다크 모드: 화면 본문을 어둡게(배너·그래프·사진은 원래 색 유지) ── */
-html.ux-dark #appShell .main{filter:invert(.92) hue-rotate(180deg);background-color:#f2f4f6!important;}
+html.ux-dark #appShell .main{filter:invert(1) hue-rotate(180deg);background-color:#f2f4f6!important;}
+/* 반전을 정확히 1로 맞춰 배너(칠판)·그래프가 다시 뒤집힐 때 원래 색 그대로 나오게 함.
+   흰 카드는 완전한 검정 대신 짙은 회색이 되도록 반전 전 색을 살짝 낮춤 */
+html.ux-dark #appShell .main .panel,html.ux-dark #appShell .main .status-card,html.ux-dark #appShell .main .table-card,html.ux-dark #appShell .main .dashboard-info-panel,html.ux-dark #appShell .main .dash-section,html.ux-dark #appShell .main .kpi,html.ux-dark #appShell .main .rq-col{background-color:#e6e4df!important;}
 html.ux-dark #appShell .main img,html.ux-dark #appShell .main canvas,html.ux-dark #appShell .main video,
 html.ux-dark #appShell .main .lush-hero,html.ux-dark #appShell .main .floor-board,html.ux-dark #appShell .main .data-workbench-head,
 html.ux-dark #appShell .main .request-manager-top,html.ux-dark #appShell .main .schedule-head,html.ux-dark #appShell .main .status-board-top,
 html.ux-dark #appShell .main .ux-ico,html.ux-dark #appShell .main .hero-truck{filter:invert(1) hue-rotate(180deg);}
-html.ux-dark #appShell .main .lush-hero .ux-ico,html.ux-dark #appShell .main .data-workbench-head .ux-ico,html.ux-dark #appShell .main .status-board-top .ux-ico,html.ux-dark #appShell .main .lush-hero .hero-truck,html.ux-dark #appShell .main .floor-board .hero-truck{filter:none;}
+html.ux-dark #appShell .main .lush-hero .ux-ico,html.ux-dark #appShell .main .data-workbench-head .ux-ico,html.ux-dark #appShell .main .status-board-top .ux-ico,html.ux-dark #appShell .main .request-manager-top .ux-ico,html.ux-dark #appShell .main .schedule-head .ux-ico,html.ux-dark #appShell .main .floor-board .ux-ico,html.ux-dark #appShell .main .lush-hero .hero-truck,html.ux-dark #appShell .main .floor-board .hero-truck{filter:none;}
 html.ux-dark body{background:#141414;}
 @media (max-width:900px){#appShell #baseTools .base-tool{white-space:nowrap!important;}#appShell #uxDarkBtn .ux-lbl{display:none;}#appShell #uxDarkBtn{min-width:40px!important;padding:0 10px!important;}}
 @media (prefers-reduced-motion:reduce){html.ux-loading #appShell .kpi b{animation:none;}}
@@ -13086,25 +13097,6 @@ html.ux-dark body{background:#141414;}
     var hero=document.querySelector('#dashboard .lush-hero'),sub=hero&&hero.querySelector('.lush-hero-date');
     if(sub){var b=document.createElement('span');b.className='season-badge';b.textContent=SEASONS[season][0];sub.appendChild(b)}
     if(hero){for(var i=0;i<14;i++){var f=document.createElement('span');f.className='season-flake';f.setAttribute('aria-hidden','true');f.textContent=SEASONS[season][1];f.style.left=(Math.random()*100)+'%';f.style.fontSize=(9+Math.random()*9)+'px';f.style.animationDuration=(7+Math.random()*7)+'s';f.style.animationDelay=(-Math.random()*12)+'s';f.style.opacity=(.35+Math.random()*.5).toFixed(2);hero.insertBefore(f,hero.firstChild)}}
-  }
-
-  /* 현장 대시보드 TV 모드: 현장 대시보드 ↔ 현황판(출고 현황)을 20초마다 번갈아 보여줌 */
-  var full=document.getElementById('floorFullBtn');
-  if(full){
-    var tvBtn=document.createElement('button');tvBtn.type='button';tvBtn.className='floor-full-btn floor-tv-btn';tvBtn.textContent='📺 TV 모드';full.insertAdjacentElement('afterend',tvBtn);
-    var exit=document.createElement('button');exit.type='button';exit.className='tv-exit';exit.textContent='✕ TV 모드 끄기';document.body.appendChild(exit);
-    var bar=document.createElement('div');bar.className='tv-progress';document.body.appendChild(bar);
-    var timer=null,step=0,STEP_MS=20000,t0=0,raf=null;
-    function show(i){
-      if(i%2===0){window.showView&&window.showView('floorDashView')}
-      else{window.showView&&window.showView('statusBoardView');var tb=document.querySelector('#statusBoardView .status-board-tab[data-status-tab="shipping"]');if(tb)tb.click()}
-      t0=Date.now();
-    }
-    function tick(){var p=Math.min(1,(Date.now()-t0)/STEP_MS);bar.style.width=(p*100)+'%';raf=requestAnimationFrame(tick)}
-    function start(){root.classList.add('tv-mode');step=0;show(0);timer=setInterval(function(){step++;show(step)},STEP_MS);tick();try{document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen()}catch(e){}}
-    function stop(){root.classList.remove('tv-mode');clearInterval(timer);timer=null;cancelAnimationFrame(raf);window.showView&&window.showView('floorDashView');try{document.fullscreenElement&&document.exitFullscreen()}catch(e){}}
-    tvBtn.addEventListener('click',start);exit.addEventListener('click',stop);
-    document.addEventListener('keydown',function(e){if(e.key==='Escape'&&timer)stop()});
   }
 
   /* 다크 모드 버튼(상단 도구줄) — 이 기기에 기억 */
