@@ -9465,7 +9465,7 @@ setTimeout(initInventoryColumnResize,0);
     $('mrUpdated').textContent=d.misship?.updatedAt?`마지막 연동: ${new Date(d.misship.updatedAt).toLocaleString('ko-KR')}`:'아직 연동된 데이터가 없습니다. 상단 동기화 버튼을 눌러주세요.';
     /* 접수시각은 날짜(년-월-일)까지만 표시 */
     const mrDateOnly=v=>{const s=String(v??'').trim(),m=s.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:s};
-    const numCell=v=>`<td class="num">${String(v??'')===''?'':fmt(v)}</td>`,rowHtml=r=>`<tr><td style="white-space:nowrap">${esc(mrDateOnly(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>${numCell(r[3])}${numCell(r[4])}${numCell(r[5])}${numCell(r[6])}<td>${esc(r[7])}</td><td>${esc(r[8])}</td><td>${esc(r[9])}</td><td>${esc(r[10])}</td><td>${esc(r[11])}</td></tr>`;
+    const numCell=v=>`<td class="num">${String(v??'')===''?'':fmt(v)}</td>`,rowHtml=r=>`<tr><td style="white-space:nowrap">${esc(mrDateOnly(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>${numCell(r[3])}${numCell(r[4])}${numCell(r[5])}${numCell(r[6])}<td>${esc(r[7])}</td><td>${esc(r[8])}</td><td style="white-space:nowrap">${esc(mrDateOnly(r[9]))}</td><td>${esc(r[10])}</td><td>${esc(r[11])}</td></tr>`;
     // 미완료 카드: 기간·검색과 상관없이 전체 데이터에서 아직 완료되지 않은 건(날짜+매장)을 항상 표시
     const allCases=misshipCases(all),pendingKeys=new Set(allCases.filter(c=>!c.done).map(c=>c.key));
     const pendingRows=all.filter(r=>pendingKeys.has(msCaseKey(r))).sort((a,b)=>String(b[0])>String(a[0])?1:String(b[0])<String(a[0])?-1:0);
@@ -13214,6 +13214,35 @@ html.ux-dark body{background:#141414;}
   #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child b{font-size:20px!important;}
   #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child>div>div:nth-child(2) b{font-size:15px!important;}
   #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2) b{font-size:16px!important;}
+}
+/* 휴대폰 현황판 조회 줄: 누계 생산성·상세조회·매장별 처리이력·매장별 박스수량 누계를 한 줄로.
+   매장별 처리이력의 '매장 상세'는 1줄 시작일·종료일 / 2줄 상세 매장·조회 */
+@media (max-width:900px){
+  #appShell #statusBoardView .cumulative-filter-cards,#appShell #statusBoardView .detail-filter-cards,
+  #appShell #statusBoardView .store-history-toolbar,#appShell #statusBoardView .boxcount-cumulative-filters{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:6px!important;}
+  #appShell #statusBoardView .cumulative-filter-cards>.status-filter-card,#appShell #statusBoardView .detail-filter-cards>.status-filter-card,
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card,#appShell #statusBoardView .boxcount-cumulative-filters>.status-filter-card{flex:1 1 0!important;min-width:0!important;width:auto!important;margin:0!important;padding:0 8px!important;gap:4px!important;}
+  #appShell #statusBoardView .cumulative-filter-cards>.status-filter-card>span,#appShell #statusBoardView .detail-filter-cards>.status-filter-card>span,
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card>span,#appShell #statusBoardView .boxcount-cumulative-filters>.status-filter-card>span{font-size:10.5px!important;}
+  #appShell #statusBoardView .cumulative-filter-cards input,#appShell #statusBoardView .detail-filter-cards input,
+  #appShell #statusBoardView .store-history-toolbar input,#appShell #statusBoardView .store-history-toolbar select,#appShell #statusBoardView .boxcount-cumulative-filters input{font-size:12.5px!important;padding:0!important;min-width:0!important;}
+  #appShell #statusBoardView .cumulative-filter-cards input::-webkit-calendar-picker-indicator,#appShell #statusBoardView .detail-filter-cards input::-webkit-calendar-picker-indicator,
+  #appShell #statusBoardView .store-history-toolbar input::-webkit-calendar-picker-indicator,#appShell #statusBoardView .boxcount-cumulative-filters input::-webkit-calendar-picker-indicator{display:none!important;}
+  #appShell #statusBoardView .cumulative-filter-cards>.status-filter-btn,#appShell #statusBoardView .detail-filter-cards>.status-filter-btn,
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-btn,#appShell #statusBoardView .boxcount-cumulative-filters>.status-filter-btn{flex:0 0 auto!important;width:auto!important;height:40px!important;margin:0!important;padding:0 10px!important;font-size:12px!important;white-space:nowrap!important;}
+  /* 버튼이 둘인 줄(누계)은 날짜 칸 이름표를 숨겨 자리 확보(앞이 시작, 뒤가 종료) */
+  #appShell #statusBoardView .cumulative-filter-cards>.status-filter-card>span,#appShell #statusBoardView .boxcount-cumulative-filters>.status-filter-card>span{display:none!important;}
+  /* 버튼 글자를 짧게 해 월 입력칸이 잘리지 않게: 기간 조회→조회, 전체 누계→전체, 올해 누계→올해 */
+  #appShell #statusBoardView #cumSearchBtn,#appShell #statusBoardView #cumAllBtn,#appShell #statusBoardView #boxcountPeriodSearch,#appShell #statusBoardView #boxcountAll{font-size:0!important;padding:0 12px!important;}
+  #appShell #statusBoardView #cumSearchBtn::after,#appShell #statusBoardView #boxcountPeriodSearch::after{content:"조회";font-size:12.5px;}
+  #appShell #statusBoardView #cumAllBtn::after{content:"전체";font-size:12.5px;}
+  #appShell #statusBoardView #boxcountAll::after{content:"올해";font-size:12.5px;}
+  #appShell #statusBoardView .cumulative-filter-cards>.status-filter-card,#appShell #statusBoardView .boxcount-cumulative-filters>.status-filter-card{padding:0 6px!important;}
+  #appShell #statusBoardView .cumulative-filter-cards input,#appShell #statusBoardView .boxcount-cumulative-filters input{font-size:11.5px!important;letter-spacing:-.03em!important;}
+  /* 매장별 처리이력 '매장 상세': 2줄 */
+  #appShell #statusBoardView .store-history-toolbar:has(#storeHistoryStoreField:not([hidden])){flex-wrap:wrap!important;}
+  #appShell #statusBoardView .store-history-toolbar:has(#storeHistoryStoreField:not([hidden]))>.status-filter-card:not(#storeHistoryStoreField){flex:1 1 calc(50% - 3px)!important;}
+  #appShell #statusBoardView .store-history-toolbar:has(#storeHistoryStoreField:not([hidden]))>#storeHistoryStoreField{flex:1 1 0!important;}
 }
 /* 휴대폰: 조회 칸이 하나뿐인 곳(예: 현황판 요일 분석의 요일)은 칸과 조회 버튼을 한 줄로 */
 @media (max-width:900px){
