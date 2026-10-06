@@ -12985,7 +12985,16 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 
   patchTopTabs();
   var active=document.querySelector('.view.active');
-  var start=active&&menus.find(function(x){return x.kind==='view'&&x.target===active.id&&x.visible});
+  var start=null;
+  if(active&&active.id==='statusBoardView'){
+    var activeStatusTab=active.querySelector('.status-board-tab.active')||active.querySelector('.status-board-tab');
+    var activeStatusKey=activeStatusTab&&activeStatusTab.getAttribute('data-status-tab');
+    start=activeStatusKey&&menus.find(function(x){
+      return x.kind==='statusTab'&&x.group==='statusboard'&&x.statusTab===activeStatusKey&&x.visible;
+    });
+  }else{
+    start=active&&menus.find(function(x){return x.kind==='view'&&x.target===active.id&&x.visible});
+  }
   if(start)current={group:start.group,menuId:start.id};
   render();
 })();
