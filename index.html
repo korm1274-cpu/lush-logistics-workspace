@@ -6756,7 +6756,32 @@ html,body{max-width:100%;overflow-x:hidden}
 @media(max-width:1100px){#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .analysis-three-col{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){#statusBoardView .analysis-two-col,#statusBoardView .analysis-three-col{grid-template-columns:1fr}#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
-</head>
+<style id="v113-outbound-final-and-tab-drag">
+#statusBoardView .outbound-nowrap th,#statusBoardView .outbound-nowrap td{white-space:nowrap}
+#statusBoardView .outbound-month-scroll{max-height:330px;overflow-y:auto}
+#statusBoardView .outbound-month-scroll thead th,#statusBoardView .outbound-raw-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .outbound-major-summary{padding:6px 20px 18px}
+#statusBoardView .outbound-major-summary>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #efefeb}
+#statusBoardView .outbound-major-summary>div:last-child{border-bottom:0}
+#statusBoardView .outbound-major-summary span{font-size:11px;color:#747c76;font-weight:800}
+#statusBoardView .outbound-major-summary b{font-size:13px;white-space:nowrap}
+#statusBoardView .outbound-table-tools{display:flex;gap:8px;align-items:center}
+#statusBoardView .outbound-table-tools input,#statusBoardView .outbound-table-tools select{height:34px;border:1px solid #dedfdc;border-radius:7px;padding:0 9px;background:#fff;font-size:11px}
+#statusBoardView .outbound-inline-detail{margin-top:16px}
+#statusBoardView .outbound-change-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 10px 12px}
+#statusBoardView .outbound-change-pair>div>b{display:block;padding:8px 9px 2px;font-size:10px;color:#6f7771}
+#statusBoardView .outbound-change-pair .analysis-rank-list{padding:0}
+#statusBoardView .outbound-exception-note{margin-top:16px}
+#statusBoardView .outbound-exception-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0 22px 18px;border:1px solid #ecece8;border-radius:10px;overflow:hidden}
+#statusBoardView .outbound-exception-grid>div{padding:15px 16px}
+#statusBoardView .outbound-exception-grid>div+div{border-left:1px solid #ecece8}
+#statusBoardView .outbound-exception-grid span{display:block;font-size:10px;color:#7b827d;font-weight:800;margin-bottom:7px}
+#statusBoardView .outbound-exception-grid b{font-size:13px}
+#statusBoardView .outbound-detail-filters{flex-wrap:wrap!important}
+#statusBoardView .outbound-raw-scroll{max-height:520px!important;overflow:auto!important}
+#statusBoardView .outbound-product-groups .analysis-rank-list>div{grid-template-columns:28px minmax(0,1fr) auto}
+@media(max-width:760px){#statusBoardView .outbound-change-pair,#statusBoardView .outbound-exception-grid{grid-template-columns:1fr}#statusBoardView .outbound-exception-grid>div+div{border-left:0;border-top:1px solid #ecece8}}
+</style></head>
 <body>
 <div class="app" id="appShell">
   <aside class="sidebar" id="sidebar">
@@ -7569,110 +7594,138 @@ html,body{max-width:100%;overflow-x:hidden}
     
         <div class="status-panel" data-status-panel="outboundanalysis">
           <div class="outbound-analysis-subtabs boxcount-subtabs" role="tablist" aria-label="출고 분석 세부 메뉴">
-            <button type="button" class="outbound-analysis-subtab boxcount-subtab active" data-outbound-analysis-view="overview">종합 분석</button>
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab active" data-outbound-analysis-view="overview">전체 분석</button>
             <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="store">매장 분석</button>
             <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="product">제품 분석</button>
+            <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="monthly">월간 분석</button>
             <button type="button" class="outbound-analysis-subtab boxcount-subtab" data-outbound-analysis-view="detail">상세조회</button>
           </div>
 
           <div class="outbound-analysis-section active" data-outbound-analysis-section="overview">
             <div class="status-card outbound-analysis-filter-card">
-              <div class="status-card-title">
-                <div><h3>출고 종합 분석</h3><small>매장·제품·제품군·요일·증감 흐름을 한 화면에서 확인합니다.</small></div>
-                <span class="outbound-analysis-demo">DEMO</span>
-              </div>
+              <div class="status-card-title"><div><h3>출고 전체 분석</h3><small>조회기간 전체 누적 기준 · 순위/비중은 환산 EA, 원본 EA/G는 보조 정보로 표시합니다.</small></div><span class="outbound-analysis-demo">DEMO</span></div>
               <div class="status-filter-cards outbound-analysis-filters">
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>기준월</span><input type="month" id="outboundAnalysisMonth" value="2026-09"><small>월 기준 분석</small></div>
-                <button type="button" class="btn primary status-filter-btn" id="outboundAnalysisRun">조회</button>
-                <button type="button" class="btn status-filter-btn" id="outboundAnalysisAll">전체</button>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작월</span><input type="month" id="outboundOverviewStart" value="2026-01"><small>누계 시작월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료월</span><input type="month" id="outboundOverviewEnd" value="2026-10"><small>누계 종료월</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="outboundOverviewRun">조회</button>
+                <button type="button" class="btn status-filter-btn" id="outboundOverviewAll">전체 누계</button>
               </div>
-              <div class="outbound-analysis-kpis boxcount-summary-bar">
-                <div><span>총 출고량</span><strong>428,640<em>EA</em></strong><small>환산 EA 기준</small></div>
-                <div><span>출고 매장</span><strong>68<em>개</em></strong><small>선택 기간 기준</small></div>
-                <div><span>출고 SKU</span><strong>612<em>SKU</em></strong><small>중복 제거</small></div>
-                <div><span>전월 대비</span><strong class="down">-12.4<em>%</em></strong><small>출고량 기준</small></div>
-              </div>
-            </div>
-
-            <div class="chart-card outbound-analysis-wide-card">
-              <div class="outbound-analysis-card-head"><div><h3>출고량 추이</h3><small>최근 6개월 · 환산 EA</small></div><b>월별 추이</b></div>
-              <div class="outbound-trend-demo" aria-label="월별 출고량 추이 데모">
-                <div><span style="height:54%"></span><small>4월</small></div><div><span style="height:68%"></span><small>5월</small></div><div><span style="height:82%"></span><small>6월</small></div><div><span style="height:91%"></span><small>7월</small></div><div><span style="height:100%"></span><small>8월</small></div><div><span style="height:76%"></span><small>9월</small></div>
+              <div class="boxcount-summary-bar analysis-five-kpi">
+                <div><span>누적 출고량</span><strong><b id="outOverviewTotal">984,620</b><em>환산 EA</em></strong><small>EA 641,200 · G 3,434,200</small></div>
+                <div><span>일평균 출고량</span><strong><b id="outOverviewAvg">4,923</b><em>환산 EA</em></strong><small>영업일 기준</small></div>
+                <div><span>출고 SKU</span><strong><b id="outOverviewSku">612</b><em>SKU</em></strong><small>실제 출고 SKU 중복 제거</small></div>
+                <div><span>최대 출고 일자</span><strong><b id="outOverviewMaxDate">2026.08.14</b></strong><small>조회기간 내</small></div>
+                <div><span>최대 출고량</span><strong><b id="outOverviewMaxQty">41,380</b><em>환산 EA</em></strong><small>EA 27,140 · G 142,400</small></div>
               </div>
             </div>
-
-            <div class="outbound-analysis-grid">
-              <div class="table-card outbound-analysis-card clickable" data-outbound-go="store">
-                <div class="outbound-analysis-card-head"><div><h3>매장별 출고 분석</h3><small>출고량 TOP 5</small></div><span>매장 분석 →</span></div>
-                <div class="outbound-rank-list">
-                  <div><b>1</b><span>강남역점</span><em>38,420 EA</em></div><div><b>2</b><span>롯데 월드몰</span><em>34,180 EA</em></div><div><b>3</b><span>스타필드 코엑스</span><em>31,760 EA</em></div><div><b>4</b><span>압구정1호</span><em>28,930 EA</em></div><div><b>5</b><span>신세계 강남</span><em>25,440 EA</em></div>
-                </div>
-              </div>
-
-              <div class="table-card outbound-analysis-card clickable" data-outbound-go="product">
-                <div class="outbound-analysis-card-head"><div><h3>제품별 출고 분석</h3><small>출고량 TOP 5</small></div><span>제품 분석 →</span></div>
-                <div class="outbound-rank-list">
-                  <div><b>1</b><span>쇼핑백 S</span><em>82,140 EA</em></div><div><b>2</b><span>쇼핑백 M</span><em>61,330 EA</em></div><div><b>3</b><span>배쓰밤 A</span><em>18,920 EA</em></div><div><b>4</b><span>솝 A</span><em>16,840 EA</em></div><div><b>5</b><span>기프트 A</span><em>14,520 EA</em></div>
-                </div>
-              </div>
-
-              <div class="table-card outbound-analysis-card">
-                <div class="outbound-analysis-card-head"><div><h3>제품군 구성</h3><small>전체 출고수량 비중</small></div></div>
-                <div class="outbound-category-demo">
-                  <div class="outbound-category-ring"><div><b>428K</b><small>EA</small></div></div>
-                  <div class="outbound-category-legend">
-                    <span><i></i>부자재 <b>44%</b></span><span><i></i>배쓰 <b>21%</b></span><span><i></i>바디 <b>15%</b></span><span><i></i>기프트 <b>11%</b></span><span><i></i>기타 <b>9%</b></span>
-                  </div>
-                </div>
-              </div>
-
-              <div class="table-card outbound-analysis-card">
-                <div class="outbound-analysis-card-head"><div><h3>출고 변화 분석</h3><small>전월 대비 증가·감소 품목</small></div></div>
-                <div class="outbound-change-grid">
-                  <div><span>증가 TOP</span><b>쇼핑백 S</b><strong>+34.8%</strong><small>외 4개 품목</small></div>
-                  <div><span>감소 TOP</span><b>배쓰밤 A</b><strong class="down">-28.6%</strong><small>외 4개 품목</small></div>
-                </div>
-              </div>
-
-              <div class="table-card outbound-analysis-card">
-                <div class="outbound-analysis-card-head"><div><h3>매장 변화 분석</h3><small>전월 대비 출고 변화</small></div></div>
-                <div class="outbound-change-list"><div><span>강남역점</span><b>+18.4%</b></div><div><span>롯데 월드몰</span><b>+11.2%</b></div><div><span>스타필드 코엑스</span><b class="down">-9.8%</b></div><div><span>압구정1호</span><b class="down">-15.1%</b></div></div>
-              </div>
-
-              <div class="table-card outbound-analysis-card">
-                <div class="outbound-analysis-card-head"><div><h3>요일별 출고 패턴</h3><small>평균 출고수량</small></div></div>
-                <div class="outbound-week-bars"><div><span style="height:74%"></span><small>월</small></div><div><span style="height:91%"></span><small>화</small></div><div><span style="height:61%"></span><small>수</small></div><div><span style="height:100%"></span><small>목</small></div><div><span style="height:82%"></span><small>금</small></div></div>
-              </div>
-
-              <div class="table-card outbound-analysis-card">
-                <div class="outbound-analysis-card-head"><div><h3>출고 집중도</h3><small>상위 그룹이 차지하는 비중</small></div></div>
-                <div class="outbound-concentration">
-                  <div><span>TOP 10 매장</span><b>57.2%</b><div><i style="width:57.2%"></i></div></div>
-                  <div><span>TOP 10 제품</span><b>63.8%</b><div><i style="width:63.8%"></i></div></div>
-                </div>
-              </div>
+            <div class="analysis-two-col outbound-overview-main">
+              <div class="chart-card"><div class="status-card-title"><h3>전체 출고 추이</h3><small>환산 EA 기준</small></div><div class="chart-wrap"><canvas id="outOverviewChart"></canvas><div class="chart-empty" id="outOverviewEmpty">데이터가 없습니다.</div></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>월별 출고 현황</h3><small>누계 조회기간 내 월별 현황</small></div><div class="status-table-scroll outbound-month-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>월</th><th>환산 EA</th><th>원본 수량</th><th>SKU</th><th>전월 대비</th><th>전년 동월 대비</th></tr></thead><tbody id="outOverviewMonthBody"></tbody></table></div></div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="chart-card"><div class="status-card-title"><h3>제품군 구성비</h3><small>환산 EA · 출고 SKU 수 함께 표시</small></div><div class="boxcount-radial-grid outbound-category-radials" id="outOverviewCategory"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>출고 주요 현황</h3><small>조회기간 누적 기준</small></div><div class="outbound-major-summary" id="outOverviewMajor"></div></div>
             </div>
           </div>
 
           <div class="outbound-analysis-section" data-outbound-analysis-section="store">
-            <div class="status-card"><div class="status-card-title"><div><h3>매장 분석</h3><small>기존 매장별 처리이력과 출고 상세 데이터를 통합하는 영역입니다.</small></div></div>
-              <div class="outbound-analysis-coming"><b>매장 기준 분석</b><span>매장 검색 · 기간 비교 · 제품군 구성 · 월별 추이 · 제품별 상세를 이 영역으로 통합할 예정입니다.</span></div>
-            </div>
-          </div>
-          <div class="outbound-analysis-section" data-outbound-analysis-section="product">
-            <div class="status-card"><div class="status-card-title"><div><h3>제품 분석</h3><small>기존 제품별 출고현황과 출고 상세 데이터를 통합하는 영역입니다.</small></div></div>
-              <div class="outbound-analysis-coming"><b>제품 기준 분석</b><span>제품 검색 · 기간 비교 · 매장별 출고 비중 · 월별 추이 · 매장별 상세를 이 영역으로 통합할 예정입니다.</span></div>
-            </div>
-          </div>
-          <div class="outbound-analysis-section" data-outbound-analysis-section="detail">
-            <div class="status-card"><div class="status-card-title"><div><h3>상세조회</h3><small>매장과 제품을 동시에 조건으로 걸어 원본 출고 내역을 조회합니다.</small></div></div>
-              <div class="status-filter-cards">
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date"><small>조회 시작일</small></div>
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date"><small>조회 종료일</small></div>
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>매장</span><input type="text" placeholder="매장명 검색"><small>선택 입력</small></div>
-                <div class="prod-api-metric status-filter-card cum-date-card"><span>제품</span><input type="text" placeholder="제품코드 또는 제품명"><small>선택 입력</small></div>
-                <button type="button" class="btn primary status-filter-btn">조회</button>
+            <div class="status-card outbound-analysis-filter-card">
+              <div class="status-card-title"><div><h3>매장 분석</h3><small>누적 기준으로 상·하위와 전체 매장 구성을 확인합니다. 월 변화는 월간 분석에서 확인합니다.</small></div></div>
+              <div class="status-filter-cards outbound-analysis-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작월</span><input type="month" id="outStoreStart" value="2026-01"><small>누계 시작월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료월</span><input type="month" id="outStoreEnd" value="2026-10"><small>누계 종료월</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="outStoreRun">조회</button>
+                <button type="button" class="btn status-filter-btn" id="outStoreAll">전체 누계</button>
               </div>
+            </div>
+            <div class="analysis-two-col">
+              <div class="table-card"><div class="status-card-title"><h3>출고량 상위 TOP 5</h3><small>조회기간 누적 · 환산 EA · 0 이하 제외</small></div><div class="analysis-rank-list" id="outStoreTop"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>출고량 하위 TOP 5</h3><small>조회기간 누적 · 환산 EA · 0 이하 제외</small></div><div class="analysis-rank-list" id="outStoreBottom"></div></div>
+            </div>
+            <div class="boxcount-on-demand"><button type="button" class="btn boxcount-compare-toggle" id="outStoreCompareToggle"><span>전체 매장 비교 조회</span><b>⌄</b></button></div>
+            <div class="table-card" id="outStoreComparePanel" hidden>
+              <div class="status-card-title boxcount-store-compare-head"><div><h3>전체 매장 비교</h3><small>조회기간 누적 기준</small></div><label class="boxcount-store-search"><span>매장 검색</span><input type="search" id="outStoreSearch" placeholder="매장명 입력"></label></div>
+              <div class="status-table-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>매장</th><th>환산 EA</th><th>원본 수량</th><th>SKU</th><th>비중</th><th>상세</th></tr></thead><tbody id="outStoreCompareBody"></tbody></table></div>
+            </div>
+            <div class="table-card outbound-inline-detail" id="outStoreDetailPanel" hidden>
+              <div class="status-card-title"><div><h3 id="outStoreDetailTitle">매장 상세</h3><small id="outStoreDetailMeta">조회기간 누적</small></div><button type="button" class="btn" id="outStoreDetailClose">닫기</button></div>
+              <div class="boxcount-summary-bar"><div><span>누적 출고량</span><strong><b id="outStoreDetailTotal">0</b><em>환산 EA</em></strong></div><div><span>일평균</span><strong><b id="outStoreDetailAvg">0</b><em>환산 EA</em></strong></div><div><span>출고 SKU</span><strong><b id="outStoreDetailSku">0</b><em>SKU</em></strong></div><div><span>최대 출고 일자</span><strong><b id="outStoreDetailMax">-</b></strong></div></div>
+              <div class="analysis-two-col"><div class="chart-card boxcount-inner-card"><div class="status-card-title"><h3>매장 출고수량 추이</h3><small>환산 EA</small></div><div class="chart-wrap"><canvas id="outStoreDetailChart"></canvas></div></div><div class="table-card boxcount-inner-card"><div class="status-card-title"><h3>월별 출고 현황</h3><small>원본 EA/G 포함</small></div><div class="status-table-scroll compact"><table class="status-data-table outbound-nowrap"><thead><tr><th>월</th><th>환산 EA</th><th>원본 수량</th><th>SKU</th></tr></thead><tbody id="outStoreDetailMonthBody"></tbody></table></div></div></div>
+            </div>
+          </div>
+
+          <div class="outbound-analysis-section" data-outbound-analysis-section="product">
+            <div class="status-card outbound-analysis-filter-card">
+              <div class="status-card-title"><div><h3>제품 분석</h3><small>EA 단위 제품 · G 단위 제품 · 부자재를 한 페이지에서 각각 비교합니다.</small></div></div>
+              <div class="status-filter-cards outbound-analysis-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작월</span><input type="month" id="outProductStart" value="2026-01"><small>누계 시작월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료월</span><input type="month" id="outProductEnd" value="2026-10"><small>누계 종료월</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="outProductRun">조회</button>
+                <button type="button" class="btn status-filter-btn" id="outProductAll">전체 누계</button>
+              </div>
+            </div>
+            <div class="analysis-three-col outbound-product-groups">
+              <div class="table-card"><div class="status-card-title"><h3>EA 단위 제품 TOP 5</h3><small>누적 원본 EA · 환산 EA 기준 비중</small></div><div class="analysis-rank-list" id="outProductEaTop"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>G 단위 제품 TOP 5</h3><small>누적 원본 G · 환산 EA 보조</small></div><div class="analysis-rank-list" id="outProductGTop"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>부자재 TOP 5</h3><small>일반 제품과 분리</small></div><div class="analysis-rank-list" id="outProductMaterialTop"></div></div>
+            </div>
+            <div class="boxcount-on-demand"><button type="button" class="btn boxcount-compare-toggle" id="outProductCompareToggle"><span>전체 제품 비교 조회</span><b>⌄</b></button></div>
+            <div class="table-card" id="outProductComparePanel" hidden>
+              <div class="status-card-title boxcount-store-compare-head"><div><h3>전체 제품 비교</h3><small>조회기간 누적 · 전월 대비 제외</small></div><div class="outbound-table-tools"><input type="search" id="outProductSearch" placeholder="제품명 / SKU 검색"><select id="outProductType"><option value="">전체 유형</option><option value="EA">EA 제품</option><option value="G">G 제품</option><option value="부자재">부자재</option></select></div></div>
+              <div class="status-table-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>제품명</th><th>유형</th><th>제품군</th><th>원본 수량</th><th>환산 EA</th><th>비중</th><th>상세</th></tr></thead><tbody id="outProductCompareBody"></tbody></table></div>
+            </div>
+            <div class="table-card outbound-inline-detail" id="outProductDetailPanel" hidden>
+              <div class="status-card-title"><div><h3 id="outProductDetailTitle">제품 상세</h3><small id="outProductDetailMeta">-</small></div><button type="button" class="btn" id="outProductDetailClose">닫기</button></div>
+              <div class="boxcount-summary-bar"><div><span>누적 원본 수량</span><strong><b id="outProductDetailOriginal">0</b></strong></div><div><span>누적 환산 EA</span><strong><b id="outProductDetailConverted">0</b><em>EA</em></strong></div><div><span>일평균</span><strong><b id="outProductDetailAvg">0</b></strong></div><div><span>최대 출고 일자</span><strong><b id="outProductDetailMax">-</b></strong></div></div>
+              <div class="analysis-two-col"><div class="chart-card boxcount-inner-card"><div class="status-card-title"><h3>제품 출고수량 추이</h3><small>환산 EA</small></div><div class="chart-wrap"><canvas id="outProductDetailChart"></canvas></div></div><div class="table-card boxcount-inner-card"><div class="status-card-title"><h3>월별 출고 현황</h3><small>원본 수량 + 환산 EA</small></div><div class="status-table-scroll compact"><table class="status-data-table outbound-nowrap"><thead><tr><th>월</th><th>원본 수량</th><th>환산 EA</th><th>비중</th></tr></thead><tbody id="outProductDetailMonthBody"></tbody></table></div></div></div>
+            </div>
+          </div>
+
+          <div class="outbound-analysis-section" data-outbound-analysis-section="monthly">
+            <div class="status-card outbound-analysis-filter-card">
+              <div class="status-card-title"><div><h3>출고 월간 분석</h3><small>누계에서 보던 주요 항목을 선택 월 기준으로 동일하게 분석하고 비교월과 변화까지 확인합니다.</small></div></div>
+              <div class="status-filter-cards outbound-analysis-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>기준월</span><input type="month" id="outMonthlyBase" value="2026-10"><small>분석할 월</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>비교월</span><input type="month" id="outMonthlyCompare" value="2026-09"><small>전월 외 다른 월 선택 가능</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="outMonthlyRun">조회</button>
+              </div>
+              <div class="boxcount-summary-bar analysis-five-kpi">
+                <div><span>총 출고량</span><strong><b id="outMonthlyTotal">118,420</b><em>환산 EA</em></strong><small>기준월</small></div>
+                <div><span>일평균</span><strong><b id="outMonthlyAvg">5,382</b><em>환산 EA</em></strong><small>영업일 기준</small></div>
+                <div><span>출고 SKU</span><strong><b id="outMonthlySku">486</b><em>SKU</em></strong><small>중복 제거</small></div>
+                <div><span>최대 출고 일자</span><strong><b id="outMonthlyMaxDate">2026.10.08</b></strong><small>기준월</small></div>
+                <div><span>비교월 대비</span><strong><b id="outMonthlyDelta">+8.4</b><em>%</em></strong><small id="outMonthlyCompareLabel">2026-10 vs 2026-09</small></div>
+              </div>
+            </div>
+            <div class="analysis-three-col">
+              <div class="table-card"><div class="status-card-title"><h3>매장 상위 TOP 5</h3><small>기준월 · 0 이하 제외</small></div><div class="analysis-rank-list" id="outMonthlyStoreTop"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>매장 하위 TOP 5</h3><small>기준월 · 0 이하 제외</small></div><div class="analysis-rank-list" id="outMonthlyStoreBottom"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>매장 급증/급감</h3><small>비율 + 절대 증감량</small></div><div class="outbound-change-pair"><div><b>급증 TOP 5</b><div class="analysis-rank-list" id="outMonthlyStoreUp"></div></div><div><b>급감 TOP 5</b><div class="analysis-rank-list" id="outMonthlyStoreDown"></div></div></div></div>
+            </div>
+            <div class="analysis-three-col outbound-product-groups">
+              <div class="table-card"><div class="status-card-title"><h3>EA 제품 월간 분석</h3><small>상위 · 신규 · 예외</small></div><div class="analysis-rank-list" id="outMonthlyEa"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>G 제품 월간 분석</h3><small>상위 · 신규 · 예외</small></div><div class="analysis-rank-list" id="outMonthlyG"></div></div>
+              <div class="table-card"><div class="status-card-title"><h3>부자재 월간 분석</h3><small>상위 · 신규 · 예외</small></div><div class="analysis-rank-list" id="outMonthlyMaterial"></div></div>
+            </div>
+            <div class="status-card outbound-exception-note"><div class="status-card-title"><div><h3>신규 / 예외 현황</h3><small>비교월 0 → 기준월 출고는 신규, 기준월 0은 단순 중단이 아니라 품절·운영 예외 등 사유 확인 대상으로 구분합니다.</small></div></div><div class="outbound-exception-grid"><div><span>신규 출고</span><b id="outMonthlyNew">EA 8 · G 4 · 부자재 3 SKU</b></div><div><span>품절/운영 예외 확인</span><b id="outMonthlyException">EA 5 · G 2 · 부자재 1 SKU</b></div></div></div>
+          </div>
+
+          <div class="outbound-analysis-section" data-outbound-analysis-section="detail">
+            <div class="status-card outbound-analysis-filter-card">
+              <div class="status-card-title"><div><h3>출고 원본 처리이력</h3><small>API 원본값 그대로 조회합니다. 환산 EA는 표시하지 않습니다.</small></div></div>
+              <div class="status-filter-cards outbound-analysis-filters outbound-detail-filters">
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>시작일</span><input type="date" id="outDetailStart" value="2026-10-01"><small>조회 시작일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>종료일</span><input type="date" id="outDetailEnd" value="2026-10-31"><small>조회 종료일</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>매장</span><input type="search" id="outDetailStore" placeholder="매장명"><small>선택 입력</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>제품/SKU</span><input type="search" id="outDetailProduct" placeholder="제품명 또는 SKU"><small>선택 입력</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>유형</span><select id="outDetailType"><option value="">전체</option><option value="EA">EA 단위 제품</option><option value="G">G 단위 제품</option><option value="부자재">부자재</option></select><small>원본 유형</small></div>
+                <div class="prod-api-metric status-filter-card cum-date-card"><span>제품군</span><select id="outDetailCategory"><option value="">전체 제품군</option><option>Bath</option><option>Body</option><option>Hair</option><option>Soap</option><option>부자재</option></select><small>선택 입력</small></div>
+                <button type="button" class="btn primary status-filter-btn" id="outDetailRun">조회</button>
+              </div>
+            </div>
+            <div class="table-card outbound-raw-history">
+              <div class="status-card-title"><div><h3>원본 처리이력</h3><small id="outDetailResultLabel">API 연동 전 · 데모 원본 이력</small></div></div>
+              <div class="status-table-scroll outbound-raw-scroll"><table class="status-data-table outbound-nowrap"><thead><tr><th>일자</th><th>매장</th><th>SKU</th><th>제품명</th><th>유형</th><th>제품군</th><th>단위</th><th>출고수량</th></tr></thead><tbody id="outDetailBody"></tbody></table></div>
             </div>
           </div>
         </div>
@@ -11958,6 +12011,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   }
   qa('.boxcount-subtab').forEach(function(b){b.addEventListener('click',function(){setBoxcountView(b.dataset.boxcountView)})});
 
+  function boxMonthlyRankHtml(rows,valueFn){
+    return rows.map(function(x,i){return '<div><b>'+(i+1)+'</b><span>'+esc(x.name||'-')+'</span><strong>'+esc(valueFn(x))+'</strong></div>'}).join('')||'<div class="data-empty">데이터가 없습니다.</div>';
+  }
   function renderBoxcountMonthly(){
     var base=q('#boxMonthlyBase');if(!base)return;if(!base.value)base.value=today.slice(0,7);
     var cmp=q('#boxMonthlyCompare');if(!cmp.value)cmp.value=boxcountPrevMonth(base.value);
@@ -11965,15 +12021,15 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var total=cur.reduce(function(a,x){return a+x.value},0),oldTotal=stores.reduce(function(a,n){return a+(old[n]||0)},0),avg=cur.length?Math.round(total/cur.length):0,top=cur.slice().sort(function(a,b){return b.value-a.value})[0],delta=oldTotal?((total-oldTotal)/oldTotal*100):0;
     q('#boxMonthlyTotal').textContent=fmt(total);q('#boxMonthlyStores').textContent=fmt(cur.length);q('#boxMonthlyAvg').textContent=fmt(avg);q('#boxMonthlyTopStore').textContent=top?top.name:'-';q('#boxMonthlyTopQty').textContent=fmt(top?top.value:0)+' BOX';q('#boxMonthlyDelta').textContent=(delta>0?'+':'')+delta.toFixed(1);q('#boxMonthlyCompareLabel').textContent=base.value+' vs '+cmp.value;
     var top5=cur.slice().sort(function(a,b){return b.value-a.value}).slice(0,5),bottom5=cur.slice().sort(function(a,b){return a.value-b.value}).slice(0,5);
-    q('#boxMonthlyTop').innerHTML=prodRankHtml(top5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
-    q('#boxMonthlyBottom').innerHTML=prodRankHtml(bottom5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
+    q('#boxMonthlyTop').innerHTML=boxMonthlyRankHtml(top5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
+    q('#boxMonthlyBottom').innerHTML=boxMonthlyRankHtml(bottom5.map(function(x){return{name:x.name,value:x.value}}),function(x){return fmt(x.value)+' BOX'});
     var days=Object.keys(BOXCOUNT_SCHEDULE),dayVals=days.map(function(day){return{name:day,value:boxcountDayMonthQty(day,base.value)}}),dayTotal=dayVals.reduce(function(a,x){return a+x.value},0),colors=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8'];
     q('#boxMonthlyWeekday').innerHTML=dayVals.map(function(x,i){return boxcountRadialHtml(x.name.replace('요일',''),x.value,dayTotal,colors[i%colors.length])}).join('');
     var changes=stores.map(function(name){var a=boxcountStoreMonthQty(name,base.value),b=boxcountStoreMonthQty(name,cmp.value),diff=a-b,pct=b?diff/b*100:0;return{name:name,a:a,b:b,diff:diff,pct:pct}}).filter(function(x){return x.a>0&&x.b>0});
     var inc=changes.filter(function(x){return x.diff>0}).sort(function(a,b){return b.pct-a.pct}).slice(0,5),dec=changes.filter(function(x){return x.diff<0}).sort(function(a,b){return a.pct-b.pct}).slice(0,5),lab=base.value+' vs '+cmp.value;
     q('#boxMonthlyIncreaseHint').textContent=lab;q('#boxMonthlyDecreaseHint').textContent=lab;
-    q('#boxMonthlyIncrease').innerHTML=prodRankHtml(inc,function(x){return '+'+x.pct.toFixed(1)+'% / +'+fmt(x.diff)+' BOX'});
-    q('#boxMonthlyDecrease').innerHTML=prodRankHtml(dec,function(x){return x.pct.toFixed(1)+'% / '+fmt(x.diff)+' BOX'});
+    q('#boxMonthlyIncrease').innerHTML=boxMonthlyRankHtml(inc,function(x){return '+'+x.pct.toFixed(1)+'% / +'+fmt(x.diff)+' BOX'});
+    q('#boxMonthlyDecrease').innerHTML=boxMonthlyRankHtml(dec,function(x){return x.pct.toFixed(1)+'% / '+fmt(x.diff)+' BOX'});
   }
   if(q('#boxMonthlyRun'))q('#boxMonthlyRun').addEventListener('click',renderBoxcountMonthly);
 
@@ -14793,18 +14849,122 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 }
 </style>
 
-<script id="v103-outbound-analysis-script">
+<script id="v113-outbound-analysis-script">
 (function(){
+  var q=function(s,r){return(r||document).querySelector(s)},qa=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var fmt=function(n){return Number(n||0).toLocaleString('ko-KR')},esc=function(v){return String(v==null?'':v).replace(/[&<>"']/g,function(ch){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]})};
+  var stores=[
+    {name:'강남역',conv:82410,ea:61240,g:211700,sku:184},{name:'스타필드 코엑스',conv:74210,ea:53210,g:210000,sku:176},{name:'롯데 월드몰',conv:68420,ea:48220,g:202000,sku:169},{name:'압구정1호',conv:61940,ea:44120,g:178200,sku:158},{name:'신세계 강남',conv:57820,ea:41920,g:159000,sku:151},{name:'롯데 청량리',conv:34120,ea:24120,g:100000,sku:132},{name:'천안아산',conv:28640,ea:19640,g:90000,sku:124},{name:'제주 송당',conv:14820,ea:10820,g:40000,sku:97}
+  ];
+  var products=[
+    {sku:'100101',name:'배쓰밤 A',type:'EA',cat:'Bath',orig:18420,conv:18420},{sku:'100102',name:'기프트 A',type:'EA',cat:'Gift',orig:16820,conv:16820},{sku:'100103',name:'바디 제품 A',type:'EA',cat:'Body',orig:14210,conv:14210},{sku:'200101',name:'INTERGALACTIC',type:'G',cat:'Bath',orig:184200,conv:18420},{sku:'200102',name:'솝 A',type:'G',cat:'Soap',orig:163800,conv:16380},{sku:'200103',name:'헤어 제품 A',type:'G',cat:'Hair',orig:142100,conv:14210},{sku:'900101',name:'쇼핑백 S',type:'부자재',cat:'부자재',orig:82410,conv:82410},{sku:'900102',name:'쇼핑백 M',type:'부자재',cat:'부자재',orig:54210,conv:54210},{sku:'900103',name:'샘플 박스',type:'부자재',cat:'부자재',orig:28120,conv:28120}
+  ];
+  var months=['2026-01','2026-02','2026-03','2026-04','2026-05','2026-06','2026-07','2026-08','2026-09','2026-10'];
+  var monthVals=[78210,82440,91420,88630,96210,105820,118420,126380,109240,118420];
+  var raw=[
+    {date:'2026-10-01',store:'강남역',sku:'200101',name:'INTERGALACTIC',type:'G',cat:'Bath',unit:'G',qty:12000},
+    {date:'2026-10-01',store:'강남역',sku:'100101',name:'배쓰밤 A',type:'EA',cat:'Bath',unit:'EA',qty:240},
+    {date:'2026-10-01',store:'스타필드 코엑스',sku:'900101',name:'쇼핑백 S',type:'부자재',cat:'부자재',unit:'EA',qty:480},
+    {date:'2026-10-02',store:'롯데 월드몰',sku:'200102',name:'솝 A',type:'G',cat:'Soap',unit:'G',qty:8400},
+    {date:'2026-10-03',store:'압구정1호',sku:'100102',name:'기프트 A',type:'EA',cat:'Gift',unit:'EA',qty:180},
+    {date:'2026-10-05',store:'신세계 강남',sku:'900102',name:'쇼핑백 M',type:'부자재',cat:'부자재',unit:'EA',qty:620},
+    {date:'2026-10-08',store:'강남역',sku:'200103',name:'헤어 제품 A',type:'G',cat:'Hair',unit:'G',qty:15200},
+    {date:'2026-10-08',store:'천안아산',sku:'100103',name:'바디 제품 A',type:'EA',cat:'Body',unit:'EA',qty:310}
+  ];
   function switchView(view){
-    document.querySelectorAll('[data-outbound-analysis-view]').forEach(function(b){b.classList.toggle('active',b.dataset.outboundAnalysisView===view)});
-    document.querySelectorAll('[data-outbound-analysis-section]').forEach(function(s){s.classList.toggle('active',s.dataset.outboundAnalysisSection===view)});
+    qa('[data-outbound-analysis-view]').forEach(function(b){b.classList.toggle('active',b.dataset.outboundAnalysisView===view)});
+    qa('[data-outbound-analysis-section]').forEach(function(s){s.classList.toggle('active',s.dataset.outboundAnalysisSection===view)});
+    if(view==='overview')renderOverview();if(view==='store')renderStore();if(view==='product')renderProduct();if(view==='monthly')renderMonthly();if(view==='detail')renderRaw();
   }
-  document.addEventListener('click',function(e){
-    var tab=e.target.closest&&e.target.closest('[data-outbound-analysis-view]');
-    if(tab){switchView(tab.dataset.outboundAnalysisView);return}
-    var go=e.target.closest&&e.target.closest('[data-outbound-go]');
-    if(go)switchView(go.dataset.outboundGo);
-  });
+  function rankHtml(rows,valueFn,extraFn){return rows.map(function(x,i){return '<div><b>'+(i+1)+'</b><span>'+esc(x.name)+'</span><strong>'+esc(valueFn(x))+(extraFn?'<small style="display:block;font-weight:700;color:#8a918c;margin-top:2px">'+esc(extraFn(x))+'</small>':'')+'</strong></div>'}).join('')||'<div class="data-empty">데이터가 없습니다.</div>'}
+  var overviewChart=null,storeChart=null,productChart=null;
+  function drawLine(canvasId,labels,values,ref){
+    var canvas=q('#'+canvasId);if(!canvas||typeof Chart==='undefined')return;
+    if(ref==='overview'&&overviewChart)overviewChart.destroy();if(ref==='store'&&storeChart)storeChart.destroy();if(ref==='product'&&productChart)productChart.destroy();
+    var ch=new Chart(canvas,{type:'line',data:{labels:labels,datasets:[{data:values,borderWidth:2,pointRadius:2,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'#eeeeea'}},x:{grid:{display:false},ticks:{autoSkip:true,maxTicksLimit:12}}}}});
+    if(ref==='overview')overviewChart=ch;if(ref==='store')storeChart=ch;if(ref==='product')productChart=ch;
+  }
+  function renderOverview(){
+    var body=months.map(function(m,i){var v=monthVals[i],prev=i?((v-monthVals[i-1])/monthVals[i-1]*100):0,yoy=i>=0?((i%3)-1)*4.1:0;return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(v)+'</td><td>EA '+fmt(Math.round(v*.64))+' · G '+fmt(Math.round(v*3.5))+'</td><td>총 '+(430+i*11)+' · EA '+(310+i*8)+' · G '+(120+i*3)+'</td><td>'+(i?(prev>0?'+':'')+prev.toFixed(1)+'%':'-')+'</td><td>'+(yoy>0?'+':'')+yoy.toFixed(1)+'%</td></tr>'}).join('');
+    q('#outOverviewMonthBody').innerHTML=body;drawLine('outOverviewChart',months.map(function(x){return x.replace('-','.')}),monthVals,'overview');
+    var cats=[['부자재',310200,188],['Bath',226800,142],['Body',164400,108],['Gift',121900,82],['Hair/기타',161320,92]],total=cats.reduce(function(a,x){return a+x[1]},0),colors=['#2f6f62','#6e9f8f','#d2a86d','#bd765f','#7b86a8'];
+    q('#outOverviewCategory').innerHTML=cats.map(function(x,i){var pct=x[1]/total*100;return '<div class="boxcount-radial-item"><div class="boxcount-radial-gauge" style="--radial:'+pct.toFixed(1)+'%;--radial-color:'+colors[i]+'"><div><b>'+pct.toFixed(1)+'%</b><small>'+fmt(x[2])+' SKU</small></div></div><strong>'+x[0]+'</strong></div>'}).join('');
+    q('#outOverviewMajor').innerHTML='<div><span>최고 출고 매장</span><b>강남역 · 82,410 EA · 8.4%</b></div><div><span>최고 출고 제품</span><b>쇼핑백 S · 82,410 EA · 8.4%</b></div><div><span>상위 5개 매장 비중</span><b>35.1%</b></div><div><span>상위 5개 제품 비중</span><b>29.7%</b></div>';
+  }
+  var storeReturnY=null;
+  function renderStore(){
+    var total=stores.reduce(function(a,x){return a+x.conv},0),positive=stores.filter(function(x){return x.conv>0}),top=positive.slice().sort(function(a,b){return b.conv-a.conv}).slice(0,5),bottom=positive.slice().sort(function(a,b){return a.conv-b.conv}).slice(0,5);
+    q('#outStoreTop').innerHTML=rankHtml(top,function(x){return fmt(x.conv)+' EA'},function(x){return (x.conv/total*100).toFixed(1)+'% · '+x.sku+' SKU'});
+    q('#outStoreBottom').innerHTML=rankHtml(bottom,function(x){return fmt(x.conv)+' EA'},function(x){return (x.conv/total*100).toFixed(1)+'% · '+x.sku+' SKU'});
+    renderStoreTable();
+  }
+  function renderStoreTable(){
+    var kw=(q('#outStoreSearch')?q('#outStoreSearch').value:'').trim().toLowerCase(),total=stores.reduce(function(a,x){return a+x.conv},0),rows=stores.slice().sort(function(a,b){return a.name.localeCompare(b.name,'ko')}).filter(function(x){return !kw||x.name.toLowerCase().includes(kw)});
+    q('#outStoreCompareBody').innerHTML=rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+fmt(x.conv)+'</td><td>EA '+fmt(x.ea)+' · G '+fmt(x.g)+'</td><td>'+x.sku+'</td><td>'+(x.conv/total*100).toFixed(1)+'%</td><td><button class="btn sm out-store-detail" data-store="'+esc(x.name)+'">상세보기</button></td></tr>'}).join('');
+    qa('.out-store-detail',q('#outStoreCompareBody')).forEach(function(b){b.onclick=function(){openStoreDetail(b.dataset.store)}});
+  }
+  function openStoreDetail(name){
+    var s=stores.find(function(x){return x.name===name});if(!s)return;storeReturnY=window.scrollY;q('#outStoreDetailPanel').hidden=false;q('#outStoreDetailTitle').textContent=name+' 상세';q('#outStoreDetailTotal').textContent=fmt(s.conv);q('#outStoreDetailAvg').textContent=fmt(Math.round(s.conv/24));q('#outStoreDetailSku').textContent=s.sku;q('#outStoreDetailMax').textContent='2026.08.14';
+    var vals=months.map(function(_,i){return Math.round(s.conv*(.065+i*.008))});q('#outStoreDetailMonthBody').innerHTML=months.map(function(m,i){return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(vals[i])+'</td><td>EA '+fmt(Math.round(vals[i]*.65))+' · G '+fmt(Math.round(vals[i]*3.5))+'</td><td>'+Math.max(20,Math.round(s.sku*(.68+i*.025)))+'</td></tr>'}).join('');drawLine('outStoreDetailChart',months.map(function(x){return x.replace('-','.')}),vals,'store');q('#outStoreDetailPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function renderProduct(){
+    var total=products.reduce(function(a,x){return a+x.conv},0),ea=products.filter(function(x){return x.type==='EA'}).sort(function(a,b){return b.conv-a.conv}).slice(0,5),g=products.filter(function(x){return x.type==='G'}).sort(function(a,b){return b.conv-a.conv}).slice(0,5),mat=products.filter(function(x){return x.type==='부자재'}).sort(function(a,b){return b.conv-a.conv}).slice(0,5);
+    q('#outProductEaTop').innerHTML=rankHtml(ea,function(x){return fmt(x.orig)+' EA'},function(x){return '비중 '+(x.conv/total*100).toFixed(1)+'%'});
+    q('#outProductGTop').innerHTML=rankHtml(g,function(x){return fmt(x.orig)+' G'},function(x){return '환산 '+fmt(x.conv)+' EA · '+(x.conv/total*100).toFixed(1)+'%'});
+    q('#outProductMaterialTop').innerHTML=rankHtml(mat,function(x){return fmt(x.orig)+' EA'},function(x){return '비중 '+(x.conv/total*100).toFixed(1)+'%'});
+    renderProductTable();
+  }
+  function renderProductTable(){
+    var kw=(q('#outProductSearch')?q('#outProductSearch').value:'').trim().toLowerCase(),type=q('#outProductType')?q('#outProductType').value:'',total=products.reduce(function(a,x){return a+x.conv},0),rows=products.filter(function(x){return (!kw||(x.name+' '+x.sku).toLowerCase().includes(kw))&&(!type||x.type===type)});
+    q('#outProductCompareBody').innerHTML=rows.map(function(x){return '<tr><td>'+esc(x.name)+'</td><td>'+x.type+'</td><td>'+x.cat+'</td><td>'+fmt(x.orig)+' '+(x.type==='G'?'G':'EA')+'</td><td>'+fmt(x.conv)+'</td><td>'+(x.conv/total*100).toFixed(1)+'%</td><td><button class="btn sm out-product-detail" data-sku="'+x.sku+'">상세보기</button></td></tr>'}).join('');
+    qa('.out-product-detail',q('#outProductCompareBody')).forEach(function(b){b.onclick=function(){openProductDetail(b.dataset.sku)}});
+  }
+  function openProductDetail(sku){
+    var p=products.find(function(x){return x.sku===sku});if(!p)return;storeReturnY=window.scrollY;q('#outProductDetailPanel').hidden=false;q('#outProductDetailTitle').textContent=p.name+' 상세';q('#outProductDetailMeta').textContent=p.type+' · '+p.cat+' · 조회기간 누적';q('#outProductDetailOriginal').textContent=fmt(p.orig)+' '+(p.type==='G'?'G':'EA');q('#outProductDetailConverted').textContent=fmt(p.conv);q('#outProductDetailAvg').textContent=fmt(Math.round(p.orig/24))+' '+(p.type==='G'?'G':'EA');q('#outProductDetailMax').textContent='2026.09.18';
+    var vals=months.map(function(_,i){return Math.round(p.conv*(.07+i*.007))});q('#outProductDetailMonthBody').innerHTML=months.map(function(m,i){var rawv=Math.round(p.orig*(.07+i*.007));return '<tr><td>'+m.replace('-','.')+'</td><td>'+fmt(rawv)+' '+(p.type==='G'?'G':'EA')+'</td><td>'+fmt(vals[i])+'</td><td>'+((vals[i]/Math.max(1,p.conv))*100).toFixed(1)+'%</td></tr>'}).join('');drawLine('outProductDetailChart',months.map(function(x){return x.replace('-','.')}),vals,'product');q('#outProductDetailPanel').scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+  function renderMonthly(){
+    var base=q('#outMonthlyBase').value||'2026-10',cmp=q('#outMonthlyCompare').value||'2026-09',idx=Math.max(0,months.indexOf(base)),cidx=Math.max(0,months.indexOf(cmp)),bv=monthVals[idx]||118420,cv=monthVals[cidx]||109240,delta=cv?((bv-cv)/cv*100):0;
+    q('#outMonthlyTotal').textContent=fmt(bv);q('#outMonthlyAvg').textContent=fmt(Math.round(bv/22));q('#outMonthlySku').textContent=486+idx;q('#outMonthlyDelta').textContent=(delta>0?'+':'')+delta.toFixed(1);q('#outMonthlyCompareLabel').textContent=base+' vs '+cmp;
+    var factor=.72+idx*.025,cf=.72+cidx*.025,cur=stores.map(function(x){return{name:x.name,value:Math.round(x.conv*factor/10),old:Math.round(x.conv*cf/10)}}).filter(function(x){return x.value>0}),top=cur.slice().sort(function(a,b){return b.value-a.value}).slice(0,5),bottom=cur.slice().sort(function(a,b){return a.value-b.value}).slice(0,5),chg=cur.map(function(x){x.diff=x.value-x.old;x.pct=x.old?x.diff/x.old*100:0;return x});
+    q('#outMonthlyStoreTop').innerHTML=rankHtml(top,function(x){return fmt(x.value)+' EA'});q('#outMonthlyStoreBottom').innerHTML=rankHtml(bottom,function(x){return fmt(x.value)+' EA'});
+    q('#outMonthlyStoreUp').innerHTML=rankHtml(chg.filter(function(x){return x.diff>0&&x.old>0}).sort(function(a,b){return b.pct-a.pct}).slice(0,5),function(x){return '+'+x.pct.toFixed(1)+'% / +'+fmt(x.diff)+' EA'});
+    q('#outMonthlyStoreDown').innerHTML=rankHtml(chg.filter(function(x){return x.diff<0&&x.value>0&&x.old>0}).sort(function(a,b){return a.pct-b.pct}).slice(0,5),function(x){return x.pct.toFixed(1)+'% / '+fmt(x.diff)+' EA'});
+    function monthlyProductRows(type){return products.filter(function(x){return x.type===type}).sort(function(a,b){return b.conv-a.conv}).map(function(x){return{name:x.name,value:x.type==='G'?fmt(Math.round(x.orig*factor/10))+' G':fmt(Math.round(x.orig*factor/10))+' EA'}})}
+    q('#outMonthlyEa').innerHTML=rankHtml(monthlyProductRows('EA'),function(x){return x.value});q('#outMonthlyG').innerHTML=rankHtml(monthlyProductRows('G'),function(x){return x.value});q('#outMonthlyMaterial').innerHTML=rankHtml(monthlyProductRows('부자재'),function(x){return x.value});
+  }
+  function renderRaw(){
+    var s=q('#outDetailStart').value||'',e=q('#outDetailEnd').value||'',store=(q('#outDetailStore').value||'').trim().toLowerCase(),prod=(q('#outDetailProduct').value||'').trim().toLowerCase(),type=q('#outDetailType').value||'',cat=q('#outDetailCategory').value||'';
+    var rows=raw.filter(function(x){return(!s||x.date>=s)&&(!e||x.date<=e)&&(!store||x.store.toLowerCase().includes(store))&&(!prod||(x.name+' '+x.sku).toLowerCase().includes(prod))&&(!type||x.type===type)&&(!cat||x.cat===cat)});
+    q('#outDetailBody').innerHTML=rows.map(function(x){return '<tr><td>'+x.date+'</td><td>'+esc(x.store)+'</td><td>'+x.sku+'</td><td>'+esc(x.name)+'</td><td>'+x.type+'</td><td>'+x.cat+'</td><td>'+x.unit+'</td><td>'+fmt(x.qty)+'</td></tr>'}).join('')||'<tr><td colspan="8" class="data-empty">조회 결과가 없습니다.</td></tr>';q('#outDetailResultLabel').textContent='원본 처리이력 · '+fmt(rows.length)+'건 · 환산값 미표시';
+  }
+  document.addEventListener('click',function(e){var tab=e.target.closest&&e.target.closest('[data-outbound-analysis-view]');if(tab){switchView(tab.dataset.outboundAnalysisView);return}var go=e.target.closest&&e.target.closest('[data-outbound-go]');if(go)switchView(go.dataset.outboundGo)});
+  if(q('#outStoreCompareToggle'))q('#outStoreCompareToggle').onclick=function(){var p=q('#outStoreComparePanel');p.hidden=!p.hidden;this.querySelector('span').textContent=p.hidden?'전체 매장 비교 조회':'전체 매장 비교 닫기';this.querySelector('b').textContent=p.hidden?'⌄':'⌃'};
+  if(q('#outProductCompareToggle'))q('#outProductCompareToggle').onclick=function(){var p=q('#outProductComparePanel');p.hidden=!p.hidden;this.querySelector('span').textContent=p.hidden?'전체 제품 비교 조회':'전체 제품 비교 닫기';this.querySelector('b').textContent=p.hidden?'⌄':'⌃'};
+  if(q('#outStoreSearch'))q('#outStoreSearch').oninput=renderStoreTable;if(q('#outProductSearch'))q('#outProductSearch').oninput=renderProductTable;if(q('#outProductType'))q('#outProductType').onchange=renderProductTable;
+  ['outboundOverviewRun','outboundOverviewAll'].forEach(function(id){if(q('#'+id))q('#'+id).onclick=renderOverview});['outStoreRun','outStoreAll'].forEach(function(id){if(q('#'+id))q('#'+id).onclick=renderStore});['outProductRun','outProductAll'].forEach(function(id){if(q('#'+id))q('#'+id).onclick=renderProduct});
+  if(q('#outMonthlyRun'))q('#outMonthlyRun').onclick=renderMonthly;if(q('#outDetailRun'))q('#outDetailRun').onclick=renderRaw;
+  if(q('#outStoreDetailClose'))q('#outStoreDetailClose').onclick=function(){q('#outStoreDetailPanel').hidden=true;if(storeReturnY!=null){var y=storeReturnY;storeReturnY=null;window.scrollTo({top:y,behavior:'smooth'})}};
+  if(q('#outProductDetailClose'))q('#outProductDetailClose').onclick=function(){q('#outProductDetailPanel').hidden=true;if(storeReturnY!=null){var y=storeReturnY;storeReturnY=null;window.scrollTo({top:y,behavior:'smooth'})}};
+  renderOverview();renderStore();renderProduct();renderMonthly();renderRaw();
+})();
+</script>
+<script id="v113-tab-reorder">
+(function(){
+  var configs=[
+    {container:'.productivity-subtabs',tab:'.productivity-subtab',attr:'productivityView',key:'lush_tab_order_productivity_v1'},
+    {container:'.boxcount-subtabs',tab:'.boxcount-subtab',attr:'boxcountView',key:'lush_tab_order_boxcount_v1'},
+    {container:'.outbound-analysis-subtabs',tab:'.outbound-analysis-subtab',attr:'outboundAnalysisView',key:'lush_tab_order_outbound_v1'}
+  ];
+  function setup(cfg){
+    var box=document.querySelector(cfg.container);if(!box)return;
+    var saved=[];try{saved=JSON.parse(localStorage.getItem(cfg.key)||'[]')}catch(e){}
+    if(Array.isArray(saved)&&saved.length){saved.forEach(function(v){var el=Array.prototype.find.call(box.querySelectorAll(cfg.tab),function(x){return x.dataset[cfg.attr]===v});if(el)box.appendChild(el)})}
+    var state={el:null,startX:0,moved:false};
+    Array.prototype.forEach.call(box.querySelectorAll(cfg.tab),function(tab){tab.classList.add('draggable-tab');tab.addEventListener('pointerdown',function(e){if(e.button!==0)return;state.el=tab;state.startX=e.clientX;state.moved=false;tab.setPointerCapture&&tab.setPointerCapture(e.pointerId)});tab.addEventListener('pointermove',function(e){if(state.el!==tab)return;if(!state.moved&&Math.abs(e.clientX-state.startX)<5)return;state.moved=true;tab.classList.add('tab-dragging');var target=document.elementFromPoint(e.clientX,e.clientY);target=target&&target.closest&&target.closest(cfg.tab);if(target&&target!==tab&&target.parentElement===box){var rect=target.getBoundingClientRect(),after=e.clientX>rect.left+rect.width/2;box.insertBefore(tab,after?target.nextSibling:target)}});tab.addEventListener('pointerup',function(){if(state.el!==tab)return;tab.classList.remove('tab-dragging');if(state.moved){var order=Array.prototype.map.call(box.querySelectorAll(cfg.tab),function(x){return x.dataset[cfg.attr]});try{localStorage.setItem(cfg.key,JSON.stringify(order))}catch(e){}tab.dataset.dragJustEnded='1';setTimeout(function(){delete tab.dataset.dragJustEnded},120)}state.el=null})});
+    box.addEventListener('click',function(e){var t=e.target.closest&&e.target.closest(cfg.tab);if(t&&t.dataset.dragJustEnded==='1'){e.preventDefault();e.stopImmediatePropagation()}},true);
+  }
+  configs.forEach(setup);
 })();
 </script>
 </body>
