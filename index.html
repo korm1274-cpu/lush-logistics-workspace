@@ -12333,10 +12333,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 #newItemsPopup .nip-sec>b{display:block;font-size:13px;color:#e87ba4;margin-bottom:6px;}
 #newItemsPopup .nip-item{padding:7px 0;font-size:14.5px;font-weight:700;color:#191f28;line-height:1.4;word-break:keep-all;}
 #newItemsPopup .nip-item small{display:block;margin-top:2px;font-size:12.5px;font-weight:500;color:#6b7684;white-space:pre-line;}
-#newItemsPopup .nip-foot{padding:12px 20px 18px;}
+#newItemsPopup .nip-foot{padding:12px 20px 18px;display:flex;gap:8px;}
+#newItemsPopup .nip-foot button.nip-ghost{background:#fff!important;color:#4e5968!important;border:1.5px solid #e4d9c7!important;flex:0 0 32%!important;}
 #newItemsPopup .nip-foot button{width:100%!important;height:46px!important;border:0!important;border-radius:12px!important;background:#1d1d1b!important;color:#fff!important;font-size:15px!important;font-weight:800!important;cursor:pointer;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:0!important;}
 </style>
-<div id="newItemsPopup" hidden role="dialog" aria-modal="true" aria-labelledby="nipTitle"><div class="nip-box"><div class="nip-head"><small>NEW</small><h3 id="nipTitle">새로 등록된 내용이 있어요</h3></div><div class="nip-body" id="nipBody"></div><div class="nip-foot"><button type="button" id="nipOk">확인</button></div></div></div>
+<div id="newItemsPopup" hidden role="dialog" aria-modal="true" aria-labelledby="nipTitle"><div class="nip-box"><div class="nip-head"><small>NEW</small><h3 id="nipTitle">새로 등록된 내용이 있어요</h3></div><div class="nip-body" id="nipBody"></div><div class="nip-foot"><button type="button" id="nipClose" class="nip-ghost">닫기</button><button type="button" id="nipOk">더 이상 보지 않음</button></div></div></div>
 <script id="new-items-popup-script">
 /* 새 공지·제품 확보 건 팝업: 이 기기에서 아직 확인하지 않은 항목이 있으면 화면을 처음 열 때 한 번 보여 줌 */
 (function(){
@@ -12363,6 +12364,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     document.getElementById('nipBody').innerHTML=html;
     document.getElementById('newItemsPopup').hidden=false;shown=true;
   }
+  /* 닫기: 이번 화면에서만 닫고, 다음에 화면을 열면 다시 보여 줌 */
+  document.getElementById('nipClose').addEventListener('click',function(){document.getElementById('newItemsPopup').hidden=true});
+  /* 더 이상 보지 않음: 지금 보여 준 항목을 확인한 것으로 기억 */
   document.getElementById('nipOk').addEventListener('click',function(){addSeen(ids());document.getElementById('newItemsPopup').hidden=true});
   /* 이 기기에서 직접 등록한 항목은 팝업에 띄우지 않음 */
   document.addEventListener('click',function(e){
@@ -13393,6 +13397,36 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   #appShell .view .kpis.data-kpis>.kpi>span{white-space:normal!important;word-break:keep-all!important;}
 }
 #appShell .view .kpi small,#appShell .view .inventory-metric small,#appShell .view .request-period-stat small,#appShell .view .monthly-stats small,#appShell .view .boxcount-summary-bar small,#appShell .view .boxcount-summary-bar em,#appShell .view .boxcount-store-summary small{font-size:var(--t-kpi-small)!important;}
+</style>
+<style id="filter-and-title-unify">
+/* 현황판 카드 제목: 다른 화면 카드처럼 왼쪽·위쪽에 맞춤(카드 여백 + 제목 여백이 겹쳐 안쪽으로 들어가 있던 것) */
+#appShell #statusBoardView .status-card-title{padding-top:4px!important;padding-left:2px!important;padding-right:2px!important;}
+
+/* 조회 줄 통일: 다른 화면의 '이름표 위 + 입력칸' 형태를 현황판과 같은 '한 칸 안에 이름표 + 값'(높이 40px) 카드로 */
+#appShell .view .data-filter-row{align-items:center!important;gap:8px!important;}
+#appShell .view .data-filter-row .field{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;height:40px!important;min-height:0!important;margin:0!important;padding:0 12px!important;border:1px solid #e4d9c7!important;border-radius:12px!important;background:#fff!important;box-sizing:border-box!important;}
+#appShell .view .data-filter-row .field>label{margin:0!important;white-space:nowrap!important;flex:0 0 auto!important;}
+#appShell .view .data-filter-row .field>input,#appShell .view .data-filter-row .field>select{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:38px!important;min-height:0!important;margin:0!important;padding:0 2px!important;border:0!important;border-radius:0!important;background:transparent!important;box-shadow:none!important;}
+#appShell .view .data-filter-row .field>input:focus,#appShell .view .data-filter-row .field>select:focus{outline:none!important;}
+#appShell .view .data-filter-row .field:focus-within{border-color:#e87ba4!important;}
+#appShell .view .data-filter-row>.btn{height:40px!important;min-height:0!important;margin:0!important;padding:0 16px!important;border-radius:10px!important;align-self:center!important;}
+/* 트래픽 기간별 현황 조회 칸도 같은 모양 */
+#appShell #outboundRequestManager .request-period-control{display:flex!important;align-items:center!important;gap:8px!important;height:40px!important;padding:0 12px!important;border:1px solid #e4d9c7!important;border-radius:12px!important;background:#fff!important;box-sizing:border-box!important;}
+#appShell #outboundRequestManager .request-period-control>label{margin:0!important;white-space:nowrap!important;}
+#appShell #outboundRequestManager .request-period-control>input{border:0!important;background:transparent!important;height:38px!important;padding:0!important;min-width:0!important;}
+#appShell #outboundRequestManager #requestPeriodApplyBtn{height:40px!important;border-radius:10px!important;}
+#appShell #outboundRequestManager .request-period-controls{align-items:center!important;}
+
+/* 휴대폰 조회 줄: 칸은 한 줄씩, 조회·전체 버튼은 맨 아래 한 줄에 나란히 */
+@media (max-width:900px){
+  #appShell .view .data-filter-row:not(:has(#ibStart)){display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;}
+  #appShell .view .data-filter-row:not(:has(#ibStart))>.field{flex:1 1 100%!important;}
+  #appShell .view .data-filter-row:not(:has(#ibStart))>.btn{flex:1 1 0!important;width:auto!important;}
+}
+/* 기타 박스 등록: 등록 버튼을 입력 칸과 같은 높이·같은 줄 가운데로 */
+#appShell #statusBoardView .boxcount-manual-form{align-items:center!important;}
+#appShell #statusBoardView .boxcount-manual-form>.status-filter-card{height:40px!important;min-height:0!important;}
+#appShell #statusBoardView #boxManualSave{height:40px!important;margin:0!important;align-self:center!important;}
 </style>
 </body>
 </html>
