@@ -8215,7 +8215,7 @@ function renderMenusTable(){
   });
 }
 function renderPermissions(){permissionRows.innerHTML=menus.filter(m=>m.group!=="admin").map((m,i)=>{const idx=menus.indexOf(m);return `<tr><td><b>${esc(m.label)}</b></td><td><span class="badge">항상 허용</span></td>${["leader","editor","restricted"].map(r=>`<td><button class="role-pill ${m.roles.includes(r)?"on":""}" data-pidx="${idx}" data-role="${r}">${m.roles.includes(r)?"허용":"차단"}</button></td>`).join("")}</tr>`}).join("");document.querySelectorAll("[data-pidx]").forEach(b=>b.onclick=()=>{const m=menus[+b.dataset.pidx],r=b.dataset.role;if(m.roles.includes(r))m.roles=m.roles.filter(x=>x!==r);else m.roles.push(r);if(!m.roles.includes("admin"))m.roles.push("admin");saveMenus();renderPermissions();renderNav();toastMsg(`${ROLE_LABEL[r]} 권한을 변경했습니다.`)})}
-document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active");if(b.dataset.admin==="conversion"&&typeof renderUnitConversionAdmin==="function")renderUnitConversionAdmin()});
+document.querySelectorAll(".admin-tab").forEach(b=>b.onclick=()=>{document.querySelectorAll(".admin-tab").forEach(x=>x.classList.remove("active"));document.querySelectorAll(".admin-section").forEach(x=>x.classList.remove("active"));b.classList.add("active");document.getElementById("admin-"+b.dataset.admin).classList.add("active");if(b.dataset.admin==="conversion"&&typeof renderUnitConversionAdmin==="function")renderUnitConversionAdmin();const s=document.getElementById("sideSubNav");if(s&&document.getElementById("settings").classList.contains("active"))s.querySelectorAll("[data-admin]").forEach(x=>x.classList.toggle("active",x.dataset.admin===b.dataset.admin))});
 rolePreview.onchange=()=>{currentRole=rolePreview.value;profileRole.textContent=`${ROLE_LABEL[currentRole]} · ${currentRole}`;renderNav();if(currentRole!=="admin"&&document.getElementById("settings").classList.contains("active"))showView("dashboard","메인",null);toastMsg(`${ROLE_LABEL[currentRole]} 권한으로 미리보기 중입니다.`)};
 homeBrand.onclick=()=>showView("dashboard","메인",document.querySelector('[data-menu-id="dashboard-main"]'));
 
@@ -12459,8 +12459,9 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     padding:22px 12px;background:#1d1d1b;border-right:0;overflow-y:auto;z-index:40;box-sizing:border-box;
   }
   #appShell.has-side-subnav .main{margin-left:200px!important;flex:1 1 auto!important;width:calc(100% - 200px)!important;min-width:0!important;}
-  /* 현황판 안쪽 탭도 왼쪽 메뉴로 옮겼으므로 본문 위 탭 줄은 숨김 */
+  /* 화면 안 탭도 왼쪽 메뉴로 옮겼으므로 본문 위 탭 줄은 숨김 */
   #appShell.has-side-subnav #statusBoardView .status-board-tabs{display:none!important;}
+  #appShell.has-side-subnav #settings .admin-tabs{display:none!important;}
   #sideSubNav .side-subnav-title{display:flex;align-items:center;gap:8px;padding:0 10px 14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px;font-weight:800;color:#fff;}
   #sideSubNav .side-subnav-title svg{width:18px;height:18px;color:#e87ba4;}
   #sideSubNav .side-subnav-item{
@@ -12598,6 +12599,30 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     if(window.lucide)lucide.createIcons();
     return true;
   }
+  function renderAdminTabs(g){
+    var settings=document.getElementById('settings');
+    if(!settings||!settings.classList.contains('active'))return false;
+    var tabs=settings.querySelectorAll('.admin-tabs .admin-tab');
+    if(!tabs.length)return false;
+    aside.innerHTML='';
+    aside.appendChild(makeTitle(g));
+    tabs.forEach(function(t){
+      var b=document.createElement('button');
+      b.type='button';
+      b.className='side-subnav-item'+(t.classList.contains('active')?' active':'');
+      b.textContent=t.textContent.trim();
+      b.dataset.admin=t.dataset.admin||'';
+      b.onclick=function(){
+        t.click();
+        aside.querySelectorAll('.side-subnav-item').forEach(function(x){x.classList.toggle('active',x===b)});
+      };
+      aside.appendChild(b);
+    });
+    shell.classList.add('has-side-subnav');
+    markTopTab();
+    if(window.lucide)lucide.createIcons();
+    return true;
+  }
   function makeTitle(g){
     var title=document.createElement('div');
     title.className='side-subnav-title';
@@ -12609,6 +12634,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var items=current.group?groupItems(current.group):[];
     var g=GROUPS.find(function(x){return x.id===current.group});
     aside.innerHTML='';
+    if(g&&g.id==='admin'&&renderAdminTabs(g))return;
     if(!g||items.length<2){shell.classList.remove('has-side-subnav');markTopTab();return}
     aside.appendChild(makeTitle(g));
     items.forEach(function(m){
