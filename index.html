@@ -6752,13 +6752,26 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .boxcount-weekday-radials{min-height:250px;align-content:center}
 #statusBoardView .boxcount-detail-history-scroll{max-height:420px!important;overflow-y:auto!important}
 #statusBoardView .boxcount-detail-history-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
-#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none;cursor:grab}
-#statusBoardView .draggable-tab.tab-dragging{opacity:.58;cursor:grabbing;box-shadow:0 4px 12px rgba(0,0,0,.12);transform:translateY(-1px)}
+#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none;cursor:grab;position:relative;transition:transform .12s ease,box-shadow .12s ease,background .12s ease,opacity .12s ease}
+#statusBoardView .draggable-tab.tab-dragging{
+  opacity:1!important;cursor:grabbing!important;background:#111!important;color:#fff!important;
+  border-color:#111!important;box-shadow:0 10px 24px rgba(0,0,0,.24)!important;transform:translateY(-4px) scale(1.03);
+  z-index:20;
+}
+#statusBoardView .draggable-tab.tab-dragging::after{
+  content:"이동 중";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);
+  padding:3px 6px;border-radius:999px;background:#111;color:#fff;font-size:8px;font-weight:800;white-space:nowrap;
+  box-shadow:0 4px 10px rgba(0,0,0,.16);pointer-events:none;
+}
 #statusBoardView .productivity-subtabs:has(.tab-dragging),
 #statusBoardView .boxcount-subtabs:has(.tab-dragging),
 #statusBoardView .outbound-analysis-subtabs:has(.tab-dragging){cursor:grabbing}
-#statusBoardView .draggable-tab.tab-drop-before{box-shadow:inset 2px 0 #222}
-#statusBoardView .draggable-tab.tab-drop-after{box-shadow:inset -2px 0 #222}
+#statusBoardView .draggable-tab.tab-drop-before::before,
+#statusBoardView .draggable-tab.tab-drop-after::before{
+  content:"";position:absolute;top:3px;bottom:3px;width:3px;border-radius:999px;background:#111;z-index:30;
+}
+#statusBoardView .draggable-tab.tab-drop-before::before{left:-5px}
+#statusBoardView .draggable-tab.tab-drop-after::before{right:-5px}
 @media(max-width:1100px){#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .analysis-three-col{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){#statusBoardView .analysis-two-col,#statusBoardView .analysis-three-col{grid-template-columns:1fr}#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
@@ -15222,6 +15235,8 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
       var tabs=Array.prototype.filter.call(box.querySelectorAll(cfg.tab),function(x){return x!==state.el});
       if(!tabs.length)return;
 
+      tabs.forEach(function(tab){tab.classList.remove('tab-drop-before','tab-drop-after')});
+
       var x=e.clientX;
       var nearest=tabs[0],nearestDist=Infinity;
       tabs.forEach(function(tab){
@@ -15229,8 +15244,10 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
         if(dist<nearestDist){nearestDist=dist;nearest=tab}
       });
 
-      var rect=nearest.getBoundingClientRect();
-      if(x<rect.left+rect.width/2){
+      var rect=nearest.getBoundingClientRect(),after=x>=rect.left+rect.width/2;
+      nearest.classList.add(after?'tab-drop-after':'tab-drop-before');
+
+      if(!after){
         if(state.el.nextElementSibling!==nearest)box.insertBefore(state.el,nearest);
       }else{
         if(nearest.nextElementSibling!==state.el)box.insertBefore(state.el,nearest.nextElementSibling);
@@ -15246,6 +15263,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
       var tab=state.el;
       try{tab.releasePointerCapture&&tab.releasePointerCapture(e.pointerId)}catch(err){}
       tab.classList.remove('tab-dragging');
+      Array.prototype.forEach.call(box.querySelectorAll(cfg.tab),function(x){x.classList.remove('tab-drop-before','tab-drop-after')});
       if(state.moved){
         saveOrder();
         tab.dataset.dragJustEnded='1';
