@@ -28,15 +28,29 @@
       <div class="qr"><img id="qrImage" alt="LUSH Logistics 설치 QR 코드"></div>
       <div class="url" id="qrTarget"></div>
       <div class="actions">
-        <a class="btn primary" href="./install.html">설치 안내 보기</a>
-        <a class="btn" href="./">워크스페이스 열기</a>
+        <button class="btn primary" type="button" id="downloadQr">QR 이미지 저장</button>
+        <a class="btn" href="./install.html">설치 안내 보기</a>
       </div>
     </section>
   </main>
   <script>
     const target=new URL('./install.html',window.location.href).href;
     document.getElementById('qrTarget').textContent=target;
-    document.getElementById('qrImage').src='https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=12&data='+encodeURIComponent(target);
+    const qrSrc='https://api.qrserver.com/v1/create-qr-code/?size=640x640&margin=12&data='+encodeURIComponent(target);
+    document.getElementById('qrImage').src=qrSrc;
+    document.getElementById('downloadQr').addEventListener('click',async function(){
+      try{
+        const res=await fetch(qrSrc);
+        const blob=await res.blob();
+        const a=document.createElement('a');
+        a.href=URL.createObjectURL(blob);
+        a.download='LUSH-Logistics-install-QR.png';
+        document.body.appendChild(a);a.click();a.remove();
+        setTimeout(function(){URL.revokeObjectURL(a.href)},1000);
+      }catch(e){
+        window.open(qrSrc,'_blank');
+      }
+    });
   </script>
 </body>
 </html>
