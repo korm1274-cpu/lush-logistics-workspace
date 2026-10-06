@@ -6752,26 +6752,21 @@ html,body{max-width:100%;overflow-x:hidden}
 #statusBoardView .boxcount-weekday-radials{min-height:250px;align-content:center}
 #statusBoardView .boxcount-detail-history-scroll{max-height:420px!important;overflow-y:auto!important}
 #statusBoardView .boxcount-detail-history-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
-#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none;cursor:grab;position:relative;transition:transform .12s ease,box-shadow .12s ease,background .12s ease,opacity .12s ease}
+#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none;cursor:grab;position:relative;transition:transform .1s ease,box-shadow .1s ease,background .1s ease,opacity .1s ease}
 #statusBoardView .draggable-tab.tab-dragging{
-  opacity:1!important;cursor:grabbing!important;background:#111!important;color:#fff!important;
-  border-color:#111!important;box-shadow:0 10px 24px rgba(0,0,0,.24)!important;transform:translateY(-4px) scale(1.03);
+  opacity:.94!important;cursor:grabbing!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.10)!important;transform:translateY(-1px);
   z-index:20;
-}
-#statusBoardView .draggable-tab.tab-dragging::after{
-  content:"이동 중";position:absolute;left:50%;top:calc(100% + 7px);transform:translateX(-50%);
-  padding:3px 6px;border-radius:999px;background:#111;color:#fff;font-size:8px;font-weight:800;white-space:nowrap;
-  box-shadow:0 4px 10px rgba(0,0,0,.16);pointer-events:none;
 }
 #statusBoardView .productivity-subtabs:has(.tab-dragging),
 #statusBoardView .boxcount-subtabs:has(.tab-dragging),
 #statusBoardView .outbound-analysis-subtabs:has(.tab-dragging){cursor:grabbing}
 #statusBoardView .draggable-tab.tab-drop-before::before,
 #statusBoardView .draggable-tab.tab-drop-after::before{
-  content:"";position:absolute;top:3px;bottom:3px;width:3px;border-radius:999px;background:#111;z-index:30;
+  content:"";position:absolute;top:7px;bottom:7px;width:2px;border-radius:999px;background:#aeb3ae;z-index:30;
 }
-#statusBoardView .draggable-tab.tab-drop-before::before{left:-5px}
-#statusBoardView .draggable-tab.tab-drop-after::before{right:-5px}
+#statusBoardView .draggable-tab.tab-drop-before::before{left:-4px}
+#statusBoardView .draggable-tab.tab-drop-after::before{right:-4px}
 @media(max-width:1100px){#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .analysis-three-col{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){#statusBoardView .analysis-two-col,#statusBoardView .analysis-three-col{grid-template-columns:1fr}#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
 </style>
@@ -15279,9 +15274,9 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
       tab.addEventListener('pointerdown',function(e){begin(tab,e)});
     });
     box.addEventListener('pointermove',move,{passive:false});
-    box.addEventListener('pointerup',end);
-    box.addEventListener('pointercancel',end);
-    box.addEventListener('lostpointercapture',function(e){if(state.el&&e.pointerId===state.pointerId)end(e)});
+    document.addEventListener('pointermove',move,{passive:false});
+    document.addEventListener('pointerup',end);
+    document.addEventListener('pointercancel',end);
 
     box.addEventListener('click',function(e){
       var t=e.target.closest&&e.target.closest(cfg.tab);
