@@ -10908,6 +10908,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
           ring.style.setProperty('--shipping-pct',String(target));
           label.textContent=Math.round(target)+'%';
           ring.classList.remove('is-animating');
+          ring.classList.toggle('is-complete',target>=100);
         }
       }
       shippingProgressFrame=requestAnimationFrame(step);
@@ -12472,6 +12473,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var sum=document.getElementById('rqPendingSummary');
     if(sum)sum.innerHTML='<button type="button" data-rq-filter="" class="'+(filter===''?'on':'')+'">전체<b>'+all.length+'</b></button>'+TYPES.map(function(t){return '<button type="button" data-rq-filter="'+t[0]+'" class="'+(filter===t[0]?'on':'')+'">'+t[2]+'<b>'+byType[t[0]].length+'</b></button>'}).join('');
     var board=document.getElementById('rqPendingBoard');if(!board)return;
+    if(!all.length){board.classList.add('one');board.innerHTML='<div class="rq-cheer"><span>🛁</span><b>미처리 출고 요청이 없어요!</b><small>오늘 요청 모두 완료 · 수고하셨어요</small></div>';return}
     var shown=TYPES.filter(function(t){return !filter||filter===t[0]});
     board.classList.toggle('one',!!filter);
     board.innerHTML=shown.map(function(t){
@@ -12489,14 +12491,20 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
     var d=e.target.closest('[data-rq-done]');
     if(d){
       if(!confirm('해당 요청을 완료 처리하시겠습니까?'))return;
-      var data=read(),x=data.find(function(r){return String(r.id)===d.getAttribute('data-rq-done')});if(!x)return;
+      var card=d.closest('.rq-item'),doneId=d.getAttribute('data-rq-done');
+      if(card&&!(window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches)){card.classList.add('rq-leaving');setTimeout(function(){completeRq(doneId)},380)}else completeRq(doneId);
+      return;
+    }
+  });
+  function completeRq(id){
+      var data=read(),x=data.find(function(r){return String(r.id)===id});if(!x)return;
       x.status='처리완료';x.completedAt=new Date().toISOString();x.updatedAt=x.completedAt;
       localStorage.setItem(KEY,JSON.stringify(data));
       if(window.refreshOutboundRequestManager)window.refreshOutboundRequestManager();
       if(window.renderTodayOutboundRequests)window.renderTodayOutboundRequests();
       renderBoard();if(typeof window.toastMsg==='function')window.toastMsg('완료 처리했습니다.');
-      return;
-    }
+  }
+  root.addEventListener('click',function(e){
     if(e.target.closest('#newOutboundRequestBtn')){showTab('form');return}
     if(e.target.closest('#requestManagerList [data-edit]')){setTimeout(function(){showTab('form');window.scrollTo(0,0)},0);return}
   });
@@ -12804,6 +12812,89 @@ if ('serviceWorker' in navigator) {
       '<g class="wheel"><circle cx="56" cy="27" r="5" fill="#1d1d1b" stroke="#e4d9c7" stroke-width="2"/><path d="M56 23v8M52 27h8" stroke="#e4d9c7" stroke-width="1"/></g>'+
     '</svg>';
   hero.insertBefore(truck,hero.firstChild);hero.insertBefore(road,hero.firstChild);
+})();
+</script>
+<style id="ux-effects-style">
+/* 처리 대기: 완료 처리 시 카드가 거품처럼 톡 사라짐 */
+#outboundRequestManager .rq-item.rq-leaving{animation:rqPop .38s ease-in forwards;pointer-events:none;}
+@keyframes rqPop{0%{transform:scale(1);opacity:1;}35%{transform:scale(1.04);background:#fdf1f6;}100%{transform:scale(.6);opacity:0;}}
+/* 처리 대기·제품 확보가 모두 비었을 때 축하 메시지 */
+#outboundRequestManager .rq-cheer,.todo-cheer{display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 16px;border:2px dashed #e4d9c7;border-radius:16px;background:#fffaf5;text-align:center;}
+#outboundRequestManager .rq-cheer span{font-size:34px;line-height:1;}
+#outboundRequestManager .rq-cheer b,.todo-cheer b{font-size:16px;color:#1d1d1b;}
+#outboundRequestManager .rq-cheer small,.todo-cheer small{font-size:12.5px;color:#8b95a1;}
+.todo-cheer{padding:14px 12px;margin-bottom:8px;flex-direction:row;justify-content:center;gap:8px;}
+.todo-cheer span{font-size:20px;}
+/* 출고 진행률 100% 달성 시 반짝임 */
+#statusShippingRing.is-complete{animation:ringGlow 2.4s ease-in-out infinite;border-radius:50%;}
+@keyframes ringGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,123,164,0);}50%{box-shadow:0 0 0 10px rgba(232,123,164,.22),0 0 28px 6px rgba(237,161,0,.25);}}
+/* 오출고 미완료 건수: 1건 이상이면 천천히 깜빡임 */
+.ux-blink{animation:uxBlink 1.8s ease-in-out infinite;}
+@keyframes uxBlink{0%,100%{opacity:1;}50%{opacity:.35;}}
+/* 현장 대시보드: 숫자가 바뀐 칸이 잠깐 빛남 */
+.floor-tile.ux-flash{animation:uxFlash 1.6s ease-out;}
+@keyframes uxFlash{0%{box-shadow:0 0 0 0 rgba(237,161,0,.0);transform:scale(1);}15%{box-shadow:0 0 0 6px rgba(237,161,0,.55);transform:scale(1.03);}100%{box-shadow:0 0 0 18px rgba(237,161,0,0);transform:scale(1);}}
+/* 메뉴를 바꿀 때 화면이 살짝 페이드인 */
+.view.ux-enter{animation:uxEnter .32s ease-out;}
+@keyframes uxEnter{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.ux-blink,.floor-tile.ux-flash,.view.ux-enter,#statusShippingRing.is-complete,#outboundRequestManager .rq-item.rq-leaving{animation:none!important;}}
+</style>
+<script id="ux-effects-script">
+(function(){
+  /* 메인 인사말: 시간대별로 바뀜 (휴대폰 줄바꿈 위치 유지) */
+  function greet(){
+    var h=document.querySelector('#dashboard .lush-hero-hello');if(!h)return;
+    var hr=Number(new Intl.DateTimeFormat('en-US',{timeZone:'Asia/Seoul',hour:'numeric',hour12:false}).format(new Date()))%24;
+    var g=hr>=5&&hr<11?['좋은 아침이에요,','오늘도 힘차게 시작해요!']:hr>=11&&hr<14?['오늘도 힘차게,','우리 함께 화이팅해요!']:hr>=14&&hr<17?['오후도 힘내요,','조금만 더 화이팅!']:['오늘도 수고 많으셨어요,','조심히 들어가세요!'];
+    var html=g[0]+'<br class="m-only-br"> '+g[1];if(h.innerHTML!==html)h.innerHTML=html;
+  }
+  greet();setInterval(greet,10*60*1000);
+
+  /* 오출고 미완료 건수: 1건 이상이면 깜빡임 */
+  function blinkCheck(){['mrPendingTitleCount','mrPending'].forEach(function(id){var el=document.getElementById(id);if(el)el.classList.toggle('ux-blink',(parseInt(String(el.textContent).replace(/,/g,''),10)||0)>0)})}
+  ['mrPendingTitleCount','mrPending'].forEach(function(id){var el=document.getElementById(id);if(el&&window.MutationObserver)new MutationObserver(blinkCheck).observe(el,{childList:true,characterData:true,subtree:true})});
+  blinkCheck();
+
+  /* 현장 대시보드: 숫자가 바뀐 칸 반짝 */
+  var floor=document.getElementById('floorDashView');
+  if(floor&&window.MutationObserver){
+    var prev=new WeakMap();
+    floor.querySelectorAll('.floor-tile b').forEach(function(b){prev.set(b,b.textContent)});
+    new MutationObserver(function(){
+      floor.querySelectorAll('.floor-tile b').forEach(function(b){
+        var before=prev.get(b),now=b.textContent;prev.set(b,now);
+        if(floor.__uxReady&&before!==undefined&&before!==now){
+          var tile=b.closest('.floor-tile');if(!tile)return;tile.classList.remove('ux-flash');void tile.offsetWidth;tile.classList.add('ux-flash');
+        }
+      });
+    }).observe(floor,{childList:true,characterData:true,subtree:true});
+    setTimeout(function(){floor.__uxReady=true},4000); /* 처음 불러오는 동안 바뀌는 숫자는 반짝이지 않음 */
+  }
+
+  /* 메뉴를 바꿀 때 새 화면 페이드인 (처음 불러올 때는 제외) */
+  var ready=false;setTimeout(function(){ready=true},1500);
+  if(window.MutationObserver)document.querySelectorAll('.view').forEach(function(v){
+    new MutationObserver(function(){
+      if(!ready||!v.classList.contains('active')||v.classList.contains('ux-enter'))return;
+      if(v.__wasActive)return;v.__wasActive=true;
+      v.classList.add('ux-enter');setTimeout(function(){v.classList.remove('ux-enter')},400);
+    }).observe(v,{attributes:true,attributeFilter:['class']});
+    new MutationObserver(function(){if(!v.classList.contains('active'))v.__wasActive=false}).observe(v,{attributes:true,attributeFilter:['class']});
+    if(v.classList.contains('active'))v.__wasActive=true;
+  });
+
+  /* 메인 제품 확보 현황: 남은 건이 없으면 축하 문구 */
+  var list=document.getElementById('dashTodoList');
+  function todoCheer(){
+    if(!list)return;
+    var todos;try{todos=JSON.parse(localStorage.getItem('lush-v51-todos')||'[]')}catch(e){todos=[]}
+    var open=(Array.isArray(todos)?todos:[]).filter(function(t){return t&&!t.done}).length;
+    var cheer=list.querySelector(':scope > .todo-cheer');
+    if(!open&&!cheer){var c=document.createElement('div');c.className='todo-cheer';c.innerHTML='<span>🎉</span><div><b>확보할 제품이 없어요!</b> <small>모두 완료</small></div>';list.insertBefore(c,list.firstChild)}
+    else if(open&&cheer)cheer.remove();
+  }
+  if(list&&window.MutationObserver)new MutationObserver(function(){todoCheer()}).observe(list,{childList:true});
+  todoCheer();
 })();
 </script>
 </body>
