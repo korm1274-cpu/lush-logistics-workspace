@@ -13327,5 +13327,18 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   sync();
 })();
 </script>
+<style id="mobile-banner-vcenter">
+@media (max-width:900px){
+  /* 배너 제목: 아이콘(동그라미)과 글자를 세로 가운데로 맞춤 — 아이콘이 기준선 아래로 내려가 글자가 위로 쏠려 보이던 문제 */
+  #appShell .view .data-workbench-head h2,#appShell .view .request-manager-top h2,#appShell .view .schedule-head h2,
+  #appShell .view .inventory-head h2,#appShell .view .lush-page-head h2,#appShell .view .status-board-top h2{display:flex!important;align-items:center!important;gap:8px!important;line-height:1.2!important;}
+  #appShell .view .data-workbench-head h2 .ux-ico,#appShell .view .request-manager-top h2 .ux-ico,#appShell .view .schedule-head h2 .ux-ico,
+  #appShell .view .inventory-head h2 .ux-ico,#appShell .view .lush-page-head h2 .ux-ico,#appShell .view .status-board-top h2 .ux-ico{vertical-align:middle!important;margin-right:0!important;}
+  /* 재고·데이터·Admin 배너도 다른 배너처럼 얇게(뒤에 정의된 데스크톱 여백보다 우선) */
+  #appShell.on-lush .view.active .inventory-head,#appShell.on-lush .view.active .lush-page-head{padding:14px 18px!important;margin-bottom:12px!important;}
+  #appShell.on-lush .view.active .lush-page-head p,#appShell.on-lush .view.active .inventory-head p,#appShell.on-lush .view.active .lush-page-head .eyebrow,#appShell.on-lush .view.active .inventory-head .eyebrow{display:none!important;}
+  #appShell.on-lush .view.active .lush-page-head h2,#appShell.on-lush .view.active .inventory-head h2{font-size:19px!important;margin:0!important;}
+}
+</style>
 </body>
 </html>
