@@ -13148,6 +13148,61 @@ html.ux-dark body{background:#141414;}
   #appShell #statusBoardView .boxcount-manual-form>.status-filter-card:has(#boxManualName)>span,#appShell #statusBoardView .boxcount-manual-form>.status-filter-card:has(#boxManualMemo)>span{display:none!important;}
   #appShell #statusBoardView #boxManualDate::-webkit-calendar-picker-indicator{display:none!important;}
 }
+/* 휴대폰 제품별 출고현황 조회 칸 한 줄 배치
+   · 분석: 시작일·종료일·조회·전체 1줄
+   · 제품 상세조회: 1줄 제품 검색 / 2줄 시작일·종료일·조회
+   · 일자별 상세조회: 1줄 조회일자 / 2줄 매장·제품 검색·조회 */
+@media (max-width:900px){
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart),
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart),
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate){display:grid!important;grid-template-columns:repeat(12,minmax(0,1fr))!important;gap:6px!important;align-items:center!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>*,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>*,
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>*{min-width:0!important;width:auto!important;margin:0!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>.status-filter-card,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>.status-filter-card,
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card{padding:0 8px!important;gap:4px!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>.status-filter-card>span,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>.status-filter-card>span,
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card>span{font-size:10.5px!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart) input,#appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart) select,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart) input,#appShell #statusBoardView .status-filter-cards:has(#productDetailStart) select,
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate) input,#appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate) select{font-size:12.5px!important;padding:0!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart) input[type="date"]::-webkit-calendar-picker-indicator,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart) input[type="date"]::-webkit-calendar-picker-indicator{display:none!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart) .status-filter-btn,
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart) .status-filter-btn,
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate) .status-filter-btn{height:40px!important;padding:0!important;font-size:13px!important;}
+  /* 분석: 날짜 칸은 이름표 숨김(앞이 시작일, 뒤가 종료일) */
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>.status-filter-card{grid-column:span 4!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>.status-filter-card>span{display:none!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productAnalysisStart)>.status-filter-btn{grid-column:span 2!important;}
+  /* 제품 상세조회 */
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>.status-filter-card:has(#productDetailQuery){grid-column:1/-1!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>.status-filter-card:has(input[type="date"]){grid-column:span 5!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDetailStart)>.status-filter-btn{grid-column:span 2!important;}
+  /* 일자별 상세조회 */
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card:has(#productDateDetailDate){grid-column:1/-1!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card:has(#productDateDetailStore){grid-column:span 4!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card:has(#productDateDetailQuery){grid-column:span 6!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-card:has(#productDateDetailStore)>span{display:none!important;}
+  #appShell #statusBoardView .status-filter-cards:has(#productDateDetailDate)>.status-filter-btn{grid-column:span 2!important;}
+
+  /* 검정 칠판 배너: 휴대폰에서는 높이(두께)를 얇게 — 위아래 여백·영문 머리글을 줄이고 제목만 한 줄로 */
+  #appShell.on-lush .view.active .data-workbench-head,#appShell.on-lush #outboundRequestManager .request-manager-top,#appShell.on-lush #scheduleManagerView .schedule-head,
+  #appShell.on-lush .view.active .inventory-head,#appShell.on-lush .view.active .lush-page-head{padding:14px 18px!important;margin-bottom:12px!important;min-height:0!important;}
+  #appShell.on-lush .view.active .data-workbench-head .eyebrow,#appShell.on-lush #outboundRequestManager .request-manager-top .eyebrow,#appShell.on-lush #scheduleManagerView .schedule-head .eyebrow,
+  #appShell.on-lush .view.active .inventory-head .eyebrow,#appShell.on-lush .view.active .lush-page-head .eyebrow{display:none!important;}
+  #appShell.on-lush .view.active .data-workbench-head h2,#appShell.on-lush #outboundRequestManager .request-manager-top h2,#appShell.on-lush #scheduleManagerView .schedule-head h2,
+  #appShell.on-lush .view.active .inventory-head h2,#appShell.on-lush .view.active .lush-page-head h2{font-size:19px!important;margin:0!important;line-height:1.3!important;}
+  #appShell.on-lush .view.active .lush-page-head p,#appShell.on-lush #outboundRequestManager .request-manager-top p,#appShell.on-lush .view.active .inventory-head p{display:none!important;}
+  /* 통합 일정: 일정 새로고침 버튼을 배너 오른쪽 끝(제목과 같은 줄)으로 */
+  #appShell.on-lush #scheduleManagerView .schedule-head{display:flex!important;flex-direction:row!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:10px!important;}
+  #appShell.on-lush #scheduleManagerView .schedule-head>*{min-width:0!important;}
+  #appShell.on-lush #scheduleManagerView .schedule-head .schedule-head-actions{margin:0 0 0 auto!important;flex:0 0 auto!important;width:auto!important;}
+  #appShell.on-lush #scheduleManagerView .schedule-head .schedule-head-actions .btn{height:34px!important;padding:0 12px!important;font-size:12.5px!important;white-space:nowrap!important;width:auto!important;}
+  #appShell.on-lush #scheduleManagerView .schedule-head p{display:none!important;}
+}
 /* 휴대폰: 조회 칸이 하나뿐인 곳(예: 현황판 요일 분석의 요일)은 칸과 조회 버튼을 한 줄로 */
 @media (max-width:900px){
   #appShell #statusBoardView .status-filter-cards:has(> .status-filter-card:only-of-type){display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;}
