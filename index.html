@@ -13340,5 +13340,21 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   #appShell.on-lush .view.active .lush-page-head h2,#appShell.on-lush .view.active .inventory-head h2{font-size:19px!important;margin:0!important;}
 }
 </style>
+<style id="inventory-head-cleanup">
+/* 재고 배너 정리: CSV 내보내기·재고 기준 숨김(기능 코드는 그대로 두어 오류 없음) */
+#appShell #exportTotalCsv,#appShell #exportInventoryCsv,#appShell #inventoryTotalView .inventory-asof{display:none!important;}
+#appShell #inventoryTotalView .inventory-actions:not(:has(> :not(.inventory-asof):not(#exportTotalCsv))){display:none!important;}
+/* 과거 재고 조회: 월·기준일 선택이 잘리지 않게 폭을 글자에 맞춤 */
+#appShell .inventory-history-controls{flex-wrap:nowrap!important;}
+#appShell .saved-date-select.history-month{width:auto!important;min-width:128px!important;padding-right:30px!important;}
+#appShell .saved-date-select.history-day{width:auto!important;min-width:150px!important;padding-right:30px!important;}
+#appShell .inventory-history-label{font-size:11px!important;}
+/* 인쇄 버튼: 파일 업로드 오른쪽 */
+#appShell #inventoryOwnerView .inventory-command-right{display:flex!important;align-items:center!important;gap:6px!important;}
+</style>
+<script id="inventory-print-move">
+/* 담당자 재고파일: 인쇄 버튼을 '파일 업로드' 오른쪽으로 옮김(클릭 기능은 그대로 따라감) */
+(function(){var p=document.getElementById('printInventory'),u=document.getElementById('uploadOwnerInventory');if(p&&u)u.insertAdjacentElement('afterend',p)})();
+</script>
 </body>
 </html>
