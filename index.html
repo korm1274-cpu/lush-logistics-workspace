@@ -7625,10 +7625,19 @@ for(const def of DEFAULT_GROUPS){
     GROUPS.splice(insertAt+1,0,copy);
   }
 }
-const GROUP_MIGRATION_KEY="lush-logistics-v4-groups-v2";
+const GROUP_MIGRATION_KEY="lush-logistics-v4-groups-v3";
 if(localStorage.getItem(GROUP_MIGRATION_KEY)!=="1"){
-  const outboundGroup=GROUPS.find(g=>g.id==="outbound");if(outboundGroup)outboundGroup.visible=true;
-  localStorage.setItem(GROUP_KEY,JSON.stringify(GROUPS));localStorage.setItem(GROUP_MIGRATION_KEY,"1");
+  let outboundGroup=GROUPS.find(g=>g.id==="outbound");
+  if(!outboundGroup){
+    outboundGroup=structuredClone(DEFAULT_GROUPS.find(g=>g.id==="outbound"));
+    const inboundIndex=GROUPS.findIndex(g=>g.id==="inbound");
+    GROUPS.splice(inboundIndex>=0?inboundIndex+1:GROUPS.length,0,outboundGroup);
+  }
+  outboundGroup.label="출고";
+  outboundGroup.icon=outboundGroup.icon||"truck";
+  outboundGroup.visible=true;
+  localStorage.setItem(GROUP_KEY,JSON.stringify(GROUPS));
+  localStorage.setItem(GROUP_MIGRATION_KEY,"1");
 }
 const DEFAULT_MENUS=[
  {id:"dashboard-main",group:"dashboard",label:"메인 대시보드",kind:"view",target:"dashboard",visible:true,roles:["admin","leader","editor","restricted"],protected:true},
