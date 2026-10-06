@@ -7838,6 +7838,16 @@ function normalizeMenus(){
     cleaned.splice(boxIndex<0?cleaned.length:boxIndex+1,0,season);
   }
 
+  /* V-out4: 이전 Admin 테스트로 출고 기본 메뉴가 다른 대분류로 이동된 저장 상태를 1회 복구 */
+  const OUTBOUND_MENU_MIGRATION_KEY="lush-logistics-v4-outbound-menu-v4";
+  if(localStorage.getItem(OUTBOUND_MENU_MIGRATION_KEY)!=="1"){
+    ["out-daily","out-analysis","out-box","out-season"].forEach(id=>{
+      const m=cleaned.find(x=>x.id===id);
+      if(m){m.group="outbound";m.visible=true;}
+    });
+    localStorage.setItem(OUTBOUND_MENU_MIGRATION_KEY,"1");
+  }
+
   /* 출고 요청 관리는 새 '트래픽' 주항목의 첫 번째 메뉴로 이동 (기존 사용자에게도 반영) */
   const reqIndex=cleaned.findIndex(m=>m.id==="out-request");
   if(reqIndex>=0){
