@@ -1,4 +1,4 @@
-const VERSION = 'lush-logistics-pwa-test-v3';
+const VERSION = 'lush-logistics-pwa-test-v4';
 
 function applyWorkspacePatches(html) {
   // 누계 생산성 / 출고 박스 조회 버튼 명칭 통일
@@ -62,6 +62,37 @@ function applyWorkspacePatches(html) {
     "if(q('#boxcountAll'))q('#boxcountAll').addEventListener('click',function(){q('#boxcountStartMonth').value='';q('#boxcountEndMonth').value='';boxcountPeriod={start:'',end:''};renderBoxcountCumulative()});",
     "if(q('#boxcountAll'))q('#boxcountAll').addEventListener('click',function(){q('#boxcountStartMonth').value='';q('#boxcountEndMonth').value='';boxcountPeriod={start:'',end:''};boxcountViewMode='all';renderBoxcountCumulative()});"
   );
+
+  // 현황판을 새로고침으로 직접 다시 열었을 때도 좌측 하위 메뉴를 복원
+  if (!html.includes('status-subnav-refresh-fix')) {
+    html = html.replace('</body>', `
+<script id="status-subnav-refresh-fix">
+(function(){
+  function restoreStatusSideSubnav(){
+    if(!window.matchMedia('(min-width:901px)').matches)return;
+    var view=document.getElementById('statusBoardView');
+    if(!view||!view.classList.contains('active'))return;
+    if(typeof activateMenu!=='function'||typeof menus==='undefined')return;
+
+    var activeTab=view.querySelector('.status-board-tab.active')||view.querySelector('.status-board-tab');
+    if(!activeTab)return;
+
+    var key=activeTab.getAttribute('data-status-tab')||'shipping';
+    var menu=menus.find(function(m){
+      return m&&m.kind==='statusTab'&&m.group==='statusboard'&&m.statusTab===key&&m.visible!==false;
+    });
+    if(menu)activateMenu(menu,null);
+  }
+
+  if(document.readyState==='loading'){
+    document.addEventListener('DOMContentLoaded',function(){setTimeout(restoreStatusSideSubnav,0)},{once:true});
+  }else{
+    setTimeout(restoreStatusSideSubnav,0);
+  }
+})();
+<\/script>
+</body>`);
+  }
 
   return html;
 }
