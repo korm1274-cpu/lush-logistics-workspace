@@ -13203,6 +13203,16 @@ html.ux-dark body{background:#141414;}
   #appShell.on-lush #scheduleManagerView .schedule-head .schedule-head-actions .btn{height:34px!important;padding:0 12px!important;font-size:12.5px!important;white-space:nowrap!important;width:auto!important;}
   #appShell.on-lush #scheduleManagerView .schedule-head p{display:none!important;}
 }
+/* 휴대폰 입고 요약: 1줄 조회 수량(넓게, G·EA 함께) / 2줄 SKU·입고 차수 */
+@media (max-width:900px){
+  #appShell #inboundBasicView .kpis.data-kpis{grid-auto-flow:row!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;grid-auto-columns:auto!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child{grid-column:1/-1!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child>div{display:flex!important;align-items:flex-end!important;gap:16px!important;flex-wrap:nowrap!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child>div>div:nth-child(2){display:flex!important;flex-wrap:nowrap!important;gap:14px!important;margin:0 0 0 auto!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child b{font-size:20px!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child>div>div:nth-child(2) b{font-size:15px!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2) b{font-size:16px!important;}
+}
 /* 휴대폰: 조회 칸이 하나뿐인 곳(예: 현황판 요일 분석의 요일)은 칸과 조회 버튼을 한 줄로 */
 @media (max-width:900px){
   #appShell #statusBoardView .status-filter-cards:has(> .status-filter-card:only-of-type){display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:8px!important;}
