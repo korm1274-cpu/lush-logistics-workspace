@@ -29,7 +29,7 @@
 #appShell .ux-ico{vertical-align:-.1em}
 
 /* ===== 메인 스케줄: TODAY STAFF / 금일 제외 인원 — 이름은 왼쪽, 숫자는 오른쪽 끝에 맞춰 두 줄 정렬 ===== */
-#appShell #dashboard .schedule-staff-summary{display:grid!important;grid-template-columns:auto!important;row-gap:6px!important;align-items:stretch!important;justify-content:end!important;width:auto!important;padding:0!important;}
+#appShell #dashboard .schedule-staff-summary{display:grid!important;border-left:0!important;grid-template-columns:auto!important;row-gap:6px!important;align-items:stretch!important;justify-content:end!important;width:auto!important;padding:0!important;}
 #appShell #dashboard .schedule-staff-primary,#appShell #dashboard .schedule-staff-secondary{display:grid!important;grid-template-columns:1fr auto auto!important;align-items:baseline!important;column-gap:6px!important;width:auto!important;min-width:0!important;justify-content:stretch!important;margin:0!important;}
 #appShell #dashboard .schedule-staff-secondary{grid-template-columns:1fr auto!important;}
 #appShell #dashboard .schedule-staff-primary span,#appShell #dashboard .schedule-staff-secondary span{display:block!important;min-width:0!important;margin:0 14px 0 0!important;font-size:11.5px!important;font-weight:800!important;color:#11795a!important;letter-spacing:.03em!important;line-height:1.2!important;text-align:left!important;white-space:nowrap!important;}
