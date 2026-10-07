@@ -5,12 +5,14 @@
 .lush-hero .hero-truck{position:absolute;bottom:13px;left:-100px;width:88px;height:42px;z-index:0;pointer-events:none;opacity:.9;}
 .lush-hero .hero-truck svg{display:block;width:100%;height:100%;overflow:visible;}
 .lush-hero .hero-truck .puff{position:absolute;left:-6px;bottom:6px;width:7px;height:7px;border-radius:50%;background:rgba(228,217,199,.35);opacity:0;}
-/* 메인 히어로 트럭은 사이트의 운영 액션 요소이므로 미리보기/브라우저 모션 설정과 무관하게 계속 주행 */
-.lush-hero .hero-truck{animation:truckDrive 26s linear infinite;}
-.lush-hero .hero-truck svg{animation:truckBump .6s ease-in-out infinite;}
-.lush-hero .hero-truck .wheel{animation:truckWheel .7s linear infinite;transform-box:fill-box;transform-origin:center;}
-.lush-hero .hero-truck .puff{animation:truckPuff 1.4s ease-out infinite;}
-.lush-hero .hero-truck .puff.p2{animation-delay:.7s;}
+@media (prefers-reduced-motion:no-preference){
+  .lush-hero .hero-truck{animation:truckDrive 26s linear infinite;}
+  .lush-hero .hero-truck svg{animation:truckBump .6s ease-in-out infinite;}
+  .lush-hero .hero-truck .wheel{animation:truckWheel .7s linear infinite;transform-box:fill-box;transform-origin:center;}
+  .lush-hero .hero-truck .puff{animation:truckPuff 1.4s ease-out infinite;}
+  .lush-hero .hero-truck .puff.p2{animation-delay:.7s;}
+}
+@media (prefers-reduced-motion:reduce){.lush-hero .hero-truck{left:auto;right:28%;}}
 @keyframes truckDrive{0%{left:-100px;}100%{left:calc(100% + 20px);}}
 @keyframes truckBump{0%,100%{transform:translateY(0);}50%{transform:translateY(-1px);}}
 @keyframes truckWheel{to{transform:rotate(360deg);}}
