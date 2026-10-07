@@ -8148,7 +8148,7 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
       </div>
       <div data-df-pane="list">
-      <div class="data-filter-row"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="">전체</option><option value="N">미처리</option><option value="Y">처리</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
+      <div class="data-filter-row"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="N" selected>미처리</option><option value="Y">처리</option><option value="">전체</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
       <div class="panel mt14"><div class="panel-head"><div><h3>불량 목록</h3></div><span class="badge" id="dfCount">0건</span></div>
         <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfBody"></tbody></table></div>
       </div>
@@ -15553,6 +15553,14 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #defectView tr.df-editing td{background:#fff8e6}
 #defectView .df-empty{text-align:center;color:#888;padding:28px 0!important}
 #defectView [data-df-pane][hidden]{display:none!important}
+/* 러쉬 테마: 탭 안의 카드도 다른 이슈 화면과 같은 테두리 카드 + 위쪽 색 띠 */
+#appShell.on-lush #defectView [data-df-pane]>.panel{position:relative;overflow:hidden;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important}
+#appShell.on-lush #defectView [data-df-pane]>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink)}
+#appShell.on-lush #defectView [data-df-pane="list"]>.panel::before{background:var(--lush-violet)}
+#appShell.on-lush #defectView [data-df-pane]>.data-filter-row{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important}
+#appShell.on-lush #defectView .df-form input,#appShell.on-lush #defectView .df-form select,#appShell.on-lush #defectView .df-form textarea{border-color:var(--lush-kraft)!important;background:#fff!important}
+#appShell.on-lush #defectView .df-form input:focus,#appShell.on-lush #defectView .df-form select:focus,#appShell.on-lush #defectView .df-form textarea:focus{outline:none;border-color:var(--lush-ink)!important}
+@media(max-width:900px){#appShell.on-lush #defectView .df-table tr{border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important}#appShell.on-lush #defectView .df-table tr.df-row-empty{border:0!important}}
 #defectView .df-form-panel{max-width:none!important;width:100%!important;box-sizing:border-box}
 #defectView .df-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
 #defectView .df-tabs button{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
@@ -15657,7 +15665,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     var openN=list.filter(function(x){return x.done!=='Y'}).length;
     $('dfOpen').textContent=num(openN);$('dfTabOpen').textContent=openN?openN:'';
     $('dfCount').textContent=rows.length+'건';
-    if(!rows.length){$('dfBody').innerHTML='<tr class="df-row-empty"><td class="df-empty" colspan="12">'+(list.length?'조건에 맞는 불량 건이 없습니다.':'등록된 불량 건이 없습니다.')+'</td></tr>';return}
+    if(!rows.length){$('dfBody').innerHTML='<tr class="df-row-empty"><td class="df-empty" colspan="12">'+(!list.length?'등록된 불량 건이 없습니다.':(fd==='N'&&!fy&&!q)?'미처리 불량 건이 없습니다. 처리된 건은 처리 여부에서 \x27처리\x27나 \x27전체\x27를 선택해 보세요.':'조건에 맞는 불량 건이 없습니다.')+'</td></tr>';return}
     $('dfBody').innerHTML=rows.map(function(x){
       var done=x.done==='Y';
       return '<tr data-id="'+esc(x.id)+'"'+(x.id===editingId?' class="df-editing"':'')+'>'+
