@@ -8128,7 +8128,9 @@ html,body{max-width:100%;overflow-x:hidden}
     <section id="defectView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">PRODUCT DEFECT</div><h2>제품 불량</h2><p>제품 불량 건을 직접 등록하고 처리 여부를 관리합니다.</p></div></div>
       <div class="kpis data-kpis"><div class="kpi"><span>전체</span><b id="dfTotal">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="dfOpen">0</b><small>건</small></div><div class="kpi"><span>불량 수량</span><b id="dfQty">0</b><small>개</small></div></div>
-      <div class="panel mt14 df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
+      <div class="df-tabs mt14"><button type="button" class="on" data-df-tab="list">불량 목록 <em id="dfTabOpen"></em></button><button type="button" data-df-tab="form">불량 등록</button></div>
+      <div data-df-pane="form" hidden>
+      <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
         <div class="df-form">
           <div class="field"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
           <div class="field"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: BODY"><datalist id="dfCategoryList"></datalist></div>
@@ -8144,9 +8146,12 @@ html,body{max-width:100%;overflow-x:hidden}
         </div>
         <div class="df-actions"><button class="btn" id="dfCancel" type="button" hidden>취소</button><button class="btn primary" id="dfSave" type="button">등록</button></div>
       </div>
-      <div class="data-filter-row mt14"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="">전체</option><option value="N">미처리</option><option value="Y">처리</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
+      </div>
+      <div data-df-pane="list">
+      <div class="data-filter-row"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="">전체</option><option value="N">미처리</option><option value="Y">처리</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
       <div class="panel mt14"><div class="panel-head"><div><h3>불량 목록</h3></div><span class="badge" id="dfCount">0건</span></div>
         <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfBody"></tbody></table></div>
+      </div>
       </div>
     </div></section>
 
@@ -15535,6 +15540,13 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #defectView .df-manage button.del{color:#c93838}
 #defectView tr.df-editing td{background:#fff8e6}
 #defectView .df-empty{text-align:center;color:#888;padding:28px 0!important}
+#defectView [data-df-pane][hidden]{display:none!important}
+#defectView .df-form-panel{max-width:1100px}
+#defectView .df-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+#defectView .df-tabs button{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+#defectView .df-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff}
+#defectView .df-tabs em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4}
+@media(max-width:900px){#defectView .df-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#defectView .df-tabs button{justify-content:center;padding:0 6px;font-size:13.5px}}
 @media(max-width:900px){
   #defectView .df-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
   #defectView .df-form .field.grow,#defectView .df-form .field.full{grid-column:1/-1}
@@ -15559,6 +15571,10 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   var KEY='lush-product-defects-v1';
   var $=function(id){return document.getElementById(id)};
   var editingId=null;
+  function showTab(t){
+    document.querySelectorAll('#defectView [data-df-tab]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-df-tab')===t)});
+    document.querySelectorAll('#defectView [data-df-pane]').forEach(function(p){p.hidden=p.getAttribute('data-df-pane')!==t});
+  }
   function load(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
   function store(list){localStorage.setItem(KEY,JSON.stringify(list))}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -15583,7 +15599,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     }else{
       list.unshift(Object.assign({id:'df'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),createdAt:now,updatedAt:now},item));
     }
-    store(list);resetForm();
+    store(list);resetForm();showTab('list');
   }
   function edit(id){
     var it=load().find(function(x){return x.id===id});if(!it)return;
@@ -15591,7 +15607,8 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     if(!it.done)$('dfDone').value='N';
     editingId=id;$('dfSave').textContent='수정 저장';$('dfCancel').hidden=false;$('dfEditBadge').hidden=false;$('dfFormTitle').textContent='불량 수정';
     render();
-    var p=document.querySelector('#defectView .df-form-panel');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});
+    showTab('form');
+    var p=document.querySelector('#defectView .df-tabs');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});
   }
   function del(id){
     var it=load().find(function(x){return x.id===id});if(!it)return;
@@ -15621,7 +15638,8 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
       return true;
     }).sort(function(a,b){return sortKey(b).localeCompare(sortKey(a))});
     $('dfTotal').textContent=num(list.length);
-    $('dfOpen').textContent=num(list.filter(function(x){return x.done!=='Y'}).length);
+    var openN=list.filter(function(x){return x.done!=='Y'}).length;
+    $('dfOpen').textContent=num(openN);$('dfTabOpen').textContent=openN?openN:'';
     $('dfQty').textContent=num(rows.reduce(function(s,x){return s+(Number(x.qty)||0)},0));
     $('dfCount').textContent=rows.length+'건';
     if(!rows.length){$('dfBody').innerHTML='<tr class="df-row-empty"><td class="df-empty" colspan="12">'+(list.length?'조건에 맞는 불량 건이 없습니다.':'등록된 불량 건이 없습니다.')+'</td></tr>';return}
@@ -15647,7 +15665,12 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     if(!$('defectView'))return;
     $('dfYear').value=new Date().getFullYear();
     $('dfSave').addEventListener('click',save);
-    $('dfCancel').addEventListener('click',resetForm);
+    $('dfCancel').addEventListener('click',function(){resetForm();showTab('list')});
+    document.querySelectorAll('#defectView [data-df-tab]').forEach(function(b){b.addEventListener('click',function(){
+      var t=b.getAttribute('data-df-tab');
+      if(t==='form'&&editingId)resetForm(); /* 탭으로 직접 열면 새 등록 */
+      showTab(t);
+    })});
     ['dfFilterYear','dfFilterDone'].forEach(function(id){$(id).addEventListener('change',render)});
     $('dfFilterQuery').addEventListener('input',render);
     $('dfBody').addEventListener('click',function(e){
