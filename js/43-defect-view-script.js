@@ -3,6 +3,7 @@
   var KEY='lush-product-defects-v1';
   var $=function(id){return document.getElementById(id)};
   var editingId=null;
+  var searched=false; // 불량 기록은 [조회]·[전체]를 누른 뒤에만 보여 줌
   function showTab(t){
     document.querySelectorAll('#defectView [data-df-tab]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-df-tab')===t)});
     document.querySelectorAll('#defectView [data-df-pane]').forEach(function(p){p.hidden=p.getAttribute('data-df-pane')!==t});
@@ -93,7 +94,8 @@
     $('dfOpen').textContent=num(open.length);$('dfTabOpen').textContent=open.length?open.length:'';
     var tc=$('dfPendingTitleCount');tc.textContent=num(open.length)+'건';tc.classList.toggle('ux-blink',open.length>0);
     $('dfPendingBody').innerHTML=open.length?open.map(rowHtml).join(''):emptyRow('미완료 불량이 없습니다.');
-    // 불량 기록: 기간(등록일)·처리여부·검색
+    // 불량 기록: 기간(등록일)·처리여부·검색 — 조회 전에는 안내만
+    if(!searched){$('dfCount').hidden=true;$('dfBody').innerHTML=emptyRow('기간을 확인하고 [조회]를 눌러 주세요.');return}
     var st=$('dfStart').value,en=$('dfEnd').value,fd=$('dfFilterDone').value,q=$('dfFilterQuery').value.trim().toLowerCase();
     var rows=list.filter(function(x){
       var d=regDate(x);
@@ -103,7 +105,7 @@
       if(q&&[x.category,x.batch,x.plu,x.code,x.name,x.lot,x.note].join(' ').toLowerCase().indexOf(q)<0)return false;
       return true;
     }).sort(sortDesc);
-    $('dfCount').textContent=rows.length+'건';
+    $('dfCount').hidden=false;$('dfCount').textContent=rows.length+'건';
     $('dfBody').innerHTML=rows.length?rows.map(rowHtml).join(''):emptyRow(!list.length?'등록된 불량 건이 없습니다.':'조건에 맞는 불량 건이 없습니다.');
   }
   function init(){
@@ -118,9 +120,9 @@
     })});
     $('dfStart').value=fyStart();$('dfEnd').value=todayKst();
     ['dfStart','dfEnd','dfFilterDone'].forEach(function(id){$(id).addEventListener('change',render)});
-    $('dfFilterQuery').addEventListener('keydown',function(e){if(e.key==='Enter')render()});
-    $('dfRun').addEventListener('click',render);
-    $('dfReset').addEventListener('click',function(){['dfStart','dfEnd','dfFilterQuery','dfFilterDone'].forEach(function(id){$(id).value=''});render()});
+    $('dfFilterQuery').addEventListener('keydown',function(e){if(e.key==='Enter'){searched=true;render()}});
+    $('dfRun').addEventListener('click',function(){searched=true;render()});
+    $('dfReset').addEventListener('click',function(){searched=true;['dfStart','dfEnd','dfFilterQuery','dfFilterDone'].forEach(function(id){$(id).value=''});render()});
     var note=$('dfNote');
     function fitNote(){note.style.height='auto';note.style.height=Math.max(84,note.scrollHeight+2)+'px'}
     note.addEventListener('keydown',function(e){if(e.key==='Enter')e.stopPropagation()});
