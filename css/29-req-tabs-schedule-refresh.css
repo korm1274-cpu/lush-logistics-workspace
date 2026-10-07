@@ -11,9 +11,9 @@
   background:#fff!important;border:1.5px solid #e4d9c7!important;color:#1d1d1b!important;
   box-shadow:none!important;cursor:pointer;transition:border-color .2s,color .2s,background .2s;
 }
-#appShell #dashRefreshImportScheduleBtn{width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;max-height:32px!important;align-self:center!important;flex:none!important;padding:0!important;border-radius:50%!important;margin-left:8px!important;}
+#appShell #dashRefreshImportScheduleBtn{width:28px!important;min-width:28px!important;height:28px!important;min-height:28px!important;max-height:28px!important;align-self:center!important;flex:none!important;padding:0!important;border-radius:50%!important;margin-left:8px!important;}
 #appShell #refreshImportScheduleBtn{height:38px!important;min-height:38px!important;padding:0 16px 0 13px!important;border-radius:999px!important;font-size:13.5px!important;font-weight:800!important;}
-#appShell #dashRefreshImportScheduleBtn svg,#appShell #refreshImportScheduleBtn svg{width:17px;height:17px;stroke-width:2.2;transition:transform .45s ease;}
+#appShell #dashRefreshImportScheduleBtn svg,#appShell #refreshImportScheduleBtn svg{width:14px;height:14px;stroke-width:2.3;transition:transform .45s ease;}
 #appShell #dashRefreshImportScheduleBtn:hover,#appShell #refreshImportScheduleBtn:hover{border-color:#e87ba4!important;color:#c2477a!important;background:#fff6fa!important;}
 #appShell #dashRefreshImportScheduleBtn:hover svg,#appShell #refreshImportScheduleBtn:hover svg{transform:rotate(180deg);}
 #appShell .sr-spin svg{animation:srSpin .8s linear infinite!important;}
@@ -21,7 +21,7 @@
 @keyframes srSpin{to{transform:rotate(360deg)}}
 @media (prefers-reduced-motion:reduce){#appShell .sr-spin svg{animation:none!important}}
 @media (max-width:900px){
-  #appShell #dashRefreshImportScheduleBtn{width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;max-height:30px!important;}
+  #appShell #dashRefreshImportScheduleBtn{width:27px!important;min-width:27px!important;height:27px!important;min-height:27px!important;max-height:27px!important;}
   #appShell #refreshImportScheduleBtn{height:34px!important;min-height:34px!important;padding:0 13px 0 11px!important;font-size:13px!important;}
 }
 
@@ -32,7 +32,7 @@
 #appShell #dashboard .schedule-staff-summary{display:grid!important;grid-template-columns:auto!important;row-gap:6px!important;align-items:stretch!important;justify-content:end!important;width:auto!important;padding:0!important;}
 #appShell #dashboard .schedule-staff-primary,#appShell #dashboard .schedule-staff-secondary{display:grid!important;grid-template-columns:1fr auto auto!important;align-items:baseline!important;column-gap:6px!important;width:auto!important;min-width:0!important;justify-content:stretch!important;margin:0!important;}
 #appShell #dashboard .schedule-staff-secondary{grid-template-columns:1fr auto!important;}
-#appShell #dashboard .schedule-staff-primary span,#appShell #dashboard .schedule-staff-secondary span{display:block!important;min-width:0!important;margin:0 14px 0 0!important;font-size:11.5px!important;font-weight:800!important;color:#6b6b66!important;letter-spacing:.03em!important;line-height:1.2!important;text-align:left!important;white-space:nowrap!important;}
+#appShell #dashboard .schedule-staff-primary span,#appShell #dashboard .schedule-staff-secondary span{display:block!important;min-width:0!important;margin:0 14px 0 0!important;font-size:11.5px!important;font-weight:800!important;color:#11795a!important;letter-spacing:.03em!important;line-height:1.2!important;text-align:left!important;white-space:nowrap!important;}
 #appShell #dashboard .schedule-staff-primary strong{font-size:28px!important;font-weight:900!important;line-height:1!important;color:#1d1d1b!important;text-align:right!important;font-variant-numeric:tabular-nums;}
 #appShell #dashboard .schedule-staff-primary em{font-style:normal!important;font-size:12px!important;font-weight:700!important;color:#8a8a85!important;line-height:1.2!important;white-space:nowrap!important;}
 #appShell #dashboard .schedule-staff-secondary b{font-size:16px!important;font-weight:800!important;line-height:1.2!important;color:#1d1d1b!important;text-align:right!important;white-space:nowrap!important;font-variant-numeric:tabular-nums;}
