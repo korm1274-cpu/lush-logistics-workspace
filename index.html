@@ -15318,5 +15318,14 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 /* Admin 메뉴 구성: 넓은 화면에서도 위 검정 배너와 같은 폭으로(최대 1380px 제한 해제) */
 #appShell #admin-menus .menu-settings-shell{max-width:none!important;margin:0!important;}
 </style>
+<style id="admin-menu-type">
+/* Admin 메뉴 구성: 머리글(순서·메뉴명·메뉴 활성화·대분류·접근 권한·관리) 크고 진하게,
+   접근 권한 버튼 글자 키움, 삭제 버튼 글자 가운데 */
+#appShell #settings .menu-column-head span{font-size:13px!important;font-weight:800!important;color:#191f28!important;}
+#appShell #settings .permission-mini{font-size:12px!important;padding:5px 10px!important;min-height:28px!important;}
+#appShell #settings .permission-mini.on{font-weight:800!important;color:#0d6b4e!important;}
+#appShell #settings .permission-mini:not(.on){font-weight:700!important;color:#6b7684!important;}
+#appShell #settings .menu-inline-actions .btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
+</style>
 </body>
 </html>
