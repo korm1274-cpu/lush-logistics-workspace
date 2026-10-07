@@ -15306,5 +15306,13 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   #appShell #statusBoardView#statusBoardView .product-top-grid td{font-size:13px!important;}
 }
 </style>
+<style id="admin-permission-buttons">
+/* Admin > 메뉴 관리 접근 권한 버튼: 글자 가운데, 선택된 권한은 검정 대신 러쉬 민트(체크 표시) */
+#appShell #settings .permission-mini{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:4px!important;}
+#appShell #settings .permission-mini.on{background:#e3f5ec!important;color:#11795a!important;border-color:#9fd9c0!important;font-weight:800!important;}
+#appShell #settings .permission-mini.on::before{content:"✓";font-size:.95em;font-weight:900;}
+#appShell #settings .permission-mini:not(.on){background:#fff!important;color:#8b95a1!important;border-color:#e4d9c7!important;}
+#appShell #settings .permission-mini:hover{filter:brightness(.97);}
+</style>
 </body>
 </html>
