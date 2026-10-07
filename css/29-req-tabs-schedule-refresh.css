@@ -166,3 +166,14 @@
 #appShell #outboundBoxView .inventory-commandbar{position:relative!important;overflow:hidden!important;}
 #appShell :is(#inboundBasicView,#inboundMonthlyView,#inboundDailyView,#inboundAnalysis,#outboundBasicView,#outboundAnalysis,#outboundBoxView) .data-filter-row::before,
 #appShell #outboundBoxView .inventory-commandbar::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;z-index:1;pointer-events:none;}
+
+/* ===== 공지 등록·제품 확보 등록: 입력 카드 위쪽 검정 띠 ===== */
+#appShell :is(#noticeManagerView,#todoManagerView) .box-entry-card{position:relative!important;overflow:hidden!important;}
+#appShell :is(#noticeManagerView,#todoManagerView) .box-entry-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;z-index:1;pointer-events:none;}
+/* 제품 확보 등록: 이름(입고요청일·할 일·내용)과 입력칸 시작선, 등록 버튼을 한 줄로 — 두 줄짜리 '내용'만 아래로 길어짐 */
+@media (min-width:901px){
+  #appShell #todoManagerView .box-entry-card{align-items:flex-start!important;}
+  #appShell #todoManagerView .box-entry-card .field input{height:40px!important;min-height:40px!important;box-sizing:border-box!important;}
+  #appShell #todoManagerView .box-entry-card .field textarea{min-height:40px!important;box-sizing:border-box!important;}
+  #appShell #todoManagerView .box-entry-card>.btn{margin-top:var(--todo-label-h,19px)!important;height:40px!important;}
+}
