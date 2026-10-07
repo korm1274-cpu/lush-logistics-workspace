@@ -160,3 +160,9 @@
   #appShell #statusBoardView#statusBoardView .boxcount-setting-store-main b{font-size:13px!important;}
   #appShell #statusBoardView#statusBoardView .boxcount-setting-store-main small{font-size:11px!important;}
 }
+
+/* ===== 입고·출고 화면: 날짜(일정) 선택 줄에도 현황판 조회 카드처럼 위쪽 검정 띠 ===== */
+#appShell :is(#inboundBasicView,#inboundMonthlyView,#inboundDailyView,#inboundAnalysis,#outboundBasicView,#outboundAnalysis,#outboundBoxView) .data-filter-row,
+#appShell #outboundBoxView .inventory-commandbar{position:relative!important;overflow:hidden!important;}
+#appShell :is(#inboundBasicView,#inboundMonthlyView,#inboundDailyView,#inboundAnalysis,#outboundBasicView,#outboundAnalysis,#outboundBoxView) .data-filter-row::before,
+#appShell #outboundBoxView .inventory-commandbar::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;z-index:1;pointer-events:none;}
