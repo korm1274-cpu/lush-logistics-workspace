@@ -15470,5 +15470,12 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 /* 출고 박스 관리 > 조회 결과: 엑셀 다운로드·CSV 내보내기 버튼 숨김 */
 #appShell #exportBoxCsv,#appShell #exportBoxExcel{display:none!important;}
 </style>
+<style id="box-storemap-move">
+/* 출고 박스 관리: '날짜를 선택하고 불러오기를 눌러주세요' 안내는 숨기고 그 자리에 '요일별 매장 설정' 버튼 */
+#appShell #boxGridDow{display:none!important;}
+</style>
+<script id="box-storemap-move-script">
+(function(){var b=document.getElementById('boxStoreMapBtn'),s=document.getElementById('boxGridDow');if(b&&s&&s.parentElement)s.parentElement.appendChild(b)})();
+</script>
 </body>
 </html>
