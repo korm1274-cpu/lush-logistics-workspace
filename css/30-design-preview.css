@@ -1,10 +1,9 @@
-/* Design Preview v4
-   Independent presentation layer.
-   OFF = original UI untouched.
-   ON = Main uses the same live DOM/data/functions with a richer layout.
-   Status Board shipping tab stays original; other tabs receive preview styling. */
+/* Design Preview v6
+   Strong visual redesign without moving live DOM.
+   OFF = original UI.
+   ON = Main + Status analysis tabs only.
+   Shipping status remains original. */
 
-/* ---------- toggle ---------- */
 .design-preview-toggle{height:36px;padding:0 11px 0 8px;border:1px solid #d9d8d3;border-radius:10px;background:#fff;color:#222;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;cursor:pointer;box-shadow:0 2px 8px rgba(20,20,18,.035);transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease,background .18s ease}
 .design-preview-toggle:hover{transform:translateY(-1px);border-color:#c9c7c1;box-shadow:0 7px 20px rgba(20,20,18,.075)}
 .design-preview-toggle-icon{width:22px;height:22px;border-radius:7px;background:#efeee9;color:#55514c;display:grid;place-items:center;font-size:12px;transition:transform .24s ease,background .24s ease,color .24s ease}
@@ -12,289 +11,309 @@
 .design-preview-toggle-state{min-width:31px;padding:3px 6px;border-radius:999px;background:#eeeeeb;color:#87837d;font-size:8px;font-weight:900;letter-spacing:.06em;text-align:center}
 .design-preview-toggle.is-on{border-color:#efacc4;background:#fff8fb;box-shadow:0 8px 22px rgba(226,75,132,.11)}.design-preview-toggle.is-on .design-preview-toggle-icon{background:#ef5b91;color:#fff;transform:rotate(180deg)}.design-preview-toggle.is-on .design-preview-toggle-state{background:#ef5b91;color:#fff}
 
-/* ---------- shared preview surface ---------- */
-body.design-preview-scope{--pv-bg:#f4f1ed;--pv-paper:#fff;--pv-ink:#171614;--pv-muted:#76706a;--pv-line:rgba(25,24,22,.075);--pv-pink:#ed588d;--pv-pink2:#ff9cbd;--pv-green:#15966c;--pv-amber:#d98a22;background:radial-gradient(circle at 79% 1%,rgba(248,182,205,.23),transparent 29rem),radial-gradient(circle at 15% 75%,rgba(193,226,213,.19),transparent 31rem),var(--pv-bg)!important}
-body.design-preview-scope .main{background:transparent!important}
-body.design-preview-scope .topbar{background:rgba(244,241,237,.80)!important;border-bottom:1px solid rgba(24,23,21,.05)!important;backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%)}
-body.design-preview-scope .topbar .base-tool{border:1px solid rgba(25,24,22,.09)!important;border-radius:10px!important;background:rgba(255,255,255,.76)!important;box-shadow:0 5px 16px rgba(38,30,26,.045)!important;transition:transform .18s ease,box-shadow .18s ease,background .18s ease!important}
-body.design-preview-scope .topbar .base-tool:hover{transform:translateY(-1px);background:#fff!important;box-shadow:0 8px 22px rgba(38,30,26,.075)!important}
-.pv-decor-only{display:none;pointer-events:none}
+body.design-preview-scope{--pv-bg:#f4f2ee;--pv-ink:#171614;--pv-muted:#76716b;--pv-line:rgba(22,21,19,.075);--pv-pink:#ed588d;--pv-green:#15966c;--pv-amber:#da8a22;background:#f4f2ee!important}
+body.design-preview-scope .main{background:linear-gradient(180deg,#f8f6f2 0,#f4f2ee 34%,#f7f5f1 100%)!important}
+body.design-preview-scope .topbar{background:rgba(248,246,242,.82)!important;border-bottom:1px solid rgba(20,19,17,.055)!important;backdrop-filter:blur(20px) saturate(150%);-webkit-backdrop-filter:blur(20px) saturate(150%)}
+body.design-preview-scope .topbar .base-tool{border:1px solid rgba(25,24,22,.08)!important;border-radius:12px!important;background:rgba(255,255,255,.80)!important;box-shadow:0 6px 18px rgba(38,30,26,.045)!important;transition:transform .2s ease,box-shadow .2s ease!important}
+body.design-preview-scope .topbar .base-tool:hover{transform:translateY(-2px);box-shadow:0 11px 26px rgba(38,30,26,.085)!important}
 
-/* ---------- MAIN: same information / same elements, new composition ---------- */
-body.design-preview-home #designPreviewDashboard{display:none!important}
-body.design-preview-home #dashboard{max-width:1680px;margin:0 auto;display:grid!important;grid-template-columns:minmax(0,1.36fr) minmax(360px,.64fr);grid-template-areas:"hero hero" "notice request" "schedule month";gap:30px 24px;padding-bottom:10px}
-body.design-preview-home #dashboard>.lush-hero{grid-area:hero}
-body.design-preview-home #dashboard>.dashboard-first-section{grid-area:notice}
-body.design-preview-home #dashboard>.dash-section:has(#todayRequestGrid){grid-area:request}
-body.design-preview-home #dashboard>.schedule-full-card{grid-area:schedule}
-body.design-preview-home #dashboard>.dash-section:has(.monthly-grid){grid-area:month}
-
-/* large photographic / 3D hero */
-body.design-preview-home #dashboard .lush-hero{position:relative;isolation:isolate;display:grid!important;grid-template-columns:minmax(340px,.78fr) minmax(520px,1.22fr);grid-template-rows:1fr auto;align-items:center;min-height:430px;padding:50px 44px 72px!important;border:1px solid rgba(255,255,255,.82)!important;border-radius:32px!important;background:linear-gradient(112deg,#fff 0%,#fff9fb 38%,#f0e9e9 100%)!important;box-shadow:0 32px 80px rgba(66,48,40,.12),inset 0 1px 0 #fff!important;overflow:hidden}
-body.design-preview-home #dashboard .lush-hero-text{grid-column:1;grid-row:1;position:relative;z-index:5;max-width:610px;padding-right:18px}
-body.design-preview-home #dashboard .lush-hero-date{margin-bottom:12px!important;color:#8a827b!important;font-size:11px!important;font-weight:850!important;letter-spacing:.04em!important}
-body.design-preview-home #dashboard .lush-hero .lush-hero-hello{margin:0!important;color:#151412!important;font-size:44px!important;line-height:1.12!important;font-weight:920!important;letter-spacing:-.06em!important;text-wrap:balance}
-body.design-preview-home #dashboard .lush-hero .lush-hero-sub{margin-top:16px!important;max-width:470px;color:#746e68!important;font-size:14px!important;line-height:1.65!important;font-weight:620!important}
-body.design-preview-home #dashboard .lush-hero-stats{grid-column:1/-1;grid-row:2;position:relative;z-index:6;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:11px!important;width:100%!important;margin-top:28px!important}
-body.design-preview-home #dashboard .lush-hero-stat{min-width:0!important;min-height:96px!important;padding:15px 17px!important;border:1px solid rgba(255,255,255,.86)!important;border-radius:18px!important;background:rgba(255,255,255,.62)!important;color:#1b1917!important;box-shadow:0 14px 32px rgba(57,43,37,.09),inset 0 1px 0 rgba(255,255,255,.95)!important;backdrop-filter:blur(18px) saturate(135%);-webkit-backdrop-filter:blur(18px) saturate(135%);transition:transform .22s ease,box-shadow .22s ease,background .22s ease!important}
-body.design-preview-home #dashboard .lush-hero-stat:hover{transform:translateY(-5px);background:rgba(255,255,255,.84)!important;box-shadow:0 21px 42px rgba(57,43,37,.14)!important}
-body.design-preview-home #dashboard .lush-hero-stat small{display:block;margin-bottom:8px!important;color:#7b746e!important;font-size:9px!important;font-weight:850!important}
-body.design-preview-home #dashboard .lush-hero-stat b{color:#171614!important;font-size:29px!important;line-height:1!important;letter-spacing:-.045em!important}
-body.design-preview-home #dashboard .lush-hero-stat span{color:#888078!important;font-size:9px!important}
-body.design-preview-home #dashboard .pv-hero-scene{display:block;position:absolute;z-index:1;right:-1%;top:-3%;width:61%;height:86%;opacity:.98;pointer-events:none;filter:saturate(.92) contrast(1.02)}
-body.design-preview-home #dashboard .pv-hero-scene svg{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 28px 34px rgba(64,48,40,.16))}
-body.design-preview-home #dashboard .pv-hero-scene .pv-orb{transform-origin:center;animation:pvFloat 9s ease-in-out infinite alternate}
-body.design-preview-home #dashboard .pv-hero-scene .pv-truck3d{animation:pvTruckFloat 5.2s ease-in-out infinite alternate}
-body.design-preview-home #dashboard .pv-hero-scene .pv-wheel3d{transform-box:fill-box;transform-origin:center;animation:pvWheel 1s linear infinite}
-body.design-preview-home #dashboard .pv-hero-scene .pv-light{animation:pvGlow 2.2s ease-in-out infinite alternate}
-body.design-preview-home #dashboard .hero-road{z-index:4!important;bottom:18px!important;border-top-color:rgba(69,61,56,.14)!important}
-body.design-preview-home #dashboard .hero-truck{z-index:5!important;bottom:19px!important}
-
-/* sections feel like editorial blocks instead of repeated boxes */
-body.design-preview-home #dashboard>.dash-section{margin:0!important;padding:22px!important;border:1px solid var(--pv-line)!important;border-radius:25px!important;background:rgba(255,255,255,.88)!important;box-shadow:0 18px 48px rgba(52,42,36,.065),inset 0 1px 0 rgba(255,255,255,.92)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:transform .24s ease,box-shadow .24s ease!important}
-body.design-preview-home #dashboard>.dash-section:before{display:none!important}
-body.design-preview-home #dashboard>.dash-section:hover{box-shadow:0 26px 60px rgba(52,42,36,.09),inset 0 1px 0 rgba(255,255,255,.96)!important}
-body.design-preview-home #dashboard .dashboard-notice-todo-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important}
-body.design-preview-home #dashboard .dashboard-info-panel{padding:17px!important;border:1px solid rgba(25,24,22,.07)!important;border-radius:19px!important;background:linear-gradient(145deg,rgba(255,255,255,.94),rgba(250,248,245,.82))!important;box-shadow:0 9px 26px rgba(44,35,30,.045)!important;transition:transform .22s ease,box-shadow .22s ease!important}
-body.design-preview-home #dashboard .dashboard-info-panel:hover{transform:translateY(-3px);box-shadow:0 16px 34px rgba(44,35,30,.085)!important}
-body.design-preview-home #dashboard .dashboard-panel-title{padding-bottom:11px!important;border-bottom:1px solid rgba(25,24,22,.055)!important}
-body.design-preview-home #dashboard>.dash-section:has(#todayRequestGrid){background:linear-gradient(145deg,rgba(255,255,255,.93),rgba(252,247,249,.90))!important}
-body.design-preview-home #dashboard #todayRequestGrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:13px!important}
-body.design-preview-home #dashboard .request-mini-card{position:relative;min-height:214px!important;padding:15px!important;border:1px solid rgba(25,24,22,.07)!important;border-radius:18px!important;background:linear-gradient(145deg,#fff,#f8f6f3)!important;box-shadow:0 9px 25px rgba(45,36,31,.045)!important;overflow:hidden;transform-style:preserve-3d;transition:transform .26s cubic-bezier(.2,.72,.2,1),box-shadow .26s ease,border-color .26s ease!important}
-body.design-preview-home #dashboard .request-mini-card:after{content:"";position:absolute;right:-42px;top:-58px;width:132px;height:132px;border-radius:50%;background:radial-gradient(circle,rgba(237,88,141,.14),transparent 68%);pointer-events:none;transition:transform .35s ease}
-body.design-preview-home #dashboard .request-mini-card:hover{transform:perspective(900px) translateY(-6px) rotateX(1.2deg) rotateY(-.8deg);border-color:rgba(237,88,141,.18)!important;box-shadow:0 20px 40px rgba(45,36,31,.10)!important}
-body.design-preview-home #dashboard .request-mini-card:hover:after{transform:scale(1.22)}
-body.design-preview-home #dashboard .request-badge{border:0!important;background:#fbeaf1!important;color:#b44770!important}
-body.design-preview-home #dashboard>.schedule-full-card{background:radial-gradient(circle at 96% 5%,rgba(237,88,141,.075),transparent 300px),rgba(255,255,255,.91)!important}
-body.design-preview-home #dashboard .schedule-unified-head{padding-bottom:15px!important;border-bottom:1px solid rgba(25,24,22,.06)!important}
-body.design-preview-home #dashboard .dashboard-two-week-calendar{overflow:hidden;border:1px solid rgba(25,24,22,.065);border-radius:18px;background:#fff}
-body.design-preview-home #dashboard>.dash-section:has(.monthly-grid){align-self:start;background:linear-gradient(160deg,rgba(255,255,255,.93),rgba(247,244,240,.88))!important}
-body.design-preview-home #dashboard .monthly-grid{display:grid!important;grid-template-columns:1fr!important;gap:15px!important}
-body.design-preview-home #dashboard .monthly-card{position:relative;min-height:185px!important;padding:20px!important;border:1px solid rgba(25,24,22,.07)!important;border-radius:21px!important;overflow:hidden;box-shadow:0 11px 30px rgba(45,36,31,.055)!important;transition:transform .24s ease,box-shadow .24s ease!important}
-body.design-preview-home #dashboard .monthly-card:hover{transform:translateY(-4px);box-shadow:0 19px 40px rgba(45,36,31,.095)!important}
-body.design-preview-home #dashboard .monthly-card:first-child{background:linear-gradient(145deg,#fff,#ebf8f2)!important}
-body.design-preview-home #dashboard .monthly-card:last-child{background:linear-gradient(145deg,#fff,#fff0f5)!important}
-body.design-preview-home #dashboard .monthly-card:after{content:"";position:absolute;right:-36px;bottom:-54px;width:150px;height:150px;border-radius:38px;transform:rotate(28deg);background:linear-gradient(145deg,rgba(255,255,255,.68),rgba(237,88,141,.08));box-shadow:-18px -18px 38px rgba(255,255,255,.5),18px 18px 38px rgba(62,48,40,.06);pointer-events:none}
-body.design-preview-home #dashboard .monthly-stats b{font-size:30px!important;letter-spacing:-.045em!important}
-body.design-preview-home #dashboard button{transition:transform .17s ease,box-shadow .17s ease!important}
-body.design-preview-home #dashboard button:active:not(:disabled){transform:scale(.985)}
-
-/* large Meta-like reveal rhythm */
-body.design-preview-home #dashboard>.lush-hero,
-body.design-preview-home #dashboard>.dash-section{animation:pvSectionIn .55s cubic-bezier(.2,.72,.2,1) both}
-body.design-preview-home #dashboard>.dashboard-first-section{animation-delay:.06s}
-body.design-preview-home #dashboard>.dash-section:has(#todayRequestGrid){animation-delay:.11s}
-body.design-preview-home #dashboard>.schedule-full-card{animation-delay:.16s}
-body.design-preview-home #dashboard>.dash-section:has(.monthly-grid){animation-delay:.21s}
-
-/* ---------- STATUS BOARD: shipping stays original ---------- */
-body.design-preview-status-detail #statusBoardView.active{max-width:1680px;margin:0 auto}
-body.design-preview-status-detail #statusBoardView.active .status-board-shell{gap:22px!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-top{position:relative;isolation:isolate;overflow:hidden;padding:31px 32px!important;border:1px solid rgba(255,255,255,.84)!important;border-radius:27px!important;background:linear-gradient(112deg,#fff 0%,#fff8fb 50%,#f5e9ee 100%)!important;box-shadow:0 24px 62px rgba(57,44,38,.10),inset 0 1px 0 #fff!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-top:after{content:"";position:absolute;z-index:-1;right:-90px;top:-245px;width:390px;height:390px;border-radius:50%;background:radial-gradient(circle,rgba(237,88,141,.31),transparent 68%);animation:pvFloat 10s ease-in-out infinite alternate}
-body.design-preview-status-detail #statusBoardView.active .status-board-top h2{font-size:31px!important;letter-spacing:-.05em!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-api-state{border:1px solid rgba(255,255,255,.82)!important;border-radius:999px!important;background:rgba(255,255,255,.67)!important;color:#67615b!important;box-shadow:0 8px 22px rgba(44,35,30,.055)!important;backdrop-filter:blur(12px)}
-body.design-preview-status-detail #statusBoardView.active .status-board-tabs{position:sticky;top:calc(var(--v70-bar-h) + 55px);z-index:25;gap:5px!important;padding:5px!important;border:1px solid rgba(25,24,22,.07)!important;border-radius:16px!important;background:rgba(249,247,244,.84)!important;box-shadow:0 10px 30px rgba(50,41,35,.06)!important;backdrop-filter:blur(17px);-webkit-backdrop-filter:blur(17px)}
-body.design-preview-status-detail #statusBoardView.active .status-board-tab{min-height:42px!important;border-radius:11px!important;background:transparent!important;color:#77716b!important;transition:transform .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-tab:hover{transform:translateY(-1px);color:#191816!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-tab.active{background:#1b1a18!important;color:#fff!important;box-shadow:0 8px 20px rgba(24,23,21,.16)!important}
-body.design-preview-status-detail #statusBoardView.active .status-board-tab.active:after{display:none!important}
-body.design-preview-status-detail #statusBoardView.active .status-panel.active{animation:pvPanelIn .36s cubic-bezier(.2,.72,.2,1) both}
-body.design-preview-status-detail #statusBoardView.active :is(.productivity-subtabs,.boxcount-subtabs,.product-outbound-tabs,.store-history-segment){padding:5px!important;gap:4px!important;border:1px solid rgba(25,24,22,.07)!important;border-radius:14px!important;background:rgba(250,248,245,.88)!important;box-shadow:0 8px 22px rgba(47,38,33,.04)!important}
-body.design-preview-status-detail #statusBoardView.active :is(.productivity-subtab,.boxcount-subtab,.product-outbound-tab,.store-mode-btn){border-radius:10px!important;transition:transform .17s ease,box-shadow .17s ease,background .17s ease!important}
-body.design-preview-status-detail #statusBoardView.active :is(.productivity-subtab,.boxcount-subtab,.product-outbound-tab,.store-mode-btn):hover{transform:translateY(-1px)}
-body.design-preview-status-detail #statusBoardView.active :is(.status-card,.chart-card,.table-card,.analysis-card,.productivity-card,.boxcount-card,.store-history-card){position:relative;border:1px solid rgba(25,24,22,.07)!important;border-radius:22px!important;background:rgba(255,255,255,.90)!important;box-shadow:0 16px 44px rgba(47,38,33,.06),inset 0 1px 0 rgba(255,255,255,.92)!important;overflow:hidden;transition:transform .22s ease,box-shadow .22s ease!important}
-body.design-preview-status-detail #statusBoardView.active :is(.chart-card,.analysis-card):before{content:"";position:absolute;right:-100px;top:-120px;width:260px;height:260px;border-radius:50%;background:radial-gradient(circle,rgba(237,88,141,.095),transparent 68%);pointer-events:none}
-body.design-preview-status-detail #statusBoardView.active :is(.chart-card,.table-card,.analysis-card):hover{transform:translateY(-3px);box-shadow:0 23px 54px rgba(47,38,33,.09),inset 0 1px 0 rgba(255,255,255,.96)!important}
-body.design-preview-status-detail #statusBoardView.active .status-card-title{position:relative;z-index:2;padding-bottom:13px!important}
-body.design-preview-status-detail #statusBoardView.active .status-card-title h3{font-size:15px!important;font-weight:880!important;letter-spacing:-.035em!important}
-body.design-preview-status-detail #statusBoardView.active .chart-wrap,
-body.design-preview-status-detail #statusBoardView.active .store-history-chart-wrap,
-body.design-preview-status-detail #statusBoardView.active .boxcount-chart-wrap{position:relative;z-index:2;border-radius:16px;background:linear-gradient(180deg,rgba(255,255,255,.72),rgba(248,245,241,.52));overflow:hidden;padding:8px!important}
-body.design-preview-status-detail #statusBoardView.active canvas{filter:drop-shadow(0 11px 15px rgba(237,88,141,.10));transform:translateZ(0)}
-body.design-preview-status-detail #statusBoardView.active .prod-api-metric,
-body.design-preview-status-detail #statusBoardView.active .boxcount-summary-bar>div,
-body.design-preview-status-detail #statusBoardView.active .status-filter-card{border-radius:16px!important;background:linear-gradient(145deg,#fff,#f8f6f3)!important;border-color:rgba(25,24,22,.065)!important;box-shadow:0 8px 22px rgba(45,36,31,.04)!important}
-body.design-preview-status-detail #statusBoardView.active .status-data-table thead th{background:#f8f6f3!important;color:#716b65!important}
-body.design-preview-status-detail #statusBoardView.active .status-data-table tbody tr{transition:background .15s ease,transform .15s ease}
-body.design-preview-status-detail #statusBoardView.active .status-data-table tbody tr:hover{background:#fff8fb!important}
-body.design-preview-status-detail #statusBoardView.active .analysis-rank-list>*,
-body.design-preview-status-detail #statusBoardView.active .boxcount-rank-list>*{border-radius:12px!important;transition:transform .17s ease,background .17s ease!important}
-body.design-preview-status-detail #statusBoardView.active .analysis-rank-list>*:hover,
-body.design-preview-status-detail #statusBoardView.active .boxcount-rank-list>*:hover{transform:translateX(3px);background:#fff7fa!important}
-
-/* dynamic ring/depth treatment */
-body.design-preview-status-detail #statusBoardView.active :is(.boxcount-radial-card,.boxcount-arc-card){perspective:1100px}
-body.design-preview-status-detail #statusBoardView.active :is(.boxcount-radial-grid,.boxcount-arc-visual){filter:drop-shadow(0 15px 17px rgba(46,36,31,.10))}
-body.design-preview-status-detail #statusBoardView.active .boxcount-arc-ring{transform:rotateX(5deg);box-shadow:0 18px 30px rgba(45,35,30,.11),inset 0 0 0 8px rgba(255,255,255,.32)!important}
-
-/* ---------- motion ---------- */
-@keyframes pvSectionIn{from{opacity:.28;transform:translateY(18px) scale(.994)}to{opacity:1;transform:none}}
-@keyframes pvPanelIn{from{opacity:.18;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes pvFloat{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-22px,18px,0) scale(1.055)}}
-@keyframes pvTruckFloat{from{transform:translate3d(0,0,0)}to{transform:translate3d(15px,-4px,0)}}
-@keyframes pvWheel{to{transform:rotate(360deg)}}@keyframes pvGlow{from{opacity:.45}to{opacity:1}}
-
-/* ---------- responsive ---------- */
-@media(max-width:1220px){body.design-preview-home #dashboard{grid-template-columns:1fr;grid-template-areas:"hero" "notice" "request" "schedule" "month"}body.design-preview-home #dashboard .monthly-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.design-preview-home #dashboard>.dash-section:has(.monthly-grid){align-self:stretch}}
-@media(max-width:900px){body.design-preview-home #dashboard{display:block!important}body.design-preview-home #dashboard>.lush-hero,body.design-preview-home #dashboard>.dash-section{margin:0 0 14px!important}body.design-preview-home #dashboard .lush-hero{grid-template-columns:1fr;min-height:0;padding:28px 20px 58px!important;border-radius:23px!important}body.design-preview-home #dashboard .lush-hero-text{grid-column:1;max-width:62%;padding:0}body.design-preview-home #dashboard .lush-hero .lush-hero-hello{font-size:31px!important}body.design-preview-home #dashboard .pv-hero-scene{right:-17%;width:70%;opacity:.58}body.design-preview-home #dashboard .lush-hero-stats{grid-template-columns:repeat(2,1fr)!important}body.design-preview-home #dashboard #todayRequestGrid{grid-template-columns:1fr!important}body.design-preview-status-detail #statusBoardView.active .status-board-tabs{top:0}}
-@media(max-width:600px){.design-preview-toggle-copy small{display:none}body.design-preview-home #dashboard .lush-hero-text{max-width:100%}body.design-preview-home #dashboard .pv-hero-scene{top:22%;right:-38%;width:95%;opacity:.20}body.design-preview-home #dashboard .lush-hero-stat{min-height:88px!important;padding:12px!important}body.design-preview-home #dashboard .lush-hero-stat b{font-size:24px!important}body.design-preview-home #dashboard .monthly-grid{grid-template-columns:1fr!important}}
-@media(prefers-reduced-motion:reduce){body.design-preview-home #dashboard>.lush-hero,body.design-preview-home #dashboard>.dash-section,.pv-hero-scene .pv-orb,.pv-hero-scene .pv-truck3d,.pv-hero-scene .pv-wheel3d,.pv-hero-scene .pv-light,body.design-preview-status-detail #statusBoardView.active .status-panel.active{animation:none!important}}
-
-
-/* ===== v5 REAL LAYOUT RECOMPOSITION ===== */
-
-/* Main: actual DOM is moved into this structure while preview is ON */
-body.design-preview-home #dashboard{display:block!important;max-width:none!important}
-#pvMainLayout{display:none}
-body.design-preview-home #pvMainLayout{display:block;max-width:1680px;margin:0 auto;padding:0 0 18px}
-body.design-preview-home #pvMainLayout>.lush-hero{margin:0 0 34px!important}
-.pv-main-stage{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.62fr);gap:24px;align-items:start}
-.pv-main-primary,.pv-main-context{min-width:0}
-.pv-main-context{display:flex;flex-direction:column;gap:20px;position:sticky;top:calc(var(--v70-bar-h) + 66px)}
-.pv-main-context>.dashboard-first-section,
-.pv-main-context>.dash-section{margin:0!important}
-.pv-main-primary>.schedule-full-card{margin:0!important}
-.pv-main-requests{margin-top:28px!important}
-
-/* Hero is intentionally much larger and image-led */
-body.design-preview-home #pvMainLayout>.lush-hero{
-  min-height:520px!important;
-  padding:64px 52px 94px!important;
-  grid-template-columns:minmax(360px,.68fr) minmax(640px,1.32fr)!important;
+/* ========== MAIN ========== */
+body.design-preview-home #dashboard{max-width:1680px;margin:0 auto;padding-bottom:42px}
+body.design-preview-home #dashboard>.lush-hero{
+  position:relative;
+  isolation:isolate;
+  min-height:560px!important;
+  padding:62px 56px 150px!important;
+  border:0!important;
   border-radius:36px!important;
+  overflow:hidden!important;
+  background:
+    linear-gradient(90deg,rgba(248,246,242,.97) 0%,rgba(248,246,242,.90) 31%,rgba(248,246,242,.34) 57%,rgba(248,246,242,.04) 100%),
+    linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.08)),
+    url("https://images.unsplash.com/photo-1780367261654-45395777b560?auto=format&fit=crop&fm=jpg&ixlib=rb-4.1.0&q=82&w=2400") center 54%/cover no-repeat!important;
+  box-shadow:0 35px 90px rgba(41,34,30,.16)!important;
+  transform:translateZ(0);
 }
-body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-hello{font-size:50px!important;max-width:610px}
-body.design-preview-home #pvMainLayout>.lush-hero .pv-hero-scene{width:67%!important;height:92%!important;right:-2%!important;top:-1%!important}
-body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stats{
+body.design-preview-home #dashboard>.lush-hero:after{
+  content:"";
+  position:absolute;
+  inset:auto 0 0;
+  height:48%;
+  background:linear-gradient(180deg,transparent,rgba(19,18,17,.12));
+  pointer-events:none;
+  z-index:1
+}
+body.design-preview-home #dashboard .lush-hero-text{position:relative;z-index:4;max-width:560px;padding:22px 0}
+body.design-preview-home #dashboard .lush-hero-date{margin-bottom:14px!important;color:#78716b!important;font-size:12px!important;font-weight:850!important;letter-spacing:.03em!important}
+body.design-preview-home #dashboard .lush-hero .lush-hero-hello{
+  margin:0!important;
+  max-width:520px;
+  color:#11110f!important;
+  font-size:54px!important;
+  line-height:1.05!important;
+  font-weight:930!important;
+  letter-spacing:-.065em!important;
+  text-wrap:balance
+}
+body.design-preview-home #dashboard .lush-hero .lush-hero-sub{margin-top:18px!important;max-width:430px;color:#66605a!important;font-size:15px!important;line-height:1.7!important;font-weight:610!important}
+
+/* keep original truck, but make it a subtle foreground accent */
+body.design-preview-home #dashboard .hero-road{z-index:5!important;bottom:21px!important;border-top-color:rgba(255,255,255,.36)!important}
+body.design-preview-home #dashboard .hero-truck{z-index:6!important;bottom:23px!important;filter:drop-shadow(0 9px 9px rgba(0,0,0,.18));opacity:.95}
+
+/* floating stats like consumer product UI */
+body.design-preview-home #dashboard .lush-hero-stats{
   position:absolute!important;
-  left:52px!important;
-  right:52px!important;
-  bottom:28px!important;
+  z-index:7!important;
+  left:56px!important;
+  right:56px!important;
+  bottom:34px!important;
   width:auto!important;
-  grid-template-columns:1.15fr repeat(3,1fr)!important;
-  margin:0!important;
+  display:grid!important;
+  grid-template-columns:1.25fr repeat(3,1fr)!important;
   gap:12px!important;
+  margin:0!important
 }
-body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stat{min-height:108px!important}
-body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stat:first-child{background:linear-gradient(135deg,rgba(255,255,255,.91),rgba(255,234,242,.82))!important}
+body.design-preview-home #dashboard .lush-hero-stat{
+  min-width:0!important;
+  min-height:112px!important;
+  padding:18px 20px!important;
+  border:1px solid rgba(255,255,255,.62)!important;
+  border-radius:20px!important;
+  background:rgba(255,255,255,.67)!important;
+  color:#171614!important;
+  box-shadow:0 18px 44px rgba(26,23,21,.14),inset 0 1px 0 rgba(255,255,255,.94)!important;
+  backdrop-filter:blur(22px) saturate(150%);
+  -webkit-backdrop-filter:blur(22px) saturate(150%);
+  transition:transform .25s cubic-bezier(.2,.75,.2,1),box-shadow .25s ease,background .25s ease!important;
+  transform-style:preserve-3d
+}
+body.design-preview-home #dashboard .lush-hero-stat:hover{
+  transform:perspective(800px) translateY(-8px) rotateX(2deg);
+  background:rgba(255,255,255,.82)!important;
+  box-shadow:0 28px 55px rgba(26,23,21,.20),inset 0 1px 0 #fff!important
+}
+body.design-preview-home #dashboard .lush-hero-stat:first-child{background:linear-gradient(135deg,rgba(255,255,255,.86),rgba(255,224,236,.73))!important}
+body.design-preview-home #dashboard .lush-hero-stat small{display:block;margin-bottom:9px!important;color:#706963!important;font-size:9px!important;font-weight:850!important}
+body.design-preview-home #dashboard .lush-hero-stat b{font-size:31px!important;line-height:1!important;letter-spacing:-.045em!important;color:#151412!important}
+body.design-preview-home #dashboard .lush-hero-stat span{font-size:9px!important;color:#827b74!important}
 
-/* Schedule becomes the dominant work surface */
-body.design-preview-home .pv-main-primary>.schedule-full-card{
-  min-height:610px;
-  padding:26px!important;
-  border-radius:28px!important;
-  box-shadow:0 24px 64px rgba(52,42,36,.075)!important
-}
-body.design-preview-home .pv-main-primary .dashboard-two-week-calendar{
-  min-height:500px;
-  display:flex;
-  flex-direction:column
-}
-body.design-preview-home .pv-main-primary .dashboard-two-week-grid{flex:1}
+/* section rhythm: much larger whitespace */
+body.design-preview-home #dashboard>.dash-section{margin-top:34px!important;padding:28px!important;border:1px solid var(--pv-line)!important;border-radius:28px!important;background:rgba(255,255,255,.91)!important;box-shadow:0 20px 56px rgba(48,39,34,.065),inset 0 1px 0 rgba(255,255,255,.96)!important;overflow:hidden;transition:transform .26s ease,box-shadow .26s ease!important}
+body.design-preview-home #dashboard>.dash-section:before{display:none!important}
+body.design-preview-home #dashboard>.dash-section:hover{box-shadow:0 30px 70px rgba(48,39,34,.095),inset 0 1px 0 #fff!important}
+body.design-preview-home #dashboard .dash-section-head,
+body.design-preview-home #dashboard .schedule-unified-head{padding-bottom:17px!important;margin-bottom:18px!important;border-bottom:1px solid rgba(22,21,19,.06)!important}
+body.design-preview-home #dashboard .dash-section-head h3,
+body.design-preview-home #dashboard .schedule-title-line h3{font-size:17px!important;font-weight:900!important;letter-spacing:-.04em!important}
 
-/* Right context rail */
-body.design-preview-home .pv-main-context>.dashboard-first-section{
+/* notice + todo become editorial cards */
+body.design-preview-home #dashboard .dashboard-notice-todo-grid{gap:18px!important}
+body.design-preview-home #dashboard .dashboard-info-panel{
+  min-height:220px;
+  padding:22px!important;
+  border:1px solid rgba(22,21,19,.07)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,#fff 0%,#faf8f4 100%)!important;
+  box-shadow:0 12px 34px rgba(43,35,30,.055)!important;
+  transition:transform .25s ease,box-shadow .25s ease!important
+}
+body.design-preview-home #dashboard .dashboard-info-panel:hover{transform:translateY(-5px);box-shadow:0 22px 46px rgba(43,35,30,.10)!important}
+body.design-preview-home #dashboard .notice-panel{background:linear-gradient(145deg,#fff 0%,#fff2f6 100%)!important}
+body.design-preview-home #dashboard .todo-panel{background:linear-gradient(145deg,#fff 0%,#eef8f3 100%)!important}
+
+/* request cards: lively, but same content/functions */
+body.design-preview-home #dashboard #todayRequestGrid{gap:16px!important}
+body.design-preview-home #dashboard .request-mini-card{
+  min-height:250px!important;
   padding:18px!important;
-  border-radius:24px!important
+  border:1px solid rgba(22,21,19,.07)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,#fff,#f7f4f0)!important;
+  box-shadow:0 12px 34px rgba(43,35,30,.055)!important;
+  overflow:hidden;
+  transform-style:preserve-3d;
+  transition:transform .28s cubic-bezier(.2,.75,.2,1),box-shadow .28s ease!important
 }
-body.design-preview-home .pv-main-context .dashboard-notice-todo-grid{gap:13px!important}
-body.design-preview-home .pv-main-context>.dash-section:has(.monthly-grid){padding:18px!important;border-radius:24px!important}
-body.design-preview-home .pv-main-context .monthly-grid{grid-template-columns:1fr!important}
-body.design-preview-home .pv-main-context .monthly-card{min-height:150px!important}
+body.design-preview-home #dashboard .request-mini-card:after{
+  content:"";
+  position:absolute;
+  right:-48px;
+  top:-60px;
+  width:150px;height:150px;
+  border-radius:38px;
+  transform:rotate(28deg);
+  background:linear-gradient(145deg,rgba(255,255,255,.8),rgba(237,88,141,.10));
+  box-shadow:-18px -18px 30px rgba(255,255,255,.48),18px 18px 34px rgba(57,43,37,.06);
+  pointer-events:none;
+  transition:transform .35s ease
+}
+body.design-preview-home #dashboard .request-mini-card:hover{transform:perspective(900px) translateY(-8px) rotateX(1.8deg) rotateY(-1deg);box-shadow:0 26px 50px rgba(43,35,30,.12)!important}
+body.design-preview-home #dashboard .request-mini-card:hover:after{transform:rotate(35deg) translate(-4px,6px) scale(1.08)}
+body.design-preview-home #dashboard .request-badge{border:0!important;background:#f9e8ef!important;color:#b54670!important}
 
-/* Requests are a wide editorial strip after the operational stage */
-body.design-preview-home .pv-main-requests{
-  padding:27px!important;
-  border-radius:28px!important
+/* schedule = calm Apple-like large surface */
+body.design-preview-home #dashboard>.schedule-full-card{padding:32px!important;background:linear-gradient(180deg,#fff,#faf8f5)!important}
+body.design-preview-home #dashboard .dashboard-two-week-calendar{border:1px solid rgba(22,21,19,.065);border-radius:22px;overflow:hidden;background:#fff;box-shadow:0 12px 30px rgba(44,36,31,.045)}
+body.design-preview-home #dashboard .dashboard-two-week-weekhead{background:#f8f6f2!important}
+
+/* monthly cards with volumetric shapes */
+body.design-preview-home #dashboard .monthly-grid{gap:18px!important}
+body.design-preview-home #dashboard .monthly-card{
+  position:relative;
+  min-height:210px!important;
+  padding:24px!important;
+  border:1px solid rgba(22,21,19,.07)!important;
+  border-radius:24px!important;
+  box-shadow:0 14px 38px rgba(44,36,31,.065)!important;
+  overflow:hidden;
+  transition:transform .25s ease,box-shadow .25s ease!important
 }
-body.design-preview-home .pv-main-requests #todayRequestGrid{
-  grid-template-columns:repeat(4,minmax(0,1fr))!important;
-  gap:15px!important
-}
-body.design-preview-home .pv-main-requests .request-mini-card{
-  min-height:235px!important;
-  border-radius:20px!important
+body.design-preview-home #dashboard .monthly-card:hover{transform:translateY(-6px);box-shadow:0 24px 50px rgba(44,36,31,.11)!important}
+body.design-preview-home #dashboard .monthly-card:first-child{background:linear-gradient(145deg,#fff,#e8f7f0)!important}
+body.design-preview-home #dashboard .monthly-card:last-child{background:linear-gradient(145deg,#fff,#ffedf4)!important}
+body.design-preview-home #dashboard .monthly-card:after{
+  content:"";
+  position:absolute;
+  right:-22px;bottom:-62px;
+  width:170px;height:170px;
+  border-radius:44px;
+  transform:rotate(28deg);
+  background:linear-gradient(145deg,rgba(255,255,255,.80),rgba(255,255,255,.06));
+  box-shadow:-22px -22px 45px rgba(255,255,255,.55),20px 20px 42px rgba(44,35,30,.08)
 }
 
-/* Status detail: active original elements are moved into a real analysis grid */
-.pv-status-detail-layout{display:none}
-body.design-preview-status-detail .pv-status-detail-layout{
-  display:grid;
-  grid-template-columns:minmax(0,1.45fr) minmax(300px,.72fr);
-  gap:20px;
-  align-items:start
-}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-full{grid-column:1/-1}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-wide{grid-column:1}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-side{grid-column:2}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-span{grid-column:1/-1}
-body.design-preview-status-detail .pv-status-detail-layout>:is(.status-card,.chart-card,.table-card,.analysis-card){
-  margin:0!important;
-}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-wide.chart-card{
-  min-height:410px
-}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-side{
-  min-height:220px
-}
-body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .chart-wrap,
-body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .store-history-chart-wrap,
-body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .boxcount-chart-wrap{
-  min-height:330px!important
-}
+/* section reveal */
+body.design-preview-home #dashboard>.lush-hero,
+body.design-preview-home #dashboard>.dash-section{opacity:0;transform:translateY(24px) scale(.992)}
+body.design-preview-home #dashboard>.lush-hero.pv-in,
+body.design-preview-home #dashboard>.dash-section.pv-in{opacity:1;transform:none;transition:opacity .65s cubic-bezier(.2,.75,.2,1),transform .65s cubic-bezier(.2,.75,.2,1)}
 
-/* Panels with a sub-section get stronger spacing */
-body.design-preview-status-detail #statusBoardView.active .status-panel.active{
-  padding-top:2px
+/* ========== STATUS BOARD ========== */
+/* shipping stays 100% original */
+body.design-preview-status-detail #statusBoardView.active{max-width:1680px;margin:0 auto}
+body.design-preview-status-detail #statusBoardView.active .status-board-shell{gap:24px!important}
+body.design-preview-status-detail #statusBoardView.active .status-board-top{
+  padding:34px 34px!important;
+  border:1px solid rgba(255,255,255,.82)!important;
+  border-radius:28px!important;
+  background:linear-gradient(115deg,#fff 0%,#fff9fb 53%,#f2e9ed 100%)!important;
+  box-shadow:0 25px 65px rgba(48,39,34,.09),inset 0 1px 0 #fff!important
 }
+body.design-preview-status-detail #statusBoardView.active .status-board-top h2{font-size:32px!important;letter-spacing:-.05em!important}
+body.design-preview-status-detail #statusBoardView.active .status-board-tabs{
+  position:sticky;top:calc(var(--v70-bar-h) + 56px);z-index:25;
+  padding:6px!important;gap:5px!important;border:1px solid rgba(22,21,19,.07)!important;border-radius:16px!important;
+  background:rgba(249,247,243,.87)!important;box-shadow:0 12px 32px rgba(48,39,34,.06)!important;
+  backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)
+}
+body.design-preview-status-detail #statusBoardView.active .status-board-tab{min-height:43px!important;border-radius:11px!important;color:#746f69!important;transition:transform .18s ease,background .18s ease,color .18s ease,box-shadow .18s ease!important}
+body.design-preview-status-detail #statusBoardView.active .status-board-tab:hover{transform:translateY(-2px);color:#161513!important}
+body.design-preview-status-detail #statusBoardView.active .status-board-tab.active{background:#1a1917!important;color:#fff!important;box-shadow:0 9px 22px rgba(24,23,21,.16)!important}
+body.design-preview-status-detail #statusBoardView.active .status-board-tab.active:after{display:none!important}
+
+/* actual analysis layout, no DOM moves */
 body.design-preview-status-detail #statusBoardView.active .productivity-section.active,
 body.design-preview-status-detail #statusBoardView.active .boxcount-section.active,
 body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active{
-  animation:pvSectionIn .42s cubic-bezier(.2,.72,.2,1) both
+  display:grid!important;
+  grid-template-columns:repeat(12,minmax(0,1fr))!important;
+  gap:20px!important;
+  align-items:start
 }
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active>:first-child,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active>:first-child,
+body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active>:first-child{grid-column:1/-1}
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active>.chart-card,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active>.chart-card,
+body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active>.chart-card{grid-column:span 7}
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active>.table-card,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active>.table-card,
+body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active>.table-card{grid-column:span 5}
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active>.boxcount-summary-bar,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active>.boxcount-summary-bar{grid-column:1/-1}
 
-/* More physical chart surfaces */
+/* store history gets 8:4 composition */
+body.design-preview-status-detail #statusBoardView.active [data-status-panel="storehistory"].active .store-history-analysis{
+  display:grid!important;
+  grid-template-columns:minmax(0,2fr) minmax(280px,.8fr)!important;
+  gap:20px!important
+}
+body.design-preview-status-detail #statusBoardView.active [data-status-panel="storehistory"].active .store-history-chart-card{min-height:430px}
+body.design-preview-status-detail #statusBoardView.active [data-status-panel="storehistory"].active .store-history-summary{min-height:430px}
+
+/* large analytical surfaces */
+body.design-preview-status-detail #statusBoardView.active :is(.status-card,.chart-card,.table-card,.analysis-card,.store-history-chart-card,.store-history-summary){
+  position:relative;
+  border:1px solid rgba(22,21,19,.07)!important;
+  border-radius:24px!important;
+  background:rgba(255,255,255,.92)!important;
+  box-shadow:0 18px 50px rgba(47,38,33,.065),inset 0 1px 0 rgba(255,255,255,.96)!important;
+  overflow:hidden;
+  transition:transform .24s ease,box-shadow .24s ease!important
+}
+body.design-preview-status-detail #statusBoardView.active :is(.chart-card,.table-card,.analysis-card):hover{transform:translateY(-4px);box-shadow:0 27px 60px rgba(47,38,33,.10)!important}
 body.design-preview-status-detail #statusBoardView.active .chart-card{
   background:
-    radial-gradient(circle at 90% 5%,rgba(237,88,141,.11),transparent 230px),
-    linear-gradient(180deg,rgba(255,255,255,.97),rgba(250,247,244,.92))!important;
+    radial-gradient(circle at 90% 4%,rgba(237,88,141,.11),transparent 250px),
+    linear-gradient(180deg,#fff,#faf7f4)!important
 }
-body.design-preview-status-detail #statusBoardView.active .chart-card .chart-wrap:after,
+body.design-preview-status-detail #statusBoardView.active .chart-wrap,
+body.design-preview-status-detail #statusBoardView.active .store-history-chart-wrap,
+body.design-preview-status-detail #statusBoardView.active .boxcount-chart-wrap{
+  position:relative;
+  min-height:330px;
+  padding:10px!important;
+  border-radius:18px;
+  background:linear-gradient(180deg,rgba(255,255,255,.80),rgba(249,246,242,.58));
+  overflow:hidden
+}
+body.design-preview-status-detail #statusBoardView.active .chart-wrap:after,
 body.design-preview-status-detail #statusBoardView.active .store-history-chart-wrap:after,
 body.design-preview-status-detail #statusBoardView.active .boxcount-chart-wrap:after{
   content:"";
-  position:absolute;
-  left:8%;right:8%;bottom:-12px;
-  height:28px;
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(237,88,141,.13),transparent 67%);
-  filter:blur(8px);
-  pointer-events:none;
-  z-index:0
+  position:absolute;left:8%;right:8%;bottom:-15px;height:34px;border-radius:50%;
+  background:radial-gradient(ellipse,rgba(237,88,141,.16),transparent 67%);filter:blur(9px);pointer-events:none
 }
-body.design-preview-status-detail #statusBoardView.active canvas{position:relative;z-index:1}
-
-/* Stronger transitions between analysis tabs */
-body.design-preview-status-detail #statusBoardView.active .status-panel.active,
-body.design-preview-status-detail #statusBoardView.active .productivity-section.active,
-body.design-preview-status-detail #statusBoardView.active .boxcount-section.active{
-  transform-origin:50% 0
+body.design-preview-status-detail #statusBoardView.active canvas{position:relative;z-index:1;filter:drop-shadow(0 13px 17px rgba(237,88,141,.11))}
+body.design-preview-status-detail #statusBoardView.active .status-card-title h3{font-size:16px!important;font-weight:900!important;letter-spacing:-.04em!important}
+body.design-preview-status-detail #statusBoardView.active :is(.prod-api-metric,.status-filter-card,.boxcount-summary-bar>div){
+  border-radius:17px!important;background:linear-gradient(145deg,#fff,#f8f5f2)!important;
+  border-color:rgba(22,21,19,.065)!important;box-shadow:0 9px 24px rgba(45,36,31,.04)!important
 }
+body.design-preview-status-detail #statusBoardView.active .status-data-table thead th{background:#f8f5f1!important;color:#716a64!important}
+body.design-preview-status-detail #statusBoardView.active .status-data-table tbody tr{transition:background .16s ease}
+body.design-preview-status-detail #statusBoardView.active .status-data-table tbody tr:hover{background:#fff6fa!important}
+body.design-preview-status-detail #statusBoardView.active :is(.analysis-rank-list,.boxcount-rank-list)>*{border-radius:12px!important;transition:transform .17s ease,background .17s ease!important}
+body.design-preview-status-detail #statusBoardView.active :is(.analysis-rank-list,.boxcount-rank-list)>*:hover{transform:translateX(4px);background:#fff6fa!important}
+body.design-preview-status-detail #statusBoardView.active .status-panel.active{animation:pvStatusIn .42s cubic-bezier(.2,.75,.2,1) both}
 
-@media(max-width:1260px){
-  .pv-main-stage{grid-template-columns:1fr}
-  .pv-main-context{position:static;display:grid;grid-template-columns:1fr 1fr}
-  .pv-main-context>.dashboard-first-section{grid-column:1}
-  .pv-main-context>.dash-section:has(.monthly-grid){grid-column:2}
-  body.design-preview-home .pv-main-requests #todayRequestGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
-  body.design-preview-status-detail .pv-status-detail-layout{grid-template-columns:1fr}
-  body.design-preview-status-detail .pv-status-detail-layout>*{grid-column:1!important}
+@keyframes pvStatusIn{from{opacity:.25;transform:translateY(16px) scale(.994)}to{opacity:1;transform:none}}
+
+@media(max-width:1250px){
+  body.design-preview-status-detail #statusBoardView.active .productivity-section.active,
+  body.design-preview-status-detail #statusBoardView.active .boxcount-section.active,
+  body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active{grid-template-columns:1fr!important}
+  body.design-preview-status-detail #statusBoardView.active .productivity-section.active>*,
+  body.design-preview-status-detail #statusBoardView.active .boxcount-section.active>*,
+  body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active>*{grid-column:1!important}
 }
 @media(max-width:900px){
-  body.design-preview-home #pvMainLayout>.lush-hero{min-height:430px!important;padding:32px 20px 78px!important;grid-template-columns:1fr!important}
-  body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stats{left:18px!important;right:18px!important;bottom:18px!important;grid-template-columns:repeat(2,1fr)!important}
-  body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-hello{font-size:32px!important}
-  .pv-main-context{display:flex}
-  body.design-preview-home .pv-main-requests #todayRequestGrid{grid-template-columns:1fr!important}
+  body.design-preview-home #dashboard>.lush-hero{min-height:480px!important;padding:36px 20px 158px!important;border-radius:24px!important;background-position:62% center!important}
+  body.design-preview-home #dashboard .lush-hero .lush-hero-hello{font-size:33px!important;max-width:360px}
+  body.design-preview-home #dashboard .lush-hero-stats{left:18px!important;right:18px!important;bottom:18px!important;grid-template-columns:repeat(2,1fr)!important}
+  body.design-preview-status-detail #statusBoardView.active .status-board-tabs{top:0}
+  body.design-preview-status-detail #statusBoardView.active [data-status-panel="storehistory"].active .store-history-analysis{grid-template-columns:1fr!important}
+}
+@media(max-width:600px){
+  .design-preview-toggle-copy small{display:none}
+  body.design-preview-home #dashboard>.lush-hero{min-height:520px!important;background-position:70% center!important}
+  body.design-preview-home #dashboard .lush-hero .lush-hero-hello{font-size:29px!important}
+  body.design-preview-home #dashboard .lush-hero-stat{min-height:91px!important;padding:12px!important}
+  body.design-preview-home #dashboard .lush-hero-stat b{font-size:24px!important}
+}
+@media(prefers-reduced-motion:reduce){
+  body.design-preview-home #dashboard>.lush-hero,
+  body.design-preview-home #dashboard>.dash-section,
+  body.design-preview-status-detail #statusBoardView.active .status-panel.active{transition:none!important;animation:none!important;opacity:1!important;transform:none!important}
 }
