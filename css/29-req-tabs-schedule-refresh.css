@@ -70,3 +70,17 @@
 #baseDrawer .base-list-item>div{font-size:13px;color:#4a4a45;line-height:1.45;word-break:break-all;}
 #baseDrawer .base-list-item .base-muted{margin-top:6px;font-size:11.5px!important;color:#8a8a85!important;}
 #baseDrawer .base-section>.base-muted{text-align:center;padding:28px 0;color:#8a8a85;font-size:13px;background:#fff;border:1.5px dashed #e4d9c7;border-radius:14px;}
+
+/* ===== 현황판 매장별 처리이력(휴대폰): 시작일·종료일 날짜가 잘리지 않게 — 양옆 여백 없애고 칸이 남은 너비를 나눠 씀 ===== */
+@media (max-width:900px){
+  #appShell #statusBoardView .store-history-toolbar{display:grid!important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) auto!important;gap:5px!important;padding:0 0 18px!important;width:100%!important;box-sizing:border-box!important;justify-content:stretch!important;}
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card{width:auto!important;min-width:0!important;max-width:none!important;padding:0 5px 0 7px!important;gap:3px!important;box-sizing:border-box!important;}
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card[hidden]{display:none!important;}
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card span{flex:none!important;font-size:10.5px!important;}
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-card input,#appShell #statusBoardView .store-history-toolbar>.status-filter-card select{flex:1 1 auto!important;width:auto!important;min-width:0!important;font-size:12px!important;letter-spacing:-.4px!important;padding:0!important;}
+  #appShell #statusBoardView .store-history-toolbar>.store-select-field:not([hidden]){grid-column:1 / 3!important;}
+  #appShell #statusBoardView .store-history-toolbar>.status-filter-btn{width:40px!important;min-width:40px!important;padding:0!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
+  #appShell #statusBoardView .store-history-toolbar input::-webkit-calendar-picker-indicator{display:none;}
+  #appShell #statusBoardView .store-history-toolbar input::-webkit-datetime-edit{padding:0;}
+  #appShell #statusBoardView .store-history-toolbar input::-webkit-datetime-edit-fields-wrapper{padding:0;}
+}
