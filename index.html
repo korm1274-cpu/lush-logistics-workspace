@@ -8125,6 +8125,31 @@ html,body{max-width:100%;overflow-x:hidden}
       </div>
     </section>
 
+    <section id="defectView" class="view"><div class="data-workbench">
+      <div class="data-workbench-head"><div><div class="eyebrow">PRODUCT DEFECT</div><h2>제품 불량</h2><p>제품 불량 건을 직접 등록하고 처리 여부를 관리합니다.</p></div></div>
+      <div class="kpis data-kpis"><div class="kpi"><span>전체</span><b id="dfTotal">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="dfOpen">0</b><small>건</small></div><div class="kpi"><span>불량 수량</span><b id="dfQty">0</b><small>개</small></div></div>
+      <div class="panel mt14 df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
+        <div class="df-form">
+          <div class="field"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
+          <div class="field"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: BODY"><datalist id="dfCategoryList"></datalist></div>
+          <div class="field"><label>차수</label><input id="dfBatch" placeholder="예: 71차"></div>
+          <div class="field"><label>PLU</label><input id="dfPlu"></div>
+          <div class="field"><label>제품코드</label><input id="dfCode" placeholder="예: T0017200"></div>
+          <div class="field grow"><label>제품명</label><input id="dfName"></div>
+          <div class="field"><label>LOT번호</label><input id="dfLot"></div>
+          <div class="field"><label>제조일자</label><input id="dfMfg" type="date"></div>
+          <div class="field"><label>수량</label><input id="dfQtyInput" type="number" min="0" step="1"></div>
+          <div class="field"><label>처리 여부</label><select id="dfDone"><option value="N">미처리</option><option value="Y">처리</option></select></div>
+          <div class="field full"><label>내용</label><textarea id="dfNote" rows="2" placeholder="불량 내용을 입력하세요"></textarea></div>
+        </div>
+        <div class="df-actions"><button class="btn" id="dfCancel" type="button" hidden>취소</button><button class="btn primary" id="dfSave" type="button">등록</button></div>
+      </div>
+      <div class="data-filter-row mt14"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="">전체</option><option value="N">미처리</option><option value="Y">처리</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
+      <div class="panel mt14"><div class="panel-head"><div><h3>불량 목록</h3></div><span class="badge" id="dfCount">0건</span></div>
+        <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfBody"></tbody></table></div>
+      </div>
+    </div></section>
+
     <section id="damageInsightView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE INSIGHT</div><h2>파손 분석</h2><p>매장·출고방식·담당자·제품군별 파손 금액과 건수를 월별로 비교합니다(건수는 기안 단위, 도넛은 금액 비중).</p></div></div>
       <div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 파손 비교 (전월 대비)</h3></div><div class="ms-period"><div class="field" style="margin:0"><label>기준월</label><input type="month" id="diMonth"></div><button type="button" class="btn" id="diAllBtn">전체</button></div></div>
@@ -8407,6 +8432,7 @@ const DEFAULT_MENUS=[
  {id:"issue-damage",group:"issues",label:"파손",kind:"view",target:"damageAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-misship-analysis",group:"issues",label:"오출고 분석",kind:"view",target:"misshipAnalyticsView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"issue-damage-insight",group:"issues",label:"파손 분석",kind:"view",target:"damageInsightView",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"issue-defect",group:"issues",label:"제품 불량",kind:"view",target:"defectView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"floor-dash",group:"floorboard",label:"현장 대시보드",kind:"view",target:"floorDashView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
@@ -8600,6 +8626,16 @@ function normalizeMenus(){
     const firstTraffic=cleaned.findIndex(m=>m.group==="traffic");
     if(req.adminManaged){const lastSame=cleaned.reduce((last,m,i)=>m.group===req.group?i:last,-1);cleaned.splice(lastSame<0?cleaned.length:lastSame+1,0,req)}
     else cleaned.splice(firstTraffic<0?cleaned.length:firstTraffic,0,req);
+  }
+
+  /* 새 메뉴 '제품 불량'을 이미 저장된 메뉴 목록에도 한 번만 추가(파손 분석 바로 아래). 이후 Admin에서 지우거나 옮겨도 다시 생기지 않음 */
+  if(!localStorage.getItem("lush-menu-defect-added-v1")){
+    if(!cleaned.some(m=>m.id==="issue-defect")){
+      const after=cleaned.findIndex(m=>m.id==="issue-damage-insight");
+      const item={id:"issue-defect",group:"issues",label:"제품 불량",kind:"view",target:"defectView",visible:true,roles:["admin","leader","editor","restricted"]};
+      cleaned.splice(after<0?cleaned.length:after+1,0,item);
+    }
+    localStorage.setItem("lush-menu-defect-added-v1","1");
   }
 
   menus=cleaned;
@@ -11675,11 +11711,11 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
 <script id="v75-team-data-sync">
 (function(){
   const TEAM_API='/api/team-data';
-  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1'};
+  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1'};
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function readLocalObj(k,def){try{const v=JSON.parse(localStorage.getItem(k)||'null');return(v&&typeof v==='object'&&!Array.isArray(v))?v:def}catch{return def}}
   function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
-  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}}))}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects)}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
@@ -11740,12 +11776,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         return;
       }
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd});
+      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd,defects:j.data.defects||[]});
       if(cur!==incoming){
         localStorage.setItem(KEYS.notices,JSON.stringify(j.data.notices||[]));
         localStorage.setItem(KEYS.todos,JSON.stringify(j.data.todos||[]));
         localStorage.setItem(KEYS.requests,JSON.stringify(j.data.requests||[]));
         localStorage.setItem(KEYS.productivity,JSON.stringify(serverProd));
+        localStorage.setItem(KEYS.defects,JSON.stringify(j.data.defects||[]));
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
         window.populatePersonSelect?.();
@@ -13839,7 +13876,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   window.renderNav=renderNav=function(){var r=origRenderNav.apply(this,arguments);patchTopTabs();render();return r};
 
   /* 메인 화면 테마는 메인(대시보드)을 보고 있을 때만 적용 */
-  var LUSH_THEME_VIEWS=['sheetView','outboundBasicView','outboundAnalysis','outboundBoxView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView'];
+  var LUSH_THEME_VIEWS=['sheetView','outboundBasicView','outboundAnalysis','outboundBoxView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView','defectView'];
   var syncDashTheme=function(){var a=document.querySelector('.view.active');shell.classList.toggle('on-dashboard',!!a&&a.id==='dashboard');shell.classList.toggle('on-lush',!!a&&LUSH_THEME_VIEWS.indexOf(a.id)>=0);if(a&&a.id==='dashboard'&&window.updateLushHero)window.updateLushHero()};
   var origActivate2=activateMenu;
   window.activateMenu=activateMenu=function(){try{return origActivate2.apply(this,arguments)}finally{syncDashTheme()}};
@@ -14576,7 +14613,7 @@ window.__bubblePop=function(el,done){
   /* 재고·입고·트래픽·일정 화면 제목에도 같은 아이콘(메뉴 아이콘과 같은 모양) */
   var TITLE_ICONS={'총 재고파일':['package-search','#e3f5ec','#11795a'],'담당자 재고파일':['package-search','#e3f5ec','#11795a'],'품절 재고 분석':['package-minus','#fdecec','#c93838'],
     '입고':['package-plus','#fde7f0','#c2477a'],'월별 입고현황':['calendar-range','#fde7f0','#c2477a'],'일일 입고관리':['clipboard-list','#fde7f0','#c2477a'],'입고 상세조회':['search','#fde7f0','#c2477a'],
-    '트래픽 출고 요청':['signpost','#e3f5ec','#11795a'],'통합 일정':['calendar-days','#fff3d6','#9a6400'],'공지 등록':['megaphone','#fde7f0','#c2477a'],'제품 확보 등록':['package-check','#e3f5ec','#11795a']};
+    '트래픽 출고 요청':['signpost','#e3f5ec','#11795a'],'통합 일정':['calendar-days','#fff3d6','#9a6400'],'공지 등록':['megaphone','#fde7f0','#c2477a'],'제품 확보 등록':['package-check','#e3f5ec','#11795a'],'제품 불량':['package-x','#fdecec','#c93838'],'불량 등록':['clipboard-plus','#fdecec','#c93838'],'불량 목록':['list-checks','#fdecec','#c93838']};
   function addTitleIcon(h){
     if(h.querySelector('.ux-ico'))return;
     var key=h.textContent.trim(),m=TITLE_ICONS[key];
@@ -14904,7 +14941,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   });
   try{window.lucide&&lucide.createIcons()}catch(e){}
   /* 러쉬 테마 화면 목록에 재고·생산성·데이터·Admin 추가 */
-  var more=['inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','outboundBasicView','outboundAnalysis','outboundBoxView','sheetView'];
+  var more=['inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','outboundBasicView','outboundAnalysis','outboundBoxView','sheetView','defectView'];
   function sync(){var a=document.querySelector('.view.active'),sh=document.getElementById('appShell');if(a&&sh&&more.indexOf(a.id)>=0){sh.classList.add('on-lush');sh.classList.remove('on-dashboard')}}
   if(window.MutationObserver)document.querySelectorAll('.view').forEach(function(v){new MutationObserver(function(){if(v.classList.contains('active'))setTimeout(sync,0)}).observe(v,{attributes:true,attributeFilter:['class']})});
   sync();
@@ -15476,6 +15513,155 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 </style>
 <script id="box-storemap-move-script">
 (function(){var b=document.getElementById('boxStoreMapBtn'),s=document.getElementById('boxGridDow');if(b&&s&&s.parentElement)s.parentElement.appendChild(b)})();
+</script>
+<style id="defect-view-style">
+#defectView .df-form{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 12px;padding:4px 2px 0}
+#defectView .df-form .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+#defectView .df-form .field.grow{grid-column:span 2}
+#defectView .df-form .field.full{grid-column:1/-1}
+#defectView .df-form label{font-size:var(--t-label,12px);font-weight:800;color:#4a4a4a}
+#defectView .df-form input,#defectView .df-form select,#defectView .df-form textarea{width:100%;box-sizing:border-box;min-height:38px;border:1.5px solid #e2ddd3;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;background:#fff}
+#defectView .df-form textarea{resize:vertical;min-height:62px;line-height:1.45}
+#defectView .df-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+#defectView .df-actions .btn{min-width:84px}
+#defectView .df-table td{vertical-align:middle;white-space:nowrap}
+#defectView .df-table td.df-note{white-space:pre-wrap;min-width:180px;max-width:320px;word-break:break-all}
+#defectView .df-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+#defectView .df-status{border:0;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+#defectView .df-status.open{background:#fdecec;color:#c93838}
+#defectView .df-status.done{background:#e3f5ec;color:#11795a}
+#defectView .df-manage{display:flex;gap:5px}
+#defectView .df-manage button{border:1px solid #e2ddd3;background:#fff;border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;cursor:pointer}
+#defectView .df-manage button.del{color:#c93838}
+#defectView tr.df-editing td{background:#fff8e6}
+#defectView .df-empty{text-align:center;color:#888;padding:28px 0!important}
+@media(max-width:900px){
+  #defectView .df-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  #defectView .df-form .field.grow,#defectView .df-form .field.full{grid-column:1/-1}
+  #defectView .df-actions .btn{flex:1}
+  #defectView .df-table thead{display:none}
+  #defectView .df-table,#defectView .df-table tbody{display:block;width:100%!important;min-width:0!important;max-width:100%!important}
+  #defectView .data-table-wrap{overflow:visible!important;min-width:0!important}
+  #defectView .df-table tr{width:auto!important;min-width:0!important;box-sizing:border-box}
+  #defectView .df-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px;border:1.5px solid #ece6db;border-radius:12px;padding:10px 12px;margin-bottom:10px;background:#fff}
+  #defectView .df-table td{display:flex;justify-content:space-between;gap:8px;padding:2px 0!important;border:0!important;white-space:normal;font-size:13px;min-width:0}
+  #defectView .df-table td::before{content:attr(data-label);color:#888;font-weight:700;flex:none}
+  #defectView .df-table td.df-wide{grid-column:1/-1}
+  #defectView .df-table td.df-note{max-width:none;display:block}
+  #defectView .df-table td.df-note::before{display:block;margin-bottom:2px}
+  #defectView .df-table td.df-empty{grid-column:1/-1;justify-content:center}
+  #defectView .df-table td.df-empty::before{content:none}
+  #defectView .df-table tr.df-row-empty{border:0;background:none}
+}
+</style>
+<script id="defect-view-script">
+(function(){
+  var KEY='lush-product-defects-v1';
+  var $=function(id){return document.getElementById(id)};
+  var editingId=null;
+  function load(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function store(list){localStorage.setItem(KEY,JSON.stringify(list))}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+  function num(n){var v=Number(n)||0;return v.toLocaleString('ko-KR')}
+  var FIELDS=[['year','dfYear'],['category','dfCategory'],['batch','dfBatch'],['plu','dfPlu'],['code','dfCode'],['name','dfName'],['lot','dfLot'],['mfgDate','dfMfg'],['qty','dfQtyInput'],['note','dfNote'],['done','dfDone']];
+
+  function resetForm(){
+    FIELDS.forEach(function(f){var el=$(f[1]);if(el)el.value=''});
+    $('dfYear').value=new Date().getFullYear();$('dfDone').value='N';
+    editingId=null;$('dfSave').textContent='등록';$('dfCancel').hidden=true;$('dfEditBadge').hidden=true;$('dfFormTitle').textContent='불량 등록';
+    render();
+  }
+  function save(){
+    var item={};FIELDS.forEach(function(f){item[f[0]]=String($(f[1]).value||'').trim()});
+    item.qty=item.qty===''?'':Number(item.qty);
+    if(!item.year){alert('년도를 입력해 주세요.');$('dfYear').focus();return}
+    if(!item.name&&!item.code){alert('제품코드나 제품명 중 하나는 입력해 주세요.');$('dfName').focus();return}
+    var list=load(),now=new Date().toISOString();
+    if(editingId){
+      var i=list.findIndex(function(x){return x.id===editingId});
+      if(i>=0)list[i]=Object.assign({},list[i],item,{updatedAt:now});
+    }else{
+      list.unshift(Object.assign({id:'df'+Date.now().toString(36)+Math.random().toString(36).slice(2,6),createdAt:now,updatedAt:now},item));
+    }
+    store(list);resetForm();
+  }
+  function edit(id){
+    var it=load().find(function(x){return x.id===id});if(!it)return;
+    FIELDS.forEach(function(f){$(f[1]).value=it[f[0]]==null?'':it[f[0]]});
+    if(!it.done)$('dfDone').value='N';
+    editingId=id;$('dfSave').textContent='수정 저장';$('dfCancel').hidden=false;$('dfEditBadge').hidden=false;$('dfFormTitle').textContent='불량 수정';
+    render();
+    var p=document.querySelector('#defectView .df-form-panel');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+  function del(id){
+    var it=load().find(function(x){return x.id===id});if(!it)return;
+    if(!confirm('['+(it.name||it.code||'')+'] 불량 건을 삭제할까요?'))return;
+    store(load().filter(function(x){return x.id!==id}));
+    if(editingId===id)resetForm();else render();
+  }
+  function toggle(id){
+    var list=load(),it=list.find(function(x){return x.id===id});if(!it)return;
+    it.done=it.done==='Y'?'N':'Y';it.updatedAt=new Date().toISOString();store(list);render();
+  }
+  function sortKey(x){return [String(x.year||''),String(x.mfgDate||''),String(x.createdAt||'')].join('|')}
+  function render(){
+    if(!$('dfBody'))return;
+    var list=load();
+    // 년도 필터·카테고리 추천 목록
+    var years={},cats={};list.forEach(function(x){if(x.year)years[x.year]=1;if(x.category)cats[x.category]=1});
+    var ySel=$('dfFilterYear'),yCur=ySel.value;
+    ySel.innerHTML='<option value="">전체</option>'+Object.keys(years).sort().reverse().map(function(y){return '<option value="'+esc(y)+'">'+esc(y)+'</option>'}).join('');
+    if(yCur&&years[yCur])ySel.value=yCur;
+    $('dfCategoryList').innerHTML=Object.keys(cats).sort().map(function(c){return '<option value="'+esc(c)+'">'}).join('');
+    var fy=ySel.value,fd=$('dfFilterDone').value,q=$('dfFilterQuery').value.trim().toLowerCase();
+    var rows=list.filter(function(x){
+      if(fy&&String(x.year)!==fy)return false;
+      if(fd&&(x.done==='Y'?'Y':'N')!==fd)return false;
+      if(q&&[x.category,x.batch,x.plu,x.code,x.name,x.lot,x.note].join(' ').toLowerCase().indexOf(q)<0)return false;
+      return true;
+    }).sort(function(a,b){return sortKey(b).localeCompare(sortKey(a))});
+    $('dfTotal').textContent=num(list.length);
+    $('dfOpen').textContent=num(list.filter(function(x){return x.done!=='Y'}).length);
+    $('dfQty').textContent=num(rows.reduce(function(s,x){return s+(Number(x.qty)||0)},0));
+    $('dfCount').textContent=rows.length+'건';
+    if(!rows.length){$('dfBody').innerHTML='<tr class="df-row-empty"><td class="df-empty" colspan="12">'+(list.length?'조건에 맞는 불량 건이 없습니다.':'등록된 불량 건이 없습니다.')+'</td></tr>';return}
+    $('dfBody').innerHTML=rows.map(function(x){
+      var done=x.done==='Y';
+      return '<tr data-id="'+esc(x.id)+'"'+(x.id===editingId?' class="df-editing"':'')+'>'+
+        '<td data-label="년도">'+esc(x.year)+'</td>'+
+        '<td data-label="카테고리">'+esc(x.category)+'</td>'+
+        '<td data-label="차수">'+esc(x.batch)+'</td>'+
+        '<td data-label="PLU">'+esc(x.plu)+'</td>'+
+        '<td data-label="제품코드">'+esc(x.code)+'</td>'+
+        '<td data-label="제품명" class="df-wide">'+esc(x.name)+'</td>'+
+        '<td data-label="LOT번호">'+esc(x.lot)+'</td>'+
+        '<td data-label="제조일자">'+esc(x.mfgDate)+'</td>'+
+        '<td data-label="수량" class="num">'+(x.qty===''||x.qty==null?'':num(x.qty))+'</td>'+
+        '<td data-label="내용" class="df-note df-wide">'+esc(x.note)+'</td>'+
+        '<td data-label="처리 여부"><button type="button" class="df-status '+(done?'done':'open')+'" data-act="toggle" title="눌러서 처리 여부 변경">'+(done?'처리':'미처리')+'</button></td>'+
+        '<td data-label="관리"><div class="df-manage"><button type="button" data-act="edit">수정</button><button type="button" class="del" data-act="del">삭제</button></div></td>'+
+      '</tr>';
+    }).join('');
+  }
+  function init(){
+    if(!$('defectView'))return;
+    $('dfYear').value=new Date().getFullYear();
+    $('dfSave').addEventListener('click',save);
+    $('dfCancel').addEventListener('click',resetForm);
+    ['dfFilterYear','dfFilterDone'].forEach(function(id){$(id).addEventListener('change',render)});
+    $('dfFilterQuery').addEventListener('input',render);
+    $('dfBody').addEventListener('click',function(e){
+      var b=e.target.closest('button[data-act]');if(!b)return;
+      var id=b.closest('tr').getAttribute('data-id');
+      if(b.dataset.act==='edit')edit(id);else if(b.dataset.act==='del')del(id);else if(b.dataset.act==='toggle')toggle(id);
+    });
+    document.addEventListener('team-data-updated',render);
+    window.addEventListener('storage',function(e){if(e.key===KEY)render()});
+    render();
+  }
+  window.renderProductDefects=render;
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+})();
 </script>
 </body>
 </html>

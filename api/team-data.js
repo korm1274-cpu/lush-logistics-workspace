@@ -53,6 +53,14 @@ module.exports = async (req, res) => {
         res.status(200).json({ success: false, error: '잘못된 요청 본문입니다.' });
         return;
       }
+      // 화면 버전에 따라 일부 항목(예: 제품 불량 defects)을 모르고 올리는 경우가 있어,
+      // 보낸 데이터에 없는 항목은 서버에 있던 값을 그대로 유지합니다.
+      try {
+        const current = await kvGet();
+        if (current && typeof current === 'object' && body && typeof body === 'object') {
+          Object.keys(current).forEach(k => { if (!(k in body)) body[k] = current[k]; });
+        }
+      } catch (e) { /* 병합 실패 시 받은 그대로 저장 */ }
       const ok = await kvSet(body);
       res.status(200).json({ success: ok });
       return;
