@@ -140,3 +140,161 @@ body.design-preview-status-detail #statusBoardView.active .boxcount-arc-ring{tra
 @media(max-width:900px){body.design-preview-home #dashboard{display:block!important}body.design-preview-home #dashboard>.lush-hero,body.design-preview-home #dashboard>.dash-section{margin:0 0 14px!important}body.design-preview-home #dashboard .lush-hero{grid-template-columns:1fr;min-height:0;padding:28px 20px 58px!important;border-radius:23px!important}body.design-preview-home #dashboard .lush-hero-text{grid-column:1;max-width:62%;padding:0}body.design-preview-home #dashboard .lush-hero .lush-hero-hello{font-size:31px!important}body.design-preview-home #dashboard .pv-hero-scene{right:-17%;width:70%;opacity:.58}body.design-preview-home #dashboard .lush-hero-stats{grid-template-columns:repeat(2,1fr)!important}body.design-preview-home #dashboard #todayRequestGrid{grid-template-columns:1fr!important}body.design-preview-status-detail #statusBoardView.active .status-board-tabs{top:0}}
 @media(max-width:600px){.design-preview-toggle-copy small{display:none}body.design-preview-home #dashboard .lush-hero-text{max-width:100%}body.design-preview-home #dashboard .pv-hero-scene{top:22%;right:-38%;width:95%;opacity:.20}body.design-preview-home #dashboard .lush-hero-stat{min-height:88px!important;padding:12px!important}body.design-preview-home #dashboard .lush-hero-stat b{font-size:24px!important}body.design-preview-home #dashboard .monthly-grid{grid-template-columns:1fr!important}}
 @media(prefers-reduced-motion:reduce){body.design-preview-home #dashboard>.lush-hero,body.design-preview-home #dashboard>.dash-section,.pv-hero-scene .pv-orb,.pv-hero-scene .pv-truck3d,.pv-hero-scene .pv-wheel3d,.pv-hero-scene .pv-light,body.design-preview-status-detail #statusBoardView.active .status-panel.active{animation:none!important}}
+
+
+/* ===== v5 REAL LAYOUT RECOMPOSITION ===== */
+
+/* Main: actual DOM is moved into this structure while preview is ON */
+body.design-preview-home #dashboard{display:block!important;max-width:none!important}
+#pvMainLayout{display:none}
+body.design-preview-home #pvMainLayout{display:block;max-width:1680px;margin:0 auto;padding:0 0 18px}
+body.design-preview-home #pvMainLayout>.lush-hero{margin:0 0 34px!important}
+.pv-main-stage{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(330px,.62fr);gap:24px;align-items:start}
+.pv-main-primary,.pv-main-context{min-width:0}
+.pv-main-context{display:flex;flex-direction:column;gap:20px;position:sticky;top:calc(var(--v70-bar-h) + 66px)}
+.pv-main-context>.dashboard-first-section,
+.pv-main-context>.dash-section{margin:0!important}
+.pv-main-primary>.schedule-full-card{margin:0!important}
+.pv-main-requests{margin-top:28px!important}
+
+/* Hero is intentionally much larger and image-led */
+body.design-preview-home #pvMainLayout>.lush-hero{
+  min-height:520px!important;
+  padding:64px 52px 94px!important;
+  grid-template-columns:minmax(360px,.68fr) minmax(640px,1.32fr)!important;
+  border-radius:36px!important;
+}
+body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-hello{font-size:50px!important;max-width:610px}
+body.design-preview-home #pvMainLayout>.lush-hero .pv-hero-scene{width:67%!important;height:92%!important;right:-2%!important;top:-1%!important}
+body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stats{
+  position:absolute!important;
+  left:52px!important;
+  right:52px!important;
+  bottom:28px!important;
+  width:auto!important;
+  grid-template-columns:1.15fr repeat(3,1fr)!important;
+  margin:0!important;
+  gap:12px!important;
+}
+body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stat{min-height:108px!important}
+body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stat:first-child{background:linear-gradient(135deg,rgba(255,255,255,.91),rgba(255,234,242,.82))!important}
+
+/* Schedule becomes the dominant work surface */
+body.design-preview-home .pv-main-primary>.schedule-full-card{
+  min-height:610px;
+  padding:26px!important;
+  border-radius:28px!important;
+  box-shadow:0 24px 64px rgba(52,42,36,.075)!important
+}
+body.design-preview-home .pv-main-primary .dashboard-two-week-calendar{
+  min-height:500px;
+  display:flex;
+  flex-direction:column
+}
+body.design-preview-home .pv-main-primary .dashboard-two-week-grid{flex:1}
+
+/* Right context rail */
+body.design-preview-home .pv-main-context>.dashboard-first-section{
+  padding:18px!important;
+  border-radius:24px!important
+}
+body.design-preview-home .pv-main-context .dashboard-notice-todo-grid{gap:13px!important}
+body.design-preview-home .pv-main-context>.dash-section:has(.monthly-grid){padding:18px!important;border-radius:24px!important}
+body.design-preview-home .pv-main-context .monthly-grid{grid-template-columns:1fr!important}
+body.design-preview-home .pv-main-context .monthly-card{min-height:150px!important}
+
+/* Requests are a wide editorial strip after the operational stage */
+body.design-preview-home .pv-main-requests{
+  padding:27px!important;
+  border-radius:28px!important
+}
+body.design-preview-home .pv-main-requests #todayRequestGrid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:15px!important
+}
+body.design-preview-home .pv-main-requests .request-mini-card{
+  min-height:235px!important;
+  border-radius:20px!important
+}
+
+/* Status detail: active original elements are moved into a real analysis grid */
+.pv-status-detail-layout{display:none}
+body.design-preview-status-detail .pv-status-detail-layout{
+  display:grid;
+  grid-template-columns:minmax(0,1.45fr) minmax(300px,.72fr);
+  gap:20px;
+  align-items:start
+}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-full{grid-column:1/-1}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-wide{grid-column:1}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-side{grid-column:2}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-span{grid-column:1/-1}
+body.design-preview-status-detail .pv-status-detail-layout>:is(.status-card,.chart-card,.table-card,.analysis-card){
+  margin:0!important;
+}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-wide.chart-card{
+  min-height:410px
+}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-side{
+  min-height:220px
+}
+body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .chart-wrap,
+body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .store-history-chart-wrap,
+body.design-preview-status-detail .pv-status-detail-layout>.pv-wide .boxcount-chart-wrap{
+  min-height:330px!important
+}
+
+/* Panels with a sub-section get stronger spacing */
+body.design-preview-status-detail #statusBoardView.active .status-panel.active{
+  padding-top:2px
+}
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active,
+body.design-preview-status-detail #statusBoardView.active .product-outbound-panel.active{
+  animation:pvSectionIn .42s cubic-bezier(.2,.72,.2,1) both
+}
+
+/* More physical chart surfaces */
+body.design-preview-status-detail #statusBoardView.active .chart-card{
+  background:
+    radial-gradient(circle at 90% 5%,rgba(237,88,141,.11),transparent 230px),
+    linear-gradient(180deg,rgba(255,255,255,.97),rgba(250,247,244,.92))!important;
+}
+body.design-preview-status-detail #statusBoardView.active .chart-card .chart-wrap:after,
+body.design-preview-status-detail #statusBoardView.active .store-history-chart-wrap:after,
+body.design-preview-status-detail #statusBoardView.active .boxcount-chart-wrap:after{
+  content:"";
+  position:absolute;
+  left:8%;right:8%;bottom:-12px;
+  height:28px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(237,88,141,.13),transparent 67%);
+  filter:blur(8px);
+  pointer-events:none;
+  z-index:0
+}
+body.design-preview-status-detail #statusBoardView.active canvas{position:relative;z-index:1}
+
+/* Stronger transitions between analysis tabs */
+body.design-preview-status-detail #statusBoardView.active .status-panel.active,
+body.design-preview-status-detail #statusBoardView.active .productivity-section.active,
+body.design-preview-status-detail #statusBoardView.active .boxcount-section.active{
+  transform-origin:50% 0
+}
+
+@media(max-width:1260px){
+  .pv-main-stage{grid-template-columns:1fr}
+  .pv-main-context{position:static;display:grid;grid-template-columns:1fr 1fr}
+  .pv-main-context>.dashboard-first-section{grid-column:1}
+  .pv-main-context>.dash-section:has(.monthly-grid){grid-column:2}
+  body.design-preview-home .pv-main-requests #todayRequestGrid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  body.design-preview-status-detail .pv-status-detail-layout{grid-template-columns:1fr}
+  body.design-preview-status-detail .pv-status-detail-layout>*{grid-column:1!important}
+}
+@media(max-width:900px){
+  body.design-preview-home #pvMainLayout>.lush-hero{min-height:430px!important;padding:32px 20px 78px!important;grid-template-columns:1fr!important}
+  body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-stats{left:18px!important;right:18px!important;bottom:18px!important;grid-template-columns:repeat(2,1fr)!important}
+  body.design-preview-home #pvMainLayout>.lush-hero .lush-hero-hello{font-size:32px!important}
+  .pv-main-context{display:flex}
+  body.design-preview-home .pv-main-requests #todayRequestGrid{grid-template-columns:1fr!important}
+}
