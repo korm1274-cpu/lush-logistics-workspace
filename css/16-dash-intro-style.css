@@ -1,0 +1,24 @@
+/* ===== <style id="dash-intro-style"> ===== */
+/* 메인 첫 화면 연출: 배스밤 버블(C) + 숫자 카운트업(B) + 카드 순서대로 떠오르기(A) */
+.lush-hero.has-bubbles{background-image:none!important;}
+.lush-hero .hero-bubble{position:absolute;border-radius:50%;pointer-events:none;z-index:0;}
+.lush-hero>*:not(.hero-bubble):not(.hero-fizz):not(.hero-truck):not(.hero-road):not(.season-flake){position:relative;z-index:1;}
+.lush-hero .hero-bubble.b1{width:92px;height:92px;left:calc(92% - 46px);top:calc(18% - 46px);background:rgba(232,123,164,.28);}
+.lush-hero .hero-bubble.b2{width:60px;height:60px;left:calc(84% - 30px);top:calc(86% - 30px);background:rgba(27,175,122,.22);}
+.lush-hero .hero-bubble.b3{width:36px;height:36px;left:calc(97% - 18px);top:calc(70% - 18px);background:rgba(237,161,0,.22);}
+.lush-hero .hero-fizz{position:absolute;width:8px;height:8px;border-radius:50%;pointer-events:none;z-index:0;opacity:0;}
+@media (prefers-reduced-motion:no-preference){
+  .lush-hero .hero-bubble.b1{animation:heroFloat 14s ease-in-out infinite;}
+  .lush-hero .hero-bubble.b2{animation:heroFloat 18s ease-in-out -5s infinite;}
+  .lush-hero .hero-bubble.b3{animation:heroFloat 12s ease-in-out -8s infinite;}
+  .dash-intro .lush-hero .hero-bubble.b1{animation:heroBloom 1.4s cubic-bezier(.2,.9,.3,1.2) both,heroFloat 14s ease-in-out 1.4s infinite;}
+  .dash-intro .lush-hero .hero-bubble.b2{animation:heroBloom 1.4s cubic-bezier(.2,.9,.3,1.2) .15s both,heroFloat 18s ease-in-out 1.55s infinite;}
+  .dash-intro .lush-hero .hero-bubble.b3{animation:heroBloom 1.4s cubic-bezier(.2,.9,.3,1.2) .3s both,heroFloat 12s ease-in-out 1.7s infinite;}
+  .dash-intro .lush-hero .hero-fizz{animation:heroFizz 1.6s ease-out both;}
+  .dash-intro .intro-rise{animation:introRise .55s cubic-bezier(.2,.8,.2,1) both;}
+}
+@keyframes heroBloom{0%{transform:scale(.15);opacity:0;filter:blur(6px);}60%{opacity:1;filter:blur(0);}100%{transform:scale(1);opacity:1;}}
+@keyframes heroFloat{0%,100%{transform:translate(0,0);}50%{transform:translate(-4px,-7px);}}
+@keyframes heroFizz{0%{opacity:.9;transform:translate(0,0) scale(.4);}100%{opacity:0;transform:translate(var(--fx),var(--fy)) scale(1);}}
+@keyframes introRise{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:none;}}
+

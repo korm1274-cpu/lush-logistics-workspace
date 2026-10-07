@@ -1,0 +1,59 @@
+/* ===== <style id="defect-view-style"> ===== */
+#defectView .df-form{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 12px;padding:4px 2px 0}
+#defectView .df-form .df-c3{grid-column:span 3}
+#defectView .df-form .df-c4{grid-column:span 4}
+#defectView .df-form .df-c6{grid-column:span 6}
+#defectView .df-form .field{display:flex;flex-direction:column;gap:5px;min-width:0}
+#defectView .df-form .field.grow{grid-column:span 2}
+#defectView .df-form .field.full{grid-column:1/-1}
+#defectView .df-form label{font-size:var(--t-label,12px);font-weight:800;color:#4a4a4a}
+#defectView .df-form input,#defectView .df-form select,#defectView .df-form textarea{width:100%;box-sizing:border-box;min-height:38px;border:1.5px solid #e2ddd3;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;background:#fff}
+#defectView .df-form textarea{resize:vertical;min-height:84px;line-height:1.5;white-space:pre-wrap!important;overflow:hidden}
+#defectView .df-actions{display:flex;justify-content:center;gap:8px;margin-top:14px}
+#defectView .df-actions .btn{min-width:0!important;width:auto!important;flex:none!important;max-width:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;height:40px!important;padding:0 14px!important;box-sizing:border-box}
+#defectView .df-actions .btn[hidden]{display:none!important}
+#defectView .df-actions .btn{min-width:84px}
+#defectView .df-table td{vertical-align:middle;white-space:nowrap}
+#defectView .df-table td.df-note{white-space:pre-wrap!important;min-width:180px;max-width:320px;word-break:break-all}
+#defectView .df-table td.num{text-align:right;font-variant-numeric:tabular-nums}
+#defectView .df-status{border:0;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
+#defectView .df-status.open{background:#fdecec;color:#c93838}
+#defectView .df-status.done{background:#e3f5ec;color:#11795a}
+#defectView .df-manage{display:flex;gap:5px}
+#defectView .df-manage button{border:1px solid #e2ddd3;background:#fff;border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;cursor:pointer}
+#defectView .df-manage button.del{color:#c93838}
+#defectView tr.df-editing td{background:#fff8e6}
+#defectView .df-empty{text-align:center;color:#888;padding:28px 0!important}
+#defectView [data-df-pane][hidden]{display:none!important}
+/* 러쉬 테마: 탭 안의 카드도 다른 이슈 화면과 같은 테두리 카드 + 위쪽 색 띠 */
+#appShell.on-lush #defectView [data-df-pane]>.panel{position:relative;overflow:hidden;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important}
+#appShell.on-lush #defectView [data-df-pane]>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink)}
+#appShell.on-lush #defectView [data-df-pane="list"]>.panel::before{background:var(--lush-violet)}
+#appShell.on-lush #defectView [data-df-pane]>.data-filter-row{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important}
+#appShell.on-lush #defectView .df-form input,#appShell.on-lush #defectView .df-form select,#appShell.on-lush #defectView .df-form textarea{border-color:var(--lush-kraft)!important;background:#fff!important}
+#appShell.on-lush #defectView .df-form input:focus,#appShell.on-lush #defectView .df-form select:focus,#appShell.on-lush #defectView .df-form textarea:focus{outline:none;border-color:var(--lush-ink)!important}
+@media(max-width:900px){#appShell.on-lush #defectView .df-table tr{border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important}#appShell.on-lush #defectView .df-table tr.df-row-empty{border:0!important}}
+#defectView .df-form-panel{max-width:none!important;width:100%!important;box-sizing:border-box}
+#defectView .df-tabs{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+#defectView .df-tabs button{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px}
+#defectView .df-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff}
+#defectView .df-tabs em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4}
+@media(max-width:900px){#defectView .df-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#defectView .df-tabs button{justify-content:center;padding:0 6px;font-size:13.5px}}
+@media(max-width:900px){
+  #defectView .df-form{gap:8px}
+  #defectView .df-form .df-m6{grid-column:span 6}
+  #defectView .df-table thead{display:none}
+  #defectView .df-table,#defectView .df-table tbody{display:block;width:100%!important;min-width:0!important;max-width:100%!important}
+  #defectView .data-table-wrap{overflow:visible!important;min-width:0!important}
+  #defectView .df-table tr{width:auto!important;min-width:0!important;box-sizing:border-box}
+  #defectView .df-table tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 10px;border:1.5px solid #ece6db;border-radius:12px;padding:10px 12px;margin-bottom:10px;background:#fff}
+  #defectView .df-table td{display:flex;justify-content:space-between;gap:8px;padding:2px 0!important;border:0!important;white-space:normal;font-size:13px;min-width:0}
+  #defectView .df-table td::before{content:attr(data-label);color:#888;font-weight:700;flex:none}
+  #defectView .df-table td.df-wide{grid-column:1/-1}
+  #defectView .df-table td.df-note{max-width:none;display:block}
+  #defectView .df-table td.df-note::before{display:block;margin-bottom:2px}
+  #defectView .df-table td.df-empty{grid-column:1/-1;justify-content:center}
+  #defectView .df-table td.df-empty::before{content:none}
+  #defectView .df-table tr.df-row-empty{border:0;background:none}
+}
+

@@ -1,0 +1,77 @@
+/* ===== <style id="rq-lush-theme"> ===== */
+/* 트래픽 > 출고 요청: 다른 화면과 같은 러쉬 테마(칠판 배너 + 검정 테두리 카드 + 색 띠) */
+#appShell.on-lush #outboundRequestManager .request-manager-top{position:relative;overflow:hidden;display:flex;align-items:center;padding:22px 28px!important;margin-bottom:16px!important;border-radius:18px!important;border:0!important;background:#1d1d1b!important;background-image:radial-gradient(circle at 93% 22%,rgba(232,123,164,.28) 0 40px,transparent 41px),radial-gradient(circle at 85% 88%,rgba(27,175,122,.22) 0 26px,transparent 27px),radial-gradient(circle at 98% 74%,rgba(237,161,0,.22) 0 15px,transparent 16px)!important;}
+#appShell.on-lush #outboundRequestManager .request-manager-top .eyebrow{color:#cfcac0!important;}
+#appShell.on-lush #outboundRequestManager .request-manager-top h2{color:#fff!important;font-size:24px!important;margin:3px 0 6px!important;}
+#appShell.on-lush #outboundRequestManager .request-manager-top p{color:#d9d4cb!important;font-size:13px!important;}
+#appShell.on-lush #outboundRequestManager .rq-col,
+#appShell.on-lush #outboundRequestManager .request-period-card,
+#appShell.on-lush #outboundRequestManager .request-register-list,
+#appShell.on-lush #outboundRequestManager .request-form-card{position:relative;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;background:#fff!important;}
+#appShell.on-lush #outboundRequestManager .request-period-card::before,
+#appShell.on-lush #outboundRequestManager .request-register-list::before,
+#appShell.on-lush #outboundRequestManager .request-form-card::before{content:"";display:block;height:6px;background:var(--lush-pink);}
+#appShell.on-lush #outboundRequestManager .request-register-list::before{background:var(--lush-violet);}
+#appShell.on-lush #outboundRequestManager .request-form-card::before{background:var(--lush-mint);}
+#appShell.on-lush #outboundRequestManager .rq-col-head{border-top-width:6px!important;font-size:15px!important;}
+#appShell.on-lush #outboundRequestManager .rq-col-head.bulk{border-top-color:var(--lush-pink)!important;}
+#appShell.on-lush #outboundRequestManager .rq-col-head.traffic{border-top-color:var(--lush-mint)!important;}
+#appShell.on-lush #outboundRequestManager .rq-col-head.hq{border-top-color:var(--lush-yellow)!important;}
+#appShell.on-lush #outboundRequestManager .rq-col-head.nozzle{border-top-color:var(--lush-violet)!important;}
+#appShell.on-lush #outboundRequestManager .request-period-head h3,#appShell.on-lush #outboundRequestManager .request-register-head h3,#appShell.on-lush #outboundRequestManager .request-form-head h3{font-size:17px!important;font-weight:800!important;color:var(--lush-ink)!important;}
+#appShell.on-lush #outboundRequestManager .request-period-stat{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important;position:relative;overflow:hidden;}
+#appShell.on-lush #outboundRequestManager .request-period-stat::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lush-ink);}
+#appShell.on-lush #outboundRequestManager .request-period-stat:nth-child(2)::before{background:var(--lush-pink);}
+#appShell.on-lush #outboundRequestManager .request-period-stat:nth-child(3)::before{background:var(--lush-mint);}
+#appShell.on-lush #outboundRequestManager .request-period-stat:nth-child(4)::before{background:var(--lush-yellow);}
+#appShell.on-lush #outboundRequestManager .request-period-stat:nth-child(5)::before{background:var(--lush-violet);}
+#appShell.on-lush #outboundRequestManager .request-period-stat b{color:var(--lush-ink)!important;}
+#appShell.on-lush #outboundRequestManager #saveOutboundRequestBtn,#appShell.on-lush #outboundRequestManager #requestPeriodApplyBtn{background:var(--lush-ink)!important;border-color:var(--lush-ink)!important;color:#fff!important;}
+@media (max-width:900px){
+  #appShell.on-lush #outboundRequestManager .request-manager-top{padding:18px 20px!important;}
+  #appShell.on-lush #outboundRequestManager .request-manager-top h2{font-size:21px!important;}
+}
+
+/* ===== <style id="rq-tabs-style"> ===== */
+/* 출고 요청 관리: 처리 대기 / 요청 등록 / 전체 기록 탭 */
+#outboundRequestManager [data-rq-pane][hidden]{display:none!important;}
+#outboundRequestManager .request-manager-grid{display:block!important;}
+#outboundRequestManager .request-manager-grid>[data-rq-pane]{width:100%!important;max-width:none!important;}
+#outboundRequestManager .request-form-card{max-width:760px!important;}
+#outboundRequestManager .rq-tabs{display:flex;gap:6px;margin:4px 0 14px;flex-wrap:wrap;}
+#outboundRequestManager .rq-tabs button{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+#outboundRequestManager .rq-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#outboundRequestManager .rq-tabs em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4;}
+#outboundRequestManager .rq-sum{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px;}
+#outboundRequestManager .rq-sum button{height:36px;padding:0 14px;border:1px solid #e5e0d6;border-radius:999px;background:#fff;color:#4e5968;font-size:13px;font-weight:700;cursor:pointer;}
+#outboundRequestManager .rq-sum button b{margin-left:4px;color:#191f28;}
+#outboundRequestManager .rq-sum button.on{background:#e87ba4;border-color:#e87ba4;color:#fff;}
+#outboundRequestManager .rq-sum button.on b{color:#fff;}
+#outboundRequestManager .rq-board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;align-items:start;}
+#outboundRequestManager .rq-board.one{grid-template-columns:1fr;}
+#outboundRequestManager .rq-col{background:#fff;border:1px solid #e5e0d6;border-radius:14px;overflow:hidden;}
+#outboundRequestManager .rq-col-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #eee8dc;font-size:14.5px;font-weight:800;color:#191f28;}
+#outboundRequestManager .rq-col-head span{font-size:12px;font-weight:800;color:#fff;background:#1d1d1b;border-radius:999px;padding:2px 9px;}
+#outboundRequestManager .rq-col-head.bulk{border-top:4px solid #e87ba4;}
+#outboundRequestManager .rq-col-head.traffic{border-top:4px solid #2fb37a;}
+#outboundRequestManager .rq-col-head.hq{border-top:4px solid #f0a020;}
+#outboundRequestManager .rq-col-head.nozzle{border-top:4px solid #8e6ccf;}
+#outboundRequestManager .rq-item{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;align-items:center;padding:11px 14px;border-bottom:1px solid #f1ede4;}
+#outboundRequestManager .rq-item:last-child{border-bottom:0;}
+#outboundRequestManager .rq-store{font-size:14.5px;font-weight:800;color:#191f28;text-decoration:none;word-break:keep-all;}
+#outboundRequestManager a.rq-store{text-decoration:underline;text-underline-offset:3px;}
+#outboundRequestManager .rq-dates{grid-column:1;font-size:12px;color:#6b7684;}
+#outboundRequestManager .rq-dates.late{color:#d64545;font-weight:700;}
+#outboundRequestManager .rq-note{grid-column:1/-1;font-size:12px;color:#4e5968;white-space:pre-line;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;}
+#outboundRequestManager .rq-done{grid-column:2;grid-row:1/3;height:32px;padding:0 12px;border:1px solid #f3ddb8;border-radius:8px;background:#fff5ea;color:#a05a00;font-size:12.5px;font-weight:800;cursor:pointer;white-space:nowrap;}
+#outboundRequestManager .rq-empty{padding:18px 14px;font-size:12.5px;color:#8b95a1;text-align:center;}
+@media (max-width:1100px){#outboundRequestManager .rq-board{grid-template-columns:repeat(2,minmax(0,1fr));}}
+@media (max-width:900px){
+  #outboundRequestManager .rq-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  #outboundRequestManager .rq-tabs button{padding:0 6px;justify-content:center;font-size:13.5px;}
+  #outboundRequestManager .rq-sum{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;}
+  #outboundRequestManager .rq-sum button{height:46px;padding:0 2px;border-radius:10px;font-size:11.5px;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.2;}
+  #outboundRequestManager .rq-sum button b{margin:0;font-size:15px;}
+  #outboundRequestManager .rq-board{grid-template-columns:1fr;}
+}
+

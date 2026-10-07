@@ -1,0 +1,47 @@
+/* ===== <style id="design-pass-1"> ===== */
+/* ── 상태 색 통일: 지연=빨강 · 미처리=노랑 · 완료=민트 · 오늘/진행=분홍 ── */
+:root{--st-late:#c93838;--st-late-bg:#fdecec;--st-wait:#9a6400;--st-wait-bg:#fff3d6;--st-done:#11795a;--st-done-bg:#e3f5ec;--st-today:#c2477a;--st-today-bg:#fde7f0;}
+#appShell #dashboard .request-row .request-state-btn{background:var(--st-wait-bg)!important;color:var(--st-wait)!important;border-color:#f1dca6!important;font-weight:800!important;}
+#appShell #dashboard .request-row .request-state-btn.done{background:var(--st-done-bg)!important;color:var(--st-done)!important;border-color:#bfe6d4!important;}
+#outboundRequestManager .request-manager-item button[data-toggle][style*="fff5ea"]{background:var(--st-wait-bg)!important;color:var(--st-wait)!important;border-color:#f1dca6!important;}
+#outboundRequestManager .request-manager-item button[data-toggle][style*="eef8f1"]{background:var(--st-done-bg)!important;color:var(--st-done)!important;border-color:#bfe6d4!important;}
+#outboundRequestManager .rq-done{background:var(--st-wait-bg)!important;color:var(--st-wait)!important;border-color:#f1dca6!important;}
+#outboundRequestManager .rq-dates.late{color:var(--st-late)!important;}
+#appShell .shipping-store-status.active{background:var(--st-today-bg)!important;color:var(--st-today)!important;border-color:#f6c6da!important;}
+#appShell .shipping-store-status.waiting{background:var(--st-wait-bg)!important;color:var(--st-wait)!important;border-color:#f1dca6!important;}
+#appShell .shipping-store-status.complete{background:var(--st-done-bg)!important;color:var(--st-done)!important;border-color:#bfe6d4!important;}
+#appShell #dashboard .ops-todo-item .badge.info{background:var(--st-wait-bg)!important;color:var(--st-wait)!important;border:1px solid #f1dca6!important;}
+#appShell #dashboard .ops-todo-item .badge:not(.info){background:var(--st-done-bg)!important;color:var(--st-done)!important;border:1px solid #bfe6d4!important;}
+#floorDashView .floor-tile em.alert{color:#ff8a8a!important;}
+
+/* ── 숫자 글꼴: 자릿수 폭을 같게 해 세로 정렬 ── */
+#appShell b,#appShell strong,#appShell td,#appShell .kpi,#appShell .floor-tile,#appShell .lush-hero-stat,#appShell .request-period-stat,#appShell .monthly-stats{font-variant-numeric:tabular-nums;}
+
+/* ── 제목 아이콘 통일: 이모지 대신 러쉬 색 동그라미 + 선 아이콘 ── */
+#appShell .ux-ico{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:1.6em!important;height:1.6em!important;border-radius:50%!important;margin-right:.4em!important;vertical-align:-.35em;background:var(--ico-bg,#fde7f0)!important;color:var(--ico-fg,#c2477a)!important;flex:0 0 auto;padding:0!important;border:0!important;}
+#appShell .ux-ico svg{width:.92em!important;height:.92em!important;stroke-width:2.2;}
+#appShell .lush-hero .ux-ico,#appShell .data-workbench-head .ux-ico,#appShell .status-board-top .ux-ico,#appShell.on-lush .request-manager-top .ux-ico,#appShell.on-lush .schedule-head .ux-ico{background:rgba(255,255,255,.14)!important;color:#fff!important;}
+#appShell .request-empty-card{flex-direction:column!important;}
+
+/* ── 빈 화면: 글씨만 있던 곳에 빈 상자 그림 ── */
+.data-empty::before,.chart-empty::before,.request-empty-card::before,.rq-empty::before,.shipping-store-empty::before,.request-manager-empty::before{
+  content:"";display:block;width:46px;height:40px;margin:2px auto 8px;opacity:.6;background:no-repeat center/contain url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 46 40' fill='none' stroke='%23b9ab92' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 14l18-9 18 9v18l-18 8-18-8z'/%3E%3Cpath d='M5 14l18 9 18-9M23 23v17'/%3E%3Cpath d='M5 14l-3 6 18 9 3-6M41 14l3 6-18 9-3-6' fill='%23f6efe3'/%3E%3C/svg%3E");}
+.data-empty,.rq-empty,.request-manager-empty,.shipping-store-empty{color:#8b95a1!important;font-size:12.5px!important;padding:22px 12px!important;}
+.chart-empty{flex-direction:column;}
+#dashTodoList .todo-cheer~.data-empty{display:none!important;}
+
+/* ── 현장 대시보드 아래: 트럭이 지나가는 도로 ── */
+.floor-truck-lane{position:relative;height:58px;margin-top:22px;overflow:hidden;}
+.floor-truck-lane .hero-road{position:absolute;left:0;right:0;bottom:12px;height:0;border-top:2px dashed rgba(228,217,199,.3);}
+.floor-truck-lane .hero-truck{position:absolute;bottom:13px;left:-120px;width:104px;height:50px;opacity:.95;}
+.floor-truck-lane .hero-truck svg{display:block;width:100%;height:100%;overflow:visible;}
+.floor-truck-lane .hero-truck .puff{position:absolute;left:-6px;bottom:8px;width:9px;height:9px;border-radius:50%;background:rgba(228,217,199,.35);opacity:0;}
+@media (prefers-reduced-motion:no-preference){
+  .floor-truck-lane .hero-truck{animation:truckDrive 30s linear infinite;}
+  .floor-truck-lane .hero-truck svg{animation:truckBump .6s ease-in-out infinite;}
+  .floor-truck-lane .hero-truck .wheel{animation:truckWheel .7s linear infinite;transform-box:fill-box;transform-origin:center;}
+  .floor-truck-lane .hero-truck .puff{animation:truckPuff 1.4s ease-out infinite;}
+  .floor-truck-lane .hero-truck .puff.p2{animation-delay:.7s;}
+  .floor-truck-lane .hero-truck.t2{animation-delay:-15s;}
+}
+

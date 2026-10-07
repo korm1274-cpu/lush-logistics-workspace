@@ -1,0 +1,59 @@
+/* ===== <style id="mobile-fix-batch2"> ===== */
+/* 메인 스케줄 옆 기간 표시는 쓰지 않음 */
+#appShell #dashboardWeekRange{display:none!important;}
+.m-chart-legend{display:none;}
+@media (max-width:900px){
+  /* 숫자 요약 칸(입고·출고·오출고 등): 한 줄에 나란히 */
+  #appShell .kpis.data-kpis{display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(0,1fr)!important;grid-template-columns:none!important;gap:6px!important;}
+  #appShell .kpis.data-kpis>.kpi{min-width:0!important;min-height:0!important;padding:10px 8px 10px 14px!important;}
+  #appShell .kpis.data-kpis>.kpi>span{font-size:11.5px!important;white-space:nowrap!important;}
+  #appShell .kpis.data-kpis>.kpi b{font-size:18px!important;line-height:1.2!important;white-space:nowrap!important;}
+  #appShell .kpis.data-kpis>.kpi small{font-size:10.5px!important;white-space:nowrap!important;}
+  #appShell .kpis.data-kpis>.kpi div{gap:2px 8px!important;margin-top:4px!important;}
+  /* 입고 조회 수량: 총 수량만(G·EA 나눔은 숨김) */
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child>div>div:nth-child(2){display:none!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:first-child small{display:block!important;}
+  /* 입고 SKU: G·EA를 한 줄에 나란히 */
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2)>div{display:flex!important;flex-wrap:nowrap!important;gap:8px!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2) b{font-size:14.5px!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2) small{font-size:9.5px!important;}
+  #appShell #inboundBasicView .kpis.data-kpis>.kpi:nth-child(2){padding-right:4px!important;}
+
+  /* 입고 화면들: 조회 칸은 2칸씩, 표는 작은 글씨 + 첫 칸 고정 */
+  #appShell #inboundBasicView .data-filter-row,#appShell #inboundMonthlyView .data-filter-row,#appShell #inboundAnalysis .data-filter-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;align-items:end!important;}
+  #appShell #inboundBasicView .data-filter-row .field,#appShell #inboundMonthlyView .data-filter-row .field,#appShell #inboundAnalysis .data-filter-row .field{min-width:0!important;margin:0!important;}
+  #appShell #inboundBasicView .data-filter-row .field.grow,#appShell #inboundMonthlyView .data-filter-row .field.grow,#appShell #inboundAnalysis .data-filter-row .field.grow{grid-column:1/-1!important;}
+  #appShell #inboundBasicView .data-filter-row .btn,#appShell #inboundMonthlyView .data-filter-row .btn,#appShell #inboundAnalysis .data-filter-row .btn{width:100%!important;height:40px!important;}
+  #appShell #inboundBasicView .data-table th,#appShell #inboundBasicView .data-table td,
+  #appShell #inboundMonthlyView .data-table th,#appShell #inboundMonthlyView .data-table td,
+  #appShell #inboundAnalysis .data-table th,#appShell #inboundAnalysis .data-table td{font-size:12px!important;padding:8px 7px!important;white-space:nowrap!important;}
+  #appShell #inboundBasicView .data-table th:first-child,#appShell #inboundBasicView .data-table td:first-child,
+  #appShell #inboundMonthlyView .data-table th:first-child,#appShell #inboundMonthlyView .data-table td:first-child,
+  #appShell #inboundAnalysis .data-table th:first-child,#appShell #inboundAnalysis .data-table td:first-child{position:sticky!important;left:0!important;z-index:1!important;background:#fff!important;box-shadow:1px 0 0 #eee8dc!important;}
+  #appShell #inboundBasicView .data-table thead th:first-child,#appShell #inboundMonthlyView .data-table thead th:first-child,#appShell #inboundAnalysis .data-table thead th:first-child{background:#f5f3ed!important;z-index:2!important;}
+  #appShell #inboundAnalysis .panel>div[style*="height:380px"],#appShell #outboundAnalysis .panel>div[style*="height:380px"]{height:290px!important;}
+  #appShell #inboundBasicView .panel,#appShell #inboundMonthlyView .panel,#appShell #inboundAnalysis .panel{padding-left:12px!important;padding-right:12px!important;}
+
+  /* 제품군 그래프 범례: 그래프 아래 한 줄(넘치면 옆으로 밀기) */
+  .m-chart-legend{display:flex;flex-wrap:wrap;gap:4px 9px;padding:8px 0 2px;}
+  .m-chart-legend::-webkit-scrollbar{display:none;}
+  .m-chart-legend button{flex:0 0 auto;display:inline-flex;align-items:center;gap:3px;border:0;background:none;padding:0;font-size:10px;font-weight:700;color:#4e5968;white-space:nowrap;cursor:pointer;letter-spacing:-.03em;}
+  .m-chart-legend button i{flex:0 0 7px;width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .m-chart-legend button.off{opacity:.35;text-decoration:line-through;}
+
+  /* 현황판 TOP 출고 제품: 표가 화면 안에 들어오게 */
+  #appShell #statusBoardView .product-top-grid{display:grid!important;grid-template-columns:1fr!important;gap:14px!important;}
+  #appShell #statusBoardView .product-top-grid>div{min-width:0!important;overflow:hidden!important;}
+  #appShell #statusBoardView .product-top-grid table{width:100%!important;min-width:0!important;table-layout:fixed!important;}
+  #appShell #statusBoardView .product-top-grid th,#appShell #statusBoardView .product-top-grid td{font-size:12px!important;padding:9px 6px!important;}
+  #appShell #statusBoardView .product-top-grid th:nth-child(1),#appShell #statusBoardView .product-top-grid td:nth-child(1){width:48%!important;white-space:normal!important;word-break:break-word!important;text-align:left!important;}
+  #appShell #statusBoardView .product-top-grid th:nth-child(2),#appShell #statusBoardView .product-top-grid td:nth-child(2){width:24%!important;white-space:normal!important;word-break:break-word!important;}
+  #appShell #statusBoardView .product-top-grid th:nth-child(3),#appShell #statusBoardView .product-top-grid td:nth-child(3){width:28%!important;text-align:right!important;white-space:nowrap!important;}
+
+  /* 메인 이번 달 입출고: 출고 수량이 잘리지 않게 */
+  #appShell #dashboard .monthly-grid{grid-template-columns:minmax(0,1.7fr) minmax(0,1.3fr)!important;}
+  #appShell #dashboard .monthly-stats>div{padding:8px 4px!important;}
+  #appShell #dashboard .monthly-stats b{font-size:16px!important;letter-spacing:-.03em!important;}
+  #appShell #dashboard .monthly-card{padding:12px 8px!important;}
+}
+

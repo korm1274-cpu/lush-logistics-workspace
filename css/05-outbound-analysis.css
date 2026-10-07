@@ -1,0 +1,96 @@
+/* ===== <style id="v112-unified-analysis"> ===== */
+#statusBoardView .analysis-two-col{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:16px;margin-top:16px}
+#statusBoardView .analysis-three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:16px}
+#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(5,minmax(0,1fr))!important;margin-top:14px!important}
+#statusBoardView .analysis-rank-list{padding:2px 18px 16px}
+#statusBoardView .analysis-rank-list>div{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:9px;align-items:center;min-height:38px;border-bottom:1px solid #efefeb;font-size:11px}
+#statusBoardView .analysis-rank-list>div:last-child{border-bottom:0}
+#statusBoardView .analysis-rank-list b{font-size:10px;color:#8a918c}
+#statusBoardView .analysis-rank-list span{font-weight:800;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#statusBoardView .analysis-rank-list strong{font-size:11px;font-weight:900;font-variant-numeric:tabular-nums;white-space:nowrap}
+#statusBoardView .boxcount-cumulative-change-block{display:grid!important}
+#statusBoardView .boxcount-cumulative-no-month-change>div:nth-child(3){display:none!important}
+#statusBoardView .boxcount-cumulative-no-month-change{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#statusBoardView .boxcount-weekday-radials{min-height:250px;align-content:center}
+#statusBoardView .boxcount-detail-history-scroll{max-height:420px!important;overflow-y:auto!important}
+#statusBoardView .boxcount-detail-history-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .draggable-tab{touch-action:pan-y;user-select:none;cursor:grab;position:relative;transition:transform .1s ease,box-shadow .1s ease,background .1s ease,opacity .1s ease}
+#statusBoardView .draggable-tab.tab-dragging{
+  opacity:.94!important;cursor:grabbing!important;
+  box-shadow:0 3px 9px rgba(0,0,0,.10)!important;transform:translateY(-1px);
+  z-index:20;
+}
+#statusBoardView .productivity-subtabs:has(.tab-dragging),
+#statusBoardView .boxcount-subtabs:has(.tab-dragging),
+#statusBoardView .outbound-analysis-subtabs:has(.tab-dragging){cursor:grabbing}
+#statusBoardView .draggable-tab.tab-drop-before::before,
+#statusBoardView .draggable-tab.tab-drop-after::before{
+  content:"";position:absolute;top:7px;bottom:7px;width:2px;border-radius:999px;background:#aeb3ae;z-index:30;
+}
+#statusBoardView .draggable-tab.tab-drop-before::before{left:-4px}
+#statusBoardView .draggable-tab.tab-drop-after::before{right:-4px}
+@media(max-width:1100px){#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .analysis-three-col{grid-template-columns:1fr 1fr}}
+@media(max-width:760px){#statusBoardView .analysis-two-col,#statusBoardView .analysis-three-col{grid-template-columns:1fr}#statusBoardView .analysis-five-kpi{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+
+/* ===== <style id="v113-outbound-final-and-tab-drag"> ===== */
+#statusBoardView .outbound-nowrap th,#statusBoardView .outbound-nowrap td{white-space:nowrap}
+#statusBoardView .outbound-month-scroll{max-height:330px;overflow-y:auto}
+#statusBoardView .outbound-month-scroll thead th,#statusBoardView .outbound-raw-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .outbound-major-summary{padding:6px 20px 18px}
+#statusBoardView .outbound-major-summary>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #efefeb}
+#statusBoardView .outbound-major-summary>div:last-child{border-bottom:0}
+#statusBoardView .outbound-major-summary span{font-size:11px;color:#747c76;font-weight:800}
+#statusBoardView .outbound-major-summary b{font-size:13px;white-space:nowrap}
+#statusBoardView .outbound-table-tools{display:flex;gap:8px;align-items:center}
+#statusBoardView .outbound-table-tools input,#statusBoardView .outbound-table-tools select{height:34px;border:1px solid #dedfdc;border-radius:7px;padding:0 9px;background:#fff;font-size:11px}
+#statusBoardView .outbound-inline-detail{margin-top:16px}
+#statusBoardView .outbound-change-pair{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 10px 12px}
+#statusBoardView .outbound-change-pair>div>b{display:block;padding:8px 9px 2px;font-size:10px;color:#6f7771}
+#statusBoardView .outbound-change-pair .analysis-rank-list{padding:0}
+#statusBoardView .outbound-exception-note{margin-top:16px}
+#statusBoardView .outbound-exception-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;margin:0 22px 18px;border:1px solid #ecece8;border-radius:10px;overflow:hidden}
+#statusBoardView .outbound-exception-grid>div{padding:15px 16px}
+#statusBoardView .outbound-exception-grid>div+div{border-left:1px solid #ecece8}
+#statusBoardView .outbound-exception-grid span{display:block;font-size:10px;color:#7b827d;font-weight:800;margin-bottom:7px}
+#statusBoardView .outbound-exception-grid b{font-size:13px}
+#statusBoardView .outbound-detail-filters{flex-wrap:wrap!important}
+#statusBoardView .outbound-raw-scroll{max-height:520px!important;overflow:auto!important}
+#statusBoardView .outbound-product-groups .analysis-rank-list>div{grid-template-columns:28px minmax(0,1fr) auto}
+@media(max-width:760px){#statusBoardView .outbound-change-pair,#statusBoardView .outbound-exception-grid{grid-template-columns:1fr}#statusBoardView .outbound-exception-grid>div+div{border-left:0;border-top:1px solid #ecece8}}
+
+/* ===== <style id="v114-outbound-complete"> ===== */
+#statusBoardView .outbound-overview-only{align-items:stretch}
+#statusBoardView .outbound-fast-line{position:relative;height:300px;min-height:300px;padding:0;box-sizing:border-box}
+#statusBoardView .outbound-fast-line canvas{width:100%!important;height:100%!important}
+#statusBoardView [data-status-panel="outboundanalysis"] .analysis-two-col{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+#statusBoardView [data-status-panel="outboundanalysis"] .analysis-two-col>*{min-width:0}
+#statusBoardView .outbound-store-rank-row{align-items:stretch}
+#statusBoardView .outbound-equal-rank-card{height:100%;min-height:330px;display:flex;flex-direction:column}
+#statusBoardView .outbound-equal-rank-card .analysis-rank-list{flex:1}
+#statusBoardView .outbound-store-composition{min-height:255px;align-content:center}
+#statusBoardView .outbound-composition-other{display:flex;justify-content:space-between;align-items:center;margin:0 20px 18px;padding:10px 12px;border-top:1px solid #efefeb;font-size:10px;color:#747c76}
+#statusBoardView .outbound-composition-other b{font-size:13px;color:#222}
+#statusBoardView .outbound-product-composition-card{margin-top:16px}
+#statusBoardView .outbound-product-composition{min-height:240px;grid-template-columns:repeat(3,minmax(0,1fr));align-items:center}
+#statusBoardView .outbound-full-compare-scroll{max-height:470px!important;overflow:auto!important}
+#statusBoardView .outbound-full-compare-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .outbound-monthly-kpis{grid-template-columns:repeat(6,minmax(0,1fr))!important;margin-top:14px!important}
+#statusBoardView .outbound-monthly-movers{display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:4px 14px 14px}
+#statusBoardView .outbound-monthly-movers h4{margin:7px 0;font-size:10px;color:#7b827d}
+#statusBoardView .outbound-monthly-mover-row{display:grid;grid-template-columns:minmax(115px,1fr) auto;align-items:center;gap:10px;min-height:52px;border-bottom:1px solid #efefeb}
+#statusBoardView .outbound-monthly-mover-row:last-child{border-bottom:0}
+#statusBoardView .outbound-monthly-mover-row>span{font-size:11px;font-weight:850;line-height:1.3;white-space:normal;overflow:visible;text-overflow:clip}
+#statusBoardView .outbound-monthly-mover-value{text-align:right;white-space:nowrap}
+#statusBoardView .outbound-monthly-mover-value b{display:block;font-size:15px;font-weight:950}
+#statusBoardView .outbound-monthly-mover-value small{display:block;margin-top:3px;font-size:9px;color:#8b928d;font-weight:800}
+#statusBoardView .outbound-monthly-compare-scroll{max-height:360px!important;overflow:auto!important}
+#statusBoardView .outbound-monthly-compare-scroll thead th{position:sticky;top:0;z-index:2;background:#fff}
+#statusBoardView .outbound-raw-history[hidden]{display:none!important}
+#statusBoardView .outbound-major-summary{padding:6px 20px 18px}
+#statusBoardView .outbound-major-summary>div{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:13px 0;border-bottom:1px solid #efefeb}
+#statusBoardView .outbound-major-summary>div:last-child{border-bottom:0}
+#statusBoardView .outbound-major-summary span{font-size:11px;color:#747c76;font-weight:800}
+#statusBoardView .outbound-major-summary b{font-size:13px;white-space:nowrap}
+@media(max-width:1180px){#statusBoardView .outbound-monthly-kpis{grid-template-columns:repeat(3,minmax(0,1fr))!important}#statusBoardView .outbound-product-composition{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media(max-width:780px){#statusBoardView .outbound-monthly-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}#statusBoardView .outbound-monthly-movers{grid-template-columns:1fr}#statusBoardView .outbound-product-composition{grid-template-columns:repeat(2,minmax(0,1fr))}}
+

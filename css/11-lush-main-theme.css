@@ -1,0 +1,508 @@
+/* ===== <style id="lush-main-theme"> ===== */
+/* 메인 화면 테마: 블랙 칠판 인사 배너 + 연회색 배경 + 배쓰밤 포인트 색 (메인 화면에서만 적용) */
+#appShell{--lush-paper:#f2f4f6;--lush-card:#ffffff;--lush-ink:#1d1d1b;--lush-kraft:#e4d9c7;--lush-pink:#e87ba4;--lush-violet:#8a6fd1;--lush-mint:#1baf7a;--lush-yellow:#eda100;}
+#appShell.on-dashboard .main{background:var(--lush-paper)!important;}
+.lush-hero{display:flex;position:relative;overflow:hidden;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;margin:6px 0 4px;padding:26px 32px;border-radius:18px;background:#1d1d1b;color:#fff;background-image:radial-gradient(circle at 92% 18%,rgba(232,123,164,.28) 0 46px,transparent 47px),radial-gradient(circle at 84% 86%,rgba(27,175,122,.22) 0 30px,transparent 31px),radial-gradient(circle at 97% 70%,rgba(237,161,0,.22) 0 18px,transparent 19px);}
+#appShell .lush-hero-date{font-size:13px!important;color:#cfcac0!important;letter-spacing:.02em;margin-bottom:6px;}
+.lush-hero-hello,#appShell .lush-hero .lush-hero-hello{margin:0;font-size:30px!important;line-height:1.25!important;font-weight:800!important;color:#fff!important;letter-spacing:0!important;}
+.lush-hero-sub,#appShell .lush-hero .lush-hero-sub{margin:6px 0 0;font-size:15px!important;font-weight:600!important;color:#f3d9e4!important;}
+.lush-hero-stats{display:flex;gap:12px;flex-wrap:wrap;}
+.lush-hero-stat{min-width:120px;padding:12px 16px;border:1.5px solid rgba(255,255,255,.28);border-radius:14px;background:#272725;position:relative;}
+#appShell .lush-hero-stat small{display:block;font-size:12px!important;color:#cfcac0!important;margin-bottom:4px;}
+#appShell .lush-hero-stat b{font-size:26px!important;font-weight:800!important;color:#fff!important;}
+#appShell .lush-hero-stat span{font-size:13px!important;color:#cfcac0!important;margin-left:3px;}
+@media(max-width:900px){.lush-hero{padding:20px;}#appShell .lush-hero .lush-hero-hello{font-size:22px!important;}#appShell .lush-hero .lush-hero-sub{font-size:14px!important;}.lush-hero-stat{min-width:0;flex:1 1 90px;}}
+/* 섹션 카드: 크라프트 라벨처럼 두꺼운 테두리 + 윗줄 배쓰밤 색 띠 */
+#appShell.on-dashboard #dashboard .dash-section{position:relative;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;overflow:hidden;}
+#appShell.on-dashboard #dashboard .dash-section::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink);}
+#appShell.on-dashboard #dashboard .dash-section:nth-of-type(3)::before{background:var(--lush-violet);}
+#appShell.on-dashboard #dashboard .dash-section:nth-of-type(4)::before{background:var(--lush-mint);}
+#appShell.on-dashboard #dashboard .dash-section:nth-of-type(5)::before{background:var(--lush-yellow);}
+#appShell.on-dashboard #dashboard .dashboard-info-panel{background:#fff!important;border-color:var(--lush-kraft)!important;}
+/* 홈 아이콘(보디스프레이) */
+/* 기존 .logo svg 규칙(선 굵기 2.4 고정)보다 우선해 얇은 선으로 표시 */
+#appShell .logo svg.bodyspray-icon{display:block;width:20px!important;height:20px!important;stroke-width:1.1!important;}
+
+/* ===== <style id="lush-issue-theme"> ===== */
+/* 이슈 화면(오출고·파손·오출고 분석·파손 분석)에도 메인과 같은 러쉬 테마: 연회색 배경 + 칠판 제목 배너 + 테두리 카드 */
+#appShell.on-lush .main{background:var(--lush-paper)!important;}
+#appShell.on-lush .view.active .data-workbench-head{position:relative;overflow:hidden;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:22px 28px!important;margin-bottom:16px!important;border-radius:18px!important;background:#1d1d1b!important;background-image:radial-gradient(circle at 93% 22%,rgba(232,123,164,.28) 0 40px,transparent 41px),radial-gradient(circle at 85% 88%,rgba(27,175,122,.22) 0 26px,transparent 27px),radial-gradient(circle at 98% 74%,rgba(237,161,0,.22) 0 15px,transparent 16px)!important;border:0!important;}
+#appShell.on-lush .view.active .data-workbench-head .eyebrow{color:#cfcac0!important;}
+#appShell.on-lush .view.active .data-workbench-head h2{color:#fff!important;}
+#appShell.on-lush .view.active .data-workbench-head p,#appShell.on-lush .view.active .data-workbench-head p span{color:#d9d4cb!important;max-width:900px;}
+#appShell.on-lush .view.active .data-workbench>.panel{position:relative;overflow:hidden;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
+#appShell.on-lush .view.active .data-workbench>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink);}
+#appShell.on-lush .view.active .data-workbench>.panel:nth-of-type(2)::before{background:var(--lush-pink);}
+#appShell.on-lush .view.active .data-workbench>.panel:nth-of-type(3)::before{background:var(--lush-violet);}
+#appShell.on-lush .view.active .data-workbench>.panel:nth-of-type(4)::before{background:var(--lush-mint);}
+#appShell.on-lush .view.active .data-workbench>.panel:nth-of-type(5)::before{background:var(--lush-yellow);}
+/* 숫자 카드: 흰 카드 + 크라프트 테두리 + 왼쪽 색 띠 */
+#appShell.on-lush .view.active .kpi{position:relative;overflow:hidden;background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important;padding-left:22px!important;}
+#appShell.on-lush .view.active .kpi::before{content:"";position:absolute;left:0;top:0;bottom:0;width:6px;background:var(--lush-pink);}
+#appShell.on-lush .view.active .kpi:nth-child(2)::before{background:var(--lush-mint);}
+#appShell.on-lush .view.active .kpi:nth-child(3)::before{background:var(--lush-yellow);}
+#appShell.on-lush .view.active .kpi:nth-child(4)::before{background:var(--lush-violet);}
+/* 조회 줄·표·그래프 카드 톤 맞추기 */
+#appShell.on-lush .view.active .data-workbench>.data-filter-row{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important;}
+#appShell.on-lush .view.active .data-table th{background:#f6f7f8!important;color:#5c6670!important;}
+#appShell.on-lush .view.active .data-table-wrap{border-color:var(--lush-kraft)!important;}
+#appShell.on-lush .view.active .ms-card,#appShell.on-lush .view.active .fy-chart{border:1.5px solid var(--lush-kraft)!important;background:#fff!important;}
+#appShell.on-lush .view.active .fy-tabs{background:#f2f4f6!important;}
+@media(max-width:900px){#appShell.on-lush .view.active .data-workbench-head{padding:18px!important;}}
+/* 일정(통합 일정·공지 등록·할 일 등록): 같은 칠판 제목 배너 + 테두리 카드, 캘린더는 큰 날짜·오늘 강조·둥근 일정 칩 */
+#appShell.on-lush #scheduleManagerView .schedule-head{position:relative;overflow:hidden;align-items:center;padding:22px 28px!important;margin-bottom:16px!important;border-radius:18px!important;border:0!important;background:#1d1d1b!important;background-image:radial-gradient(circle at 70% 20%,rgba(232,123,164,.26) 0 34px,transparent 35px),radial-gradient(circle at 63% 90%,rgba(27,175,122,.2) 0 22px,transparent 23px)!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head .eyebrow{color:#cfcac0!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head h2{color:#fff!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head p{color:#d9d4cb!important;}
+#appShell.on-lush #scheduleManagerView .schedule-head .btn{background:transparent!important;color:#fff!important;border:1.5px solid rgba(255,255,255,.4)!important;}
+#appShell.on-lush .view.active .box-entry-card{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-card{position:relative;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-card::before{content:"";display:block;height:6px;background:var(--lush-pink);}
+#appShell.on-lush #scheduleManagerView .master-calendar-toolbar{background:#fff!important;padding:14px 18px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-month-nav strong{font-size:20px!important;font-weight:800!important;color:var(--lush-ink)!important;min-width:140px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-month-nav .btn{border-radius:999px!important;min-width:36px;}
+#appShell.on-lush #scheduleManagerView .master-calendar-legend span{font-size:12px!important;color:#4e5968!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-legend .legend-dot{width:10px;height:10px;border-radius:50%;display:inline-block;}
+#appShell.on-lush #scheduleManagerView .calendar-sync-bar{background:#f6f7f8!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead{background:#1d1d1b!important;border-bottom:0!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span{color:#e6e1d8!important;font-size:13px!important;border-right-color:#333!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span:first-child{color:#ff9eb5!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-weekhead span:last-child{color:#9cc3ff!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day{padding:8px!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n+1),#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n){background:#fcfcfd;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.outside{background:#f6f7f8!important;}
+#appShell.on-lush #scheduleManagerView .master-day-num{display:inline-flex;align-items:center;justify-content:center;min-width:26px;height:26px;border-radius:50%;font-size:14px!important;font-weight:800!important;color:var(--lush-ink)!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n+1) .master-day-num{color:#d64545!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day:nth-child(7n) .master-day-num{color:#2f6fd6!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.outside .master-day-num{color:#b4bbbf!important;}
+#appShell.on-lush #scheduleManagerView .master-day-head small{font-size:11px!important;color:#a0a8ad!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.today{box-shadow:none!important;background:#fff4f7!important;}
+#appShell.on-lush #scheduleManagerView .master-calendar-day.today .master-day-num{background:var(--lush-ink);color:#fff!important;}
+#appShell.on-lush #scheduleManagerView .master-event{border-radius:8px!important;padding:5px 7px!important;font-size:12px!important;border-left:3px solid currentColor!important;}
+
+/* ===== <style id="mobile-dashboard-fix"> ===== */
+/* 메인 배너 인사말: 휴대폰에서만 '오늘도 힘차게,' 뒤에서 줄바꿈 */
+.m-only-br{display:none;}
+@media(max-width:900px){.m-only-br{display:inline;}}
+/* 파손 분석 휴대폰 탭은 데스크톱에서 숨김 */
+#diMobileTabs,#msMobileTabs{display:none;}
+/* 팀 공지사항 2개 표시: 칸 높이는 내용에 맞추고, 두 번째 공지의 표시는 회색(첫 번째 '중요'와 구분) */
+#appShell #dashboard .notice-board{display:flex!important;flex-direction:column!important;gap:10px!important;}
+#appShell #dashboard .notice-board .notice-main{min-height:0!important;height:auto!important;flex:0 0 auto!important;}
+#appShell #dashboard .notice-second .notice-pin{background:#e9ecef!important;color:#4e5968!important;}
+#appShell #dashboard .notice-board .notice-main[hidden]{display:none!important;}
+/* 공지 앞의 '중요'/'공지' 표시는 쓰지 않음 */
+#appShell #dashboard .notice-board .notice-pin{display:none!important;}
+  /* 공지는 제목만 표시: 빈 내용 줄은 숨김 */
+  #appShell #dashboard #dashNoticeText:empty,#appShell #dashboard #dashNoticeText2:empty{display:none!important;}
+/* 데스크톱: 2주 달력은 칸마다 일정 2개 + "+N건", 휴대폰용 요일 표시는 숨김 */
+.dash-two-week-day .dash-extra{display:none!important;}
+.dash-two-week-date .dash-dow{display:none;}
+/* 휴대폰(900px 이하)에서 메인 화면이 잘리지 않도록 */
+@media(max-width:900px){
+  /* 제품 확보 현황: 내용은 한 줄 전체, 입고요청일·상태는 아래 줄. 목록 높이 제한 해제 */
+  #appShell #dashboard .ops-todo-list{max-height:none!important;overflow:visible!important;padding-right:0!important;}
+  #appShell #dashboard .ops-todo-item{grid-template-columns:auto auto 1fr!important;row-gap:8px!important;column-gap:8px!important;}
+  #appShell #dashboard .ops-todo-item .todo-content{grid-column:1 / -1!important;font-size:14px!important;}
+  #appShell #dashboard .ops-todo-item .todo-indate.empty{display:none!important;}
+  #appShell #dashboard .ops-todo-item .todo-indate{grid-column:1!important;grid-row:2!important;}
+  #appShell #dashboard .ops-todo-item .badge{grid-column:2!important;grid-row:2!important;justify-self:start!important;}
+  #appShell #dashboard .ops-todo-item:has(.todo-indate.empty) .badge{grid-column:1!important;}
+  /* 금주 출고 요청: 매장명 칸을 넓게, 요청일자·처리 칸은 필요한 만큼만 */
+  #appShell #dashboard .request-card-grid{padding-left:0!important;padding-right:0!important;}
+  #appShell #dashboard .request-mini-card{padding-left:14px!important;padding-right:14px!important;}
+  #appShell #dashboard .request-mini-table{padding-left:0!important;padding-right:0!important;}
+  #appShell #appShell #dashboard .request-mini-header,#appShell #dashboard .request-mini-header,#appShell #dashboard .request-row{grid-template-columns:minmax(0,1fr) 50px 62px!important;gap:6px!important;}
+  #appShell #dashboard .request-mini-header span{white-space:nowrap!important;writing-mode:horizontal-tb!important;font-size:12px!important;}
+  #appShell #dashboard .request-row .store-name,#appShell #dashboard .request-row .doc-no{font-size:13px!important;white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;}
+  #appShell #dashboard .request-row .request-state-btn{width:60px!important;min-width:60px!important;font-size:12px!important;}
+  /* 스케줄(2주 달력): 휴대폰에서는 오늘~+4일 5일만 5칸 가로로. 칸마다 날짜(요일) + 그날 일정 전부(작은 글씨, 줄바꿈) */
+  #appShell #dashboard .dashboard-two-week-weekhead{display:none!important;}
+  #appShell #dashboard .dashboard-two-week-calendar,#appShell #dashboard .dashboard-month-calendar{overflow:visible!important;min-width:0!important;}
+  #appShell #dashboard .dashboard-two-week-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-day.m-hide{display:none!important;}
+  #appShell #dashboard .dash-two-week-day{display:block!important;min-height:120px!important;padding:6px 4px!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-date{display:block!important;margin-bottom:5px!important;}
+  #appShell #dashboard .dash-two-week-date b,#appShell #dashboard .dash-two-week-date>span{display:none!important;}
+  #appShell #dashboard .dash-two-week-date .dash-dow{display:block;font-style:normal;font-size:11.5px;font-weight:800;color:#191f28;white-space:nowrap;text-align:center;letter-spacing:-.03em;}
+  #appShell #dashboard .dash-two-week-day.weekend .dash-dow{color:#d64545;}
+  #appShell #dashboard .dash-two-week-day.today .dash-dow{color:#fff;background:#1d1d1b;border-radius:6px;padding:2px 0;}
+  #appShell #dashboard .dash-two-week-day .dash-extra{display:flex!important;}
+  #appShell #dashboard .dash-two-week-day .dash-more{display:none!important;}
+  #appShell #dashboard .dash-two-week-events{display:grid!important;gap:3px!important;min-width:0!important;}
+  #appShell #dashboard .dash-two-week-event{max-width:100%!important;padding:3px 4px!important;border-radius:5px!important;}
+  #appShell #dashboard .dash-two-week-event span{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:break-all!important;font-size:10px!important;line-height:1.3!important;letter-spacing:-.03em;}
+  #appShell #dashboard .dash-two-week-day:not(:has(.dash-two-week-event)) .dash-two-week-events::after{content:"-";display:block;text-align:center;font-size:11px;color:#c3c8cd;}
+  /* 팀 공지사항: '중요' 표시와 제목을 한 줄에, 제목·내용은 다음 줄로 넘기지 않음(길면 …), 아래 빈 공간 축소 */
+  #appShell #dashboard .dashboard-info-panel{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .notice-board{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .notice-main{display:flex!important;align-items:flex-start!important;gap:8px!important;min-height:0!important;padding:12px 14px!important;}
+  #appShell #dashboard .notice-main>div{min-width:0!important;flex:1 1 auto!important;}
+  #appShell #dashboard .notice-pin{flex:0 0 auto!important;}
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeTitle2,#appShell #dashboard #dashNoticeText2{display:block!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;max-width:100%!important;}
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeTitle2{font-size:15px!important;line-height:1.4!important;}
+  #appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeText2{font-size:12.5px!important;margin-top:3px!important;}
+  /* 메인 카드 안쪽 여백 축소: 겹겹의 여백 때문에 내용 폭이 좁아지지 않게 */
+  #appShell #dashboard .dash-section.dashboard-first-section{padding-left:14px!important;padding-right:14px!important;}
+  #appShell #dashboard .dashboard-info-panel{padding-left:12px!important;padding-right:12px!important;}
+  #appShell #dashboard .ops-todo-item{padding-left:6px!important;padding-right:6px!important;}
+  /* 제품 확보 현황: 할 일·내용을 각각 한 줄로(길면 …) */
+  #appShell #dashboard .ops-todo-item .todo-content{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:13.5px!important;min-width:0!important;}
+  #appShell #dashboard .ops-todo-item .todo-note{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;font-size:10.5px!important;letter-spacing:-.04em!important;}
+
+  /* 메인 배너 숫자 카드: 오른쪽으로 잘리지 않게 2개씩 두 줄 */
+  #appShell .lush-hero-stats{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;width:100%!important;gap:10px!important;}
+  #appShell .lush-hero-stat{min-width:0!important;padding:10px 12px!important;}
+  #appShell .lush-hero-stat small{white-space:nowrap!important;overflow:hidden;text-overflow:ellipsis;}
+  #appShell .lush-hero-stat b{font-size:24px!important;}
+  #appShell .lush-hero-stat span{font-size:12px!important;}
+  /* 햄버거 버튼: 다른 규칙의 translate(-50%,-50%) 때문에 머리 영역 위로 올라가 있던 것을 세로 가운데로 */
+  #appShell #desktopSidebarBtn,.app #desktopSidebarBtn{transform:none!important;top:11px!important;}
+  /* 현황판: 화면 안 탭 줄은 숨기고 햄버거 메뉴의 '현황판' 아래로 옮김 */
+  #appShell #statusBoardView .status-board-tabs{display:none!important;}
+  /* 파손 분석: 상단 탭에서 고른 항목 하나만 표시 */
+  #appShell #diMobileTabs{display:flex!important;margin:4px 0 14px!important;}
+  #appShell #diSections .ms-section.di-off{display:none!important;}
+  /* 오출고 분석: 휴대폰은 담당자별/사유별 중 고른 것만 */
+  #appShell #msMobileTabs{display:flex!important;margin:4px 0 14px!important;}
+  #appShell #msSections .ms-section.ms-off{display:none!important;}
+  #appShell #diSections .ms-section{margin-top:0!important;padding-top:0!important;border-top:0!important;}
+  /* 파손 FY: 집계 기준 탭 5개를 한 줄로 */
+  #appShell .fy-tabs{flex-wrap:nowrap!important;width:100%!important;gap:2px!important;padding:3px!important;box-sizing:border-box;}
+  #appShell .fy-tab{flex:1 1 0;min-width:0;padding:8px 2px!important;font-size:12.5px!important;white-space:nowrap;letter-spacing:-.02em;}
+  #appShell .fy-col-labels span{font-size:10px!important;white-space:nowrap;letter-spacing:-.04em;}
+  #appShell .fy-col-val{font-size:9px!important;letter-spacing:-.04em;}
+  #appShell .fy-cols,#appShell .fy-col-labels{gap:3px!important;}
+  /* 조회 칸(날짜·입력)이 카드 밖으로 넘치지 않게 — 파손 상세조회 등 공통 */
+  #appShell .view.active .data-filter-row{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:10px!important;min-width:0!important;box-sizing:border-box;}
+  #appShell .view.active .data-filter-row .field{width:100%!important;min-width:0!important;max-width:100%!important;margin:0!important;flex:0 0 auto!important;height:auto!important;min-height:0!important;}
+  #appShell .view.active .data-filter-row input,#appShell .view.active .data-filter-row select{width:100%!important;min-width:0!important;max-width:100%!important;box-sizing:border-box!important;}
+  /* 조회·전체 버튼: 전체 폭 대신 가운데에 적당한 폭, 글자 가운데 */
+  #appShell .view.active .data-filter-row .btn{width:auto!important;min-width:140px!important;flex:0 0 auto!important;align-self:center!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding-left:28px!important;padding-right:28px!important;}
+  /* iPhone 날짜·월 칸이 기본 폭을 고집해 카드 밖으로 튀어나가지 않게 */
+  #appShell .view.active input[type=date],#appShell .view.active input[type=month]{-webkit-appearance:none!important;appearance:none!important;display:block!important;min-width:0!important;width:100%!important;max-width:100%!important;box-sizing:border-box!important;text-align:left!important;}
+  #appShell .view.active input[type=date]::-webkit-date-and-time-value,#appShell .view.active input[type=month]::-webkit-date-and-time-value{text-align:left;}
+  /* 기준월 + [전체]: 겹치지 않게 월 칸은 남는 폭만, 버튼은 고정 폭 */
+  #appShell .ms-period{width:100%!important;}
+  #appShell .ms-period .field{flex:1 1 auto!important;min-width:0!important;}
+  #appShell .ms-period .btn{flex:0 0 auto!important;min-width:64px!important;}
+  #appShell .view.active .panel-head:has(.ms-period){flex-wrap:wrap!important;gap:10px!important;}
+  /* 도넛 + 범례: 휴대폰에서는 위아래로, 범례는 전체 폭 */
+  #appShell .ms-donut-wrap{flex-direction:column!important;align-items:stretch!important;gap:14px!important;}
+  #appShell .ms-donut{align-self:center!important;}
+  #appShell .ms-legend{width:100%!important;max-width:none!important;}
+  #appShell .ms-legend-row{grid-template-columns:10px minmax(0,1fr) auto auto!important;font-size:13px!important;}
+  #appShell .ms-legend-row span{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+  /* 파손 FY 탭 글자 가운데 정렬 */
+  #appShell .fy-tab{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
+  /* 표는 카드 안에서 가로로 밀어서 볼 수 있게 */
+  #appShell .view.active .data-table-wrap{overflow-x:auto!important;-webkit-overflow-scrolling:touch;}
+}
+
+/* ===== <style id="mobile-full-menu"> ===== */
+/* 휴대폰 메뉴(A안): 머리 영역 아래를 덮는 검은 전체 화면 메뉴 + 아래로 펼쳐지는 부항목 + 현재 위치 핑크 표시 */
+@media(max-width:900px){
+  #appShell.mobile-nav-open #navContainer{display:block!important;position:fixed!important;top:56px!important;left:0!important;right:0!important;bottom:0!important;width:auto!important;min-width:0!important;max-width:none!important;max-height:none!important;height:auto!important;padding:8px 0 40px!important;overflow-y:auto!important;-webkit-overflow-scrolling:touch;background:#1d1d1b!important;background-image:radial-gradient(circle at 88% 92%,rgba(232,123,164,.22) 0 46px,transparent 47px),radial-gradient(circle at 70% 98%,rgba(27,175,122,.18) 0 26px,transparent 27px)!important;background-attachment:local!important;box-shadow:none!important;border:0!important;z-index:9999!important;}
+  #appShell.mobile-nav-open .sidebar-overlay{display:none!important;}
+  body:has(#appShell.mobile-nav-open){overflow:hidden!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group,#appShell.mobile-nav-open #navContainer .nav-group-direct{display:block!important;position:static!important;width:100%!important;border-bottom:1px solid rgba(255,255,255,.08)!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root{display:flex!important;align-items:center!important;justify-content:space-between!important;width:100%!important;height:auto!important;min-height:0!important;padding:16px 22px!important;border:0!important;background:transparent!important;color:#fff!important;font-size:17px!important;font-weight:800!important;line-height:1.2!important;text-align:left!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root:after{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root .nav-root-icon{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-root em{display:inline-block!important;font-style:normal!important;font-size:18px!important;color:#8b867d!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-root em{color:#e87ba4!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-root{color:#e87ba4!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group-direct .nav-root em{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-children{display:none!important;position:static!important;width:auto!important;max-width:none!important;margin:0 0 10px!important;padding:0 14px 0 22px!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-group.open>.nav-children{display:block!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item{position:relative!important;display:block!important;width:100%!important;padding:11px 14px!important;margin:0!important;border:0!important;border-radius:10px!important;background:transparent!important;color:#cfcac0!important;font-size:15px!important;font-weight:600!important;text-align:left!important;white-space:normal!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item .nav-child-dot{display:none!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item.m-active,#appShell.mobile-nav-open #navContainer .nav-item.active{background:rgba(232,123,164,.16)!important;color:#fff!important;font-weight:800!important;}
+  #appShell.mobile-nav-open #navContainer .nav-item.m-active::before,#appShell.mobile-nav-open #navContainer .nav-item.active::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:2px;background:#e87ba4;}
+  #appShell.mobile-nav-open #navContainer .nav-group-direct.m-current>.nav-root{color:#e87ba4!important;}
+}
+
+/* ===== <style id="mgr-list-mobile"> ===== */
+@media (max-width:900px){
+  /* 스케줄: 오늘부터 5일씩 보이고, 옆으로 밀면 다음 날짜 */
+  #appShell #dashboard .dashboard-two-week-grid{grid-template-columns:none!important;grid-auto-flow:column!important;grid-auto-columns:20%!important;overflow-x:auto!important;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;}
+  #appShell #dashboard .dashboard-two-week-grid::-webkit-scrollbar{display:none;}
+  #appShell #dashboard .dashboard-two-week-grid>.dash-two-week-day{scroll-snap-align:start;}
+  /* 이번 달 입출고 현황: 입고·출고 카드를 한 줄로 */
+  #appShell #dashboard .monthly-grid{display:grid!important;grid-template-columns:minmax(0,2fr) minmax(0,1fr)!important;gap:8px!important;}
+  #appShell #dashboard .monthly-card{min-width:0!important;min-height:0!important;height:auto!important;padding:12px 10px!important;}
+  #appShell #dashboard .monthly-stats,#appShell #dashboard .monthly-stats>div{min-height:0!important;height:auto!important;}
+  #appShell #dashboard .monthly-head h4{font-size:14px!important;margin:0 0 6px!important;}
+  #appShell #dashboard .monthly-stats{display:grid!important;grid-auto-flow:column!important;grid-auto-columns:minmax(0,1fr)!important;grid-template-columns:none!important;gap:6px!important;}
+  #appShell #dashboard .monthly-head{padding:0!important;margin:0!important;min-height:0!important;}
+  #appShell #dashboard .monthly-stats>div{border-left:0!important;text-align:center!important;}
+  #appShell #dashboard .monthly-stats>div{min-width:0!important;padding:8px!important;}
+  #appShell #dashboard .monthly-stats span{font-size:11px!important;white-space:nowrap!important;}
+  #appShell #dashboard .monthly-stats b{font-size:17px!important;white-space:nowrap!important;letter-spacing:-.02em!important;}
+  #appShell #dashboard .monthly-stats small{font-size:11px!important;}
+  #appShell #dashboard .monthly-stats .muted,#appShell #dashboard .monthly-foot{display:none!important;}
+  /* 공지 등록·제품 확보 등록 목록: 모바일은 표 대신 카드로 */
+  #appShell #noticeMgrBody,#appShell #todoMgrBody{display:block;}
+  #appShell #noticeMgrBody tr,#appShell #todoMgrBody tr{display:grid;align-items:center;gap:6px 8px;padding:13px 14px;border-bottom:1px solid #eee8dc;}
+  #appShell #noticeMgrBody tr:last-child,#appShell #todoMgrBody tr:last-child{border-bottom:0;}
+  #appShell #noticeMgrBody td,#appShell #todoMgrBody td{display:block;height:auto!important;min-height:0!important;padding:0!important;border:0!important;min-width:0;text-align:left;background:none!important;}
+  #appShell #noticeMgrBody td[colspan],#appShell #todoMgrBody td[colspan]{grid-column:1/-1;text-align:center;padding:16px 0!important;}
+  #appShell table:has(#noticeMgrBody) thead,#appShell table:has(#todoMgrBody) thead{display:none;}
+  #appShell table:has(#noticeMgrBody),#appShell table:has(#todoMgrBody){min-width:0!important;width:100%!important;display:block;}
+  #appShell .data-table-wrap:has(#noticeMgrBody),#appShell .data-table-wrap:has(#todoMgrBody){overflow:visible!important;}
+  #appShell #noticeMgrBody td .btn,#appShell #todoMgrBody td .btn{height:30px!important;min-height:0!important;padding:0 10px!important;font-size:12px!important;}
+  /* 공지 카드: 1줄 제목 / 2줄 등록일·작성자·버튼 */
+  #appShell #noticeMgrBody tr{grid-template-columns:auto 1fr auto;}
+  #appShell #noticeMgrBody td:nth-child(2){grid-column:1/-1;grid-row:1;font-size:14.5px;line-height:1.4;word-break:keep-all;}
+  #appShell #noticeMgrBody td:nth-child(1){grid-row:2;font-size:11.5px;color:#8b95a1;white-space:nowrap;}
+  #appShell #noticeMgrBody td:nth-child(3){grid-row:2;font-size:11.5px;color:#8b95a1;}
+  #appShell #noticeMgrBody td:nth-child(4){grid-row:2;white-space:nowrap;}
+  /* 제품 확보 카드: 1줄 할 일 / 2줄 내용 / 3줄 입고요청일·상태·버튼 (등록일은 숨김) */
+  #appShell #todoMgrBody tr{grid-template-columns:1fr auto auto;}
+  #appShell #todoMgrBody td:nth-child(1){display:none;}
+  #appShell #todoMgrBody td:nth-child(3){grid-column:1/-1;grid-row:1;font-size:14.5px;line-height:1.4;word-break:keep-all;}
+  #appShell #todoMgrBody td:nth-child(4){grid-column:1/-1;grid-row:2;font-size:12.5px;color:#4e5968;line-height:1.45;}
+  #appShell #todoMgrBody td:nth-child(4):empty{display:none;}
+  #appShell #todoMgrBody td:nth-child(2){grid-row:3;font-size:12px;color:#6b7684;white-space:nowrap;}
+  #appShell #todoMgrBody td:nth-child(2)::before{content:"입고요청 ";color:#8b95a1;}
+  #appShell #todoMgrBody td:nth-child(5){grid-row:3;}
+  #appShell #todoMgrBody td:nth-child(6){grid-row:3;white-space:nowrap;}
+}
+
+/* ===== <style id="todo-note-2line"> ===== */
+/* 제품 확보 현황 '내용': 줄바꿈 그대로, 최대 2줄까지 표시 */
+#appShell #dashboard .ops-todo-item .todo-note{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;line-clamp:2!important;white-space:pre-line!important;overflow:hidden!important;text-overflow:clip!important;word-break:break-all!important;line-height:1.4!important;}
+#todoMgrNote{width:100%;min-height:52px;resize:vertical;font:inherit;line-height:1.45;padding:9px 12px;border:1px solid #d9dde3;border-radius:10px;background:#fff;color:inherit;box-sizing:border-box;}
+#todoMgrNote:focus{outline:none;border-color:#e87ba4;}
+
+/* ===== <style id="notice-reqtab-style"> ===== */
+/* 메인 공지: 누르면 제목 전체 보기 */
+#appShell #dashboard .notice-board .notice-main{cursor:pointer;}
+#appShell #dashboard .notice-board .notice-main.n-open #dashNoticeTitle,#appShell #dashboard .notice-board .notice-main.n-open #dashNoticeTitle2{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;}
+.req-m-tabs{display:none;}
+@media (max-width:900px){
+  #appShell #dashboard #dashNoticeTitle,#appShell #dashboard #dashNoticeTitle2{font-size:13.5px!important;}
+  /* 금주 출고 요청: 모바일은 선택한 종류만 표시(기본은 모두 숨김) */
+  #appShell #dashboard .req-m-tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0 0 10px;}
+  #appShell #dashboard .req-m-tabs button{height:38px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:3px;white-space:nowrap;padding:0 4px;}
+  #appShell #dashboard .req-m-tabs button em{font-style:normal;font-size:11px;color:#e87ba4;}
+  #appShell #dashboard .req-m-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+  #appShell #dashboard .req-m-tabs button.on em{color:#f6b6cf;}
+  #appShell #dashboard #todayRequestGrid .request-mini-card{display:none!important;}
+  #appShell #dashboard #todayRequestGrid .request-mini-card.m-show{display:flex!important;}
+  #appShell #dashboard #todayRequestGrid:not(:has(.m-show)){display:none!important;}
+}
+
+/* ===== <style id="cum-date-compact"> ===== */
+/* 누계 생산성 시작일·종료일: '기간 조회'·'전체 누계' 버튼과 같은 높이(40px)로 한 줄 */
+#appShell #statusBoardView .status-filter-card.cum-date-card{display:flex!important;flex-direction:row!important;align-items:center!important;gap:8px!important;height:40px!important;min-height:0!important;padding:0 12px!important;box-sizing:border-box!important;}
+#appShell #statusBoardView .cum-date-card>span{margin:0!important;font-size:12px!important;white-space:nowrap!important;flex:0 0 auto!important;}
+#appShell #statusBoardView .cum-date-card>small{display:none!important;}
+#appShell #statusBoardView .status-filter-card.cum-date-card[hidden]{display:none!important;}
+#appShell #statusBoardView .cum-date-card>input,#appShell #statusBoardView .cum-date-card>select{flex:1 1 auto!important;min-width:0!important;width:auto!important;height:32px!important;min-height:32px!important;margin:0!important;padding:0 4px!important;font-size:14px!important;line-height:32px!important;border:0!important;background:transparent!important;}
+#appShell #statusBoardView .status-filter-cards:has(.cum-date-card){align-items:center!important;}
+@media (max-width:900px){
+  /* 아이폰: 비어 있는 날짜칸이 높이 0으로 접혀 누를 수 없던 문제 → 최소 높이 지정 */
+  #appShell #statusBoardView .status-filter-card input[type="date"]{min-height:32px!important;width:100%!important;display:block!important;}
+  #appShell #statusBoardView .cum-date-card>input[type="date"]{display:block!important;width:auto!important;}
+}
+
+/* ===== <style id="mobile-desc-clean"> ===== */
+@media (max-width:900px){
+  /* 모바일: 제목 옆·아래 설명 문구는 숨기고 제목은 한 줄로 */
+  #appShell #statusBoardView .status-card-title>small:not([id]),#appShell #statusBoardView #storeHistoryChartHint,#appShell #statusBoardView #productDetailTrendHint,
+  #appShell #statusBoardView .prod-api-metric small,#appShell #statusBoardView .store-history-on-demand small,
+  #appShell .status-board-top p,#appShell .inventory-head p,#appShell .schedule-head p,#appShell .schedule-editor-top p,
+  #appShell .data-workbench-head p,#appShell .request-manager-top p,#appShell .request-period-head p,#appShell .request-register-head p,
+  #appShell .upload-card>p,#appShell .admin-card>p{display:none!important;}
+  #appShell #statusBoardView .status-card-title h3{white-space:nowrap!important;word-break:keep-all!important;}
+  #appShell #statusBoardView .status-card-title{flex-wrap:wrap!important;gap:4px 10px!important;}
+  /* 일자별 처리이력 날짜: 칸 가운데 정렬 */
+  #appShell #statusBoardView #storeHistoryDetailDate{-webkit-appearance:none!important;appearance:none!important;display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;height:46px!important;line-height:46px!important;padding:0 12px!important;}
+  #appShell #statusBoardView #storeHistoryDetailDate::-webkit-date-and-time-value{text-align:center!important;margin:0!important;}
+  /* 매장별 출고물량 비교: 가로 막대(매장 수만큼 높이) */
+  #statusBoardView .store-history-chart-wrap.m-bars{padding:4px 8px 12px!important;}
+  /* 오늘 생산성 제목줄: 제목은 왼쪽, '과거 투입 인원 수정'은 작게 오른쪽 끝 */
+  #appShell #statusBoardView .status-card-title.productivity-today-head{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;}
+  #appShell #statusBoardView .productivity-today-head>div{min-width:0!important;}
+  #appShell #statusBoardView .productivity-today-head #prodTodayLabel{white-space:nowrap!important;font-size:11.5px!important;}
+  #appShell #statusBoardView #openPastStaffEditor{margin:0 0 0 auto!important;flex:0 0 auto!important;width:auto!important;height:30px!important;min-height:0!important;padding:0 10px!important;font-size:12px!important;border-radius:8px!important;white-space:nowrap!important;}
+  /* 오늘 생산성: 카드 6개를 3칸 x 2줄로 */
+  #appShell #statusBoardView .productivity-today-toolbar{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric{min-width:0!important;min-height:0!important;padding:12px 8px!important;text-align:center!important;align-items:center!important;justify-content:center!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric>span{font-size:11.5px!important;white-space:nowrap!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric strong,#appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric input{font-size:19px!important;line-height:1.2!important;white-space:nowrap!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric strong{display:flex!important;flex-direction:column!important;align-items:center!important;gap:1px!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric strong b{font-size:19px!important;line-height:1.2!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric strong em{font-size:10.5px!important;margin:0!important;white-space:nowrap!important;}
+  #appShell #statusBoardView .prod-staff-input-wrap{justify-content:center!important;gap:2px!important;}
+  #appShell #statusBoardView .productivity-today-toolbar>.prod-api-metric input{width:100%!important;max-width:64px!important;text-align:center!important;}
+  /* 금일 출고 현황: 제목 한 줄 */
+  #appShell #statusBoardView .shipping-display-kicker{white-space:nowrap!important;}
+  #appShell #statusBoardView .shipping-display-kicker+h3{white-space:nowrap!important;font-size:24px!important;}
+  /* 오늘 주문 매장: 한 줄에 한 매장, 매장명 전체 표시 */
+  #appShell #statusBoardView .shipping-store-list{display:grid!important;grid-template-columns:1fr!important;grid-auto-rows:auto!important;gap:6px!important;}
+  #appShell #statusBoardView .shipping-store-row{padding:9px 12px!important;min-height:0!important;gap:5px!important;}
+  #appShell #statusBoardView .shipping-store-topline{display:flex!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;}
+  #appShell #statusBoardView .shipping-store-name{overflow:visible!important;text-overflow:clip!important;white-space:nowrap!important;max-width:none!important;font-size:15px!important;}
+  #appShell #statusBoardView .shipping-store-pct{font-size:18px!important;}
+  #appShell #statusBoardView .shipping-store-inline-info{font-size:12.5px!important;white-space:nowrap!important;overflow:visible!important;}
+  #appShell #statusBoardView .shipping-store-inline-info *{font-size:12.5px!important;}
+}
+
+/* ===== <style id="floor-dash-style"> ===== */
+/* 현장 대시보드: 물류 현장 모니터에 띄워두는 용도 — 멀리서도 읽히는 큰 숫자, 어두운 칠판 배경 */
+.floor-board{background:#1d1d1b;color:#fff;border-radius:20px;padding:28px 32px 32px;min-height:calc(100vh - 150px);box-sizing:border-box;}
+.floor-board:fullscreen{border-radius:0;min-height:100vh;padding:4vh 4vw;overflow:auto;}
+.floor-head{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;flex-wrap:wrap;margin-bottom:10px;}
+#appShell .floor-eyebrow,.floor-board .floor-eyebrow{font-size:12px!important;letter-spacing:.12em;color:#cfcac0!important;font-weight:700;}
+#appShell .floor-title,.floor-board .floor-title{margin:6px 0 4px!important;font-size:30px!important;font-weight:800!important;color:#fff!important;}
+.floor-updated{font-size:13px;color:#a8a39a;}
+.floor-clock-wrap{text-align:right;}
+.floor-date{font-size:16px;color:#cfcac0;}
+.floor-clock{font-size:54px;font-weight:800;line-height:1.05;font-variant-numeric:tabular-nums;letter-spacing:.02em;}
+.floor-full-btn{margin-top:10px;border:1.5px solid rgba(255,255,255,.35);background:transparent;color:#fff;border-radius:10px;padding:7px 14px;font:inherit;font-size:13px;font-weight:700;cursor:pointer;}
+.floor-full-btn:hover{background:rgba(255,255,255,.1);}
+.floor-label{margin:26px 2px 12px;font-size:18px;font-weight:800;color:#f3d9e4;}
+.floor-label span{font-size:14px;font-weight:600;color:#a8a39a;margin-left:6px;}
+.floor-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;}
+.floor-grid.three{grid-template-columns:repeat(3,minmax(0,1fr));}
+.floor-grid.two{grid-template-columns:repeat(2,minmax(0,1fr));}
+.floor-staff{display:flex;align-items:baseline;gap:10px;margin:8px 0 6px;}
+.floor-staff-label{font-size:20px;font-weight:700;color:#e6e1d8;}
+.floor-staff b{font-size:56px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
+.floor-staff-unit{font-size:20px;color:#cfcac0;}
+.floor-board:fullscreen .floor-staff b{font-size:7vh;}
+@media(max-width:1100px){.floor-grid,.floor-grid.three{grid-template-columns:repeat(2,minmax(0,1fr));}}
+.floor-tile{position:relative;background:#272725;border:1.5px solid rgba(255,255,255,.14);border-radius:18px;padding:22px 24px 20px;overflow:hidden;}
+.floor-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent);}
+.floor-tile small{display:block;font-size:18px;font-weight:700;color:#e6e1d8;margin-bottom:10px;}
+.floor-tile b{font-size:72px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
+.floor-tile span{font-size:20px;color:#cfcac0;margin-left:6px;}
+.floor-tile em{display:block;margin-top:12px;font-style:normal;font-size:17px;font-weight:700;color:#cfcac0;}
+.floor-tile em.alert{color:#ffb4c8;}
+.floor-board:fullscreen .floor-tile b{font-size:9vh;}
+.floor-board:fullscreen .floor-clock{font-size:8vh;}
+
+/* ===== <style id="damage-fy-style"> ===== */
+/* 파손 현황(FY): 기준 탭 + 금액/건수 막대 그래프 2개 + 접는 표 */
+#damageAnalyticsView{--fy-ink:#191f28;--fy-ink-2:#4e5968;--fy-muted:#8b95a1;--fy-line:#eef0f3;--fy-grid:#f0f2f4;--fy-bar:#2a78d6;--fy-bar-hover:#1f63b8;}
+.fy-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 14px;padding:4px;background:#f2f4f6;border-radius:12px;width:fit-content;max-width:100%;}
+.fy-tab{border:0;background:transparent;padding:8px 16px;border-radius:9px;font:inherit;font-size:14px;font-weight:700;color:var(--fy-ink-2);cursor:pointer;}
+.fy-tab:hover{color:var(--fy-ink);}
+.fy-tab.active{background:#fff;color:var(--fy-ink);box-shadow:0 1px 3px rgba(20,30,40,.12);}
+.fy-charts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;}
+.fy-charts.single{grid-template-columns:minmax(0,1fr);}
+@media(max-width:1100px){.fy-charts{grid-template-columns:1fr;}}
+.fy-chart{border:1px solid var(--fy-line);border-radius:16px;padding:18px 20px;min-width:0;background:#fff;}
+.fy-chart-head{display:flex;align-items:baseline;gap:8px;margin-bottom:14px;}
+.fy-chart-head b{font-size:14px;font-weight:800;color:var(--fy-ink);}
+.fy-chart-head span{font-size:12px;color:var(--fy-muted);}
+/* 월별 세로 막대 */
+.fy-cols{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;align-items:end;height:200px;border-bottom:1px solid #dfe3e8;background:repeating-linear-gradient(to top,transparent 0,transparent 49px,var(--fy-grid) 49px,var(--fy-grid) 50px);}
+.fy-col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;min-width:0;}
+.fy-col-val{font-size:11px;color:var(--fy-ink-2);font-weight:700;margin-bottom:4px;white-space:nowrap;}
+.fy-col-bar{width:min(28px,70%);background:var(--fy-bar);border-radius:4px 4px 0 0;min-height:0;}
+.fy-col:hover .fy-col-bar,.fy-row:hover .fy-row-bar{background:var(--fy-bar-hover);}
+.fy-col-labels{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:6px;margin-top:6px;}
+.fy-col-labels span{font-size:11px;color:var(--fy-muted);text-align:center;}
+/* 순위 가로 막대 */
+.fy-rows{display:flex;flex-direction:column;gap:8px;}
+.fy-row{display:grid;grid-template-columns:minmax(80px,140px) minmax(0,1fr) auto;align-items:center;gap:10px;}
+.fy-row-name{font-size:13px;color:var(--fy-ink-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.fy-row-track{height:14px;}
+.fy-row-bar{height:100%;background:var(--fy-bar);border-radius:0 4px 4px 0;min-width:2px;}
+.fy-row-val{font-size:13px;font-weight:800;color:var(--fy-ink);white-space:nowrap;}
+.fy-more{margin-top:8px;font-size:12px;color:var(--fy-muted);}
+.fy-empty{padding:40px 0;text-align:center;color:var(--fy-muted);font-size:13px;}
+.fy-table-toggle{margin-top:16px;}
+.fy-table-toggle summary{cursor:pointer;font-size:13px;font-weight:700;color:var(--fy-ink-2);padding:6px 2px;width:fit-content;}
+.fy-table-toggle[open] summary{margin-bottom:10px;}
+
+/* ===== <style id="misship-visual-style"> ===== */
+/* 미완료 오출고: 중요 항목이라 제목과 건수를 조금 크게(같은 크기) */
+#appShell .mr-pending-panel .panel-head h3{font-size:19px!important;line-height:1.3!important;display:flex!important;align-items:baseline!important;gap:4px!important;}
+#appShell .mr-pending-panel #mrPendingTitleCount{font-size:inherit!important;font-weight:800!important;}
+@media (max-width:900px){#appShell .mr-pending-panel .panel-head h3{font-size:17px!important;}}
+/* 미완료 오출고 카드의 담당자 선택: 제목 글씨에 맞춘 작은 크기 */
+#appShell #mrPendingMgr.mr-pending-mgr{height:30px!important;min-height:30px!important;width:auto!important;min-width:0!important;max-width:220px;padding:0 28px 0 10px!important;font-size:13px!important;font-weight:600!important;border-radius:8px!important;border:1px solid #d9dde1!important;background-color:#fff!important;align-self:center;}
+/* 기준월 + [전체] 버튼. 전체 기간 모드(ms-all-mode)에서는 전월·전월 대비 칸을 숨김 */
+.ms-period{display:flex;align-items:flex-end;gap:8px;}
+.ms-period .btn{height:40px;}
+.ms-all-mode .data-table th:nth-last-child(-n+2),.ms-all-mode .data-table td:not([colspan]):nth-last-child(-n+2){display:none!important;}
+/* 칸이 적은 집계표: 표 폭을 내용에 맞추고 남는 폭은 오른쪽 여백으로 둠 (공통 표 최소 폭 920px 해제) */
+#appShell .data-table-wrap.fit-table{width:fit-content;max-width:100%;}
+#appShell .fit-table .data-table{width:auto!important;min-width:0!important;}
+#appShell .fit-table .data-table th,#appShell .fit-table .data-table td{padding:12px 28px 12px 18px!important;}
+#appShell .fit-table .data-table th:first-child,#appShell .fit-table .data-table td:first-child{min-width:150px;}
+#appShell .fit-table .data-table th.num,#appShell .fit-table .data-table td.num{min-width:96px;}
+/* 오출고 분석: 담당자별 비중 도넛 + 사유별 Top 5 카드 */
+#misshipAnalyticsView,#damageInsightView{--ms-ink:#191f28;--ms-ink-2:#4e5968;--ms-muted:#8b95a1;--ms-surface:#fff;--ms-line:#eef0f3;--ms-up:#d64545;--ms-down:#2f7de1;}
+/* 담당자별 | 사유별 좌우 배치 (좁은 화면에서는 위아래) */
+.ms-sections{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;align-items:start;}
+@media(max-width:1100px){.ms-sections{grid-template-columns:1fr;}}
+.ms-sections .ms-section{min-width:0;}
+.ms-sections .ms-donut-wrap{gap:20px;}
+.ms-sections .ms-donut{flex-basis:148px;width:148px;height:148px;}
+/* 좌우 배치에서는 표가 반쪽 폭에 맞도록 공통 표의 최소 폭(920px)을 풀고, 범례는 한 줄 목록으로 */
+#appShell .ms-sections .data-table{min-width:0!important;width:100%!important;}
+#appShell .ms-sections .data-table th,#appShell .ms-sections .data-table td{padding:10px 10px!important;}
+#appShell .ms-sections .data-table td:first-child{white-space:normal!important;word-break:keep-all;}
+.ms-sections .ms-legend.two-col{display:flex;}
+.ms-sections .ms-legend-row span{white-space:normal;overflow:visible;word-break:keep-all;line-height:1.35;}
+/* 비교표는 내부 스크롤 없이 모든 행을 그대로 표시 (공통 표의 최대 높이 해제) */
+#appShell .ms-sections .data-table-wrap{max-height:none!important;overflow-y:visible!important;}
+.ms-section-title{margin:0 2px 12px;font-size:16px;font-weight:800;color:var(--ms-ink);}
+.ms-section-grid{display:grid;grid-template-columns:1fr;gap:14px;}
+.ms-legend.two-col{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;}
+.ms-donut-wrap .ms-legend{max-width:820px;}
+.ms-card{background:var(--ms-surface);border:1px solid var(--ms-line);border-radius:16px;padding:20px 22px;min-width:0;}
+.ms-card-head{display:flex;align-items:baseline;gap:8px;margin-bottom:16px;}
+.ms-card-head b{font-size:14px;color:var(--ms-ink);font-weight:800;}
+.ms-card-head span{font-size:13px;color:var(--ms-muted);}
+.ms-donut-wrap{display:flex;align-items:center;gap:28px;}
+.ms-donut{flex:0 0 168px;position:relative;width:168px;height:168px;}
+.ms-donut svg{width:100%;height:100%;display:block;}
+.ms-donut .seg{cursor:default;transition:opacity .15s;}
+.ms-donut.dim .seg:not(.hot){opacity:.35;}
+.ms-donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;}
+.ms-donut-center small{font-size:12px;color:var(--ms-muted);}
+.ms-donut-center b{font-size:20px;font-weight:800;color:var(--ms-ink);}
+.ms-legend{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px;}
+.ms-legend-row{display:grid;grid-template-columns:10px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:5px 6px;border-radius:8px;font-size:14px;color:var(--ms-ink-2);}
+.ms-legend-row:hover{background:#f6f7f9;}
+.ms-legend-row i{width:10px;height:10px;border-radius:50%;}
+.ms-legend-row span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-legend-row small{font-size:12px;color:var(--ms-muted);}
+.ms-legend-row b{font-weight:800;color:var(--ms-ink);min-width:52px;text-align:right;}
+.ms-legend-more{margin-top:6px;padding:8px 6px 0;border-top:1px dashed var(--ms-line);font-size:12px;color:var(--ms-muted);}
+.ms-empty{padding:40px 0;text-align:center;color:var(--ms-muted);font-size:13px;}
+.ms-tip{position:fixed;z-index:9999;pointer-events:none;background:#fff;color:var(--ms-ink,#191f28);border:1px solid #e3e7ea;border-radius:10px;padding:8px 12px;font-size:13px;box-shadow:0 10px 26px rgba(20,30,40,.16);white-space:nowrap;}
+.ms-tip b{font-weight:800;}
+
+/* ===== <style id="side-subnav-style"> ===== */
+/* 상단 탭의 부항목을 탭 아래 드롭다운 대신 화면 왼쪽 세로 메뉴로 보여줌 (데스크톱 전용, 모바일 ☰ 메뉴는 기존 유지) */
+#sideSubNav{display:none;}
+@media(min-width:901px){
+  #appShell .nav-group:not(.nav-group-direct) .nav-children{display:none!important;}
+  #appShell .nav-group:not(.nav-group-direct) .nav-root em{display:none!important;}
+  #appShell.has-side-subnav #sideSubNav{
+    display:flex;flex-direction:column;gap:2px;position:fixed;top:56px;left:0;bottom:0;width:200px;
+    padding:22px 12px;background:#1d1d1b;border-right:0;overflow-y:auto;z-index:40;box-sizing:border-box;
+  }
+  #appShell.has-side-subnav .main{margin-left:200px!important;flex:1 1 auto!important;width:calc(100% - 200px)!important;min-width:0!important;}
+  /* 화면 안 탭도 왼쪽 메뉴로 옮겼으므로 본문 위 탭 줄은 숨김 */
+  #appShell.has-side-subnav #statusBoardView .status-board-tabs{display:none!important;}
+  #appShell.has-side-subnav #settings .admin-tabs{display:none!important;}
+  #sideSubNav .side-subnav-title{display:flex;align-items:center;gap:8px;padding:0 10px 14px;margin-bottom:6px;border-bottom:1px solid rgba(255,255,255,.12);font-size:15px;font-weight:800;color:#fff;}
+  #sideSubNav .side-subnav-title svg{width:18px;height:18px;color:#e87ba4;}
+  #sideSubNav .side-subnav-item{
+    display:block;width:100%;text-align:left;border:0;background:transparent;cursor:pointer;
+    padding:11px 12px;border-radius:10px;font:inherit;font-size:14px;font-weight:600;color:#cfcac0;line-height:1.35;word-break:keep-all;position:relative;
+  }
+  /* 검은 왼쪽 메뉴: 선택 항목만 배쓰밤 핑크로 은은하게 강조 (장식은 넣지 않음) */
+  #sideSubNav .side-subnav-item:hover{background:rgba(255,255,255,.07);color:#fff;}
+  #sideSubNav .side-subnav-item.active{background:rgba(232,123,164,.16);color:#fff;font-weight:800;}
+  #sideSubNav .side-subnav-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#e87ba4;}
+}
+

@@ -1,0 +1,1324 @@
+/* ===== <style id="v88-cumulative-productivity-refine"> ===== */
+/* V88 — cumulative productivity: query controls separated from KPI summary */
+#statusBoardView .cumulative-overview-card{padding-bottom:20px!important}
+#statusBoardView .cumulative-overview-head{display:flex!important;align-items:flex-end!important;justify-content:space-between!important;gap:18px!important}
+#statusBoardView .cumulative-overview-head>div:first-child{min-width:0}
+#statusBoardView .cumulative-query-area{display:flex;align-items:flex-end;justify-content:flex-end;gap:8px;flex-wrap:wrap}
+#statusBoardView .cumulative-query-field{display:flex;flex-direction:column;gap:5px}
+#statusBoardView .cumulative-query-field span{font-size:10px;font-weight:850;color:#737b75}
+#statusBoardView .cumulative-query-field input{height:38px;min-width:142px;padding:0 10px;border:1px solid #dde2dd;border-radius:9px;background:#fff;font-size:12px;color:#283029}
+#statusBoardView .cumulative-query-area .status-filter-btn{height:38px;align-self:flex-end}
+#statusBoardView .cumulative-summary-bar{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:18px 0 0!important;padding:0!important;border:1px solid #e2e2de!important;border-radius:12px!important;overflow:hidden!important;background:#fff!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric{min-width:0!important;min-height:92px!important;padding:15px 18px!important;border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;background:#fff!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-right:0!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong{display:flex!important;align-items:baseline!important;gap:5px!important;margin-top:7px!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.035em!important;white-space:nowrap!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong b{font-size:inherit!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>strong em{font-style:normal!important;font-size:11px!important;color:#8a918c!important;font-weight:750!important;letter-spacing:-.01em!important}
+#statusBoardView .cumulative-summary-bar .prod-api-metric>small{display:block!important;margin-top:6px!important;font-size:10px!important;color:#929893!important}
+
+#statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:12px!important;margin-top:18px!important}
+#statusBoardView .cumulative-summary-grid .status-summary{min-height:104px!important}
+#statusBoardView .cumulative-summary-grid .status-summary strong{white-space:nowrap}
+#statusBoardView .cumulative-summary-grid .status-summary small{display:block;margin:6px 0 0!important}
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table th:first-child,
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table td:first-child{text-align:center!important}
+#statusBoardView [data-productivity-section="cumulative"] .status-data-table td:not(:first-child){text-align:right!important;font-variant-numeric:tabular-nums}
+@media(max-width:1100px){
+  #statusBoardView .cumulative-overview-head{align-items:flex-start!important;flex-direction:column!important}
+  #statusBoardView .cumulative-query-area{width:100%;justify-content:flex-end}
+  #statusBoardView .cumulative-summary-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .cumulative-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(2){border-right:0!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(-n+2){border-bottom:1px solid #ecece8!important}
+}
+@media(max-width:640px){
+  #statusBoardView .cumulative-query-area{justify-content:flex-start}
+  #statusBoardView .cumulative-query-field{flex:1 1 calc(50% - 4px)}
+  #statusBoardView .cumulative-query-field input{width:100%;min-width:0}
+  #statusBoardView .cumulative-summary-grid{grid-template-columns:1fr!important}
+  #statusBoardView .cumulative-summary-bar{grid-template-columns:1fr!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{border-bottom:0!important}
+}
+
+/* ===== <style id="v89-productivity-bar-and-filter-unify"> ===== */
+/* 금일 생산성: 누계 생산성에서 확정한 한 줄 연결형 지표 바 스타일 */
+#statusBoardView .today-summary-bar{
+  display:grid!important;
+  grid-template-columns:repeat(6,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:0 22px 20px!important;
+  padding:0!important;
+  border:1px solid #e2e2de!important;
+  border-radius:12px!important;
+  overflow:hidden!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric{
+  min-width:0!important;
+  min-height:92px!important;
+  padding:15px 16px!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric:last-child{border-right:0!important}
+#statusBoardView .today-summary-bar .prod-api-metric>span{
+  font-size:11px!important;
+  color:#737b75!important;
+  font-weight:850!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>strong{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:5px!important;
+  margin-top:7px!important;
+  font-size:24px!important;
+  line-height:1.1!important;
+  letter-spacing:-.035em!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>strong b{font-size:inherit!important}
+#statusBoardView .today-summary-bar .prod-api-metric>strong em{
+  font-style:normal!important;
+  font-size:11px!important;
+  color:#8a918c!important;
+  font-weight:750!important;
+  letter-spacing:-.01em!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>small{
+  display:block!important;
+  margin-top:6px!important;
+  font-size:10px!important;
+  color:#929893!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap{
+  margin-top:5px!important;
+  min-height:30px!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:5px!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap input{
+  width:72px!important;
+  height:30px!important;
+  padding:0 6px!important;
+  border:0!important;
+  border-bottom:1px solid #d9ddd9!important;
+  border-radius:0!important;
+  background:transparent!important;
+  font-size:24px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+  color:#202821!important;
+  text-align:left!important;
+}
+#statusBoardView .today-summary-bar .prod-staff-input-wrap b{
+  font-size:11px!important;
+  color:#8a918c!important;
+  font-weight:750!important;
+}
+
+/* 누계 생산성 조회: 상세조회와 동일한 필터 카드 구조 */
+#statusBoardView .cumulative-filter-cards{
+  margin-top:0!important;
+  padding-top:0!important;
+}
+#statusBoardView .cumulative-overview-card>.status-card-title{
+  padding-bottom:12px!important;
+}
+#statusBoardView .cumulative-overview-card .cumulative-summary-bar{
+  margin-top:16px!important;
+}
+
+@media(max-width:1280px){
+  #statusBoardView .today-summary-bar{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){border-right:0!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+3){border-bottom:1px solid #ecece8!important}
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))!important;margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){border-right:1px solid #ecece8!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(2n){border-right:0!important}
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+4){border-bottom:1px solid #ecece8!important}
+}
+
+/* ===== <style id="v90-productivity-alignment"> ===== */
+/* 1) 금일/누계 상단 지표 바 높이와 내부 정렬 완전 통일 */
+#statusBoardView .today-summary-bar,
+#statusBoardView .cumulative-summary-bar{
+  min-height:92px!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric,
+#statusBoardView .cumulative-summary-bar .prod-api-metric{
+  height:92px!important;
+  min-height:92px!important;
+  padding:15px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>span,
+#statusBoardView .cumulative-summary-bar .prod-api-metric>span{
+  min-height:14px!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric>small,
+#statusBoardView .cumulative-summary-bar .prod-api-metric>small{
+  min-height:12px!important;
+}
+
+/* 2) 금일/누계 상단 영역의 좌우 여백과 세로 간격 통일 */
+#statusBoardView [data-productivity-section="today"] .status-toolbar-card,
+#statusBoardView [data-productivity-section="cumulative"] .cumulative-overview-card{
+  padding-bottom:20px!important;
+}
+#statusBoardView [data-productivity-section="today"] .productivity-today-head,
+#statusBoardView [data-productivity-section="cumulative"] .cumulative-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView .today-summary-bar{
+  margin:0 22px!important;
+}
+#statusBoardView .cumulative-filter-cards{
+  margin:0!important;
+  padding:0 22px!important;
+}
+#statusBoardView .cumulative-overview-card .cumulative-summary-bar{
+  margin:14px 22px 0!important;
+}
+#statusBoardView [data-productivity-section="cumulative"] .status-filter-cards .status-filter-card{
+  margin-bottom:0!important;
+}
+
+/* 3) 금일/누계 분석 영역의 좌우 비율과 카드 높이 통일 */
+#statusBoardView [data-productivity-section="today"] .prod-layout,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout{
+  grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+  margin-top:16px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+#statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+  min-height:382px!important;
+  height:382px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+  height:310px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .status-table-scroll.compact,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .status-table-scroll.compact{
+  max-height:310px!important;
+}
+
+/* 좁은 화면에서는 기존처럼 한 열로 자연스럽게 전환 */
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="today"] .prod-layout,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout{
+    grid-template-columns:1fr!important;
+  }
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar{margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .cumulative-filter-cards{padding-left:12px!important;padding-right:12px!important}
+  #statusBoardView .cumulative-overview-card .cumulative-summary-bar{margin-left:12px!important;margin-right:12px!important}
+}
+
+/* ===== <style id="v91-cumulative-summary-borderless"> ===== */
+/* 누계 생산성 요약 바: 외곽 테두리 없이 항목 사이 구분선만 유지 */
+#statusBoardView .cumulative-summary-bar{
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+#statusBoardView .cumulative-summary-bar .prod-api-metric{
+  background:transparent!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+}
+#statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{
+  border-right:0!important;
+}
+@media(max-width:1100px){
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(2){
+    border-right:0!important;
+  }
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:nth-child(-n+2){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+@media(max-width:640px){
+  #statusBoardView .cumulative-summary-bar .prod-api-metric{
+    border-right:0!important;
+    border-bottom:1px solid #ecece8!important;
+  }
+  #statusBoardView .cumulative-summary-bar .prod-api-metric:last-child{
+    border-bottom:0!important;
+  }
+}
+
+/* ===== <style id="v92-productivity-borderless-and-taller"> ===== */
+/* 금일 생산성 요약 바도 누계와 동일하게 외곽선 없이 내부 구분선만 유지 */
+#statusBoardView .today-summary-bar{
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric{
+  background:transparent!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+}
+#statusBoardView .today-summary-bar .prod-api-metric:last-child{
+  border-right:0!important;
+}
+
+/* 금일/누계 추이·현황 카드 세로 길이 확대 */
+#statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+#statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+  min-height:470px!important;
+  height:470px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+  height:396px!important;
+}
+#statusBoardView [data-productivity-section="today"] .prod-layout .status-table-scroll.compact,
+#statusBoardView [data-productivity-section="cumulative"] .cum-layout .status-table-scroll.compact{
+  max-height:396px!important;
+}
+
+@media(max-width:1280px){
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){
+    border-right:0!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+3){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.chart-card,
+  #statusBoardView [data-productivity-section="today"] .prod-layout>.table-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.chart-card,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout>.table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #statusBoardView [data-productivity-section="today"] .prod-layout .chart-wrap,
+  #statusBoardView [data-productivity-section="cumulative"] .cum-layout .chart-wrap{
+    height:330px!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(3n){
+    border-right:1px solid #ecece8!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(2n){
+    border-right:0!important;
+  }
+  #statusBoardView .today-summary-bar .prod-api-metric:nth-child(-n+4){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+
+/* ===== <style id="v93-productivity-detail-unify"> ===== */
+/* 상세조회 상단: 누계 생산성과 동일한 제목·조회 영역 간격 */
+#statusBoardView [data-productivity-section="detail"] .detail-overview-card{
+  padding-bottom:20px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-filter-cards{
+  margin:0!important;
+  padding:0 22px!important;
+}
+
+/* 조회 결과: 금일/누계와 같은 좌우 비율, 간격, 카드 규격 */
+#statusBoardView [data-productivity-section="detail"] #detailResults{
+  margin-top:16px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-layout{
+  grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+  margin-top:0!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-layout>.table-card,
+#statusBoardView [data-productivity-section="detail"] .detail-layout>.detail-summary-card{
+  min-height:470px!important;
+  height:470px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-day-list{
+  max-height:396px!important;
+  overflow:auto!important;
+}
+
+/* 선택 일자 상세: 카드 안쪽을 요약 바처럼 간결하게 */
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dl{
+  display:grid!important;
+  grid-template-columns:1fr auto!important;
+  gap:0!important;
+  margin:0!important;
+  border-top:1px solid #ecece8!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dt,
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dd{
+  min-height:76px!important;
+  display:flex!important;
+  align-items:center!important;
+  margin:0!important;
+  border-bottom:1px solid #ecece8!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dt{
+  padding:0 14px!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  color:#737b75!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dd{
+  justify-content:flex-end!important;
+  padding:0 14px!important;
+  font-size:22px!important;
+  font-weight:900!important;
+  letter-spacing:-.035em!important;
+  color:#202821!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card dl>*:nth-last-child(-n+2){
+  border-bottom:0!important;
+}
+
+/* 일자 목록도 현황 표와 같은 차분한 구분선/타이포 */
+#statusBoardView [data-productivity-section="detail"] .detail-day-row{
+  min-height:46px!important;
+  padding:10px 12px!important;
+  grid-template-columns:90px 1fr 1fr!important;
+  align-items:center!important;
+  border-bottom:1px solid #eeeeea!important;
+  font-size:11px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-day-row b{
+  font-size:11px!important;
+  color:#303832!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-day-row.active{
+  background:#f7f8f7!important;
+}
+
+/* 하단 작업경과 현황도 같은 카드 간격으로 정리 */
+#statusBoardView [data-productivity-section="detail"] .status-bottom-table{
+  margin-top:16px!important;
+  min-height:300px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .productivity-detail-close-row{
+  display:flex!important;
+  justify-content:flex-end!important;
+  margin-top:12px!important;
+}
+
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="detail"] .detail-layout{
+    grid-template-columns:1fr!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-layout>.table-card,
+  #statusBoardView [data-productivity-section="detail"] .detail-layout>.detail-summary-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-day-list{
+    max-height:330px!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView [data-productivity-section="detail"] .detail-filter-cards{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-summary-card dd{
+    font-size:18px!important;
+  }
+}
+
+/* ===== <style id="v94-detail-period-summary-table"> ===== */
+/* 상세조회: 선택 기간 요약을 누계 생산성과 같은 상단바로 */
+#statusBoardView [data-productivity-section="detail"] .detail-period-summary{
+  margin-top:16px!important;
+  padding:18px 22px 20px!important;
+  background:#fff!important;
+  border:1px solid #e2e2de!important;
+  border-radius:14px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar{
+  display:grid!important;
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:0!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:visible!important;
+  background:transparent!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric{
+  height:92px!important;
+  min-height:92px!important;
+  min-width:0!important;
+  padding:15px 16px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  background:transparent!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+  border-radius:0!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric:last-child{border-right:0!important}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric>span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric>strong{display:flex!important;align-items:baseline!important;gap:5px!important;margin-top:7px!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.035em!important;white-space:nowrap!important}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric>strong em{font-style:normal!important;font-size:11px!important;color:#8a918c!important;font-weight:750!important}
+#statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric>small{display:block!important;margin-top:6px!important;font-size:10px!important;color:#929893!important}
+
+/* 기간별 일자 생산성 현황: 누계 생산성 현황과 동일한 테이블 구조 */
+#statusBoardView [data-productivity-section="detail"] .detail-period-table-card{
+  margin-top:16px!important;
+  min-height:470px!important;
+  height:470px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-period-scroll{
+  max-height:396px!important;
+  overflow:auto!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-period-table th:first-child,
+#statusBoardView [data-productivity-section="detail"] .detail-period-table td:first-child{
+  text-align:center!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-period-table td:not(:first-child){
+  text-align:right!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-period-table th:last-child,
+#statusBoardView [data-productivity-section="detail"] .detail-period-table td:last-child{
+  width:96px!important;
+  text-align:center!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-period-table tr.active td{
+  background:#f7f8f7!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-view-btn{
+  min-width:70px!important;
+  padding:6px 9px!important;
+}
+
+/* 상세보기 클릭 시에만 시간대별 작업경과 현황 노출 */
+#statusBoardView [data-productivity-section="detail"] .detail-hour-panel{
+  margin-top:16px!important;
+  min-height:300px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-hour-panel>.status-card-title>div h3{
+  margin:0!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-hour-panel>.status-card-title>div small{
+  display:block!important;
+  margin-top:4px!important;
+}
+#statusBoardView [data-productivity-section="detail"] .detail-hour-close{
+  flex:0 0 auto!important;
+}
+
+/* 이전 선택 일자 상세 카드 레이아웃은 더 이상 사용하지 않음 */
+#statusBoardView [data-productivity-section="detail"] .detail-layout,
+#statusBoardView [data-productivity-section="detail"] .detail-summary-card,
+#statusBoardView [data-productivity-section="detail"] .detail-day-list{
+  display:none!important;
+}
+
+@media(max-width:980px){
+  #statusBoardView [data-productivity-section="detail"] .detail-period-table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-period-scroll{
+    max-height:420px!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView [data-productivity-section="detail"] .detail-period-summary{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-summary-bar{
+    grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric:nth-child(2n){
+    border-right:0!important;
+  }
+  #statusBoardView [data-productivity-section="detail"] .detail-summary-bar .prod-api-metric:nth-child(-n+2){
+    border-bottom:1px solid #ecece8!important;
+  }
+}
+
+/* ===== <style id="v95-boxcount-module"> ===== */
+#statusBoardView .boxcount-subtabs{
+  display:flex;align-items:center;gap:4px;width:max-content;max-width:100%;margin:0 0 14px;padding:3px;overflow-x:auto;
+}
+#statusBoardView .boxcount-subtab{
+  flex:0 0 auto;min-height:35px;padding:7px 10px;border:1px solid transparent;border-radius:6px;background:transparent;
+  color:#666662;font-size:12.5px;font-weight:520;cursor:pointer;white-space:nowrap;
+}
+#statusBoardView .boxcount-subtab:hover{background:#f0f0ed;color:#111}
+#statusBoardView .boxcount-subtab.active{background:#e9e9e5;color:#111;font-weight:700}
+#statusBoardView .boxcount-section{display:none}
+#statusBoardView .boxcount-section.active{display:block}
+#statusBoardView .boxcount-overview-card{padding-bottom:20px!important}
+#statusBoardView .boxcount-data-state{
+  padding:6px 9px;border:1px solid #dedfdc;border-radius:999px;color:#7b827d;font-size:10px;font-weight:800;white-space:nowrap;
+}
+#statusBoardView .boxcount-summary-bar{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr));margin:0 22px;padding:0;
+}
+#statusBoardView .boxcount-summary-bar>div{
+  min-height:92px;padding:15px 16px;display:flex;flex-direction:column;justify-content:center;border-right:1px solid #ecece8;
+}
+#statusBoardView .boxcount-summary-bar>div:last-child{border-right:0}
+#statusBoardView .boxcount-summary-bar span{font-size:11px;color:#737b75;font-weight:850}
+#statusBoardView .boxcount-summary-bar strong{display:flex;align-items:baseline;gap:5px;margin-top:7px;font-size:24px;line-height:1.1;letter-spacing:-.035em}
+#statusBoardView .boxcount-summary-bar strong em{font-style:normal;font-size:11px;color:#8a918c;font-weight:750}
+#statusBoardView .boxcount-summary-bar small{margin-top:6px;font-size:10px;color:#929893}
+#statusBoardView .boxcount-summary-bar .boxcount-store-strong{font-size:19px}
+#statusBoardView .boxcount-weekday-bar{
+  display:flex;gap:4px;width:max-content;max-width:100%;margin:16px 0 12px;padding:3px;overflow-x:auto;
+}
+#statusBoardView .boxcount-weekday{
+  min-width:74px;padding:8px 11px;border:0;border-radius:6px;background:transparent;color:#666662;font-size:12px;font-weight:650;cursor:pointer;
+}
+#statusBoardView .boxcount-weekday:hover{background:#f0f0ed}
+#statusBoardView .boxcount-weekday.active{background:#1d1d1b;color:#fff}
+#statusBoardView .boxcount-route-grid{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;
+}
+#statusBoardView .boxcount-route-card{
+  min-width:0;background:#fff;border:1.5px solid var(--status-issue-kraft,#d8d0c2);border-radius:14px;overflow:hidden;
+}
+#statusBoardView .boxcount-route-head{
+  display:flex;align-items:center;justify-content:space-between;padding:14px 15px;border-bottom:1px solid #ecece8;
+}
+#statusBoardView .boxcount-route-head b{font-size:14px}
+#statusBoardView .boxcount-route-head small{font-size:10px;color:#8a918c}
+#statusBoardView .boxcount-store-list{padding:2px 14px 10px}
+#statusBoardView .boxcount-store-row{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center;min-height:44px;padding:8px 0;border-bottom:1px solid #eeeeea;
+}
+#statusBoardView .boxcount-store-row:last-child{border-bottom:0}
+#statusBoardView .boxcount-store-row span{min-width:0;font-size:11.5px;font-weight:760;line-height:1.35}
+#statusBoardView .boxcount-store-row strong{font-size:16px;white-space:nowrap}
+#statusBoardView .boxcount-store-row strong small{margin-left:3px;font-size:9px;color:#909690}
+#statusBoardView .boxcount-store-note{
+  grid-column:1/-1;margin-top:-5px;color:#92785f;font-size:9px;font-weight:700;
+}
+#statusBoardView .boxcount-unassigned,
+#statusBoardView .boxcount-alias-note{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:12px;padding:12px 15px;border:1px solid #e3e3df;border-radius:10px;background:#fafaf8;
+}
+#statusBoardView .boxcount-unassigned span,
+#statusBoardView .boxcount-alias-note span{font-size:10px;color:#7b827d;font-weight:850}
+#statusBoardView .boxcount-unassigned b,
+#statusBoardView .boxcount-alias-note b{font-size:11px}
+#statusBoardView .boxcount-unassigned small{font-size:9px;color:#929893}
+#statusBoardView .boxcount-detail-table,#statusBoardView .boxcount-manual-table{margin-top:16px}
+#statusBoardView .boxcount-manual-layout{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(320px,.6fr);gap:18px;padding:0 22px 20px}
+#statusBoardView .boxcount-manual-form{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap}
+#statusBoardView .boxcount-manual-form .status-filter-card{flex:1 1 170px!important}
+#statusBoardView .boxcount-name-manager{border-left:1px solid #ecece8;padding-left:18px}
+#statusBoardView .boxcount-name-manager>div:first-child span{display:block;font-size:12px;font-weight:850}
+#statusBoardView .boxcount-name-manager>div:first-child small{display:block;margin-top:4px;font-size:10px;color:#858c86}
+#statusBoardView .boxcount-name-add{display:flex;gap:7px;margin-top:12px}
+#statusBoardView .boxcount-name-add input{flex:1;min-width:0;height:38px;border:1px solid #dde2dd;border-radius:8px;padding:0 10px}
+#statusBoardView .boxcount-name-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+#statusBoardView .boxcount-name-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border:1px solid #e0e2df;border-radius:999px;font-size:10px;background:#fff}
+#statusBoardView .boxcount-name-chip button{border:0;background:transparent;color:#999;cursor:pointer;padding:0}
+@media(max-width:1280px){
+  #statusBoardView .boxcount-route-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:900px){
+  #statusBoardView .boxcount-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #statusBoardView .boxcount-summary-bar{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(2n){border-right:0}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(-n+2){border-bottom:1px solid #ecece8}
+  #statusBoardView .boxcount-manual-layout{grid-template-columns:1fr}
+  #statusBoardView .boxcount-name-manager{border-left:0;border-top:1px solid #ecece8;padding:16px 0 0}
+}
+@media(max-width:620px){
+  #statusBoardView .boxcount-subtabs{width:100%}
+  #statusBoardView .boxcount-route-grid{grid-template-columns:1fr}
+  #statusBoardView .boxcount-summary-bar{grid-template-columns:1fr;margin-left:12px;margin-right:12px}
+  #statusBoardView .boxcount-summary-bar>div{border-right:0;border-bottom:1px solid #ecece8}
+  #statusBoardView .boxcount-summary-bar>div:last-child{border-bottom:0}
+  #statusBoardView .boxcount-summary-bar>div:nth-child(-n+2){border-bottom:1px solid #ecece8}
+}
+
+/* ===== <style id="v96-boxcount-productivity-style"> ===== */
+/* 매장별 박스수량 누계: 생산성 탭과 동일한 정보 구조 */
+#statusBoardView .boxcount-cumulative-filters{
+  margin:0!important;
+  padding:0 22px!important;
+}
+#statusBoardView .boxcount-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView .boxcount-overview-card .boxcount-summary-bar{
+  margin:14px 22px 0!important;
+  border:0!important;
+  border-radius:0!important;
+  background:transparent!important;
+}
+#statusBoardView .boxcount-summary-bar>div{
+  height:92px!important;
+  min-height:92px!important;
+  padding:15px 16px!important;
+  box-sizing:border-box!important;
+  background:transparent!important;
+  border:0!important;
+  border-right:1px solid #ecece8!important;
+}
+#statusBoardView .boxcount-summary-bar>div:last-child{border-right:0!important}
+
+#statusBoardView .boxcount-analysis-layout{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+  margin-top:16px!important;
+}
+#statusBoardView .boxcount-analysis-layout>.chart-card,
+#statusBoardView .boxcount-analysis-layout>.table-card{
+  min-height:470px!important;
+  height:470px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .boxcount-chart-wrap{
+  height:396px!important;
+}
+#statusBoardView .boxcount-status-scroll{
+  max-height:342px!important;
+  overflow:auto!important;
+}
+#statusBoardView .boxcount-weekday-bar{
+  margin:0 0 12px!important;
+  padding:0 0 8px!important;
+  width:100%!important;
+  border-bottom:1px solid #ecece8!important;
+}
+#statusBoardView .boxcount-weekday{
+  min-width:48px!important;
+  min-height:34px!important;
+  padding:7px 12px!important;
+  border:1px solid transparent!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#666662!important;
+  font-size:12.5px!important;
+  font-weight:520!important;
+}
+#statusBoardView .boxcount-weekday:hover{
+  background:#f0f0ed!important;
+  color:#111!important;
+}
+#statusBoardView .boxcount-weekday.active{
+  background:#e9e9e5!important;
+  color:#111!important;
+  font-weight:700!important;
+}
+#statusBoardView .boxcount-status-table th:first-child,
+#statusBoardView .boxcount-status-table td:first-child{
+  width:70px!important;
+  text-align:center!important;
+}
+#statusBoardView .boxcount-status-table th:nth-child(3),
+#statusBoardView .boxcount-status-table td:nth-child(3){
+  width:86px!important;
+  text-align:right!important;
+}
+#statusBoardView .boxcount-status-table th:last-child,
+#statusBoardView .boxcount-status-table td:last-child{
+  width:116px!important;
+  text-align:center!important;
+}
+#statusBoardView .boxcount-status-table td:nth-child(2){
+  text-align:left!important;
+}
+#statusBoardView .boxcount-unassigned,
+#statusBoardView .boxcount-alias-note{
+  margin-left:0!important;
+  margin-right:0!important;
+}
+
+@media(max-width:980px){
+  #statusBoardView .boxcount-analysis-layout{
+    grid-template-columns:1fr!important;
+  }
+  #statusBoardView .boxcount-analysis-layout>.chart-card,
+  #statusBoardView .boxcount-analysis-layout>.table-card{
+    height:auto!important;
+    min-height:0!important;
+  }
+  #statusBoardView .boxcount-chart-wrap{height:330px!important}
+}
+@media(max-width:700px){
+  #statusBoardView .boxcount-cumulative-filters{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+  #statusBoardView .boxcount-overview-card .boxcount-summary-bar{
+    margin-left:12px!important;
+    margin-right:12px!important;
+  }
+}
+
+/* ===== <style id="v97-boxcount-period-range"> ===== */
+#statusBoardView .boxcount-overview-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:22px!important;
+  padding-bottom:14px!important;
+  margin-bottom:0!important;
+}
+#statusBoardView .boxcount-overview-head>div:first-child{
+  min-width:0!important;
+}
+#statusBoardView .boxcount-period-controls{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:flex-end!important;
+  gap:10px!important;
+  margin-left:auto!important;
+  flex-wrap:nowrap!important;
+}
+#statusBoardView .boxcount-period-input{
+  width:220px!important;
+  height:42px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:12px!important;
+  padding:0 13px!important;
+  box-sizing:border-box!important;
+  border:1px solid #e2d8ca!important;
+  border-radius:11px!important;
+  background:#fff!important;
+}
+#statusBoardView .boxcount-period-input>span{
+  flex:0 0 auto!important;
+  color:#6e7070!important;
+  font-size:10px!important;
+  font-weight:850!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .boxcount-period-input input{
+  min-width:0!important;
+  flex:1 1 auto!important;
+  width:100%!important;
+  height:38px!important;
+  padding:0!important;
+  border:0!important;
+  outline:0!important;
+  background:transparent!important;
+  color:#222!important;
+  font-size:13px!important;
+  font-weight:800!important;
+  box-shadow:none!important;
+}
+#statusBoardView .boxcount-period-btn{
+  height:42px!important;
+  min-height:42px!important;
+  padding:0 14px!important;
+  border-radius:8px!important;
+  white-space:nowrap!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .boxcount-period-btn.primary{
+  border-color:#3b82f6!important;
+  background:#3b82f6!important;
+  color:#fff!important;
+}
+#statusBoardView .boxcount-data-state{
+  display:none!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .boxcount-overview-head{
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+  #statusBoardView .boxcount-period-controls{
+    width:100%!important;
+    justify-content:flex-start!important;
+    flex-wrap:wrap!important;
+  }
+}
+@media(max-width:700px){
+  #statusBoardView .boxcount-period-controls{
+    gap:8px!important;
+  }
+  #statusBoardView .boxcount-period-input{
+    width:calc(50% - 4px)!important;
+    min-width:0!important;
+  }
+  #statusBoardView .boxcount-period-btn{
+    flex:1 1 calc(50% - 4px)!important;
+  }
+}
+
+/* ===== <style id="v98-boxcount-query-match-cumulative"> ===== */
+#statusBoardView .boxcount-overview-card>.status-card-title{
+  margin-bottom:14px!important;
+  padding-bottom:0!important;
+}
+#statusBoardView .boxcount-cumulative-filters{
+  margin:0!important;
+  padding:0 22px!important;
+}
+#statusBoardView .boxcount-cumulative-filters .status-filter-card{
+  margin-bottom:0!important;
+}
+#statusBoardView .boxcount-cumulative-filters .status-filter-btn{
+  align-self:center!important;
+  height:40px!important;
+  margin-top:0!important;
+}
+#statusBoardView .boxcount-period-controls,
+#statusBoardView .boxcount-period-input,
+#statusBoardView .boxcount-period-btn{
+  all:unset;
+}
+@media(max-width:700px){
+  #statusBoardView .boxcount-cumulative-filters{
+    padding-left:12px!important;
+    padding-right:12px!important;
+  }
+}
+
+/* ===== <style id="v99-boxcount-final-structure"> ===== */
+#statusBoardView .boxcount-secondary-table,
+#statusBoardView .boxcount-detail-expanded{margin-top:16px!important}
+#statusBoardView .boxcount-store-summary{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;margin:14px 22px 0!important;
+}
+#statusBoardView .boxcount-store-summary>div{
+  min-height:86px!important;padding:14px 16px!important;border-right:1px solid #ecece8!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+}
+#statusBoardView .boxcount-store-summary>div:last-child{border-right:0!important}
+#statusBoardView .boxcount-store-summary span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .boxcount-store-summary b{margin-top:7px!important;font-size:22px!important;line-height:1.1!important}
+#statusBoardView .boxcount-store-summary small{margin-top:5px!important;font-size:10px!important;color:#929893!important}
+#statusBoardView .boxcount-store-filter{min-width:260px!important}
+#statusBoardView .boxcount-detail-summary{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:0!important;padding:0 22px 20px!important;
+}
+#statusBoardView .boxcount-detail-summary>div{
+  min-height:78px!important;padding:12px 15px!important;border-right:1px solid #ecece8!important;display:flex!important;flex-direction:column!important;justify-content:center!important;
+}
+#statusBoardView .boxcount-detail-summary>div:last-child{border-right:0!important}
+#statusBoardView .boxcount-detail-summary span{font-size:10px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .boxcount-detail-summary b{margin-top:6px!important;font-size:18px!important}
+#statusBoardView .boxcount-subtabs{gap:4px!important}
+@media(max-width:900px){
+  #statusBoardView .boxcount-store-summary,
+  #statusBoardView .boxcount-detail-summary{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .boxcount-store-summary>div:nth-child(2n),
+  #statusBoardView .boxcount-detail-summary>div:nth-child(2n){border-right:0!important}
+}
+@media(max-width:620px){
+  #statusBoardView .boxcount-store-summary,
+  #statusBoardView .boxcount-detail-summary{grid-template-columns:1fr!important;margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .boxcount-store-summary>div,
+  #statusBoardView .boxcount-detail-summary>div{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .boxcount-store-summary>div:last-child,
+  #statusBoardView .boxcount-detail-summary>div:last-child{border-bottom:0!important}
+}
+
+/* ===== <style id="v100-boxcount-delivery-settings"> ===== */
+#statusBoardView .boxcount-settings-editor{margin-top:16px!important}
+#statusBoardView .boxcount-settings-route-grid{
+  display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:16px!important;margin-top:16px!important;
+}
+#statusBoardView .boxcount-setting-route-card{
+  min-height:300px!important;height:auto!important;display:flex!important;flex-direction:column!important;
+}
+#statusBoardView .boxcount-setting-store-list{padding:0 18px 8px!important;flex:1!important}
+#statusBoardView .boxcount-setting-store-row{
+  display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;min-height:58px!important;padding:10px 0!important;border-bottom:1px solid #ecece8!important;
+}
+#statusBoardView .boxcount-setting-store-row:last-child{border-bottom:0!important}
+#statusBoardView .boxcount-setting-store-main{min-width:0!important}
+#statusBoardView .boxcount-setting-store-main b{display:block!important;font-size:12px!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#statusBoardView .boxcount-setting-store-main small{display:block!important;margin-top:4px!important;color:#8a918c!important;font-size:10px!important}
+#statusBoardView .boxcount-setting-store-actions{display:flex!important;gap:5px!important;flex:0 0 auto!important}
+#statusBoardView .boxcount-setting-add{
+  width:calc(100% - 36px)!important;margin:8px 18px 16px!important;min-height:38px!important;border:1px dashed #d7d9d5!important;border-radius:8px!important;background:#fafaf8!important;color:#666!important;font-size:11px!important;font-weight:750!important;
+}
+#statusBoardView .boxcount-setting-add:hover{background:#f2f2ef!important;color:#111!important}
+#statusBoardView .boxcount-setting-empty{padding:28px 0!important;text-align:center!important;color:#999!important;font-size:11px!important}
+@media(max-width:1100px){
+  #statusBoardView .boxcount-settings-route-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:700px){
+  #statusBoardView .boxcount-settings-route-grid{grid-template-columns:1fr!important}
+  #statusBoardView .boxcount-settings-form{flex-wrap:wrap!important}
+}
+
+/* ===== <style id="v102-admin-menu-manager"> ===== */
+#admin-menus .menu-settings-shell{display:grid;grid-template-columns:1fr;gap:12px;align-items:start;max-width:1380px;margin:0 auto}
+#admin-menus .admin-card{border-radius:12px!important;padding:16px 18px!important}
+#admin-menus .menu-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+#admin-menus .menu-card-head h3{margin:0 0 4px;font-size:17px;line-height:1.25;font-weight:700}
+#admin-menus .menu-card-head p{margin:0;color:#7b817c;font-size:11.5px;line-height:1.45;font-weight:400}
+#admin-menus .menu-card-actions{display:flex;gap:6px;align-items:center}
+#admin-menus .menu-all-permission-btn,#admin-menus #closeAllPermissions,#admin-menus #openGroupManager,#admin-menus #closeGroupManager{height:30px;padding:0 10px;border-radius:7px;font-size:10px;white-space:nowrap}
+#admin-menus .menu-group-tabs{display:flex;gap:4px;overflow-x:auto;white-space:nowrap;margin:10px 0 8px;padding-bottom:2px}
+#admin-menus .menu-group-tab{display:inline-flex;flex:0 0 auto;align-items:center;gap:6px;height:34px;padding:0 11px;border:1px solid #dfe2de;border-radius:8px;background:#fff;color:#626762;font-size:11.5px;font-weight:650;white-space:nowrap}
+#admin-menus .menu-group-tab small{display:grid;place-items:center;min-width:15px;height:15px;padding:0 4px;border-radius:999px;background:#f0f1ef;color:#777;font-size:7.5px}
+#admin-menus .menu-group-tab.active{background:#222;color:#fff;border-color:#222}
+#admin-menus .menu-group-tab.active small{background:rgba(255,255,255,.18);color:#fff}
+#admin-menus .menu-group-summary{display:flex;align-items:center;justify-content:space-between;height:40px;padding:0 12px;border:1px solid #e7e8e5;border-radius:8px;background:#fafbf9;margin-bottom:7px}
+#admin-menus .menu-group-summary b{font-size:12px;font-weight:700}
+#admin-menus .menu-group-summary small{margin-left:7px;color:#919691;font-size:9px;font-weight:500}
+#admin-menus .menu-group-summary>span{color:#969b96;font-size:9px;font-weight:500}
+#admin-menus .menu-manage-list{display:flex;flex-direction:column;gap:5px}
+#admin-menus .menu-column-head{display:grid;grid-template-columns:78px minmax(220px,1.15fr) 122px 170px minmax(240px,1fr) 68px;gap:12px;align-items:center;padding:0 12px 4px;color:#7c827d;font-size:10px;font-weight:650;white-space:nowrap}
+#admin-menus .menu-column-head span:nth-child(1),#admin-menus .menu-column-head span:nth-child(3),#admin-menus .menu-column-head span:nth-child(6){text-align:center}
+#admin-menus .menu-simple-row{border:1px solid #e7e8e5;border-radius:8px;background:#fff;overflow:hidden}
+#admin-menus .menu-simple-main{display:grid;grid-template-columns:78px minmax(220px,1.15fr) 122px 170px minmax(240px,1fr) 68px;gap:12px;align-items:center;min-height:64px;padding:9px 12px;white-space:nowrap}
+#admin-menus .menu-order-controls{display:grid;grid-template-columns:22px 22px;grid-template-rows:22px 22px;gap:3px;align-items:center;justify-content:center}
+#admin-menus .menu-drag-handle{grid-row:1/3;display:flex;align-items:center;justify-content:center;width:22px;height:47px;cursor:grab;color:#a5aaa5;font-weight:700;letter-spacing:-2px;padding:0}
+#admin-menus .menu-order-btn{display:flex;align-items:center;justify-content:center;width:22px;height:22px;border:1px solid #e0e3df;border-radius:5px;background:#fafbf9;color:#555;font-size:10px;font-weight:700;line-height:1;padding:0;text-align:center}
+#admin-menus .menu-order-btn:disabled{opacity:.25}
+#admin-menus .menu-simple-name{min-width:0;font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#admin-menus .menu-simple-name-input{width:100%;min-width:0;height:34px;border:1px solid transparent;border-radius:7px;background:transparent;padding:0 8px;font:inherit;font-size:13px;font-weight:600;color:#222;outline:none}
+#admin-menus .menu-simple-name-input:hover{background:#fafbf9;border-color:#eceeeb}
+#admin-menus .menu-simple-name-input:focus{background:#fff;border-color:#cfd4cf;box-shadow:0 0 0 3px rgba(47,111,98,.07)}
+#admin-menus .menu-simple-visible{display:flex;align-items:center;justify-content:center;gap:6px}
+#admin-menus .menu-field-title{display:none}
+#admin-menus .menu-field-body{display:flex;align-items:center;gap:6px;min-height:26px}
+#admin-menus .menu-simple-visible .toggle,#admin-menus .group-visible .toggle{width:31px;height:17px;margin:0;background:#c7ccc7!important;border:1px solid #b9bfb9!important}
+#admin-menus .menu-simple-visible .toggle:after,#admin-menus .group-visible .toggle:after{top:2px;left:2px;width:11px;height:11px;background:#fff!important}
+#admin-menus .menu-simple-visible .toggle.on,#admin-menus .group-visible .toggle.on{background:#222!important;border-color:#222!important}
+#admin-menus .menu-simple-visible .toggle.on:after,#admin-menus .group-visible .toggle.on:after{left:16px}
+#admin-menus .visibility-state{min-width:22px;font-size:8.5px;font-weight:650;color:#8a908a}
+#admin-menus .visibility-state.on{color:#222}
+#admin-menus .menu-inline-group select{width:100%;height:31px;border:1px solid #dfe2de;border-radius:7px;background:#fff;padding:0 8px;font-size:10.5px;font-weight:500;color:#444}
+#admin-menus .menu-inline-permissions{display:flex;align-items:center;gap:4px;white-space:nowrap}
+#admin-menus .permission-mini{height:29px;min-width:58px;padding:0 9px;border:1px solid #d7dbd7;border-radius:7px;background:#fff;color:#767c76;font-size:9.5px;font-weight:550}
+#admin-menus .permission-mini.on{background:#222;border-color:#222;color:#fff}
+#admin-menus .menu-inline-actions{display:flex;align-items:center;justify-content:center}
+#admin-menus .menu-inline-actions .btn{height:29px;min-width:52px;padding:0 8px;font-size:9.5px;font-weight:550;border-radius:7px}
+#admin-menus .menu-simple-row.open .menu-setting-btn{background:#222;color:#fff;border-color:#222}
+#admin-menus .menu-detail-panel{display:none!important}
+#admin-menus .menu-simple-row.open .menu-detail-panel{display:grid}
+#admin-menus .menu-detail-field label{display:block;margin-bottom:5px;color:#848a84;font-size:9px;font-weight:800}
+#admin-menus .menu-detail-field input,#admin-menus .menu-detail-field select{width:100%;height:30px;border:1px solid #dfe2de;border-radius:6px;background:#fff;padding:0 8px;font-size:10px;font-weight:700}
+#admin-menus .menu-detail-permissions{display:flex;gap:4px;align-items:center;white-space:nowrap}
+#admin-menus .permission-mini{height:27px;min-width:48px;padding:0 7px;border:1px solid #d7dbd7;border-radius:6px;background:#fff;color:#7a807a;font-size:8px;font-weight:850}
+#admin-menus .permission-mini.on{background:#222;border-color:#222;color:#fff}
+#admin-menus .menu-detail-delete{height:27px;min-width:48px;padding:0 8px;font-size:8px!important;border-radius:6px!important}
+#admin-menus .menu-manage-empty{padding:28px 12px;text-align:center;border:1px dashed #d9dcd8;border-radius:8px;color:#969b96;font-size:9px}
+#admin-menus .group-add-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:5px;margin:10px 0 8px}
+#admin-menus .group-add-row input{height:27px;border:1px solid #dfe2de;border-radius:6px;padding:0 7px;font-size:9px}
+#admin-menus .group-add-row .btn{height:27px!important;min-height:27px!important;padding:0 8px!important;border-radius:6px!important;font-size:8.5px!important}
+#admin-menus .group-manage-list{display:flex;flex-direction:column;gap:4px}
+#admin-menus .group-manage-row{display:grid;grid-template-columns:50px minmax(0,1fr) 78px 48px;gap:6px;align-items:center;min-height:37px;padding:5px 7px;border:1px solid #e7e8e5;border-radius:8px;background:#fff}
+#admin-menus .group-manage-row input{width:100%;height:25px;border:1px solid transparent;border-radius:5px;background:transparent;padding:0 5px;font-size:9px;font-weight:800}
+#admin-menus .group-manage-row input:focus{background:#fff;border-color:#d9ddd9;outline:0}
+#admin-menus .group-order-controls{display:flex;gap:3px}
+#admin-menus .group-visible{display:flex;align-items:center;justify-content:center;gap:4px}
+#admin-menus .group-actions{display:flex;justify-content:center}
+#admin-menus .group-actions .btn.sm{height:24px;min-width:42px;padding:0 6px;font-size:8px}
+#admin-menus .group-manager-hint{margin-top:8px!important;padding:8px 9px!important;border-radius:8px!important;font-size:8.5px!important;line-height:1.45!important}
+#admin-menus .group-manager-card[hidden],#admin-menus .menu-permission-card[hidden]{display:none!important}
+#admin-menus .menu-permission-card{grid-column:1/-1}
+#admin-menus .menu-permission-card[hidden]{display:none!important}
+#admin-menus .menu-permission-table-wrap{overflow:auto;border:1px solid #e7e8e5;border-radius:8px;margin-top:9px}
+#admin-menus .menu-permission-table{font-size:9px}
+#admin-menus .menu-permission-table th{height:29px;background:#f7f8f6;color:#777;font-size:8px}
+#admin-menus .menu-permission-table td{height:32px;padding:3px 7px}
+#admin-menus .menu-permission-table .role-pill{min-width:40px;height:21px;padding:0 6px;border-radius:999px;border:1px solid #d7dbd7;background:#f1f2ef;color:#777;font-size:8px}
+#admin-menus .menu-permission-table .role-pill.on{background:#222!important;border-color:#222!important;color:#fff!important}
+#admin-menus .menu-permission-table .badge{padding:3px 6px;font-size:8px}
+@media(max-width:1120px){#admin-menus .menu-settings-shell{grid-template-columns:1fr}#admin-menus .menu-permission-card{grid-column:auto}}
+@media(max-width:900px){#admin-menus .menu-manage-list{overflow-x:auto}#admin-menus .menu-column-head,#admin-menus .menu-simple-main{min-width:900px}}
+
+/* ===== <style id="v104-outbound-analysis-aligned"> ===== */
+/* 출고 분석은 생산성/출고 박스와 동일한 현황판 UI 체계를 사용 */
+#statusBoardView .outbound-analysis-subtabs{
+  display:flex!important;align-items:center!important;gap:4px!important;width:max-content!important;max-width:100%!important;
+  margin:0 0 14px!important;padding:3px!important;background:transparent!important;border:0!important;overflow-x:auto!important;
+}
+#statusBoardView .outbound-analysis-subtab{
+  flex:0 0 auto!important;min-height:35px!important;padding:7px 10px!important;border:1px solid transparent!important;
+  border-radius:6px!important;background:transparent!important;color:#666662!important;box-shadow:none!important;
+  font-size:12.5px!important;font-weight:520!important;white-space:nowrap!important;cursor:pointer!important;
+}
+#statusBoardView .outbound-analysis-subtab:hover{background:#f0f0ed!important;color:#111!important}
+#statusBoardView .outbound-analysis-subtab.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important}
+#statusBoardView .outbound-analysis-section{display:none}
+#statusBoardView .outbound-analysis-section.active{display:block}
+
+#statusBoardView .outbound-analysis-filter-card{padding-bottom:20px!important;margin-bottom:16px!important}
+#statusBoardView .outbound-analysis-filter-card>.status-card-title{margin-bottom:14px!important}
+#statusBoardView .outbound-analysis-demo{
+  padding:6px 9px!important;border:1px solid #dedfdc!important;border-radius:999px!important;
+  background:#fff!important;color:#7b827d!important;font-size:10px!important;font-weight:800!important;white-space:nowrap!important;
+}
+#statusBoardView .outbound-analysis-filters{margin:0!important;padding:0 22px!important}
+#statusBoardView .outbound-analysis-kpis{
+  display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  margin:14px 22px 0!important;padding:0!important;border:0!important;background:transparent!important;
+}
+#statusBoardView .outbound-analysis-kpis>div{
+  height:92px!important;min-height:92px!important;padding:15px 16px!important;box-sizing:border-box!important;
+  display:flex!important;flex-direction:column!important;justify-content:center!important;background:transparent!important;
+  border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;
+}
+#statusBoardView .outbound-analysis-kpis>div:last-child{border-right:0!important}
+#statusBoardView .outbound-analysis-kpis span{font-size:11px!important;color:#737b75!important;font-weight:850!important}
+#statusBoardView .outbound-analysis-kpis strong{display:flex!important;align-items:baseline!important;gap:5px!important;margin-top:7px!important;font-size:24px!important;line-height:1.1!important;letter-spacing:-.035em!important}
+#statusBoardView .outbound-analysis-kpis strong em{font-style:normal!important;font-size:11px!important;color:#8a918c!important;font-weight:750!important}
+#statusBoardView .outbound-analysis-kpis small{margin-top:6px!important;font-size:10px!important;color:#929893!important}
+#statusBoardView .down{color:#b65353!important}
+
+#statusBoardView .outbound-analysis-wide-card{margin-top:16px!important;min-height:360px!important;height:360px!important;box-sizing:border-box!important}
+#statusBoardView .outbound-analysis-grid{
+  display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:16px!important;margin-top:16px!important;
+}
+#statusBoardView .outbound-analysis-card{
+  min-height:300px!important;height:300px!important;box-sizing:border-box!important;
+}
+#statusBoardView .outbound-analysis-card.clickable{cursor:pointer!important}
+#statusBoardView .outbound-analysis-card.clickable:hover{background:#fafaf8!important}
+
+#statusBoardView .outbound-analysis-card-head{
+  display:flex!important;align-items:flex-start!important;justify-content:space-between!important;gap:12px!important;margin-bottom:14px!important;
+}
+#statusBoardView .outbound-analysis-card-head h3{margin:0!important;font-size:15px!important;font-weight:700!important;color:#222!important}
+#statusBoardView .outbound-analysis-card-head small{display:block!important;margin-top:4px!important;color:#8a8a85!important;font-size:10px!important}
+#statusBoardView .outbound-analysis-card-head>span,
+#statusBoardView .outbound-analysis-card-head>b{color:#777!important;font-size:10px!important;font-weight:650!important}
+
+#statusBoardView .outbound-trend-demo{
+  height:280px!important;display:flex!important;align-items:flex-end!important;gap:18px!important;padding:16px 12px 0!important;border-top:1px solid #eeeeea!important;
+}
+#statusBoardView .outbound-trend-demo>div{flex:1!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:center!important;gap:8px!important}
+#statusBoardView .outbound-trend-demo span{display:block!important;width:min(54px,70%)!important;min-height:8px!important;background:#444b46!important;border-radius:3px 3px 0 0!important}
+#statusBoardView .outbound-trend-demo small,#statusBoardView .outbound-week-bars small{color:#858b86!important;font-size:9px!important}
+
+#statusBoardView .outbound-rank-list{display:flex!important;flex-direction:column!important}
+#statusBoardView .outbound-rank-list>div{display:grid!important;grid-template-columns:28px minmax(0,1fr) auto!important;align-items:center!important;min-height:38px!important;border-bottom:1px solid #eeeeea!important;font-size:10.5px!important}
+#statusBoardView .outbound-rank-list b{color:#929893!important;font-weight:700!important}
+#statusBoardView .outbound-rank-list span{color:#444b45!important}
+#statusBoardView .outbound-rank-list em{font-style:normal!important;color:#222!important;font-weight:700!important}
+
+#statusBoardView .outbound-category-demo{display:grid!important;grid-template-columns:145px 1fr!important;gap:22px!important;align-items:center!important;padding-top:8px!important}
+#statusBoardView .outbound-category-ring{width:132px!important;height:132px!important;border-radius:50%!important;display:grid!important;place-items:center!important;background:conic-gradient(#313834 0 44%,#6f7871 44% 65%,#a3aaa4 65% 80%,#c6cbc6 80% 91%,#e4e7e4 91% 100%)!important}
+#statusBoardView .outbound-category-ring:before{content:""!important;grid-area:1/1!important;width:82px!important;height:82px!important;border-radius:50%!important;background:#fff!important}
+#statusBoardView .outbound-category-ring>div{grid-area:1/1!important;z-index:1!important;text-align:center!important}
+#statusBoardView .outbound-category-ring b{display:block!important;font-size:19px!important}
+#statusBoardView .outbound-category-ring small{font-size:9px!important;color:#888!important}
+#statusBoardView .outbound-category-legend{display:flex!important;flex-direction:column!important;gap:9px!important}
+#statusBoardView .outbound-category-legend span{display:grid!important;grid-template-columns:8px 1fr auto!important;align-items:center!important;gap:7px!important;font-size:10px!important;color:#626963!important}
+#statusBoardView .outbound-category-legend i{width:7px!important;height:7px!important;border-radius:50%!important;background:#616963!important}
+#statusBoardView .outbound-category-legend b{font-weight:700!important;color:#222!important}
+
+#statusBoardView .outbound-change-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:12px!important}
+#statusBoardView .outbound-change-grid>div{padding:14px 0!important;border:0!important;border-right:1px solid #ecece8!important;border-radius:0!important;background:transparent!important}
+#statusBoardView .outbound-change-grid>div:last-child{border-right:0!important;padding-left:14px!important}
+#statusBoardView .outbound-change-grid span,#statusBoardView .outbound-change-grid small{display:block!important;color:#8a908b!important;font-size:9.5px!important}
+#statusBoardView .outbound-change-grid b{display:block!important;margin-top:8px!important;font-size:12px!important;color:#333!important}
+#statusBoardView .outbound-change-grid strong{display:block!important;margin-top:5px!important;font-size:21px!important;color:#31714a!important}
+
+#statusBoardView .outbound-change-list{display:flex!important;flex-direction:column!important}
+#statusBoardView .outbound-change-list>div{display:flex!important;justify-content:space-between!important;padding:10px 0!important;border-bottom:1px solid #eeeeea!important;font-size:10.5px!important}
+#statusBoardView .outbound-change-list b{color:#31714a!important}
+#statusBoardView .outbound-week-bars{height:190px!important;display:flex!important;align-items:flex-end!important;gap:14px!important;padding-top:10px!important}
+#statusBoardView .outbound-week-bars>div{flex:1!important;height:100%!important;display:flex!important;flex-direction:column!important;justify-content:flex-end!important;align-items:center!important;gap:7px!important}
+#statusBoardView .outbound-week-bars span{display:block!important;width:60%!important;min-height:5px!important;border-radius:3px 3px 0 0!important;background:#565e58!important}
+#statusBoardView .outbound-concentration{display:flex!important;flex-direction:column!important;gap:24px!important;padding-top:12px!important}
+#statusBoardView .outbound-concentration>div{display:grid!important;grid-template-columns:1fr auto!important;gap:8px!important;font-size:11px!important}
+#statusBoardView .outbound-concentration>div>div{grid-column:1/-1!important;height:8px!important;border-radius:999px!important;background:#eceeeb!important;overflow:hidden!important}
+#statusBoardView .outbound-concentration i{display:block!important;height:100%!important;background:#4d554f!important;border-radius:999px!important}
+#statusBoardView .outbound-analysis-coming{padding:44px 20px!important;text-align:center!important;border:1px dashed #d8ddd9!important;border-radius:10px!important;background:#fafbf9!important}
+#statusBoardView .outbound-analysis-coming b{display:block!important;font-size:15px!important}
+#statusBoardView .outbound-analysis-coming span{display:block!important;margin-top:8px!important;color:#7d847e!important;font-size:11px!important}
+
+@media(max-width:980px){
+  #statusBoardView .outbound-analysis-grid{grid-template-columns:1fr!important}
+  #statusBoardView .outbound-analysis-card{height:auto!important;min-height:0!important}
+  #statusBoardView .outbound-analysis-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+  #statusBoardView .outbound-analysis-kpis>div:nth-child(2n){border-right:0!important}
+}
+@media(max-width:620px){
+  #statusBoardView .outbound-analysis-subtabs{width:100%!important}
+  #statusBoardView .outbound-analysis-kpis{grid-template-columns:1fr!important;margin-left:12px!important;margin-right:12px!important}
+  #statusBoardView .outbound-analysis-kpis>div{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .outbound-analysis-kpis>div:last-child{border-bottom:0!important}
+  #statusBoardView .outbound-analysis-filters{padding-left:12px!important;padding-right:12px!important}
+  #statusBoardView .outbound-category-demo{grid-template-columns:1fr!important}
+  #statusBoardView .outbound-category-ring{margin:auto!important}
+}
+
+/* ===== <style id="v105-boxcount-analysis-refresh"> ===== */
+#statusBoardView .boxcount-analysis-head{margin-bottom:16px}
+#statusBoardView .boxcount-analysis-filters{grid-template-columns:minmax(170px,.75fr) minmax(170px,.75fr) auto auto}
+#statusBoardView .boxcount-feature-grid{display:grid;grid-template-columns:minmax(320px,.78fr) minmax(0,1.22fr);gap:16px;margin-bottom:16px}
+#statusBoardView .boxcount-donut-card,#statusBoardView .boxcount-key-card,#statusBoardView .boxcount-topbottom-card{min-height:360px}
+#statusBoardView .boxcount-donut-wrap{position:relative;height:285px;padding:8px 18px 18px}
+#statusBoardView .boxcount-donut-wrap canvas{max-height:100%}
+#statusBoardView .boxcount-key-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));padding:0 20px 20px}
+#statusBoardView .boxcount-key-grid>div{min-height:126px;padding:20px;border-right:1px solid #ecece8;border-bottom:1px solid #ecece8;display:flex;flex-direction:column;justify-content:center}
+#statusBoardView .boxcount-key-grid>div:nth-child(2n){border-right:0}
+#statusBoardView .boxcount-key-grid>div:nth-last-child(-n+2){border-bottom:0}
+#statusBoardView .boxcount-key-grid span,#statusBoardView .boxcount-change-summary span{font-size:11px;color:#737b75;font-weight:850}
+#statusBoardView .boxcount-key-grid b,#statusBoardView .boxcount-change-summary b{margin-top:8px;font-size:19px;letter-spacing:-.03em}
+#statusBoardView .boxcount-key-grid small,#statusBoardView .boxcount-change-summary small{margin-top:5px;font-size:10px;color:#929893}
+#statusBoardView .boxcount-topbottom-grid{display:grid;grid-template-columns:1fr 1fr;gap:0;padding:0 20px 20px}
+#statusBoardView .boxcount-topbottom-grid>div{min-width:0;padding:4px 18px 0}
+#statusBoardView .boxcount-topbottom-grid>div:first-child{border-right:1px solid #ecece8}
+#statusBoardView .boxcount-topbottom-grid h4{margin:8px 0 10px;font-size:11px;color:#737b75}
+#statusBoardView .boxcount-triple-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:16px}
+#statusBoardView .boxcount-mini-panel{min-height:310px}
+#statusBoardView .boxcount-rank-list{padding:2px 18px 18px}
+#statusBoardView .boxcount-rank-row{width:100%;min-height:43px;display:grid;grid-template-columns:24px minmax(0,1fr) auto;grid-template-areas:"no name value" "no extra extra";gap:1px 8px;align-items:center;padding:7px 2px;border:0;border-bottom:1px solid #eeeeea;background:transparent;text-align:left;color:inherit}
+#statusBoardView button.boxcount-rank-row{cursor:pointer}
+#statusBoardView button.boxcount-rank-row:hover{background:#fafaf8}
+#statusBoardView .boxcount-rank-row:last-child{border-bottom:0}
+#statusBoardView .boxcount-rank-no{grid-area:no;width:22px;height:22px;display:grid;place-items:center;border-radius:50%;background:#f0f0ed;color:#767d78;font-size:9px;font-weight:850}
+#statusBoardView .boxcount-rank-row b{grid-area:name;min-width:0;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#statusBoardView .boxcount-rank-row strong{grid-area:value;font-size:12px;white-space:nowrap}
+#statusBoardView .boxcount-rank-row small{grid-area:extra;justify-self:end;font-size:9px;color:#929893}
+#statusBoardView .boxcount-change-summary{padding:6px 20px 18px}
+#statusBoardView .boxcount-change-summary>div{min-height:72px;display:flex;flex-direction:column;justify-content:center;border-bottom:1px solid #eeeeea}
+#statusBoardView .boxcount-change-summary>div:last-child{border-bottom:0}
+#statusBoardView .boxcount-on-demand{display:flex;justify-content:center;padding:3px 0 16px}
+#statusBoardView .boxcount-store-compare,#statusBoardView .boxcount-store-detail-panel{margin-bottom:16px}
+#statusBoardView .boxcount-store-detail-panel>.boxcount-analysis-layout{padding:0 16px 16px}
+#statusBoardView .boxcount-inner-card{box-shadow:none!important;border:1px solid #ecece8!important}
+#statusBoardView .boxcount-weekday-detail{margin-top:0}
+#statusBoardView .boxcount-detail-summarybar{margin:0 0 16px;border:1px solid #e4e4df;border-radius:12px;background:#fff}
+#statusBoardView .boxcount-detail-visuals{margin-bottom:16px}
+@media(max-width:1050px){
+  #statusBoardView .boxcount-feature-grid{grid-template-columns:1fr}
+  #statusBoardView .boxcount-triple-grid{grid-template-columns:1fr}
+}
+@media(max-width:760px){
+  #statusBoardView .boxcount-analysis-filters{grid-template-columns:1fr 1fr}
+  #statusBoardView .boxcount-topbottom-grid{grid-template-columns:1fr}
+  #statusBoardView .boxcount-topbottom-grid>div:first-child{border-right:0;border-bottom:1px solid #ecece8;padding-bottom:14px}
+  #statusBoardView .boxcount-key-grid{grid-template-columns:1fr}
+  #statusBoardView .boxcount-key-grid>div{border-right:0!important;border-bottom:1px solid #ecece8!important}
+  #statusBoardView .boxcount-key-grid>div:last-child{border-bottom:0!important}
+}
+
+/* ===== <style id="v106-boxcount-visual-refine"> ===== */
+#statusBoardView .boxcount-compare-toggle{
+  min-width:220px!important;min-height:44px!important;padding:10px 18px!important;border:1px solid #1d1d1b!important;
+  background:#1d1d1b!important;color:#fff!important;border-radius:10px!important;font-weight:800!important;
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:10px!important;
+  box-shadow:0 5px 14px rgba(29,29,27,.12)!important;
+}
+#statusBoardView .boxcount-compare-toggle:hover{transform:translateY(-1px);box-shadow:0 7px 18px rgba(29,29,27,.16)!important}
+#statusBoardView .boxcount-compare-toggle b{font-size:16px;line-height:1}
+#statusBoardView .boxcount-rank-row.is-up{background:rgba(43,122,87,.055)}
+#statusBoardView .boxcount-rank-row.is-down{background:rgba(177,72,62,.055)}
+#statusBoardView .boxcount-rank-row.is-up strong,#statusBoardView .boxcount-rank-row.is-up small{color:#287a57!important;font-weight:850}
+#statusBoardView .boxcount-rank-row.is-down strong,#statusBoardView .boxcount-rank-row.is-down small{color:#b1483e!important;font-weight:850}
+#statusBoardView .boxcount-mom{display:inline-flex;min-width:62px;justify-content:center;padding:4px 7px;border-radius:999px;font-size:10px;font-weight:850}
+#statusBoardView .boxcount-mom.up{background:rgba(43,122,87,.09);color:#287a57}
+#statusBoardView .boxcount-mom.down{background:rgba(177,72,62,.09);color:#b1483e}
+#statusBoardView .boxcount-mom.flat{background:#f0f0ed;color:#747a76}
+#statusBoardView .boxcount-expanded-table{grid-column:1/-1;width:100%;overflow:auto}
+#statusBoardView .boxcount-expanded-table .status-data-table{min-width:520px}
+
+/* ===== <style id="v107-boxcount-modern-composition"> ===== */
+#statusBoardView .boxcount-radial-card,#statusBoardView .boxcount-arc-card{min-height:360px}
+#statusBoardView .boxcount-radial-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px;padding:18px 22px 24px;align-items:start}
+#statusBoardView .boxcount-radial-item{display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
+#statusBoardView .boxcount-radial-item>strong{font-size:11px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#statusBoardView .boxcount-radial-gauge{width:92px;height:92px;border-radius:50%;background:conic-gradient(var(--radial-color) 0 var(--radial),#ecece8 var(--radial) 100%);display:grid;place-items:center;position:relative}
+#statusBoardView .boxcount-radial-gauge:after{content:"";position:absolute;inset:9px;border-radius:50%;background:#fff}
+#statusBoardView .boxcount-radial-gauge>div{position:relative;z-index:1;text-align:center;display:flex;flex-direction:column}
+#statusBoardView .boxcount-radial-gauge b{font-size:16px;letter-spacing:-.04em}
+#statusBoardView .boxcount-radial-gauge small{margin-top:3px;font-size:8.5px;color:#888f89}
+#statusBoardView .boxcount-arc-layout{display:grid;grid-template-columns:minmax(190px,.85fr) minmax(0,1.15fr);gap:16px;padding:8px 22px 24px;align-items:center}
+#statusBoardView .boxcount-arc-visual{display:flex;flex-direction:column;align-items:center}
+#statusBoardView .boxcount-arc-shell{position:relative;width:220px;height:118px;overflow:hidden}
+#statusBoardView .boxcount-arc-ring{position:absolute;left:10px;top:2px;width:200px;height:200px;border-radius:50%}
+#statusBoardView .boxcount-arc-ring:after{content:"";position:absolute;inset:18px;border-radius:50%;background:#fff}
+#statusBoardView .boxcount-arc-center{position:absolute;left:50%;top:68px;transform:translateX(-50%);z-index:2;text-align:center;display:flex;flex-direction:column}
+#statusBoardView .boxcount-arc-center strong{font-size:25px;letter-spacing:-.05em}
+#statusBoardView .boxcount-arc-center small{margin-top:2px;font-size:9px;color:#8b918d;font-weight:800}
+#statusBoardView .boxcount-arc-other{margin-top:12px;display:flex;align-items:center;gap:10px;font-size:10px;color:#7c837e}
+#statusBoardView .boxcount-arc-other b{font-size:12px;color:#555b57}
+#statusBoardView .boxcount-arc-ranking{display:flex;flex-direction:column}
+#statusBoardView .boxcount-arc-rank{display:grid;grid-template-columns:10px minmax(0,1fr) auto;grid-template-areas:"dot name pct" ". value value";gap:1px 8px;align-items:center;min-height:46px;border-bottom:1px solid #eeeeea;padding:6px 0}
+#statusBoardView .boxcount-arc-rank:last-child{border-bottom:0}
+#statusBoardView .boxcount-arc-dot{grid-area:dot;width:8px;height:8px;border-radius:50%}
+#statusBoardView .boxcount-arc-rank b{grid-area:name;font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#statusBoardView .boxcount-arc-rank strong{grid-area:pct;font-size:12px}
+#statusBoardView .boxcount-arc-rank small{grid-area:value;justify-self:end;font-size:9px;color:#919793}
+#statusBoardView .boxcount-change-summary>div{display:grid!important;grid-template-columns:minmax(0,1fr) auto!important;grid-template-areas:"label value" "name value"!important;align-content:center!important;column-gap:12px!important}
+#statusBoardView .boxcount-change-summary>div>span{grid-area:label!important}
+#statusBoardView .boxcount-change-summary>div>b{grid-area:name!important;margin-top:5px!important;font-size:13px!important}
+#statusBoardView .boxcount-change-summary>div>small{grid-area:value!important;margin:0!important;font-size:14px!important;font-weight:850!important;color:#1f2421!important;align-self:center!important}
+#statusBoardView .boxcount-rank-row.is-up,#statusBoardView .boxcount-rank-row.is-down{background:transparent!important}
+#statusBoardView .boxcount-rank-row.is-up:hover,#statusBoardView .boxcount-rank-row.is-down:hover{background:#fafaf8!important}
+#statusBoardView .boxcount-route-radials{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:760px){
+  #statusBoardView .boxcount-arc-layout{grid-template-columns:1fr}
+  #statusBoardView .boxcount-radial-grid,#statusBoardView .boxcount-route-radials{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #statusBoardView .boxcount-arc-shell{transform:scale(.92);transform-origin:center top}
+}
+
+/* ===== <style id="v108-boxcount-weekday-donut"> ===== */
+#statusBoardView .boxcount-weekday-donut-card{min-height:360px}
+#statusBoardView .boxcount-weekday-donut-wrap{position:relative;height:292px;padding:8px 18px 18px}
+#statusBoardView .boxcount-weekday-donut-wrap canvas{max-height:100%;max-width:100%}
+
+/* ===== <style id="v109-boxcount-store-search"> ===== */
+#statusBoardView .boxcount-store-compare-head{align-items:center!important;gap:16px}
+#statusBoardView .boxcount-store-search{margin-left:auto;display:flex;align-items:center;gap:9px}
+#statusBoardView .boxcount-store-search span{font-size:10px;color:#7d847f;font-weight:850;white-space:nowrap}
+#statusBoardView .boxcount-store-search input{width:190px;height:36px;border:1px solid #dfe1dd;border-radius:9px;background:#fafaf8;padding:0 11px;font:inherit;font-size:11px;outline:none}
+#statusBoardView .boxcount-store-search input:focus{border-color:#8f9691;background:#fff;box-shadow:0 0 0 3px rgba(47,111,98,.07)}
+@media(max-width:700px){
+  #statusBoardView .boxcount-store-compare-head{align-items:flex-start!important;flex-direction:column!important}
+  #statusBoardView .boxcount-store-search{margin-left:0;width:100%}
+  #statusBoardView .boxcount-store-search input{flex:1;width:auto}
+}
+

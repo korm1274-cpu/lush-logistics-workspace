@@ -1,0 +1,1 @@
+/* <script id="v51-upload-router"> (index.html에서 그대로 옮김) */document.addEventListener('DOMContentLoaded',()=>{document.querySelectorAll('.dataFile').forEach(inp=>{inp.addEventListener('change',e=>{const type=inp.dataset.type;if(['입고','출고','오출고','파손','출고박스','단가표','출고요약'].includes(type)&&window.FILE_DATA_ENGINE){e.stopImmediatePropagation();FILE_DATA_ENGINE.handle(inp)}},true)})});

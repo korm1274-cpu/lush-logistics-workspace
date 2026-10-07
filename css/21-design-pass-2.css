@@ -1,0 +1,40 @@
+/* ===== <style id="design-pass-2"> ===== */
+/* ── 불러오는 중: 숫자 대신 은은하게 반짝이는 회색 상자 ── */
+html.ux-loading #appShell .kpi b,html.ux-loading #appShell .floor-tile b,html.ux-loading #appShell .request-period-stat b,html.ux-loading #appShell .monthly-stats b,html.ux-loading #rqPendingSummary b{color:transparent!important;border-radius:6px;background:linear-gradient(90deg,#ecebe7 0%,#f7f6f3 50%,#ecebe7 100%)!important;background-size:200% 100%!important;animation:uxShimmer 1.1s linear infinite;min-width:2.2em;display:inline-block;}
+html.ux-loading #appShell .floor-tile b{background:linear-gradient(90deg,#2b2b29 0%,#3a3a37 50%,#2b2b29 100%)!important;background-size:200% 100%!important;}
+@keyframes uxShimmer{from{background-position:200% 0;}to{background-position:-200% 0;}}
+
+/* ── 시즌 테마: 날짜에 따라 메인 배너 색·장식 자동 변경 ── */
+.season-badge{display:inline-flex;align-items:center;gap:6px;margin-left:10px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:800;vertical-align:middle;background:rgba(255,255,255,.14);color:#fff;}
+html[data-season="halloween"] .lush-hero .hero-bubble.b1{background:rgba(255,128,0,.42)!important;}
+html[data-season="halloween"] .lush-hero .hero-bubble.b2{background:rgba(138,80,200,.42)!important;}
+html[data-season="halloween"] .lush-hero .hero-bubble.b3{background:rgba(120,200,60,.38)!important;}
+html[data-season="halloween"] .lush-hero .lush-hero-sub{color:#ffb766!important;}
+html[data-season="xmas"] .lush-hero .hero-bubble.b1{background:rgba(214,56,56,.42)!important;}
+html[data-season="xmas"] .lush-hero .hero-bubble.b2{background:rgba(30,150,90,.42)!important;}
+html[data-season="xmas"] .lush-hero .hero-bubble.b3{background:rgba(255,215,90,.45)!important;}
+html[data-season="xmas"] .lush-hero .lush-hero-sub{color:#ffd9d9!important;}
+html[data-season="newyear"] .lush-hero .hero-bubble.b1{background:rgba(255,205,80,.42)!important;}
+html[data-season="newyear"] .lush-hero .hero-bubble.b2{background:rgba(232,123,164,.4)!important;}
+html[data-season="hanbok"] .lush-hero .hero-bubble.b1{background:rgba(232,72,110,.42)!important;}
+html[data-season="hanbok"] .lush-hero .hero-bubble.b2{background:rgba(40,110,200,.42)!important;}
+html[data-season="hanbok"] .lush-hero .hero-bubble.b3{background:rgba(250,200,40,.45)!important;}
+.season-flake{position:absolute;top:-10px;z-index:0;pointer-events:none;color:rgba(255,255,255,.75);font-size:12px;}
+@media (prefers-reduced-motion:no-preference){.season-flake{animation:seasonFall linear infinite;}}
+@keyframes seasonFall{from{transform:translateY(-10px) rotate(0);}to{transform:translateY(260px) rotate(200deg);}}
+
+
+/* ── 다크 모드: 화면 본문을 어둡게(배너·그래프·사진은 원래 색 유지) ── */
+html.ux-dark #appShell .main{filter:invert(1) hue-rotate(180deg);background-color:#f2f4f6!important;}
+/* 반전을 정확히 1로 맞춰 배너(칠판)·그래프가 다시 뒤집힐 때 원래 색 그대로 나오게 함.
+   흰 카드는 완전한 검정 대신 짙은 회색이 되도록 반전 전 색을 살짝 낮춤 */
+html.ux-dark #appShell .main .panel,html.ux-dark #appShell .main .status-card,html.ux-dark #appShell .main .table-card,html.ux-dark #appShell .main .dashboard-info-panel,html.ux-dark #appShell .main .dash-section,html.ux-dark #appShell .main .kpi,html.ux-dark #appShell .main .rq-col{background-color:#e6e4df!important;}
+html.ux-dark #appShell .main img,html.ux-dark #appShell .main canvas,html.ux-dark #appShell .main video,
+html.ux-dark #appShell .main .lush-hero,html.ux-dark #appShell .main .floor-board,html.ux-dark #appShell .main .data-workbench-head,
+html.ux-dark #appShell .main .request-manager-top,html.ux-dark #appShell .main .schedule-head,html.ux-dark #appShell .main .status-board-top,
+html.ux-dark #appShell .main .ux-ico,html.ux-dark #appShell .main .hero-truck{filter:invert(1) hue-rotate(180deg);}
+html.ux-dark #appShell .main .lush-hero .ux-ico,html.ux-dark #appShell .main .data-workbench-head .ux-ico,html.ux-dark #appShell .main .status-board-top .ux-ico,html.ux-dark #appShell .main .request-manager-top .ux-ico,html.ux-dark #appShell .main .schedule-head .ux-ico,html.ux-dark #appShell .main .floor-board .ux-ico,html.ux-dark #appShell .main .lush-hero .hero-truck,html.ux-dark #appShell .main .floor-board .hero-truck{filter:none;}
+html.ux-dark body{background:#141414;}
+@media (max-width:900px){#appShell #baseTools .base-tool{white-space:nowrap!important;}#appShell #uxDarkBtn .ux-lbl{display:none;}#appShell #uxDarkBtn{min-width:40px!important;padding:0 10px!important;}}
+@media (prefers-reduced-motion:reduce){html.ux-loading #appShell .kpi b{animation:none;}}
+

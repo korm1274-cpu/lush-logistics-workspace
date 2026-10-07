@@ -1,0 +1,25 @@
+/* ===== <style id="ux-effects-style"> ===== */
+/* 처리 대기: 완료 처리 시 카드가 거품처럼 톡 사라짐 */
+#outboundRequestManager .rq-item.rq-leaving{animation:rqPop .38s ease-in forwards;pointer-events:none;}
+@keyframes rqPop{0%{transform:scale(1);opacity:1;}35%{transform:scale(1.04);background:#fdf1f6;}100%{transform:scale(.6);opacity:0;}}
+/* 처리 대기·제품 확보가 모두 비었을 때 축하 메시지 */
+#outboundRequestManager .rq-cheer,.todo-cheer{display:flex;flex-direction:column;align-items:center;gap:4px;padding:26px 16px;border:2px dashed #e4d9c7;border-radius:16px;background:#fffaf5;text-align:center;}
+#outboundRequestManager .rq-cheer span{font-size:34px;line-height:1;}
+#outboundRequestManager .rq-cheer b,.todo-cheer b{font-size:16px;color:#1d1d1b;}
+#outboundRequestManager .rq-cheer small,.todo-cheer small{font-size:12.5px;color:#8b95a1;}
+.todo-cheer{padding:14px 12px;margin-bottom:8px;flex-direction:row;justify-content:center;gap:8px;}
+.todo-cheer span{font-size:20px;}
+/* 출고 진행률 100% 달성 시 반짝임 */
+#statusShippingRing.is-complete{animation:ringGlow 2.4s ease-in-out infinite;border-radius:50%;}
+@keyframes ringGlow{0%,100%{box-shadow:0 0 0 0 rgba(232,123,164,0);}50%{box-shadow:0 0 0 10px rgba(232,123,164,.22),0 0 28px 6px rgba(237,161,0,.25);}}
+/* 오출고 미완료 건수: 1건 이상이면 천천히 깜빡임 */
+.ux-blink{animation:uxBlink 1.8s ease-in-out infinite;}
+@keyframes uxBlink{0%,100%{opacity:1;}50%{opacity:.35;}}
+/* 현장 대시보드: 숫자가 바뀐 칸이 잠깐 빛남 */
+.floor-tile.ux-flash{animation:uxFlash 1.6s ease-out;}
+@keyframes uxFlash{0%{box-shadow:0 0 0 0 rgba(237,161,0,.0);transform:scale(1);}15%{box-shadow:0 0 0 6px rgba(237,161,0,.55);transform:scale(1.03);}100%{box-shadow:0 0 0 18px rgba(237,161,0,0);transform:scale(1);}}
+/* 메뉴를 바꿀 때 화면이 살짝 페이드인 */
+.view.ux-enter{animation:uxEnter .32s ease-out;}
+@keyframes uxEnter{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@media (prefers-reduced-motion:reduce){.ux-blink,.floor-tile.ux-flash,.view.ux-enter,#statusShippingRing.is-complete,#outboundRequestManager .rq-item.rq-leaving{animation:none!important;}}
+

@@ -1,0 +1,3139 @@
+/* ===== <style id="mobile-overflow-hardening"> ===== */
+html,body{max-width:100%;overflow-x:hidden}
+.data-workbench-head p,.data-workbench-head h2,.panel-head h3,.panel-head small,.eyebrow,p,h1,h2,h3,h4{overflow-wrap:break-word;word-break:keep-all}
+.toast{left:12px;right:12px;max-width:calc(100% - 24px);width:auto;box-sizing:border-box;text-align:center}
+@media(max-width:640px){
+  .kpis,.analysis-grid,.data-split,.dashboard-grid,.admin-grid,.summary-grid,.flow-list,.upload-grid{grid-template-columns:1fr!important}
+  .data-table-wrap,.table-wrap,.inventory-grid-wrap{overflow-x:auto!important;max-width:100%!important;-webkit-overflow-scrolling:touch}
+  #appShell,.app,.main,.view,.data-workbench,.panel,.sheet-card,.analysis-box,.inventory-shell,.schedule-shell,.request-manager-shell{max-width:100vw!important;overflow-x:hidden!important}
+  img,svg,iframe,video{max-width:100%!important}
+}
+
+/* ===== <style id="dashboard-desktop-fixes"> ===== */
+/* 팀 공지사항 박스: 예약된 우측 사이드 컬럼이 비어있어 생기던 여백을 없애고 카드 전체 너비로 확장 */
+#appShell #dashboard .notice-panel .notice-board{display:block!important}
+#appShell #dashboard .notice-panel .notice-main{width:100%!important}
+/* 금주 출고 요청 카드: 헤더 위쪽 여백 최소화 */
+#appShell #dashboard .request-card-grid .request-mini-card{padding-top:0!important;margin-top:0!important}
+#appShell #dashboard .request-card-grid .request-mini-head{padding-top:10px!important;min-height:0!important;margin-top:0!important}
+#appShell #dashboard .dash-section-head{margin-bottom:10px!important}
+/* 최근 공지 수치를 출고요청 배지(대량/트래픽/본사)와 동일한 디자인으로 */
+#appShell #dashboard #dashNoticeCount{display:inline-block!important;min-width:36px!important;text-align:center!important;padding:4px 7px!important;border-radius:999px!important;background:#f4f5f6!important;color:#59656c!important;font-size:12px!important;font-weight:800!important;margin:0!important}
+/* 금주 출고 요청: 4칸 한 줄로, 화면 폭에 맞게 자동으로 넓이 조절 + 카드 높이를 조금 더 넉넉하게 */
+#appShell #dashboard .request-card-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+#appShell #dashboard .request-card-grid .request-mini-card{min-height:230px!important}
+#appShell #dashboard .request-card-grid .request-mini-body{min-height:130px!important}
+/* 매장명·요청일자 글자 크기를 다시 살짝 줄여서 균형 맞춤 */
+#appShell #dashboard .request-row .store-name,
+#appShell #dashboard .request-row .doc-no{font-size:11px!important;font-weight:600!important}
+#appShell #dashboard .request-row .complete-btn{font-size:11px!important;padding:4px 8px!important;min-height:0!important;height:26px!important;line-height:1!important}
+/* 금주 출고 요청 각 카드 제목(대량 주문/트래픽/본사 출고/노즐·비닐) 글자 키움 */
+#appShell #dashboard .request-mini-head b{font-size:15px!important}
+/* 메인 화면 TO DO: 담당자 이름 안 잘리게, 내용 안 잘리게, "미완료" 배지는 글자만 딱 맞게 */
+#appShell #dashboard .ops-todo-item{grid-template-columns:minmax(0,1fr) auto auto!important;align-items:start!important;column-gap:10px!important}
+#appShell #dashboard .ops-todo-manager{white-space:normal!important;overflow-wrap:break-word!important;word-break:keep-all!important}
+#appShell #dashboard .todo-content{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:break-word!important}
+#appShell #dashboard .ops-todo-item .badge{width:fit-content!important;white-space:nowrap!important;justify-self:start!important}
+/* 박스(둥근 테두리) 대신 밑줄만으로 여러 할 일을 구분, "미완료" 글씨도 살짝 더 작게 */
+#appShell #dashboard .ops-todo-item{border:0!important;border-bottom:1px solid #e7e7e3!important;border-radius:0!important;background:transparent!important;padding:11px 2px!important}
+#appShell #dashboard .ops-todo-list>.ops-todo-item:last-child{border-bottom:0!important}
+#appShell #dashboard .ops-todo-item .badge{font-size:10px!important;padding:3px 7px!important}
+/* 제품 확보 현황: 입고요청일 표시 (지난 날짜 빨강, 오늘 강조) */
+#appShell #dashboard .todo-note{display:block;margin-top:3px;font-size:12px;font-weight:500;color:#6b7684;white-space:normal;}
+#appShell #dashboard .todo-indate{white-space:nowrap;font-size:12px;font-weight:700;color:#4e5968;background:#f2f4f6;border-radius:6px;padding:3px 7px;align-self:start;}
+#appShell #dashboard .todo-indate.empty{background:transparent;padding:0;}
+#appShell #dashboard .todo-indate.today{background:#fff1d6;color:#9a5b00;}
+#appShell #dashboard .todo-indate.late{background:#fde8e8;color:#c62828;}
+#appShell #dashboard .ops-todo-item.done .todo-indate{opacity:.55;}
+/* 입고요청일 태그와 미완료/완료 버튼을 같은 모양으로 통일: 높이 28px·12px 굵게·모서리 8px·테두리 1px, 세로 가운데 정렬 */
+#appShell #dashboard .ops-todo-item .todo-indate:not(.empty),#appShell #dashboard .ops-todo-item .badge{display:inline-flex!important;align-items:center!important;justify-content:center!important;height:28px!important;min-height:28px!important;padding:0 10px!important;box-sizing:border-box!important;border-radius:8px!important;border:1px solid #e5e8eb!important;font-size:12px!important;font-weight:700!important;line-height:1!important;letter-spacing:0!important;align-self:center!important;margin:0!important;}
+#appShell #dashboard .ops-todo-item .badge{background:#f2f4f6!important;color:#191f28!important;cursor:pointer;}
+#appShell #dashboard .ops-todo-item .badge:not(.info){background:#e9f7ee!important;color:#1f7a45!important;border-color:#cdeadb!important;}
+#appShell #dashboard .ops-todo-item .todo-indate.today{border-color:#f5d9a3!important;}
+#appShell #dashboard .ops-todo-item .todo-indate.late{border-color:#f5c2c2!important;}
+#appShell #dashboard .ops-todo-item .todo-indate.empty{align-self:center!important;}
+
+/* ===== <style id="out-trend-table-css"> ===== */
+/* 월별 출고 추이 표: 핵심 지표(월/총수량/출고금액합계)를 하나로 묶어서 테두리 표시,
+   전월대비 두 칸, 전년동월대비 두 칸도 각각 별도로 묶어서 테두리 표시 */
+/* 월별 출고/입고 추이 표: 핵심 지표(월/총수량/총금액)를 하나로 묶어서 테두리 표시,
+   전월대비 두 칸, 전년동월대비 두 칸도 각각 별도로 묶어서 테두리 표시 (컬럼 개수가 표마다 달라도
+   안전하게 동작하도록 nth-child 대신 시작/끝 표시 클래스를 씁니다) */
+.out-trend-table th.grp-key-start,.out-trend-table td.grp-key-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-key-end,.out-trend-table td.grp-key-end{border-right:2px solid #ccd3d8}
+.out-trend-table th.grp-mom-start,.out-trend-table td.grp-mom-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-mom-end,.out-trend-table td.grp-mom-end{border-right:2px solid #ccd3d8}
+.out-trend-table th.grp-yoy-start,.out-trend-table td.grp-yoy-start{border-left:2px solid #ccd3d8}
+.out-trend-table th.grp-yoy-end,.out-trend-table td.grp-yoy-end{border-right:2px solid #ccd3d8}
+.out-trend-table .grp-key{background:#fbfcfd}
+.pct-up{color:#2f6fed;font-weight:700}
+.pct-down{color:#f28b22;font-weight:700}
+#appShell .request-period-stat:first-child{border:2px solid #a9d8f0!important;background:#f3fafd!important}
+/* 파손 분석: 상단 요약 카드·표 글자가 너무 작다는 피드백으로 확대 */
+#damageAnalyticsView .kpi span{font-size:13px!important}
+#damageAnalyticsView .kpi b{font-size:30px!important}
+#damageAnalyticsView .kpi small{font-size:12px!important}
+#damageAnalyticsView #dmFyTitle{font-size:19px!important}
+#damageAnalyticsView table th{font-size:13px!important}
+#damageAnalyticsView table td{font-size:14px!important}
+
+/* ===== <style id="productivity-view-css"> ===== */
+.prod-table th{white-space:nowrap;text-align:center}
+.prod-table td{text-align:center}
+.prod-worktype{border-radius:6px;padding:4px 6px;font-weight:700;font-size:11px;border:1px solid #d8e0e4;width:100%}
+.prod-worktype.wt-정상근무{background:#fff;color:#31404c}
+.prod-worktype.wt-휴일{background:#fbeeee;color:#a44e4e;border-color:#f0d6d6}
+.prod-worktype.wt-연차{background:#eaf3ec;color:#2f6d46;border-color:#cfe6d6}
+.prod-worktype.wt-오전반차,.prod-worktype.wt-오후반차{background:#f1edfa;color:#5b4a99;border-color:#ded4f2}
+.prod-worktype.wt-외근{background:#eaf2fb;color:#2f6a9f;border-color:#d3e3f4}
+.prod-table input[type=time]{width:100%;min-width:82px;box-sizing:border-box}
+.prod-table input[type=time]:disabled{background:#f7f8f8;color:#b5bcc2}
+.prod-table thead tr:first-child th:nth-child(4),
+.prod-table thead tr:first-child th:nth-child(5),
+.prod-table thead tr:first-child th:nth-child(6){border-left:2px solid #ccd3d8}
+.prod-table thead tr:nth-child(2) th:nth-child(1),
+.prod-table thead tr:nth-child(2) th:nth-child(5),
+.prod-table thead tr:nth-child(2) th:nth-child(9){border-left:2px solid #ccd3d8}
+.prod-table tbody td:nth-child(4),
+.prod-table tbody td:nth-child(8),
+.prod-table tbody td:nth-child(12){border-left:2px solid #ccd3d8}
+
+/* ===== <style id="v80-statusboard-style"> ===== */
+/* V80 — dashboard balance + operations status board scaffold */
+.dashboard-info-panel.notice-panel,.dashboard-info-panel.todo-panel{min-height:236px!important}
+.dashboard-info-panel .notice-main{min-height:148px!important}
+.dashboard-info-panel .ops-todo-list{max-height:190px!important;overflow:auto!important}
+.dashboard-info-panel .ops-todo-item{grid-template-columns:72px minmax(0,1fr) 58px!important;gap:8px!important;min-height:34px!important;padding:7px 8px!important}
+.dashboard-info-panel .ops-todo-manager{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.dashboard-info-panel .todo-content{min-width:0!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+.dashboard-info-panel .ops-todo-item .badge{width:58px!important;min-width:58px!important;box-sizing:border-box!important;justify-content:center!important;padding:5px 4px!important;white-space:nowrap!important}
+
+#appShell #dashboard .request-card-grid{grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:10px!important}
+#appShell #dashboard .request-mini-head{padding:10px 11px!important}
+#appShell #dashboard .request-mini-head b{font-size:12px!important}
+#appShell #dashboard .request-badge{font-size:10px!important;padding:4px 6px!important}
+#appShell #appShell #dashboard .request-mini-header{padding:6px 9px!important;font-size:8.5px!important;grid-template-columns:minmax(0,1fr) 54px 58px!important;gap:4px!important}
+#appShell #appShell #dashboard .request-mini-header span{white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#appShell #dashboard .request-mini-body{min-height:124px!important}
+#appShell #dashboard .request-row{padding:9px 9px!important;min-height:40px!important;grid-template-columns:minmax(0,1fr) 54px 58px!important;gap:4px!important;align-items:center!important}
+#appShell #dashboard .request-row .store-name,#appShell #dashboard .request-row .doc-no{font-size:8.8px!important;line-height:1.2!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important}
+#appShell #dashboard .request-row .doc-no{text-align:center!important}
+#appShell #dashboard .request-row .status-cell{display:flex!important;justify-content:flex-end!important;align-items:center!important;min-width:0!important}
+#appShell #dashboard .request-row .request-state-btn{width:58px!important;min-width:58px!important;padding:5px 3px!important;border:1px solid #deded9!important;border-radius:5px!important;background:#f6f6f3!important;color:#555!important;font-size:8.5px!important;font-weight:800!important;white-space:nowrap!important}
+#appShell #dashboard .request-row .request-state-btn.done{background:#edf4ef!important;color:#4f725b!important;border-color:#d9e8de!important}
+#appShell #dashboard .request-empty-card{min-height:84px!important;font-size:9px!important}
+@media(max-width:1180px){#appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:760px){#appShell #dashboard .request-card-grid{grid-template-columns:1fr!important}.dashboard-info-panel.notice-panel,.dashboard-info-panel.todo-panel{min-height:0!important}}
+
+.status-board-shell{display:flex;flex-direction:column;gap:14px}
+.status-board-top{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;padding:20px 22px;border:1px solid #e2e2de;border-radius:14px;background:#fff}
+.status-board-top h2{margin:3px 0 5px;font-size:25px}.status-board-top p{margin:0;color:#747470;font-size:11px}
+.status-board-api-state{font-size:10px;font-weight:800;color:#777;padding:7px 9px;border:1px solid #e1e1dd;background:#f8f8f5;border-radius:6px}
+.status-board-tabs{display:flex;gap:7px;flex-wrap:wrap;padding:7px;background:#efefeb;border-radius:9px;align-self:flex-start}
+.status-board-tab{border:0;background:transparent;color:#666;padding:9px 13px;border-radius:6px;font-size:12px;font-weight:800}
+.status-board-tab.active{background:#111;color:#fff}
+.status-panel{display:none}.status-panel.active{display:block}
+.status-card{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:18px}
+.status-card-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px}
+.status-card-title h3{margin:0;font-size:15px}.status-card-title small{color:#8a8a85;font-size:10px}
+.ship-progress-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ship-progress-card{padding:26px;border:1px solid #e5e5e1;border-radius:14px;background:#fff}
+.ship-progress-card span{display:block;font-size:12px;color:#747470;font-weight:800}.ship-progress-card strong{display:block;margin:11px 0 14px;font-size:34px;letter-spacing:-.04em}.ship-progress-card strong em{font-style:normal;font-size:17px;color:#8a8a85;font-weight:700}
+.ship-progress-track{height:12px;border-radius:999px;background:#eeeeea;overflow:hidden}.ship-progress-fill{height:100%;width:0;background:#111;border-radius:999px;transition:width .25s ease}
+.ship-progress-foot{display:flex;justify-content:space-between;margin-top:8px;color:#777;font-size:10px}
+
+.prod-toolbar,.cum-toolbar,.detail-toolbar{display:flex;align-items:flex-end;gap:9px;flex-wrap:wrap}
+.prod-field label,.cum-field label,.detail-field label{display:block;margin-bottom:5px;font-size:9px;color:#777;font-weight:800}
+.prod-field input,.cum-field select,.detail-field select{height:36px;border:1px solid #dcdcd7;border-radius:7px;background:#fff;padding:0 10px;font-size:11px}
+.prod-layout,.cum-layout,.detail-layout{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(390px,.85fr);gap:14px;margin-top:14px}
+.chart-card,.table-card,.detail-summary-card{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:16px;min-width:0}
+.chart-wrap{position:relative;height:300px}.chart-wrap canvas{width:100%!important;height:100%!important}.chart-empty{position:absolute;inset:0;display:grid;place-items:center;color:#aaa;font-size:11px;pointer-events:none}
+.status-data-table{width:100%;min-width:0!important;border-collapse:collapse;font-size:10px}.status-data-table th,.status-data-table td{height:34px!important;padding:7px 8px!important;border-bottom:1px solid #eeeeea!important;white-space:nowrap}.status-data-table th{position:static!important;background:#f7f7f4!important;color:#666!important;font-size:9px!important;text-align:center!important}.status-data-table td{text-align:right}.status-data-table td:first-child{text-align:left}
+.status-summary-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:14px}
+.status-summary{background:#fff;border:1px solid #e2e2de;border-radius:14px;padding:18px}.status-summary span{display:block;color:#777;font-size:10px;font-weight:800}.status-summary strong{display:block;margin-top:8px;font-size:24px}.status-summary small{font-size:10px;color:#888;margin-left:3px}
+.detail-day-list{max-height:332px;overflow:auto}.detail-day-row{display:grid;grid-template-columns:72px 1fr 1fr;gap:8px;padding:9px 7px;border-bottom:1px solid #eeeeea;font-size:10px;cursor:pointer}.detail-day-row:hover,.detail-day-row.active{background:#f6f6f3}.detail-day-row b{font-size:10px}.detail-day-row span{text-align:right;color:#666}
+.detail-summary-card dl{display:grid;grid-template-columns:1fr auto;gap:12px;margin:0}.detail-summary-card dt{font-size:11px;color:#777}.detail-summary-card dd{margin:0;font-size:13px;font-weight:800}
+.status-bottom-table{margin-top:14px}
+@media(max-width:980px){.ship-progress-grid,.prod-layout,.cum-layout,.detail-layout{grid-template-columns:1fr}.status-summary-grid{grid-template-columns:1fr}.chart-wrap{height:250px}}
+
+/* ===== <style id="v81-dashboard-readability-symmetry"> ===== */
+/* V81 — main dashboard readability + balanced spacing */
+#appShell #dashboard{
+  width:calc(100% - 24px)!important;
+  max-width:1680px!important;
+  margin:0 auto!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard>.dash-section{
+  margin:0 0 20px!important;
+  border-radius:10px!important;
+}
+#appShell #dashboard>.dash-section:last-child{margin-bottom:0!important}
+
+/* Notice / TO DO: same outer geometry and larger readable type */
+#appShell #dashboard .dashboard-notice-todo-grid{
+  gap:20px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .dashboard-info-panel{
+  padding:22px!important;
+  min-height:250px!important;
+  border-radius:10px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dashboard-panel-title{
+  margin:0 0 16px!important;
+  min-height:32px!important;
+  align-items:center!important;
+}
+#appShell #dashboard .dashboard-panel-title h3,
+#appShell #dashboard .dash-section-head h3,
+#appShell #dashboard .schedule-title-line h3{
+  font-size:20px!important;
+  line-height:1.3!important;
+  letter-spacing:-.02em!important;
+}
+#appShell #dashboard .notice-side{font-size:12px!important}
+#appShell #dashboard .notice-side b{font-size:15px!important;margin-left:7px!important}
+#appShell #dashboard .notice-main{
+  min-height:158px!important;
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .notice-main b{font-size:15px!important;line-height:1.5!important}
+#appShell #dashboard .notice-main p{font-size:13px!important;line-height:1.65!important;margin-top:8px!important}
+#appShell #dashboard .notice-pin{font-size:11px!important;padding:5px 8px!important}
+#appShell #dashboard .ops-todo-head{
+  margin:0 0 10px!important;
+  font-size:12px!important;
+}
+#appShell #dashboard .ops-todo-list{max-height:190px!important}
+#appShell #dashboard .ops-todo-item{
+  min-height:40px!important;
+  padding:9px 10px!important;
+  font-size:13px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .ops-todo-manager,
+#appShell #dashboard .todo-content{font-size:13px!important}
+#appShell #dashboard .ops-todo-item .badge{
+  font-size:11px!important;
+  min-height:27px!important;
+}
+
+/* Section headers: equal left/right padding */
+#appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card){
+  padding:20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .dash-section-head{
+  padding:0!important;
+  margin:0 0 16px!important;
+  min-height:30px!important;
+  display:flex!important;
+  align-items:center!important;
+}
+
+/* Weekly outbound requests: four equal cards and one request per single horizontal row */
+#appShell #dashboard .request-card-grid{
+  grid-template-columns:repeat(4,minmax(0,1fr))!important;
+  gap:14px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .request-mini-card{
+  height:100%!important;
+  border-radius:8px!important;
+  display:flex!important;
+  flex-direction:column!important;
+}
+#appShell #dashboard .request-mini-head{
+  min-height:54px!important;
+  padding:14px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-head b{
+  font-size:14px!important;
+  line-height:1.35!important;
+}
+#appShell #dashboard .request-badge{
+  font-size:11px!important;
+  padding:5px 7px!important;
+}
+#appShell #dashboard .request-mini-table{
+  padding:0 12px 12px!important;
+  flex:1 1 auto!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-mini-header{
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
+  padding:10px 10px!important;
+  font-size:10.5px!important;
+}
+#appShell #dashboard .request-mini-header span:first-child{text-align:left!important}
+#appShell #dashboard .request-mini-header span:nth-child(2),
+#appShell #dashboard .request-mini-header span:nth-child(3){text-align:center!important}
+#appShell #dashboard .request-mini-body{
+  min-height:124px!important;
+  padding-top:8px!important;
+}
+#appShell #dashboard .request-row{
+  grid-template-columns:minmax(0,1fr) 72px 72px!important;
+  column-gap:10px!important;
+  min-height:42px!important;
+  padding:10px 10px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .request-row .store-name,
+#appShell #dashboard .request-row .doc-no{
+  font-size:11.5px!important;
+  font-weight:650!important;
+}
+#appShell #dashboard .request-row .status-cell{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-width:0!important;
+  text-align:center!important;
+}
+#appShell #dashboard .request-row .doc-no{text-align:center!important}
+#appShell #dashboard .request-row .request-state-btn{
+  width:64px!important;
+  min-width:64px!important;
+  margin:0 auto!important;
+  padding:6px 4px!important;
+  font-size:10.5px!important;
+  text-align:center!important;
+}
+#appShell #dashboard .request-empty-card{
+  min-height:124px!important;
+  font-size:11px!important;
+}
+
+/* Schedule: increase small text and keep header/calendar padding visually balanced */
+#appShell #dashboard .schedule-full-card{
+  margin:0 0 20px!important;
+  padding:0!important;
+}
+#appShell #dashboard .schedule-unified-head{
+  min-height:82px!important;
+  padding:18px 20px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .schedule-title-line{gap:12px!important}
+#appShell #dashboard .schedule-title-line .dash-month{font-size:12px!important}
+#appShell #dashboard .schedule-staff-primary span,
+#appShell #dashboard .schedule-staff-secondary span{font-size:11px!important}
+#appShell #dashboard .schedule-staff-primary strong{font-size:28px!important}
+#appShell #dashboard .schedule-staff-primary em{font-size:12px!important}
+#appShell #dashboard .schedule-staff-secondary b{font-size:14px!important}
+#appShell #dashboard .dashboard-two-week-weekhead span{
+  font-size:12px!important;
+  padding:11px 6px!important;
+}
+#appShell #dashboard .dash-two-week-day{
+  min-height:108px!important;
+  padding:9px!important;
+}
+#appShell #dashboard .dash-two-week-date b{font-size:15px!important}
+#appShell #dashboard .dash-two-week-date span{font-size:10px!important}
+#appShell #dashboard .dash-two-week-event{
+  font-size:10px!important;
+  padding:5px 6px!important;
+}
+#appShell #dashboard .dash-two-week-event b{font-size:9.5px!important}
+#appShell #dashboard .dash-more{font-size:10px!important}
+
+/* Monthly cards: matching inner padding and readable labels */
+#appShell #dashboard .monthly-grid{
+  gap:16px!important;
+  align-items:stretch!important;
+}
+#appShell #dashboard .monthly-card{
+  min-height:178px!important;
+  padding:20px!important;
+  border-radius:8px!important;
+  box-sizing:border-box!important;
+}
+#appShell #dashboard .monthly-head h4{font-size:15px!important}
+#appShell #dashboard .monthly-stats{margin-top:16px!important}
+#appShell #dashboard .monthly-stats span{font-size:12px!important}
+#appShell #dashboard .monthly-stats b{font-size:32px!important}
+#appShell #dashboard .monthly-stats small{font-size:11px!important}
+#appShell #dashboard .monthly-foot{font-size:11px!important}
+
+/* Responsive symmetry */
+@media(max-width:1180px){
+  #appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:900px){
+  #appShell #dashboard{width:100%!important;padding:14px!important}
+  #appShell #dashboard .dashboard-notice-todo-grid,
+  #appShell #dashboard .request-card-grid,
+  #appShell #dashboard .monthly-grid{grid-template-columns:1fr!important}
+  #appShell #dashboard .dashboard-info-panel,
+  #appShell #dashboard .dash-section:not(.dashboard-first-section):not(.schedule-full-card),
+  #appShell #dashboard .monthly-card{padding:16px!important}
+}
+
+/* ===== <style id="v82-status-progress-and-badges"> ===== */
+/* V82 — unified count badges + shipping status progress */
+#appShell #dashboard .request-badge{
+  min-width:42px!important;
+  padding:6px 9px!important;
+  border:1px solid #cfe7d6!important;
+  border-radius:999px!important;
+  background:#eaf6ee!important;
+  color:#2f7b49!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  line-height:1!important;
+  text-align:center!important;
+  box-shadow:none!important;
+}
+
+/* Shipping overview */
+#statusBoardView .shipping-overview{
+  display:grid!important;
+  grid-template-columns:minmax(320px,.9fr) minmax(0,1.35fr)!important;
+  gap:16px!important;
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-progress-hero,
+#statusBoardView .shipping-metrics-panel{
+  background:#fff!important;
+  border:1px solid #e2e2de!important;
+  border-radius:14px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-hero{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  min-height:390px!important;
+  padding:26px!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin-bottom:18px!important;
+  color:#666!important;
+  font-size:13px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-ring{
+  --shipping-pct:0;
+  position:relative!important;
+  width:220px!important;
+  height:220px!important;
+  border-radius:50%!important;
+  display:grid!important;
+  place-items:center!important;
+  background:conic-gradient(#4fa96e calc(var(--shipping-pct) * 1%),#eceeea 0)!important;
+}
+#statusBoardView .shipping-ring:before{
+  content:""!important;
+  position:absolute!important;
+  inset:16px!important;
+  border-radius:50%!important;
+  background:#fff!important;
+  box-shadow:inset 0 0 0 1px #eef0ec!important;
+}
+#statusBoardView .shipping-ring-inner{
+  position:relative!important;
+  z-index:1!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-size:58px!important;
+  line-height:.98!important;
+  font-weight:900!important;
+  letter-spacing:-.055em!important;
+  color:#171717!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:9px!important;
+  font-size:12px!important;
+  color:#747470!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-progress-count{
+  margin-top:20px!important;
+  font-size:13px!important;
+  color:#5f655f!important;
+}
+#statusBoardView .shipping-progress-count b{
+  font-size:16px!important;
+  color:#202520!important;
+}
+#statusBoardView .shipping-metrics-panel{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:12px!important;
+  padding:16px!important;
+}
+#statusBoardView .shipping-metric{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:150px!important;
+  padding:20px!important;
+  border:1px solid #e7e8e3!important;
+  border-radius:10px!important;
+  background:#fafbf9!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-metric>span{
+  color:#737873!important;
+  font-size:11px!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-metric strong{
+  margin-top:8px!important;
+  color:#202420!important;
+  font-size:27px!important;
+  line-height:1.15!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-metric small{
+  margin-top:7px!important;
+  color:#8b8f8b!important;
+  font-size:10.5px!important;
+  line-height:1.45!important;
+}
+#statusBoardView .shipping-metric.eta{
+  background:#eef8f1!important;
+  border-color:#cfe8d7!important;
+}
+#statusBoardView .shipping-metric.eta>span{
+  color:#4f765c!important;
+}
+#statusBoardView .shipping-metric.eta strong{
+  color:#24643a!important;
+  font-size:38px!important;
+  letter-spacing:-.04em!important;
+}
+#statusBoardView .shipping-metric.qty strong,
+#statusBoardView .shipping-metric.store strong{font-variant-numeric:tabular-nums!important}
+@media(max-width:980px){
+  #statusBoardView .shipping-overview{grid-template-columns:1fr!important}
+}
+@media(max-width:620px){
+  #statusBoardView .shipping-ring{width:190px!important;height:190px!important}
+  #statusBoardView .shipping-ring-value{font-size:48px!important}
+  #statusBoardView .shipping-metrics-panel{grid-template-columns:1fr!important}
+}
+
+/* ===== <style id="v83-statusboard-large-demo"> ===== */
+/* V83 — large-screen operations board + clearly separated demo state */
+#statusBoardView .status-board-shell{
+  width:calc(100% - 12px)!important;
+  max-width:1880px!important;
+  margin:0 auto!important;
+}
+#statusBoardView .status-board-api-state{
+  background:#f3f8f4!important;
+  border-color:#d5e7da!important;
+  color:#3e7450!important;
+  font-size:11px!important;
+  padding:8px 10px!important;
+}
+#statusBoardView .shipping-overview{
+  grid-template-columns:minmax(420px,.95fr) minmax(0,1.45fr)!important;
+  min-height:560px!important;
+  gap:20px!important;
+}
+#statusBoardView .shipping-progress-hero{
+  min-height:560px!important;
+  padding:34px!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin-bottom:24px!important;
+  font-size:20px!important;
+  color:#3f4641!important;
+}
+#statusBoardView .shipping-ring{
+  width:310px!important;
+  height:310px!important;
+}
+#statusBoardView .shipping-ring:before{inset:20px!important}
+#statusBoardView .shipping-ring-value{
+  font-size:82px!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:12px!important;
+  font-size:14px!important;
+}
+#statusBoardView .shipping-progress-count{
+  margin-top:26px!important;
+  font-size:18px!important;
+}
+#statusBoardView .shipping-progress-count b{font-size:24px!important}
+#statusBoardView .shipping-metrics-panel{
+  gap:16px!important;
+  padding:20px!important;
+}
+#statusBoardView .shipping-metric{
+  min-height:245px!important;
+  padding:28px!important;
+}
+#statusBoardView .shipping-metric>span{font-size:15px!important}
+#statusBoardView .shipping-metric strong{
+  margin-top:12px!important;
+  font-size:36px!important;
+}
+#statusBoardView .shipping-metric small{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+#statusBoardView .shipping-metric.eta strong{
+  font-size:58px!important;
+}
+#statusBoardView .status-card-title h3{font-size:17px!important}
+#statusBoardView .status-data-table{font-size:12px!important}
+#statusBoardView .status-data-table th{font-size:11px!important}
+#statusBoardView .status-data-table th,
+#statusBoardView .status-data-table td{
+  height:42px!important;
+  padding:9px 10px!important;
+}
+#statusBoardView .status-summary span{font-size:12px!important}
+#statusBoardView .status-summary strong{font-size:28px!important}
+#statusBoardView .detail-day-row{font-size:12px!important}
+#statusBoardView .detail-day-row b{font-size:12px!important}
+@media(max-width:1180px){
+  #statusBoardView .shipping-overview{grid-template-columns:1fr!important;min-height:0!important}
+  #statusBoardView .shipping-progress-hero{min-height:460px!important}
+}
+@media(max-width:700px){
+  #statusBoardView .shipping-ring{width:220px!important;height:220px!important}
+  #statusBoardView .shipping-ring-value{font-size:58px!important}
+  #statusBoardView .shipping-progress-label{font-size:16px!important}
+}
+
+/* ===== <style id="v84-shipping-wallboard-layout"> ===== */
+/* V84 — true wide wallboard layout for field display */
+#statusBoardView .shipping-display-actions{
+  display:flex!important;
+  justify-content:flex-end!important;
+  align-items:center!important;
+  margin:0 2px 8px!important;
+}
+#statusBoardView .shipping-fullscreen-btn{
+  min-height:34px!important;
+  padding:0 11px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:8px!important;
+  background:#fff!important;
+  color:#555d57!important;
+  font-size:11px!important;
+  font-weight:800!important;
+  cursor:pointer!important;
+  box-shadow:none!important;
+}
+#statusBoardView .shipping-fullscreen-btn:hover{
+  background:#f5f6f4!important;
+  color:#202420!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-head,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-head{
+  min-height:76px!important;
+  padding-bottom:16px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-date,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-date{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-display-time,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-display-time{
+  font-size:38px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  flex:1 1 auto!important;
+  grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr)!important;
+  gap:24px!important;
+  min-height:0!important;
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-column,
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-column,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  min-height:0!important;
+  height:100%!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary{
+  flex:1 1 auto!important;
+  grid-template-columns:1fr 1fr!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-progress-zone,
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-eta-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-progress-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-eta-zone{
+  min-height:300px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-ring{
+  width:min(24vh,250px)!important;
+  height:min(24vh,250px)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-ring-value,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-ring-value{
+  font-size:66px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary .shipping-eta-zone>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary .shipping-eta-zone>strong{
+  font-size:68px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row{
+  grid-template-columns:1.15fr .85fr!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  display:flex!important;
+  flex-direction:column!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  flex:1 1 auto!important;
+  max-height:none!important;
+  min-height:0!important;
+  overflow:auto!important;
+}
+#statusBoardView .shipping-display-board:fullscreen{
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:34px 42px!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:auto!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-display-board:-webkit-full-screen{
+  width:100vw!important;
+  height:100vh!important;
+  min-height:100vh!important;
+  max-height:none!important;
+  margin:0!important;
+  padding:34px 42px!important;
+  border:0!important;
+  border-radius:0!important;
+  overflow:auto!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-display-board{
+  min-height:620px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  gap:0!important;
+  padding:30px 34px 26px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:16px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-head{
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:space-between!important;
+  gap:24px!important;
+  padding-bottom:18px!important;
+  border-bottom:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-display-kicker{
+  display:block!important;
+  margin-bottom:5px!important;
+  color:#7e8580!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  letter-spacing:.1em!important;
+}
+#statusBoardView .shipping-display-head h3{
+  margin:0!important;
+  font-size:30px!important;
+  line-height:1.15!important;
+  letter-spacing:-.035em!important;
+}
+#statusBoardView .shipping-display-datetime{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-end!important;
+  justify-content:flex-start!important;
+  gap:6px!important;
+  text-align:right!important;
+}
+#statusBoardView .shipping-display-date{
+  color:#767e78!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:800!important;
+  letter-spacing:-.015em!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-display-time{
+  color:#202420!important;
+  font-size:31px!important;
+  font-weight:900!important;
+  line-height:1!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-display-main{
+  flex:1 1 auto!important;
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  align-items:center!important;
+  min-height:310px!important;
+  padding:24px 0 22px!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-progress-label{
+  margin:0 0 14px!important;
+  font-size:17px!important;
+  font-weight:850!important;
+  color:#525853!important;
+}
+#statusBoardView .shipping-ring{
+  width:265px!important;
+  height:265px!important;
+}
+#statusBoardView .shipping-ring:before{inset:18px!important}
+#statusBoardView .shipping-ring-value{
+  font-size:76px!important;
+}
+#statusBoardView .shipping-ring-caption{
+  margin-top:10px!important;
+  font-size:13px!important;
+}
+#statusBoardView .shipping-eta-zone>span{
+  color:#55715d!important;
+  font-size:18px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  margin-top:12px!important;
+  color:#24643a!important;
+  font-size:86px!important;
+  line-height:1!important;
+  letter-spacing:-.05em!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  margin-top:13px!important;
+  color:#7d857f!important;
+  font-size:13px!important;
+  font-weight:700!important;
+}
+#statusBoardView .shipping-quantity-row{
+  display:grid!important;
+  grid-template-columns:minmax(0,1.3fr) minmax(260px,.7fr)!important;
+  gap:14px!important;
+  padding:16px 0!important;
+  border-top:1px solid #eceeea!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  min-height:96px!important;
+  padding:17px 22px!important;
+  border:1px solid #e6e9e5!important;
+  border-radius:10px!important;
+  background:#fafbf9!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  color:#737a75!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:7px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1.1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-quantity-main>strong em{
+  margin:0 5px!important;
+  color:#a0a5a1!important;
+  font-style:normal!important;
+  font-weight:600!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  margin-left:5px!important;
+  color:#6f766f!important;
+  font-size:15px!important;
+}
+#statusBoardView .shipping-progress-count{
+  display:none!important;
+}
+#statusBoardView .shipping-kpi-row{
+  display:grid!important;
+  grid-template-columns:repeat(3,minmax(0,1fr))!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:105px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:18px 22px!important;
+  border:1px solid #e4e7e3!important;
+  border-radius:10px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  color:#747b76!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:8px!important;
+  color:#202420!important;
+  font-size:30px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  margin-left:5px!important;
+  color:#777e78!important;
+  font-size:14px!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone{border-right:0!important;border-bottom:1px solid #eceeea!important;padding-bottom:24px!important}
+  #statusBoardView .shipping-eta-zone{padding-top:24px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-board{padding:22px 18px!important}
+  #statusBoardView .shipping-display-head h3{font-size:24px!important}
+  #statusBoardView .shipping-display-time{font-size:24px!important}
+  #statusBoardView .shipping-ring{width:220px!important;height:220px!important}
+  #statusBoardView .shipping-ring-value{font-size:60px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:62px!important}
+  #statusBoardView .shipping-kpi-row{grid-template-columns:1fr!important}
+}
+
+/* ===== <style id="v85-shipping-visibility-balance"> ===== */
+/* V85 — balanced wallboard boxes + stronger long-distance readability */
+#statusBoardView .shipping-display-board{
+  min-height:700px!important;
+}
+#statusBoardView .shipping-display-head{
+  min-height:74px!important;
+  align-items:center!important;
+  padding-bottom:20px!important;
+}
+#statusBoardView .shipping-display-kicker{
+  font-size:13px!important;
+  color:#5f6761!important;
+}
+#statusBoardView .shipping-display-head h3{
+  font-size:34px!important;
+  font-weight:950!important;
+  color:#171b18!important;
+}
+#statusBoardView .shipping-display-time{
+  font-size:38px!important;
+  color:#111!important;
+}
+#statusBoardView .shipping-display-main{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  min-height:355px!important;
+  padding:18px 0!important;
+}
+#statusBoardView .shipping-progress-zone,
+#statusBoardView .shipping-eta-zone{
+  min-height:355px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-zone{
+  border-right:1px solid #dde2dd!important;
+}
+#statusBoardView .shipping-progress-label,
+#statusBoardView .shipping-eta-zone>span{
+  font-size:20px!important;
+  color:#374038!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-ring{
+  width:292px!important;
+  height:292px!important;
+  background:conic-gradient(#3f9a5f calc(var(--shipping-pct) * 1%),#e5e9e5 0)!important;
+}
+#statusBoardView .shipping-ring:before{
+  inset:22px!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-size:84px!important;
+  color:#101510!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-ring-caption{
+  font-size:15px!important;
+  color:#4f5951!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-eta-zone{
+  background:#f5faf6!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-eta-zone>strong{
+  font-size:96px!important;
+  color:#1f6436!important;
+}
+#statusBoardView .shipping-eta-zone>small{
+  font-size:15px!important;
+  color:#59635c!important;
+  font-weight:800!important;
+}
+#statusBoardView .shipping-quantity-row{
+  grid-template-columns:1fr 1fr!important;
+  gap:16px!important;
+  padding:0 0 16px!important;
+  border-top:0!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  min-height:128px!important;
+  padding:22px 26px!important;
+  background:#f8faf8!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  font-size:19px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-kpi-row{
+  grid-template-columns:repeat(3,1fr)!important;
+  gap:16px!important;
+}
+#statusBoardView .shipping-kpi-card{
+  min-height:132px!important;
+  padding:22px 26px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-kpi-card>span{
+  font-size:15px!important;
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-kpi-card>strong{
+  margin-top:10px!important;
+  font-size:40px!important;
+  color:#161b17!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-kpi-card>strong small{
+  font-size:18px!important;
+  color:#505a52!important;
+  font-weight:850!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-display-main{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-progress-zone,
+  #statusBoardView .shipping-eta-zone{min-height:320px!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-display-head h3{font-size:28px!important}
+  #statusBoardView .shipping-display-time{font-size:30px!important}
+  #statusBoardView .shipping-ring{width:230px!important;height:230px!important}
+  #statusBoardView .shipping-ring-value{font-size:64px!important}
+  #statusBoardView .shipping-eta-zone>strong{font-size:70px!important}
+  #statusBoardView .shipping-quantity-main>strong,
+  #statusBoardView .shipping-quantity-remain>strong,
+  #statusBoardView .shipping-kpi-card>strong{font-size:34px!important}
+}
+
+/* ===== <style id="v86-shipping-store-progress"> ===== */
+/* V86 — 50:50 outbound overview + per-store progress wallboard */
+#statusBoardView .shipping-display-board{
+  min-height:740px!important;
+}
+#statusBoardView .shipping-workspace-split{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:18px!important;
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-overview-column,
+#statusBoardView .shipping-store-board{
+  min-width:0!important;
+  min-height:610px!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-overview-column{
+  display:flex!important;
+  flex-direction:column!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-overview-primary{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-progress-zone,
+#statusBoardView .shipping-overview-primary .shipping-eta-zone{
+  min-height:286px!important;
+  padding:22px 18px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-ring{
+  width:214px!important;
+  height:214px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-ring:before{
+  inset:18px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-ring-value{
+  font-size:58px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-ring-caption{
+  font-size:13px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-progress-label,
+#statusBoardView .shipping-overview-primary .shipping-eta-zone>span{
+  font-size:17px!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-eta-zone>strong{
+  font-size:58px!important;
+  letter-spacing:-.055em!important;
+}
+#statusBoardView .shipping-overview-primary .shipping-eta-zone>small{
+  font-size:13px!important;
+}
+#statusBoardView .shipping-quantity-row{
+  grid-template-columns:1.15fr .85fr!important;
+  gap:14px!important;
+  padding:0!important;
+}
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain{
+  min-height:112px!important;
+  padding:18px 20px!important;
+}
+#statusBoardView .shipping-quantity-main>span,
+#statusBoardView .shipping-quantity-remain>span,
+#statusBoardView .shipping-last-hour-card>span{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-quantity-main>strong,
+#statusBoardView .shipping-quantity-remain>strong{
+  font-size:30px!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-quantity-main>strong small,
+#statusBoardView .shipping-quantity-remain>strong small{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-last-hour-card{
+  flex:1 1 auto!important;
+  min-height:112px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:18px 20px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-last-hour-card>span{
+  color:#4f5851!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-last-hour-card>strong{
+  margin-top:9px!important;
+  color:#161b17!important;
+  font-size:34px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-last-hour-card>strong small{
+  margin-left:6px!important;
+  color:#505a52!important;
+  font-size:16px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-store-board{
+  display:flex!important;
+  flex-direction:column!important;
+  padding:22px 24px 20px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+}
+#statusBoardView .shipping-store-head{
+  display:flex!important;
+  align-items:flex-end!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding-bottom:14px!important;
+  border-bottom:1px solid #ecefec!important;
+}
+#statusBoardView .shipping-store-head>div:first-child>span{
+  display:block!important;
+  margin-bottom:3px!important;
+  color:#7b847d!important;
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  letter-spacing:.08em!important;
+}
+#statusBoardView .shipping-store-head h4{
+  margin:0!important;
+  color:#171b18!important;
+  font-size:24px!important;
+  line-height:1.1!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-count{
+  display:flex!important;
+  align-items:baseline!important;
+  gap:5px!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-count>b{
+  color:#1f6436!important;
+  font-size:27px!important;
+  line-height:1!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-count>small{
+  color:#687169!important;
+  font-size:12px!important;
+  font-weight:850!important;
+}
+#statusBoardView .shipping-store-list{
+  flex:1 1 auto!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:space-between!important;
+  gap:0!important;
+  padding-top:7px!important;
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-store-row{
+  padding:5px 0 6px!important;
+  border-bottom:1px solid #f0f2ef!important;
+}
+#statusBoardView .shipping-store-row:last-child{
+  border-bottom:0!important;
+}
+#statusBoardView .shipping-store-line{
+  display:grid!important;
+  grid-template-columns:minmax(88px,1.05fr) minmax(150px,1.45fr) 48px!important;
+  gap:10px!important;
+  align-items:center!important;
+  min-width:0!important;
+}
+#statusBoardView .shipping-store-name-wrap{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+}
+#statusBoardView .shipping-store-box{
+  flex:0 0 auto!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  min-height:20px!important;
+  padding:0 7px!important;
+  border:1px solid #dfe4df!important;
+  border-radius:999px!important;
+  background:#f6f8f6!important;
+  color:#5f685f!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  letter-spacing:.01em!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-name{
+  overflow:hidden!important;
+  color:#282e29!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:900!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-qty{
+  overflow:hidden!important;
+  color:#687169!important;
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:750!important;
+  font-variant-numeric:tabular-nums!important;
+  text-align:right!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-pct{
+  color:#2f6f43!important;
+  font-size:13px!important;
+  line-height:1.2!important;
+  font-weight:950!important;
+  font-variant-numeric:tabular-nums!important;
+  text-align:right!important;
+}
+#statusBoardView .shipping-store-track{
+  height:5px!important;
+  margin-top:5px!important;
+  overflow:hidden!important;
+  border-radius:999px!important;
+  background:#e9eeea!important;
+}
+#statusBoardView .shipping-store-fill{
+  display:block!important;
+  height:100%!important;
+  border-radius:999px!important;
+  background:#3f9a5f!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#1d6135!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#cbd2cc!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#7c857e!important;
+}
+#statusBoardView .shipping-store-empty{
+  display:grid!important;
+  min-height:420px!important;
+  place-items:center!important;
+  color:#8b938d!important;
+  font-size:13px!important;
+  font-weight:750!important;
+  text-align:center!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-workspace-split{gap:14px!important}
+  #statusBoardView .shipping-overview-primary .shipping-ring{width:190px!important;height:190px!important}
+  #statusBoardView .shipping-overview-primary .shipping-ring-value{font-size:52px!important}
+  #statusBoardView .shipping-overview-primary .shipping-eta-zone>strong{font-size:52px!important}
+  #statusBoardView .shipping-quantity-main>strong,
+  #statusBoardView .shipping-quantity-remain>strong{font-size:27px!important}
+  #statusBoardView .shipping-store-board{padding:20px!important}
+  #statusBoardView .shipping-store-line{grid-template-columns:minmax(80px,1fr) minmax(132px,1.35fr) 44px!important;gap:8px!important}
+  #statusBoardView .shipping-store-name{font-size:12px!important}
+  #statusBoardView .shipping-store-qty{font-size:10px!important}
+  #statusBoardView .shipping-store-pct{font-size:12px!important}
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-workspace-split{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-overview-column,
+  #statusBoardView .shipping-store-board{min-height:auto!important}
+  #statusBoardView .shipping-store-list{max-height:none!important}
+}
+@media(max-width:760px){
+  #statusBoardView .shipping-overview-primary{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-overview-primary .shipping-progress-zone,
+  #statusBoardView .shipping-overview-primary .shipping-eta-zone{min-height:250px!important}
+  #statusBoardView .shipping-store-board{padding:18px 16px!important}
+  #statusBoardView .shipping-store-head h4{font-size:21px!important}
+  #statusBoardView .shipping-store-line{grid-template-columns:minmax(72px,1fr) minmax(120px,1.4fr) 42px!important;gap:6px!important}
+}
+
+/* ===== <style id="v87-statusboard-analysis-polish"> ===== */
+#statusBoardView .status-board-shell{max-width:1680px!important;margin:0 auto!important}
+#statusBoardView .status-board-top{gap:24px!important;margin-bottom:22px!important}
+#statusBoardView .status-board-top h2{font-size:31px!important;line-height:1.15!important;letter-spacing:-.035em!important}
+#statusBoardView .status-board-top p{margin-top:7px!important;font-size:14px!important;line-height:1.55!important}
+#statusBoardView .status-board-tabs{display:flex!important;gap:7px!important;padding:6px!important;margin-bottom:20px!important;overflow-x:auto!important;border:1px solid #e7e9e7!important;border-radius:13px!important;background:#f6f7f6!important}
+#statusBoardView .status-board-tab{flex:0 0 auto!important;min-height:42px!important;padding:0 18px!important;border-radius:9px!important;font-size:13px!important;font-weight:850!important;letter-spacing:-.02em!important;white-space:nowrap!important}
+#statusBoardView .status-board-tab.active{background:#fff!important;box-shadow:0 1px 5px rgba(20,28,22,.08)!important}
+#statusBoardView .status-card,#statusBoardView .chart-card,#statusBoardView .table-card,#statusBoardView .detail-summary-card{border:1px solid #e3e6e3!important;border-radius:14px!important;box-shadow:none!important;background:#fff!important}
+#statusBoardView .status-card-title{gap:12px!important;padding:20px 22px 16px!important}
+#statusBoardView .status-card-title h3{font-size:18px!important;line-height:1.25!important;letter-spacing:-.025em!important}
+#statusBoardView .status-card-title small{font-size:12px!important;line-height:1.45!important;color:#7b837d!important}
+#statusBoardView .status-toolbar-card{margin-bottom:16px!important}
+#statusBoardView .prod-toolbar,#statusBoardView .cum-toolbar,#statusBoardView .detail-toolbar,#statusBoardView .store-history-toolbar{display:flex!important;align-items:flex-end!important;gap:10px!important;padding:0 22px 20px!important;flex-wrap:wrap!important}
+#statusBoardView .prod-field,#statusBoardView .cum-field,#statusBoardView .detail-field{min-width:132px!important}
+#statusBoardView .prod-field label,#statusBoardView .cum-field label,#statusBoardView .detail-field label{display:block!important;margin-bottom:6px!important;font-size:11px!important;font-weight:850!important;color:#626b64!important}
+#statusBoardView .prod-field input,#statusBoardView .cum-field select,#statusBoardView .detail-field input,#statusBoardView .detail-field select{min-height:40px!important;padding:0 11px!important;border:1px solid #dde2dd!important;border-radius:9px!important;font-size:13px!important}
+#statusBoardView .prod-layout,#statusBoardView .cum-layout,#statusBoardView .detail-layout{gap:16px!important;margin-bottom:16px!important}
+#statusBoardView .chart-wrap{height:330px!important;padding:8px 16px 18px!important}
+#statusBoardView .status-summary-grid{gap:12px!important}
+#statusBoardView .status-summary{min-height:112px!important;padding:18px 20px!important}
+#statusBoardView .status-summary span{font-size:12px!important;font-weight:850!important}
+#statusBoardView .status-summary strong{margin-top:8px!important;font-size:31px!important;line-height:1!important;letter-spacing:-.035em!important}
+#statusBoardView .status-summary small{font-size:12px!important}
+#statusBoardView .status-data-table th{padding:11px 13px!important;font-size:11px!important;letter-spacing:-.01em!important;white-space:nowrap!important}
+#statusBoardView .status-data-table td{padding:11px 13px!important;font-size:12px!important;line-height:1.35!important}
+#statusBoardView .status-table-scroll{overflow:auto!important}
+#statusBoardView .status-table-scroll.compact{max-height:390px!important}
+#statusBoardView .shipping-overview-primary .shipping-eta-zone{background:#f7f8f7!important;border-color:#dfe3df!important}
+#statusBoardView .shipping-overview-primary .shipping-eta-zone>strong{color:#202821!important}
+#statusBoardView .shipping-overview-primary .shipping-eta-zone>span{color:#4d574f!important}
+#statusBoardView .shipping-quantity-row{grid-template-columns:1fr 1fr!important}
+#statusBoardView .shipping-quantity-focus{min-height:142px!important;padding:21px 22px!important;background:#fff!important}
+#statusBoardView .shipping-quantity-main{border-color:#cddbeb!important;background:#f8fbff!important}
+#statusBoardView .shipping-quantity-remain{border-color:#eadfcf!important;background:#fffcf7!important}
+#statusBoardView .shipping-quantity-focus>span{font-size:14px!important;color:#4c5650!important}
+#statusBoardView .shipping-quantity-focus>strong{margin-top:10px!important;font-size:40px!important;line-height:1!important;letter-spacing:-.04em!important}
+#statusBoardView .shipping-quantity-main>strong{color:#1f5f9f!important}
+#statusBoardView .shipping-quantity-remain>strong{color:#8a5923!important}
+#statusBoardView .shipping-quantity-focus>strong small{font-size:17px!important;margin-left:6px!important}
+#statusBoardView .shipping-total-goal,#statusBoardView .shipping-remain-note{margin-top:11px!important;font-size:12px!important;line-height:1.35!important;color:#727b74!important;font-weight:750!important}
+#statusBoardView .shipping-total-goal b{color:#3f4a42!important;font-weight:900!important;font-variant-numeric:tabular-nums!important}
+#statusBoardView .shipping-last-hour-card{flex:0 0 auto!important;min-height:74px!important;padding:14px 18px!important;display:grid!important;grid-template-columns:1fr auto!important;align-items:center!important}
+#statusBoardView .shipping-last-hour-card>span{font-size:12px!important}
+#statusBoardView .shipping-last-hour-card>strong{margin-top:0!important;font-size:24px!important;color:#4d5650!important}
+#statusBoardView .shipping-last-hour-card>strong small{font-size:12px!important}
+#statusBoardView .shipping-store-count>b{color:#315f91!important}
+#statusBoardView .shipping-store-fill{background:#4d86bf!important}
+#statusBoardView .shipping-store-pct{color:#315f91!important}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{background:#3f9a5f!important}
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{color:#276d3e!important}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{background:#cbd2cc!important}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{color:#7c857e!important}
+#statusBoardView .store-select-field{min-width:200px!important}
+#statusBoardView .store-history-analysis{display:grid!important;grid-template-columns:minmax(0,1.65fr) minmax(300px,.75fr)!important;gap:16px!important;margin-bottom:16px!important}
+#statusBoardView .store-history-chart-card{min-width:0!important}
+#statusBoardView .store-history-chart-wrap{position:relative!important;height:390px!important;padding:4px 18px 20px!important}
+#statusBoardView .store-history-summary{border:1px solid #e3e6e3!important;border-radius:14px!important;background:#fff!important;padding:20px!important}
+#statusBoardView .store-summary-title{padding-bottom:15px!important;border-bottom:1px solid #ecefec!important}
+#statusBoardView .store-summary-title span{display:block!important;font-size:11px!important;font-weight:850!important;color:#7b837d!important}
+#statusBoardView .store-summary-title strong{display:block!important;margin-top:5px!important;font-size:21px!important;line-height:1.2!important;letter-spacing:-.03em!important}
+#statusBoardView .store-summary-grid{display:grid!important;grid-template-columns:1fr 1fr!important;gap:10px!important;margin-top:14px!important}
+#statusBoardView .store-summary-grid>div{min-height:105px!important;padding:14px!important;border-radius:10px!important;background:#f7f8f7!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;text-align:center!important}
+#statusBoardView .store-summary-title{text-align:center!important}
+#statusBoardView .store-summary-title span,#statusBoardView .store-summary-title strong,#statusBoardView .store-summary-grid span,#statusBoardView .store-summary-grid b,#statusBoardView .store-summary-grid small{text-align:center!important;width:100%!important}
+#statusBoardView .store-summary-grid span{display:block!important;font-size:11px!important;font-weight:800!important;color:#737c75!important}
+#statusBoardView .store-summary-grid b{display:block!important;margin-top:8px!important;font-size:22px!important;line-height:1!important;letter-spacing:-.03em!important}
+#statusBoardView .store-summary-grid small{display:block!important;margin-top:6px!important;font-size:11px!important;color:#7b837d!important}
+#statusBoardView .store-history-scroll{max-height:430px!important}
+#statusBoardView .store-history-table-card td:nth-child(3),#statusBoardView .store-history-table-card td:nth-child(4){font-variant-numeric:tabular-nums!important;font-weight:800!important}
+#statusBoardView .store-history-status{display:inline-flex!important;min-width:48px!important;justify-content:center!important;padding:4px 8px!important;border-radius:999px!important;font-size:10px!important;font-weight:900!important}
+#statusBoardView .store-history-status.done{background:#edf7f0!important;color:#2d7142!important}
+#statusBoardView .store-history-status.progress{background:#eef5fc!important;color:#315f91!important}
+@media(max-width:1180px){#statusBoardView .store-history-analysis{grid-template-columns:1fr!important}}
+@media(max-width:760px){#statusBoardView .status-board-tab{padding:0 14px!important}#statusBoardView .shipping-quantity-row{grid-template-columns:1fr!important}#statusBoardView .shipping-quantity-focus>strong{font-size:35px!important}#statusBoardView .store-history-chart-wrap{height:330px!important}}
+
+/* ===== <style id="v88-statusboard-interaction-polish"> ===== */
+/* V88 — active tab contrast + API-ready productivity + natural store-history flow */
+#statusBoardView .status-board-tab.active{
+  background:#3b6fa5!important;
+  color:#fff!important;
+  border-color:#3b6fa5!important;
+  box-shadow:0 2px 7px rgba(45,83,122,.18)!important;
+}
+#statusBoardView .status-board-tab:not(.active){color:#4c5660!important}
+#statusBoardView .prod-toolbar-readonly{
+  display:grid!important;
+  grid-template-columns:minmax(170px,.85fr) repeat(3,minmax(150px,1fr))!important;
+  gap:12px!important;
+  align-items:stretch!important;
+}
+#statusBoardView .prod-toolbar-readonly .prod-field{
+  min-width:0!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:flex-end!important;
+}
+#statusBoardView .prod-api-metric{
+  min-height:78px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  padding:13px 16px!important;
+  border:1px solid #e0e4e1!important;
+  border-radius:10px!important;
+  background:#f8f9f8!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .prod-api-metric>span{
+  font-size:11px!important;
+  line-height:1.2!important;
+  font-weight:850!important;
+  color:#687169!important;
+}
+#statusBoardView .prod-api-metric>strong{
+  margin-top:5px!important;
+  font-size:24px!important;
+  line-height:1!important;
+  letter-spacing:-.035em!important;
+  font-weight:950!important;
+  color:#202620!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .prod-api-metric>strong b{font:inherit!important}
+#statusBoardView .prod-api-metric>small{
+  margin-top:6px!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-weight:700!important;
+  color:#929993!important;
+}
+#statusBoardView .store-history-modebar{
+  padding:0 22px 12px!important;
+}
+#statusBoardView .store-history-segment{
+  display:inline-grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:4px!important;
+  padding:4px!important;
+  border:1px solid #e1e5e2!important;
+  border-radius:10px!important;
+  background:#f4f6f5!important;
+}
+#statusBoardView .store-mode-btn{
+  min-width:104px!important;
+  min-height:34px!important;
+  padding:0 14px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  color:#667068!important;
+  font-size:12px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+}
+#statusBoardView .store-mode-btn.active{
+  background:#3b6fa5!important;
+  color:#fff!important;
+  box-shadow:0 1px 4px rgba(45,83,122,.14)!important;
+}
+#statusBoardView .store-history-toolbar{padding-top:0!important}
+#statusBoardView .store-history-on-demand{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:18px!important;
+  margin-top:16px!important;
+  padding:16px 18px!important;
+  border:1px solid #e3e6e3!important;
+  border-radius:12px!important;
+  background:#fafbfa!important;
+}
+#statusBoardView .store-history-on-demand>div:first-child>span{
+  display:block!important;
+  font-size:14px!important;
+  font-weight:900!important;
+  color:#303731!important;
+}
+#statusBoardView .store-history-on-demand>div:first-child>small{
+  display:block!important;
+  margin-top:4px!important;
+  font-size:11px!important;
+  line-height:1.35!important;
+  color:#818982!important;
+}
+#statusBoardView .store-history-on-demand-actions{
+  display:flex!important;
+  align-items:center!important;
+  gap:8px!important;
+}
+#statusBoardView .store-history-on-demand-actions input{
+  min-height:38px!important;
+  padding:0 10px!important;
+  border:1px solid #dde2dd!important;
+  border-radius:8px!important;
+  font-size:12px!important;
+}
+#statusBoardView .store-history-table-card{margin-top:12px!important}
+#statusBoardView .store-history-table-card .status-card-title{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+}
+#statusBoardView .store-history-close{
+  min-height:30px!important;
+  padding:0 10px!important;
+  border:1px solid #dfe3df!important;
+  border-radius:7px!important;
+  background:#fff!important;
+  color:#626b64!important;
+  font-size:11px!important;
+  font-weight:850!important;
+  cursor:pointer!important;
+}
+#statusBoardView .store-history-chart-wrap{height:360px!important}
+#statusBoardView .store-history-summary{display:flex!important;flex-direction:column!important}
+#statusBoardView .store-summary-grid{flex:1!important}
+@media(max-width:1180px){
+  #statusBoardView .prod-toolbar-readonly{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  #statusBoardView .prod-toolbar-readonly{grid-template-columns:1fr!important}
+  #statusBoardView .store-history-modebar{padding-left:18px!important;padding-right:18px!important}
+  #statusBoardView .store-history-segment{display:grid!important;width:100%!important}
+  #statusBoardView .store-mode-btn{min-width:0!important}
+  #statusBoardView .store-history-on-demand{align-items:stretch!important;flex-direction:column!important}
+  #statusBoardView .store-history-on-demand-actions{display:grid!important;grid-template-columns:1fr auto!important}
+}
+
+/* ===== <style id="v89-unit-conversion-productivity"> ===== */
+#statusBoardView .prod-date-metric input{
+  width:100%!important;min-height:0!important;height:auto!important;padding:0!important;border:0!important;background:transparent!important;
+  color:#202520!important;font-size:22px!important;font-weight:900!important;line-height:1.15!important;box-shadow:none!important
+}
+#statusBoardView .prod-date-metric input:focus{outline:none!important;box-shadow:none!important}
+#statusBoardView .prod-staff-input-wrap{
+  display:flex!important;align-items:center!important;justify-content:flex-start!important;gap:5px!important;
+  margin-top:5px!important;min-height:24px!important
+}
+#statusBoardView .prod-staff-input-wrap input{
+  width:64px!important;height:24px!important;padding:0!important;border:0!important;border-bottom:1px solid #cfd5d1!important;border-radius:0!important;
+  background:transparent!important;text-align:center!important;font-size:24px!important;line-height:24px!important;font-weight:950!important;
+  color:#202620!important;font-variant-numeric:tabular-nums!important;box-shadow:none!important
+}
+#statusBoardView .prod-staff-input-wrap input:focus{
+  outline:0!important;border-bottom-color:#7f8a82!important;box-shadow:none!important
+}
+#statusBoardView .prod-staff-input-wrap input::-webkit-outer-spin-button,
+#statusBoardView .prod-staff-input-wrap input::-webkit-inner-spin-button{-webkit-appearance:none!important;margin:0!important}
+#statusBoardView .prod-staff-input-wrap input[type=number]{appearance:textfield!important;-moz-appearance:textfield!important}
+#statusBoardView .prod-staff-input-wrap b{
+  margin:0!important;font-size:15px!important;line-height:24px!important;font-weight:850!important;color:#59625b!important
+}
+#statusBoardView .shipping-unit-values{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
+#statusBoardView .shipping-unit-values strong{margin:0!important;padding:10px 12px;border:1px solid #e7e9e7;border-radius:9px;background:#fff}
+#statusBoardView .shipping-unit-values strong b{font:inherit!important}
+#statusBoardView .shipping-unit-values strong small{margin-left:5px!important}
+#statusBoardView .status-filter-cards{display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;padding:0 22px 18px}
+#statusBoardView .status-filter-card{min-width:180px!important;flex:0 1 220px!important}
+#statusBoardView .status-filter-card input,
+#statusBoardView .status-filter-card select{
+  width:100%!important;margin-top:5px!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;
+  color:#202620!important;font-size:19px!important;font-weight:900!important;line-height:1.25!important;outline:0!important
+}
+#statusBoardView .status-filter-card select{appearance:auto!important}
+#statusBoardView .status-filter-btn{align-self:center!important;height:40px!important;margin-top:0!important}
+#statusBoardView .product-outbound-tabs{display:flex;gap:6px;margin:0 0 14px;padding:4px;border:1px solid #e1e5e2;border-radius:11px;background:#f7f8f7;width:max-content;max-width:100%}
+#statusBoardView .product-outbound-tab{border:0;background:transparent;color:#687169;padding:9px 16px;border-radius:8px;font-size:11px;font-weight:850;cursor:pointer}
+#statusBoardView .product-outbound-tab.active{background:#315a7d;color:#fff;box-shadow:0 1px 3px rgba(49,90,125,.16)}
+#statusBoardView .product-outbound-panel{display:none}
+#statusBoardView .product-outbound-panel.active{display:block}
+#statusBoardView .product-period-label{margin:0 22px 16px;padding-top:2px;font-size:11px;font-weight:800;color:#667169}
+#statusBoardView .product-analysis-main{display:grid;grid-template-columns:minmax(0,1.45fr) minmax(300px,.55fr);gap:14px;margin-top:14px}
+#statusBoardView .product-donut-card{min-height:400px}
+#statusBoardView .product-donut-wrap{position:relative;height:320px;padding:8px 18px 18px}
+#statusBoardView .product-analysis-summary{border:1px solid #e1e5e2;border-radius:14px;background:#fff;padding:20px}
+#statusBoardView .product-analysis-summary-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-head span{font-size:13px;font-weight:900}
+#statusBoardView .product-analysis-summary-head small{font-size:10px;color:#929993}
+#statusBoardView .product-analysis-summary-grid{display:grid;grid-template-columns:1fr 1fr;height:calc(100% - 36px)}
+#statusBoardView .product-analysis-summary-grid>div{display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:112px;padding:14px;border-bottom:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-grid>div:nth-child(odd){border-right:1px solid #edf0ed}
+#statusBoardView .product-analysis-summary-grid>div:nth-last-child(-n+2){border-bottom:0}
+#statusBoardView .product-analysis-summary-grid span{font-size:10px;color:#788179;font-weight:800}
+#statusBoardView .product-analysis-summary-grid b{margin-top:7px;font-size:22px;color:#222a24}
+#statusBoardView .product-analysis-summary-grid small{margin-top:4px;font-size:10px;color:#899188}
+#statusBoardView .product-month-title{display:flex;justify-content:center;align-items:baseline;gap:8px;margin:22px 0 10px;color:#69736b;font-size:11px;font-weight:800}
+#statusBoardView .product-month-title b{font-size:13px;color:#283029}
+#statusBoardView .product-volume-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+#statusBoardView .product-volume-card{border:1px solid #e1e5e2;border-radius:14px;background:#fff;padding:20px 22px}
+#statusBoardView .product-volume-card>span{font-size:11px;font-weight:850;color:#6d776f}
+#statusBoardView .product-volume-card>strong{display:block;margin:10px 0 15px;font-size:30px;line-height:1;color:#202620}
+#statusBoardView .product-volume-card>strong small{margin-left:5px;font-size:12px;color:#737d75}
+#statusBoardView .product-volume-card>div{display:flex;justify-content:space-between;padding:8px 0;border-top:1px solid #eef0ee;font-size:11px}
+#statusBoardView .product-volume-card em{font-style:normal;color:#818a83}
+#statusBoardView .product-top-card{margin-top:14px}
+#statusBoardView .product-top-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:0 18px 18px}
+#statusBoardView .product-top-grid h4{margin:0 0 8px;font-size:11px;color:#626d64}
+#statusBoardView .product-detail-head{display:flex;justify-content:space-between;gap:20px;align-items:center;margin:14px 0;padding:18px 20px;border:1px solid #e1e5e2;border-radius:14px;background:#fff}
+#statusBoardView .product-detail-head>div:first-child span{font-size:10px;color:#758078;font-weight:800}
+#statusBoardView .product-detail-head h3{margin:4px 0 2px;font-size:20px}
+#statusBoardView .product-detail-head small{font-size:10px;color:#909891}
+#statusBoardView .product-detail-kpis{display:grid;grid-template-columns:repeat(3,minmax(110px,1fr));gap:8px}
+#statusBoardView .product-detail-kpis>div{text-align:center;padding:10px 16px;border-left:1px solid #edf0ed}
+#statusBoardView .product-detail-kpis span{display:block;font-size:9px;color:#838d85}
+#statusBoardView .product-detail-kpis b{display:inline-block;margin-top:5px;font-size:18px}
+#statusBoardView .product-detail-kpis small{margin-left:4px}
+#statusBoardView .product-date-table-card{margin-top:14px}
+#statusBoardView .product-search-card{min-width:260px!important;flex:1 1 300px!important}
+#statusBoardView .product-search-card input{font-size:14px!important}
+@media(max-width:900px){
+  #statusBoardView .product-analysis-main,#statusBoardView .product-volume-grid,#statusBoardView .product-top-grid{grid-template-columns:1fr}
+  #statusBoardView .product-detail-head{align-items:flex-start;flex-direction:column}
+  #statusBoardView .product-detail-kpis{width:100%}
+}
+@media(max-width:620px){
+  #statusBoardView .status-filter-card{min-width:100%!important;flex-basis:100%!important}
+  #statusBoardView .product-detail-kpis{grid-template-columns:1fr 1fr 1fr}
+}
+.unit-conversion-shell{display:flex;flex-direction:column;gap:14px}
+.unit-conversion-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.unit-conversion-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;margin:14px 0}
+.unit-conversion-toolbar .grow{flex:1 1 280px}
+.unit-conversion-table input{width:120px;height:32px;border:1px solid #dce2e5;border-radius:7px;padding:0 8px;text-align:right}
+.unit-conversion-status{display:inline-flex;padding:4px 8px;border-radius:999px;font-size:10px;font-weight:850}
+.unit-conversion-status.registered{background:#edf7f0;color:#2d7142}
+.unit-conversion-status.missing{background:#fff3e8;color:#9a5d24}
+.unit-conversion-updated{color:#7b858d;font-size:10px}
+@media(max-width:760px){.unit-conversion-summary{grid-template-columns:1fr}.unit-conversion-toolbar{align-items:stretch}.unit-conversion-toolbar .field{width:100%}}
+
+/* ===== <style id="v93-statusboard-issue-menu-style"> ===== */
+/* Status-board local navigation mirrors the Issues submenu visual language. */
+#statusBoardView .status-board-tabs,
+#statusBoardView .store-history-segment,
+#statusBoardView .product-outbound-tabs{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  width:max-content!important;
+  max-width:100%!important;
+  margin-bottom:14px!important;
+  padding:3px!important;
+  border:0!important;
+  border-radius:7px!important;
+  background:transparent!important;
+  box-shadow:none!important;
+  overflow-x:auto!important;
+}
+
+#statusBoardView .status-board-tab,
+#statusBoardView .store-mode-btn,
+#statusBoardView .product-outbound-tab{
+  flex:0 0 auto!important;
+  min-width:0!important;
+  min-height:35px!important;
+  padding:7px 10px!important;
+  border:1px solid transparent!important;
+  border-radius:6px!important;
+  background:transparent!important;
+  color:#666662!important;
+  box-shadow:none!important;
+  font-size:12.5px!important;
+  font-weight:520!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  white-space:nowrap!important;
+  cursor:pointer!important;
+  transition:background .14s ease,color .14s ease,border-color .14s ease!important;
+}
+
+#statusBoardView .status-board-tab:hover,
+#statusBoardView .store-mode-btn:hover,
+#statusBoardView .product-outbound-tab:hover{
+  background:#f0f0ed!important;
+  color:#111!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+}
+
+#statusBoardView .status-board-tab.active,
+#statusBoardView .store-mode-btn.active,
+#statusBoardView .product-outbound-tab.active{
+  background:#e9e9e5!important;
+  color:#111!important;
+  border-color:transparent!important;
+  box-shadow:none!important;
+  font-weight:700!important;
+}
+
+#statusBoardView .status-board-tab.active:after,
+#statusBoardView .store-mode-btn.active:after,
+#statusBoardView .product-outbound-tab.active:after{
+  content:none!important;
+  display:none!important;
+}
+
+#statusBoardView .store-history-modebar{
+  padding:0 22px 10px!important;
+}
+
+#statusBoardView .store-history-modebar .store-history-segment{
+  margin:0!important;
+}
+
+#statusBoardView .product-outbound-tabs{
+  margin:0 0 14px!important;
+}
+
+@media(max-width:760px){
+  #statusBoardView .status-board-tabs,
+  #statusBoardView .store-history-segment,
+  #statusBoardView .product-outbound-tabs{
+    width:100%!important;
+  }
+  #statusBoardView .status-board-tab,
+  #statusBoardView .store-mode-btn,
+  #statusBoardView .product-outbound-tab{
+    min-height:34px!important;
+    padding:7px 9px!important;
+    font-size:12px!important;
+  }
+}
+
+/* ===== <style id="v94-statusboard-issue-content-style"> ===== */
+/* Status-board content adopts the Issues visual language.
+   Charts/canvas geometry and chart type are intentionally untouched. */
+
+#statusBoardView{
+  --status-issue-ink:var(--lush-ink,#1d1d1b);
+  --status-issue-kraft:var(--lush-kraft,#d8d0c2);
+  --status-issue-paper:var(--lush-paper,#f5f3ee);
+  --status-issue-card:#fff;
+}
+
+#statusBoardView .status-board-shell{
+  background:transparent!important;
+}
+
+/* Header: same black banner language used by Issues */
+#statusBoardView .status-board-top{
+  position:relative!important;
+  overflow:hidden!important;
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:16px!important;
+  padding:22px 28px!important;
+  margin-bottom:16px!important;
+  border:0!important;
+  border-radius:18px!important;
+  background:#1d1d1b!important;
+  background-image:
+    radial-gradient(circle at 93% 22%,rgba(232,123,164,.28) 0 40px,transparent 41px),
+    radial-gradient(circle at 85% 88%,rgba(27,175,122,.22) 0 26px,transparent 27px),
+    radial-gradient(circle at 98% 74%,rgba(237,161,0,.22) 0 15px,transparent 16px)!important;
+  box-shadow:none!important;
+}
+#statusBoardView .status-board-top .eyebrow{color:#cfcac0!important}
+#statusBoardView .status-board-top h2{color:#fff!important}
+#statusBoardView .status-board-top p{color:#d9d4cb!important;max-width:900px!important}
+#statusBoardView .status-board-api-state{
+  background:transparent!important;
+  color:#fff!important;
+  border:1.5px solid rgba(255,255,255,.38)!important;
+  border-radius:999px!important;
+  box-shadow:none!important;
+}
+
+/* Main content cards: same outlined white cards as Issues */
+#statusBoardView .status-card,
+#statusBoardView .chart-card,
+#statusBoardView .table-card,
+#statusBoardView .detail-summary-card,
+#statusBoardView .shipping-display-board,
+#statusBoardView .shipping-overview-primary,
+#statusBoardView .shipping-store-board,
+#statusBoardView .store-history-summary,
+#statusBoardView .store-history-on-demand,
+#statusBoardView .product-analysis-summary,
+#statusBoardView .product-volume-card,
+#statusBoardView .product-detail-head{
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+
+/* subtle accent strip, matching Issue panels without altering chart area */
+#statusBoardView .status-card,
+#statusBoardView .chart-card,
+#statusBoardView .table-card,
+#statusBoardView .detail-summary-card,
+#statusBoardView .shipping-display-board{
+  position:relative!important;
+  overflow:hidden!important;
+}
+#statusBoardView .status-card:before,
+#statusBoardView .chart-card:before,
+#statusBoardView .table-card:before,
+#statusBoardView .detail-summary-card:before,
+#statusBoardView .shipping-display-board:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  right:0!important;
+  top:0!important;
+  height:5px!important;
+  background:var(--lush-pink,#e87ba4)!important;
+  z-index:1!important;
+}
+#statusBoardView .chart-card:nth-of-type(2):before,
+#statusBoardView .table-card:nth-of-type(2):before{background:var(--lush-violet,#8f79c7)!important}
+#statusBoardView .chart-card:nth-of-type(3):before,
+#statusBoardView .table-card:nth-of-type(3):before{background:var(--lush-mint,#1baf7a)!important}
+
+/* Titles */
+#statusBoardView .status-card-title{
+  position:relative!important;
+  z-index:2!important;
+}
+#statusBoardView .status-card-title h3,
+#statusBoardView .shipping-display-head h3,
+#statusBoardView .shipping-store-head h4{
+  color:#1d1d1b!important;
+  font-weight:800!important;
+  letter-spacing:-.02em!important;
+}
+#statusBoardView .status-card-title small,
+#statusBoardView .shipping-display-kicker,
+#statusBoardView .shipping-store-head span{
+  color:#7a7a74!important;
+}
+
+/* KPI/summary cards: white + kraft outline + left accent bar */
+#statusBoardView .status-summary,
+#statusBoardView .store-summary-grid>div,
+#statusBoardView .store-product-kpis>div,
+#statusBoardView .product-detail-kpis>div,
+#statusBoardView .shipping-quantity-main,
+#statusBoardView .shipping-quantity-remain,
+#statusBoardView .shipping-kpi-card,
+#statusBoardView .shipping-last-hour-card{
+  position:relative!important;
+  overflow:hidden!important;
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:14px!important;
+  box-shadow:none!important;
+}
+#statusBoardView .status-summary:before,
+#statusBoardView .store-summary-grid>div:before,
+#statusBoardView .store-product-kpis>div:before,
+#statusBoardView .shipping-kpi-card:before{
+  content:""!important;
+  position:absolute!important;
+  left:0!important;
+  top:0!important;
+  bottom:0!important;
+  width:6px!important;
+  background:var(--lush-pink,#e87ba4)!important;
+}
+#statusBoardView .status-summary:nth-child(2):before,
+#statusBoardView .store-summary-grid>div:nth-child(2):before,
+#statusBoardView .store-product-kpis>div:nth-child(2):before,
+#statusBoardView .shipping-kpi-card:nth-child(2):before{background:var(--lush-mint,#1baf7a)!important}
+#statusBoardView .status-summary:nth-child(3):before,
+#statusBoardView .store-summary-grid>div:nth-child(3):before,
+#statusBoardView .store-product-kpis>div:nth-child(3):before,
+#statusBoardView .shipping-kpi-card:nth-child(3):before{background:var(--lush-yellow,#eda100)!important}
+#statusBoardView .store-summary-grid>div:nth-child(4):before{background:var(--lush-violet,#8f79c7)!important}
+
+/* filters and readonly metric blocks */
+#statusBoardView .status-filter-cards,
+#statusBoardView .prod-toolbar-readonly{
+  background:#fff!important;
+}
+#statusBoardView .prod-api-metric,
+#statusBoardView .status-filter-card{
+  background:#fff!important;
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:12px!important;
+  box-shadow:none!important;
+}
+#statusBoardView .prod-api-metric>span,
+#statusBoardView .status-filter-card>span{
+  color:#687078!important;
+}
+#statusBoardView .prod-api-metric>strong,
+#statusBoardView .status-filter-card input,
+#statusBoardView .status-filter-card select{
+  color:#1d1d1b!important;
+}
+
+/* tables */
+#statusBoardView .status-data-table{
+  background:#fff!important;
+}
+#statusBoardView .status-data-table th{
+  background:#f6f7f8!important;
+  color:#5c6670!important;
+  border-bottom:1px solid #dfe3e6!important;
+}
+#statusBoardView .status-data-table td{
+  background:#fff!important;
+  border-bottom:1px solid #eceeef!important;
+  color:#2f363b!important;
+}
+#statusBoardView .status-table-scroll{
+  border:1.5px solid var(--status-issue-kraft)!important;
+  border-radius:12px!important;
+  overflow:auto!important;
+}
+#statusBoardView .table-card .status-table-scroll{
+  border-left:0!important;
+  border-right:0!important;
+  border-bottom:0!important;
+  border-radius:0!important;
+}
+
+/* Detail/list areas */
+#statusBoardView .detail-day-row{
+  background:#fff!important;
+  border-bottom:1px solid #eceeef!important;
+}
+#statusBoardView .detail-day-row:hover,
+#statusBoardView .detail-day-row.active{
+  background:#f4f4f1!important;
+}
+#statusBoardView .store-history-on-demand{
+  background:#fafaf8!important;
+}
+
+/* shipping: visual language only; keep ring/progress geometry intact */
+#statusBoardView .shipping-display-head{
+  border-bottom:1px solid #deded8!important;
+}
+#statusBoardView .shipping-progress-zone{
+  background:#fff!important;
+}
+#statusBoardView .shipping-eta-zone{
+  background:#fafaf8!important;
+  border-color:var(--status-issue-kraft)!important;
+}
+#statusBoardView .shipping-store-track{
+  background:#ecece8!important;
+}
+#statusBoardView .shipping-store-row{
+  border-bottom-color:#ecece8!important;
+}
+
+/* Charts are intentionally not restyled:
+   canvas dimensions, chart type, line/doughnut rendering, point sizes and axes remain as-is. */
+#statusBoardView canvas{
+  filter:none!important;
+}
+
+/* buttons inside content */
+#statusBoardView .status-filter-btn,
+#statusBoardView .store-history-close{
+  border-radius:8px!important;
+  box-shadow:none!important;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  #statusBoardView .status-board-top{
+    padding:18px!important;
+    align-items:flex-start!important;
+    flex-direction:column!important;
+  }
+}
+
+/* ===== <style id="v95-productivity-integrated-layout"> ===== */
+#statusBoardView .productivity-subtabs{
+  display:flex!important;align-items:center!important;gap:4px!important;width:max-content!important;max-width:100%!important;
+  margin:0 0 14px!important;padding:3px!important;background:transparent!important;border:0!important;overflow-x:auto!important;
+}
+#statusBoardView .productivity-subtab{
+  flex:0 0 auto!important;min-height:35px!important;padding:7px 10px!important;border:1px solid transparent!important;
+  border-radius:6px!important;background:transparent!important;color:#666662!important;box-shadow:none!important;
+  font-size:12.5px!important;font-weight:520!important;white-space:nowrap!important;cursor:pointer!important;
+}
+#statusBoardView .productivity-subtab:hover{background:#f0f0ed!important;color:#111!important}
+#statusBoardView .productivity-subtab.active{background:#e9e9e5!important;color:#111!important;font-weight:700!important}
+#statusBoardView .productivity-section{display:none}
+#statusBoardView .productivity-section.active{display:block}
+#statusBoardView .productivity-today-toolbar{
+  grid-template-columns:minmax(125px,.875fr) minmax(125px,.875fr) minmax(145px,1fr) minmax(145px,1fr) minmax(175px,1.25fr) minmax(190px,1.25fr)!important;
+  gap:10px!important;
+}
+#statusBoardView .productivity-today-toolbar .prod-api-metric{min-width:0!important}
+#statusBoardView .productivity-today-toolbar .productivity-metric-primary>strong{
+  display:flex!important;align-items:baseline!important;gap:6px!important;white-space:nowrap!important;
+  font-size:29px!important;
+}
+#statusBoardView .productivity-today-toolbar .productivity-metric-primary>strong em{
+  font-style:normal!important;font-size:10px!important;font-weight:850!important;color:#707970!important;letter-spacing:-.01em!important;
+}
+#statusBoardView .productivity-today-toolbar .productivity-metric-elapsed>strong{font-size:21px!important;white-space:nowrap!important}
+#statusBoardView .productivity-today-head{align-items:flex-start!important}
+#statusBoardView .productivity-today-head>div{min-width:0}
+#statusBoardView .productivity-history-staff-btn{align-self:flex-start!important;min-height:36px!important;white-space:nowrap!important;margin-left:auto!important}
+#statusBoardView .past-staff-editor{
+  margin:0 22px 20px!important;padding:14px!important;border:1.5px solid var(--status-issue-kraft,#e4d9c7)!important;
+  border-radius:12px!important;background:#fafaf8!important;display:flex;align-items:stretch;gap:10px;flex-wrap:wrap;
+}
+#statusBoardView .past-staff-editor[hidden]{display:none!important}
+#statusBoardView .past-staff-editor .status-filter-card{flex:1 1 190px!important}
+#statusBoardView .productivity-detail-close-row{display:flex;justify-content:flex-end;margin-top:12px}
+@media(max-width:1180px){
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(3,minmax(0,1fr))!important}
+}
+@media(max-width:760px){
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:repeat(2,minmax(0,1fr))!important}
+}
+@media(max-width:620px){
+  #statusBoardView .productivity-subtabs{width:100%!important}
+  #statusBoardView .productivity-today-toolbar{grid-template-columns:1fr!important}
+}
+
+/* ===== <style id="v96-shipping-focus-dark-wallboard"> ===== */
+/* V96 — shipping status focus, store state clarity, fullscreen dark wallboard */
+#statusBoardView .shipping-store-row{
+  padding:8px 0 9px!important;
+}
+#statusBoardView .shipping-store-line{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) auto 62px!important;
+  gap:10px!important;
+  align-items:center!important;
+}
+#statusBoardView .shipping-store-name{
+  min-width:0!important;
+  font-size:13px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-store-main{
+  min-width:0!important;
+  display:flex!important;
+  align-items:baseline!important;
+  gap:7px!important;
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-store-meta-inline{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  overflow:hidden!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  white-space:nowrap!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-meta-inline strong{
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+
+#statusBoardView .shipping-store-status{
+  min-width:38px!important;
+  min-height:20px!important;
+  padding:0 7px!important;
+  display:inline-flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border-radius:999px!important;
+  font-size:9px!important;
+  line-height:1!important;
+  font-weight:900!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-status.active{
+  border:1px solid #bad9c2!important;
+  background:#eef7f0!important;
+  color:#2f7a46!important;
+}
+#statusBoardView .shipping-store-status.waiting{
+  border:1px solid #d7ddd8!important;
+  background:transparent!important;
+  color:#818982!important;
+}
+#statusBoardView .shipping-store-status.complete{
+  border:1px solid #cfd4d0!important;
+  background:#e8ebe8!important;
+  color:#606762!important;
+}
+#statusBoardView .shipping-store-pct{
+  font-size:16px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-track{
+  height:7px!important;
+  margin-top:7px!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{
+  background:#aeb5af!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#69706b!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-name{
+  color:#69706b!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-meta,
+#statusBoardView .shipping-store-row.complete .shipping-store-meta strong{
+  color:#919892!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#cfd5d0!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#7e8780!important;
+}
+#statusBoardView .shipping-quantity-remain>strong{
+  font-size:34px!important;
+  font-weight:950!important;
+}
+
+
+/* Standard view: keep all demo stores visible without scrolling */
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-board{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-list{
+  display:grid!important;
+  grid-template-rows:repeat(15,minmax(0,1fr))!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  padding-top:4px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-row{
+  min-height:0!important;
+  padding:3px 0 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-line{
+  grid-template-columns:minmax(0,1fr) auto 56px!important;
+  gap:7px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-status{
+  min-width:32px!important;
+  min-height:16px!important;
+  padding:0 5px!important;
+  font-size:8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-track{
+  height:4px!important;
+  margin-top:3px!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{font-size:10px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{font-size:13px!important}
+  }
+
+/* Fullscreen: keep light theme; layout-only overrides follow */
+/* Fullscreen store list must fit in one screen without scrolling */
+#statusBoardView .shipping-display-board:fullscreen,
+#statusBoardView .shipping-display-board:-webkit-full-screen{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  overflow:hidden!important;
+  padding:18px 20px 14px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-head,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-head{
+  flex:0 0 auto!important;
+  padding-bottom:10px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  flex:1 1 auto!important;
+  min-height:0!important;
+  max-height:none!important;
+  overflow:hidden!important;
+  display:grid!important;
+  grid-template-rows:repeat(15,minmax(0,1fr))!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  gap:0!important;
+  padding-top:4px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  min-height:0!important;
+  padding:3px 0 4px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-line,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-line{
+  grid-template-columns:minmax(0,1fr) auto 60px!important;
+  gap:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:12px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-status,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-status{
+  min-height:17px!important;
+  min-width:34px!important;
+  padding:0 6px!important;
+  font-size:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-track,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-track{
+  height:5px!important;
+  margin-top:3px!important;
+}
+
+/* Fullscreen visual centering for the two headline panels */
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-primary,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-primary{
+  align-items:stretch!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-zone,
+#statusBoardView .shipping-display-board:fullscreen .shipping-eta-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-zone,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-eta-zone{
+  justify-content:center!important;
+}
+
+/* ===== <style id="v97-shipping-store-inline-columns"> ===== */
+#statusBoardView .shipping-store-line{
+  grid-template-columns:minmax(82px,.9fr) minmax(145px,1.35fr) auto 58px!important;
+  gap:8px!important;
+}
+#statusBoardView .shipping-store-name{
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  min-width:0!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  flex:0 0 auto!important;
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-line,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-line{
+  grid-template-columns:minmax(95px,.9fr) minmax(180px,1.35fr) auto 62px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info{
+  color:#8f9992!important;
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  color:#c8ceca!important;
+  font-size:11px!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-store-line{
+    grid-template-columns:minmax(72px,.8fr) minmax(120px,1.3fr) auto 52px!important;
+    gap:6px!important;
+  }
+  #statusBoardView .shipping-store-inline-info{font-size:9px!important}
+  #statusBoardView .shipping-store-inline-info strong{font-size:9px!important}
+}
+
+/* ===== <style id="v98-shipping-store-readability"> ===== */
+/* V98 — improve store list readability while preserving one-screen view */
+#statusBoardView .shipping-store-name{
+  font-size:14px!important;
+  font-weight:950!important;
+  letter-spacing:-.01em!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  font-size:11px!important;
+  color:#687169!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-store-pct{
+  font-size:17px!important;
+}
+#statusBoardView .shipping-store-status{
+  min-height:19px!important;
+  min-width:36px!important;
+  font-size:9px!important;
+}
+#statusBoardView .shipping-store-track{
+  height:6px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-row{
+  padding:4px 0 5px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{
+  font-size:12.5px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info{
+  font-size:10px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{
+  font-size:10px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:17px!important;
+}
+@media(max-width:1360px){
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{font-size:11.5px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info{font-size:9px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{font-size:9px!important}
+  #statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{font-size:14px!important}
+}
+
+/* ===== <style id="v99-shipping-store-two-column"> ===== */
+/* V99 — two-column store progress cards for readability */
+#statusBoardView .shipping-store-list{
+  display:grid!important;
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-auto-rows:minmax(0,1fr)!important;
+  gap:8px 14px!important;
+  align-content:stretch!important;
+  justify-content:stretch!important;
+  padding-top:10px!important;
+  overflow:hidden!important;
+}
+#statusBoardView .shipping-store-row{
+  min-width:0!important;
+  min-height:0!important;
+  padding:8px 10px!important;
+  border:1px solid #edf0ed!important;
+  border-radius:10px!important;
+  background:#fbfcfb!important;
+  display:flex!important;
+  flex-direction:column!important;
+  justify-content:center!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-store-topline{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:8px!important;
+  min-width:0!important;
+}
+#statusBoardView .shipping-store-name{
+  min-width:0!important;
+  overflow:hidden!important;
+  text-overflow:ellipsis!important;
+  white-space:nowrap!important;
+  font-size:14px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-state-wrap{
+  display:flex!important;
+  align-items:center!important;
+  gap:6px!important;
+  flex:0 0 auto!important;
+}
+#statusBoardView .shipping-store-pct{
+  font-size:17px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  margin-top:4px!important;
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-width:0!important;
+  overflow:hidden!important;
+  white-space:nowrap!important;
+  color:#778079!important;
+  font-size:10px!important;
+  line-height:1.2!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  flex:0 0 auto!important;
+  color:#505851!important;
+  font-size:10px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-store-track{
+  height:6px!important;
+  margin-top:6px!important;
+}
+#statusBoardView .shipping-store-row.complete{
+  background:#f5f6f5!important;
+}
+#statusBoardView .shipping-store-row.waiting{
+  background:#fff!important;
+}
+
+/* Normal view must fit all 15 stores without scroll */
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(8,minmax(0,1fr))!important;
+  gap:6px 10px!important;
+  padding-top:8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-row{
+  padding:5px 8px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-name{
+  font-size:12.5px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-pct{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{
+  font-size:9px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-status{
+  min-width:30px!important;
+  min-height:15px!important;
+  padding:0 5px!important;
+  font-size:7px!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-track{
+  height:4px!important;
+  margin-top:4px!important;
+}
+
+/* Fullscreen keeps the same 2-column information architecture */
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-list,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-list{
+  grid-template-columns:repeat(2,minmax(0,1fr))!important;
+  grid-template-rows:repeat(8,minmax(0,1fr))!important;
+  gap:8px 12px!important;
+  padding-top:8px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  padding:6px 9px!important;
+  background:#fbfcfb!important;
+  border-color:#edf0ed!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.complete,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.complete{
+  background:#f5f6f5!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:14px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:17px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  font-size:10px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-track,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-track{
+  height:5px!important;
+  margin-top:5px!important;
+}
+
+/* ===== <style id="v100-shipping-left-simplify"> ===== */
+#statusBoardView .shipping-quantity-row-single{
+  grid-template-columns:1fr!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain{
+  min-height:126px!important;
+  align-items:center!important;
+  text-align:center!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain>span{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-quantity-row-single .shipping-quantity-remain>strong{
+  font-size:40px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row-single .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row-single .shipping-quantity-remain{
+  min-height:150px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-quantity-row-single .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-quantity-row-single .shipping-quantity-remain>strong{
+  font-size:50px!important;
+}
+
+/* ===== <style id="v101-shipping-left-centered"> ===== */
+/* V101 — centered main progress with lower quantity/time pair */
+#statusBoardView .shipping-workspace-split{
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr)!important;
+  gap:18px!important;
+}
+#statusBoardView .shipping-overview-column{
+  display:grid!important;
+  grid-template-rows:minmax(330px,1fr) auto!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-progress-main{
+  min-height:330px!important;
+  width:100%!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-progress-main .shipping-ring{
+  width:230px!important;
+  height:230px!important;
+}
+#statusBoardView .shipping-progress-main .shipping-ring-value{
+  font-size:64px!important;
+}
+#statusBoardView .shipping-bottom-metrics{
+  display:grid!important;
+  grid-template-columns:1fr 1fr!important;
+  gap:14px!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  min-height:132px!important;
+  padding:18px 20px!important;
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:center!important;
+  justify-content:center!important;
+  text-align:center!important;
+  border:1px solid #dde2dd!important;
+  border-radius:12px!important;
+  background:#fff!important;
+  box-sizing:border-box!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#5f6761!important;
+  font-size:14px!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong{
+  margin-top:8px!important;
+  font-size:38px!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  margin-top:8px!important;
+  font-size:38px!important;
+  color:#24643a!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small,
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note{
+  margin-top:8px!important;
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  grid-template-columns:minmax(0,.86fr) minmax(0,1fr)!important;
+  gap:22px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-overview-column,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-overview-column{
+  grid-template-rows:minmax(0,1fr) auto!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  min-height:0!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main .shipping-ring{
+  width:min(28vh,270px)!important;
+  height:min(28vh,270px)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main .shipping-ring-value,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main .shipping-ring-value{
+  font-size:72px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom{
+  min-height:150px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  font-size:46px!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-workspace-split{grid-template-columns:1fr!important}
+  #statusBoardView .shipping-overview-column{grid-template-rows:auto auto!important}
+}
+@media(max-width:700px){
+  #statusBoardView .shipping-bottom-metrics{grid-template-columns:1fr!important}
+}
+
+/* ===== <style id="v102-shipping-progress-animation"> ===== */
+#statusBoardView .shipping-ring{
+  transition:filter .25s ease!important;
+  will-change:background!important;
+}
+#statusBoardView .shipping-progress-main:hover .shipping-ring{
+  filter:drop-shadow(0 8px 18px rgba(79,169,110,.14))!important;
+}
+#statusBoardView .shipping-ring-value{
+  font-variant-numeric:tabular-nums!important;
+}
+@media(prefers-reduced-motion:reduce){
+  #statusBoardView .shipping-ring{transition:none!important}
+}
+
+/* ===== <style id="v103-shipping-visibility-polish"> ===== */
+/* stronger progress animation visibility */
+#statusBoardView .shipping-ring{
+  transition:none!important;
+}
+#statusBoardView .shipping-ring.is-animating{
+  filter:drop-shadow(0 8px 18px rgba(79,169,110,.16))!important;
+}
+
+/* store count: black */
+#statusBoardView .shipping-store-count>b{
+  color:#111!important;
+}
+
+/* differentiate percentage and progress bar */
+#statusBoardView .shipping-store-pct{
+  color:#1f5f9f!important;
+}
+#statusBoardView .shipping-store-fill{
+  background:#4fa96e!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#6f7671!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{
+  background:#aeb5af!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#8b938d!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#cfd5d0!important;
+}
+
+/* box + EA information: much more readable */
+#statusBoardView .shipping-store-inline-info{
+  margin-top:5px!important;
+  color:#4f5851!important;
+  font-size:12px!important;
+  font-weight:750!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  color:#202520!important;
+  font-size:12px!important;
+  font-weight:950!important;
+}
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:not(:fullscreen):not(:-webkit-full-screen) .shipping-store-inline-info strong{
+  font-size:11px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info{
+  font-size:13px!important;
+  color:#4f5851!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-inline-info strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-inline-info strong{
+  font-size:13px!important;
+  color:#202520!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-name,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-name{
+  font-size:15px!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-pct,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-pct{
+  font-size:18px!important;
+}
+
+/* ===== <style id="v104-shipping-color-hierarchy"> ===== */
+/* V104 — stronger visual hierarchy with restrained role-based colors */
+
+/* Main progress: green */
+#statusBoardView .shipping-progress-main{
+  background:#f6fbf7!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#2f5f3d!important;
+}
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#2f9e5b calc(var(--shipping-pct) * 1%),#e7ece8 0)!important;
+}
+#statusBoardView .shipping-ring-value{
+  color:#173d25!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#6d786f!important;
+}
+
+/* Remaining quantity: warm amber tone */
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain{
+  background:#fff8ed!important;
+  border-color:#ead7b6!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span{
+  color:#8a5a18!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong{
+  color:#9a4f10!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note{
+  color:#8b7254!important;
+}
+
+/* ETA: blue tone */
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#f3f7fc!important;
+  border-color:#cbd9ea!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#315e8f!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#1e5f9c!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small{
+  color:#718398!important;
+}
+
+/* Store board gets its own neutral surface */
+#statusBoardView .shipping-store-board{
+  background:#fafafa!important;
+  border-color:#d9ded9!important;
+}
+#statusBoardView .shipping-store-head h4{
+  color:#111!important;
+}
+#statusBoardView .shipping-store-head>div:first-child>span{
+  color:#777f79!important;
+}
+#statusBoardView .shipping-store-count>b{
+  color:#111!important;
+}
+#statusBoardView .shipping-store-count>small{
+  color:#717871!important;
+}
+
+/* Store cards */
+#statusBoardView .shipping-store-row{
+  background:#fff!important;
+  border-color:#e1e5e1!important;
+}
+#statusBoardView .shipping-store-name{
+  color:#171a17!important;
+}
+#statusBoardView .shipping-store-inline-info{
+  color:#505750!important;
+}
+#statusBoardView .shipping-store-inline-info strong{
+  color:#252a26!important;
+}
+
+/* Active: blue % + green bar */
+#statusBoardView .shipping-store-row.active .shipping-store-pct{
+  color:#2563a6!important;
+}
+#statusBoardView .shipping-store-row.active .shipping-store-fill{
+  background:#3da267!important;
+}
+#statusBoardView .shipping-store-status.active{
+  color:#24653a!important;
+  background:#eaf5ed!important;
+  border-color:#bdd8c4!important;
+}
+
+/* Waiting: amber status + gray bar */
+#statusBoardView .shipping-store-row.waiting{
+  background:#fffaf2!important;
+  border-color:#eadfc9!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-pct{
+  color:#9b6a24!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-fill{
+  background:#d8dcd8!important;
+}
+#statusBoardView .shipping-store-status.waiting{
+  color:#946522!important;
+  background:#fff2d9!important;
+  border-color:#ead4aa!important;
+}
+
+/* Complete: intentionally muted */
+#statusBoardView .shipping-store-row.complete{
+  background:#f2f4f2!important;
+  border-color:#dde1dd!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-name,
+#statusBoardView .shipping-store-row.complete .shipping-store-inline-info,
+#statusBoardView .shipping-store-row.complete .shipping-store-inline-info strong,
+#statusBoardView .shipping-store-row.complete .shipping-store-pct{
+  color:#7b827d!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-fill{
+  background:#aeb5af!important;
+}
+#statusBoardView .shipping-store-status.complete{
+  color:#656c67!important;
+  background:#e6e9e6!important;
+  border-color:#cdd2ce!important;
+}
+
+/* Fullscreen uses same hierarchy */
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#f6fbf7!important;
+  border-color:#cfe2d4!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-board,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-board{
+  background:#fafafa!important;
+  border-color:#d9ded9!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row{
+  background:#fff!important;
+  border-color:#e1e5e1!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.waiting,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.waiting{
+  background:#fffaf2!important;
+  border-color:#eadfc9!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-store-row.complete,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-store-row.complete{
+  background:#f2f4f2!important;
+  border-color:#dde1dd!important;
+}
+
+/* ===== <style id="v105-shipping-color-separation"> ===== */
+/* V105 — separate left/right graph colors and neutralize lower metrics */
+
+/* Left main progress: blue */
+#statusBoardView .shipping-progress-main{
+  background:#f7f9fc!important;
+  border-color:#d7dee8!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#30363d!important;
+}
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#3b6ea8 calc(var(--shipping-pct) * 1%),#e7ebef 0)!important;
+}
+#statusBoardView .shipping-ring-value{
+  color:#111!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#6f767c!important;
+}
+
+/* Bottom quantity/time: neutral black */
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#fff!important;
+  border-color:#dfe3df!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>span,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>span{
+  color:#555!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#111!important;
+}
+#statusBoardView .shipping-bottom-metrics .shipping-remain-note,
+#statusBoardView .shipping-bottom-metrics .shipping-eta-bottom>small{
+  color:#7a807b!important;
+}
+
+/* Right store bars remain green, percentages stay blue */
+#statusBoardView .shipping-store-row.active .shipping-store-fill{
+  background:#3da267!important;
+}
+#statusBoardView .shipping-store-row.active .shipping-store-pct{
+  color:#2e5f97!important;
+}
+
+/* Fullscreen matches same hierarchy */
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#f7f9fc!important;
+  border-color:#d7dee8!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-ring{
+  background:conic-gradient(#3b6ea8 calc(var(--shipping-pct) * 1%),#e7ebef 0)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom{
+  background:#fff!important;
+  border-color:#dfe3df!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:fullscreen .shipping-bottom-metrics .shipping-eta-bottom>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-quantity-remain>strong,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-bottom-metrics .shipping-eta-bottom>strong{
+  color:#111!important;
+}
+
+/* ===== <style id="v106-shipping-progress-purple"> ===== */
+/* V106 — separate main progress from store percentage blue */
+#statusBoardView .shipping-ring{
+  background:conic-gradient(#7a5fb3 calc(var(--shipping-pct) * 1%),#ece9f3 0)!important;
+}
+#statusBoardView .shipping-progress-main{
+  background:#faf8fd!important;
+  border-color:#ddd5ea!important;
+}
+#statusBoardView .shipping-progress-label{
+  color:#4f4662!important;
+}
+#statusBoardView .shipping-ring-caption{
+  color:#756d81!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-ring,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-ring{
+  background:conic-gradient(#7a5fb3 calc(var(--shipping-pct) * 1%),#ece9f3 0)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-progress-main,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-progress-main{
+  background:#faf8fd!important;
+  border-color:#ddd5ea!important;
+}
+
+/* ===== <style id="v107-shipping-store-sku"> ===== */
+#statusBoardView .shipping-store-sku{
+  color:#3f4650!important;
+  font-weight:900!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-sku{
+  color:#7d715e!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-sku{
+  color:#7b827d!important;
+}
+
+/* ===== <style id="v108-shipping-column-swap"> ===== */
+#statusBoardView .shipping-workspace-split{
+  grid-template-columns:minmax(0,1fr) minmax(0,.86fr)!important;
+}
+#statusBoardView .shipping-display-board:fullscreen .shipping-workspace-split,
+#statusBoardView .shipping-display-board:-webkit-full-screen .shipping-workspace-split{
+  grid-template-columns:minmax(0,1fr) minmax(0,.86fr)!important;
+}
+@media(max-width:1180px){
+  #statusBoardView .shipping-workspace-split{grid-template-columns:1fr!important}
+}
+
+/* ===== <style id="v109-shipping-store-meta-layout"> ===== */
+#statusBoardView .shipping-store-inline-info{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:space-between!important;
+  gap:12px!important;
+  width:100%!important;
+}
+#statusBoardView .shipping-store-inline-left{
+  display:flex!important;
+  align-items:center!important;
+  gap:4px!important;
+  min-width:0!important;
+  white-space:nowrap!important;
+}
+#statusBoardView .shipping-store-qty{
+  margin-left:auto!important;
+  text-align:right!important;
+  white-space:nowrap!important;
+  color:#404640!important;
+  font-weight:850!important;
+  font-variant-numeric:tabular-nums!important;
+}
+#statusBoardView .shipping-store-row.complete .shipping-store-qty{
+  color:#7b827d!important;
+}
+#statusBoardView .shipping-store-row.waiting .shipping-store-qty{
+  color:#7d715e!important;
+}
+

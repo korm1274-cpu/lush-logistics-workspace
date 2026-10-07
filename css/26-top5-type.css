@@ -1,0 +1,51 @@
+/* ===== <style id="top5-type"> ===== */
+/* 현황판 TOP 5 표: 글씨 키움 (PC 제목 15 · 머리글 13 · 내용 14 / 휴대폰 14 · 12 · 13) */
+#appShell #statusBoardView#statusBoardView .product-top-grid h4{font-size:15px!important;font-weight:800!important;margin-bottom:8px!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid th{font-size:13px!important;font-weight:700!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td{font-size:14px!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td:first-child{font-weight:700!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td:last-child{font-weight:800!important;}
+@media (max-width:900px){
+  #appShell #statusBoardView#statusBoardView .product-top-grid h4{font-size:14px!important;}
+  #appShell #statusBoardView#statusBoardView .product-top-grid th{font-size:12px!important;}
+  #appShell #statusBoardView#statusBoardView .product-top-grid td{font-size:13px!important;}
+}
+
+/* ===== <style id="admin-permission-buttons"> ===== */
+/* Admin > 메뉴 관리 접근 권한 버튼: 글자 가운데, 선택된 권한은 검정 대신 러쉬 민트(체크 표시) */
+#appShell #settings .permission-mini{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;gap:4px!important;}
+#appShell #settings .permission-mini.on{background:#e3f5ec!important;color:#11795a!important;border-color:#9fd9c0!important;font-weight:800!important;}
+#appShell #settings .permission-mini.on::before{content:"✓";font-size:.95em;font-weight:900;}
+#appShell #settings .permission-mini:not(.on){background:#fff!important;color:#8b95a1!important;border-color:#e4d9c7!important;}
+#appShell #settings .permission-mini:hover{filter:brightness(.97);}
+
+/* ===== <style id="admin-menu-fullwidth"> ===== */
+/* Admin 메뉴 구성: 넓은 화면에서도 위 검정 배너와 같은 폭으로(최대 1380px 제한 해제) */
+#appShell #admin-menus .menu-settings-shell{max-width:none!important;margin:0!important;}
+
+/* ===== <style id="admin-menu-type"> ===== */
+/* Admin 메뉴 구성: 머리글(순서·메뉴명·메뉴 활성화·대분류·접근 권한·관리) 크고 진하게,
+   접근 권한 버튼 글자 키움, 삭제 버튼 글자 가운데 */
+#appShell #settings .menu-column-head span{font-size:13px!important;font-weight:800!important;color:#191f28!important;}
+#appShell #settings .permission-mini{font-size:12px!important;padding:5px 10px!important;min-height:28px!important;}
+#appShell #settings .permission-mini.on{font-weight:800!important;color:#0d6b4e!important;}
+#appShell #settings .permission-mini:not(.on){font-weight:700!important;color:#6b7684!important;}
+#appShell #settings .menu-inline-actions .btn{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
+
+/* ===== <style id="shared-size-card-style"> ===== */
+#sharedSizeCard{margin:0 0 16px;padding:16px 18px;background:#fff;border:2px solid #1d1d1b;border-radius:16px;}
+#sharedSizeCard .ss-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap;}
+#sharedSizeCard .ss-head b{font-size:17px;font-weight:800;color:#191f28;}
+#sharedSizeCard .ss-head span{font-size:13px;font-weight:800;}
+#sharedSizeCard .ss-bar{height:12px;margin:10px 0 6px;border-radius:999px;background:#f1ede4;overflow:hidden;}
+#sharedSizeCard .ss-bar i{display:block;height:100%;border-radius:999px;background:#1baf7a;}
+#sharedSizeCard.warn .ss-bar i{background:#eda100;}#sharedSizeCard.danger .ss-bar i{background:#d64545;}
+#sharedSizeCard.warn .ss-head span{color:#9a6400;}#sharedSizeCard.danger .ss-head span{color:#c93838;}
+#sharedSizeCard .ss-note{font-size:12px;color:#6b7684;}
+#sharedSizeCard .ss-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;margin-top:10px;}
+#sharedSizeCard .ss-list div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border:1px solid #eee8dc;border-radius:10px;font-size:12.5px;white-space:nowrap;min-width:0;}
+#sharedSizeCard .ss-list span{overflow:hidden;text-overflow:ellipsis;min-width:0;}
+#sharedSizeCard .ss-list em{font-style:normal;font-size:11px;color:#11795a;font-weight:700;margin-left:4px;}
+#sharedSizeCard .ss-list small{font-size:11px;color:#8b95a1;margin-left:4px;}
+#sharedSizeCard .ss-list b{font-weight:800;color:#191f28;}
+
