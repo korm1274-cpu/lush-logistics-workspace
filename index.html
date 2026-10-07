@@ -15391,8 +15391,11 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #sharedSizeCard.warn .ss-bar i{background:#eda100;}#sharedSizeCard.danger .ss-bar i{background:#d64545;}
 #sharedSizeCard.warn .ss-head span{color:#9a6400;}#sharedSizeCard.danger .ss-head span{color:#c93838;}
 #sharedSizeCard .ss-note{font-size:12px;color:#6b7684;}
-#sharedSizeCard .ss-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;margin-top:10px;}
-#sharedSizeCard .ss-list div{display:flex;justify-content:space-between;gap:8px;padding:6px 10px;border:1px solid #eee8dc;border-radius:10px;font-size:12.5px;}
+#sharedSizeCard .ss-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:6px;margin-top:10px;}
+#sharedSizeCard .ss-list div{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:6px 10px;border:1px solid #eee8dc;border-radius:10px;font-size:12.5px;white-space:nowrap;min-width:0;}
+#sharedSizeCard .ss-list span{overflow:hidden;text-overflow:ellipsis;min-width:0;}
+#sharedSizeCard .ss-list em{font-style:normal;font-size:11px;color:#11795a;font-weight:700;margin-left:4px;}
+#sharedSizeCard .ss-list small{font-size:11px;color:#8b95a1;margin-left:4px;}
 #sharedSizeCard .ss-list b{font-weight:800;color:#191f28;}
 </style>
 <script id="shared-size-card">
@@ -15414,7 +15417,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     card.innerHTML='<div class="ss-head"><b>팀 공유 데이터 용량</b><span>'+fmt(total)+' / 4.5MB ('+pct+'%)</span></div>'+
       '<div class="ss-bar"><i style="width:'+Math.min(100,pct)+'%"></i></div>'+
       '<div class="ss-note">'+(split?'출고는 달별로 따로 저장되어 한도에 포함되지 않습니다. 나머지 공유 데이터가 약 4.5MB를 넘으면 불러오기·저장이 실패할 수 있습니다.':'공유 데이터는 한 번에 주고받아서 약 4.5MB를 넘으면 불러오기·저장이 실패할 수 있습니다.')+' 65% 이상 노랑, 85% 이상 빨강.</div>'+
-      '<div class="ss-list">'+rows.map(function(r){return '<div><span>'+(NAMES[r[0]]||r[0])+(split&&r[0]==='outbound'?' · 달별 따로 저장':'')+(r[2]!=null?' ('+r[2].toLocaleString('ko-KR')+'줄)':'')+'</span><b>'+fmt(r[1])+'</b></div>'}).join('')+'</div>';
+      '<div class="ss-list">'+rows.map(function(r){return '<div><span>'+(NAMES[r[0]]||r[0])+(r[2]!=null?'<small>'+r[2].toLocaleString('ko-KR')+'줄</small>':'')+(split&&r[0]==='outbound'?'<em>달별 저장</em>':'')+'</span><b>'+fmt(r[1])+'</b></div>'}).join('')+'</div>';
   }
   document.addEventListener('team-data-updated',function(){setTimeout(render,300)});
   if(window.MutationObserver){var up=document.getElementById('upload');if(up)new MutationObserver(function(){if(up.classList.contains('active'))render()}).observe(up,{attributes:true,attributeFilter:['class']})}
