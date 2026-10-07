@@ -8132,17 +8132,17 @@ html,body{max-width:100%;overflow-x:hidden}
       <div data-df-pane="form" hidden>
       <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
         <div class="df-form">
-          <div class="field"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
-          <div class="field"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: 미입고, 중량미달"><datalist id="dfCategoryList"></datalist></div>
-          <div class="field"><label>차수</label><input id="dfBatch" placeholder="예: 71차"></div>
-          <div class="field"><label>PLU</label><input id="dfPlu"></div>
-          <div class="field"><label>제품코드</label><input id="dfCode" placeholder="예: T0017200"></div>
-          <div class="field grow"><label>제품명</label><input id="dfName"></div>
-          <div class="field"><label>LOT번호</label><input id="dfLot"></div>
-          <div class="field"><label>제조일자</label><input id="dfMfg" type="date"></div>
-          <div class="field"><label>수량</label><input id="dfQtyInput" type="number" min="0" step="1"></div>
-          <div class="field"><label>처리 여부</label><select id="dfDone"><option value="N">미처리</option><option value="Y">처리</option></select></div>
-          <div class="field full"><label>내용</label><textarea id="dfNote" rows="2" placeholder="불량 내용을 입력하세요"></textarea></div>
+          <div class="field df-c4"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
+          <div class="field df-c4"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: 미입고, 중량미달"><datalist id="dfCategoryList"></datalist></div>
+          <div class="field df-c4"><label>차수</label><input id="dfBatch" placeholder="예: 71차"></div>
+          <div class="field df-c3"><label>PLU</label><input id="dfPlu"></div>
+          <div class="field df-c3"><label>제품코드</label><input id="dfCode" placeholder="예: T0017200"></div>
+          <div class="field df-c6"><label>제품명</label><input id="dfName"></div>
+          <div class="field df-c3 df-m6"><label>LOT번호</label><input id="dfLot"></div>
+          <div class="field df-c3 df-m6"><label>제조일자</label><input id="dfMfg" type="date"></div>
+          <div class="field df-c3 df-m6"><label>수량</label><input id="dfQtyInput" type="number" min="0" step="1"></div>
+          <div class="field df-c3 df-m6"><label>처리 여부</label><select id="dfDone"><option value="N">미처리</option><option value="Y">처리</option></select></div>
+          <div class="field full"><label>내용</label><textarea id="dfNote" rows="3" placeholder="불량 내용을 입력하세요 (Enter로 줄바꿈)"></textarea></div>
         </div>
         <div class="df-actions"><button class="btn" id="dfCancel" type="button" hidden>취소</button><button class="btn primary" id="dfSave" type="button">등록</button></div>
       </div>
@@ -15527,17 +15527,21 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 (function(){var b=document.getElementById('boxStoreMapBtn'),s=document.getElementById('boxGridDow');if(b&&s&&s.parentElement)s.parentElement.appendChild(b)})();
 </script>
 <style id="defect-view-style">
-#defectView .df-form{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px 12px;padding:4px 2px 0}
+#defectView .df-form{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:10px 12px;padding:4px 2px 0}
+#defectView .df-form .df-c3{grid-column:span 3}
+#defectView .df-form .df-c4{grid-column:span 4}
+#defectView .df-form .df-c6{grid-column:span 6}
 #defectView .df-form .field{display:flex;flex-direction:column;gap:5px;min-width:0}
 #defectView .df-form .field.grow{grid-column:span 2}
 #defectView .df-form .field.full{grid-column:1/-1}
 #defectView .df-form label{font-size:var(--t-label,12px);font-weight:800;color:#4a4a4a}
 #defectView .df-form input,#defectView .df-form select,#defectView .df-form textarea{width:100%;box-sizing:border-box;min-height:38px;border:1.5px solid #e2ddd3;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;background:#fff}
-#defectView .df-form textarea{resize:vertical;min-height:62px;line-height:1.45}
-#defectView .df-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:12px}
+#defectView .df-form textarea{resize:vertical;min-height:84px;line-height:1.5;white-space:pre-wrap!important;overflow:hidden}
+#defectView .df-actions{display:flex;justify-content:center;gap:8px;margin-top:14px}
+#defectView .df-actions .btn{min-width:140px!important}
 #defectView .df-actions .btn{min-width:84px}
 #defectView .df-table td{vertical-align:middle;white-space:nowrap}
-#defectView .df-table td.df-note{white-space:pre-wrap;min-width:180px;max-width:320px;word-break:break-all}
+#defectView .df-table td.df-note{white-space:pre-wrap!important;min-width:180px;max-width:320px;word-break:break-all}
 #defectView .df-table td.num{text-align:right;font-variant-numeric:tabular-nums}
 #defectView .df-status{border:0;border-radius:999px;padding:4px 11px;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap}
 #defectView .df-status.open{background:#fdecec;color:#c93838}
@@ -15555,9 +15559,9 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #defectView .df-tabs em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4}
 @media(max-width:900px){#defectView .df-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}#defectView .df-tabs button{justify-content:center;padding:0 6px;font-size:13.5px}}
 @media(max-width:900px){
-  #defectView .df-form{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
-  #defectView .df-form .field.grow,#defectView .df-form .field.full{grid-column:1/-1}
-  #defectView .df-actions .btn{flex:1}
+  #defectView .df-form{gap:8px}
+  #defectView .df-form .df-m6{grid-column:span 6}
+  #defectView .df-actions .btn{flex:1;max-width:220px}
   #defectView .df-table thead{display:none}
   #defectView .df-table,#defectView .df-table tbody{display:block;width:100%!important;min-width:0!important;max-width:100%!important}
   #defectView .data-table-wrap{overflow:visible!important;min-width:0!important}
@@ -15592,6 +15596,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   function resetForm(){
     FIELDS.forEach(function(f){var el=$(f[1]);if(el)el.value=''});
     $('dfYear').value=new Date().getFullYear();$('dfDone').value='N';
+    if(window.__dfFitNote)setTimeout(window.__dfFitNote,0);
     editingId=null;$('dfSave').textContent='등록';$('dfCancel').hidden=true;$('dfEditBadge').hidden=true;$('dfFormTitle').textContent='불량 등록';
     render();
   }
@@ -15613,6 +15618,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     var it=load().find(function(x){return x.id===id});if(!it)return;
     FIELDS.forEach(function(f){$(f[1]).value=it[f[0]]==null?'':it[f[0]]});
     if(!it.done)$('dfDone').value='N';
+    if(window.__dfFitNote)setTimeout(window.__dfFitNote,0);
     editingId=id;$('dfSave').textContent='수정 저장';$('dfCancel').hidden=false;$('dfEditBadge').hidden=false;$('dfFormTitle').textContent='불량 수정';
     render();
     showTab('form');
@@ -15682,6 +15688,11 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     })});
     ['dfFilterYear','dfFilterDone'].forEach(function(id){$(id).addEventListener('change',render)});
     $('dfFilterQuery').addEventListener('input',render);
+    var note=$('dfNote');
+    function fitNote(){note.style.height='auto';note.style.height=Math.max(84,note.scrollHeight+2)+'px'}
+    note.addEventListener('keydown',function(e){if(e.key==='Enter')e.stopPropagation()});
+    note.addEventListener('input',fitNote);
+    window.__dfFitNote=fitNote;
     $('dfBody').addEventListener('click',function(e){
       var b=e.target.closest('button[data-act]');if(!b)return;
       var id=b.closest('tr').getAttribute('data-id');
