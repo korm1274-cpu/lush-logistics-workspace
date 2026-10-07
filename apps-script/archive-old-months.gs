@@ -88,26 +88,35 @@ function archiveSheet_(ss, sh, cfg, cutoff, dryRun) {
   if (!oldIdx.length) return '옮길 행 없음';
   if (dryRun) return oldIdx.length + '줄 이동 예정';
 
-  // 원본에 수식이 있으면 값만 다시 쓰는 방식은 수식을 지워 버리므로, 그 경우는 연속된 앞부분만 행 삭제로 처리
-  var contiguousFromTop = oldIdx[oldIdx.length - 1] === oldIdx.length - 1;
-  var hasFormulas = range.getFormulas().some(function (r) { return r.some(function (f) { return f; }); });
-  if (hasFormulas && !contiguousFromTop) {
-    return '중단: 원본에 수식이 있고 지난 행이 위쪽에 모여 있지 않음(날짜순 정렬 후 다시 실행해 주세요)';
+  // 데이터 전체를 수식(IMPORTRANGE·QUERY 등)으로 불러오는 시트는 행을 지우면 안 되므로 멈춤
+  var formulas = range.getFormulas();
+  if (/^=\s*(ARRAYFORMULA|IMPORTRANGE|QUERY|FILTER|SORT|UNIQUE|\{)/i.test(formulas[0][0] || '')) {
+    return '중단: 이 시트는 수식(IMPORTRANGE·QUERY 등)으로 데이터를 불러오고 있어 옮길 수 없습니다';
   }
+  var hasFormulas = formulas.some(function (r) { return r.some(function (f) { return f; }); });
 
-  // 1) 보관함에 먼저 추가 (실패하면 원본은 그대로 남음)
+  // 1) 보관함에 먼저 추가 (실패하면 원본은 그대로 남음). 수식이 있는 칸은 계산된 값으로 저장
   var archive = ensureArchive_(ss, sh, cfg, lastCol);
   var oldRows = oldIdx.map(function (i) { return values[i]; });
   archive.getRange(archive.getLastRow() + 1, 1, oldRows.length, lastCol).setValues(oldRows);
   SpreadsheetApp.flush();
 
-  // 2) 원본에서 지우기
-  if (contiguousFromTop) {
-    sh.deleteRows(first, oldIdx.length); // 수식·서식이 있는 아래쪽 행은 그대로 유지
-  } else {
-    var keep = values.filter(function (row, i) { return oldIdx.indexOf(i) < 0; });
+  // 2) 원본에서 지우기 — 날짜 순서가 섞여 있어도 해당 행만 지움
+  //    연속된 행끼리 묶어 아래쪽부터 행 삭제(수식·서식은 남은 행에 그대로 유지).
+  //    수식이 없고 흩어진 묶음이 아주 많으면, 남길 행만 다시 써서 빠르게 처리.
+  var runs = [], start = oldIdx[0], prev = oldIdx[0];
+  for (var k = 1; k < oldIdx.length; k++) {
+    if (oldIdx[k] === prev + 1) { prev = oldIdx[k]; continue; }
+    runs.push([start, prev]); start = prev = oldIdx[k];
+  }
+  runs.push([start, prev]);
+  if (!hasFormulas && runs.length > 200) {
+    var oldSet = {}; oldIdx.forEach(function (i) { oldSet[i] = true; });
+    var keep = values.filter(function (row, i) { return !oldSet[i]; });
     range.clearContent();
     if (keep.length) sh.getRange(first, 1, keep.length, lastCol).setValues(keep);
+  } else {
+    for (var r = runs.length - 1; r >= 0; r--) sh.deleteRows(first + runs[r][0], runs[r][1] - runs[r][0] + 1);
   }
   return oldIdx.length + '줄 이동';
 }
