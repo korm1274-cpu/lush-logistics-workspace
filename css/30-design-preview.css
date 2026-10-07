@@ -1,0 +1,79 @@
+/* Design Preview v1 — Main dashboard + Status Board only */
+.design-preview-toggle{width:100%;margin:0 0 12px;padding:10px;border:1px solid rgba(255,255,255,.14);border-radius:12px;background:rgba(255,255,255,.055);color:#f5f5f2;display:grid;grid-template-columns:30px minmax(0,1fr) auto;align-items:center;gap:9px;text-align:left;cursor:pointer;transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.design-preview-toggle:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.23);transform:translateY(-1px)}
+.design-preview-toggle-icon{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;background:rgba(255,255,255,.1);font-size:15px;transition:transform .24s,background .24s}
+.design-preview-toggle-copy{min-width:0}.design-preview-toggle-copy b{display:block;font-size:11px!important;line-height:1.2;color:#fff!important}.design-preview-toggle-copy small{display:block;margin-top:3px;font-size:9px!important;color:#93938e!important}
+.design-preview-toggle-state{min-width:34px;padding:4px 7px;border-radius:999px;background:#2b2b29;color:#9d9d97;font-size:8px;font-weight:900;letter-spacing:.06em;text-align:center}
+.design-preview-toggle.is-on{border-color:rgba(236,83,137,.42);background:linear-gradient(135deg,rgba(235,74,132,.16),rgba(255,255,255,.06));box-shadow:0 8px 24px rgba(0,0,0,.16)}
+.design-preview-toggle.is-on .design-preview-toggle-icon{background:#f05b91;color:#fff;transform:rotate(180deg)}
+.design-preview-toggle.is-on .design-preview-toggle-state{background:#f05b91;color:#fff}
+.app.sidebar-collapsed .design-preview-toggle{grid-template-columns:1fr;justify-items:center;padding:7px 4px}.app.sidebar-collapsed .design-preview-toggle-copy,.app.sidebar-collapsed .design-preview-toggle-state{display:none}
+
+body.design-preview-scope{--pv-bg:#f4f1ed;--pv-surface:rgba(255,255,255,.88);--pv-line:rgba(26,25,23,.08);--pv-ink:#171614;--pv-muted:#77736d;--pv-pink:#ea5a8e;--pv-green:#12946a;--pv-amber:#d48522;background:radial-gradient(circle at 79% 2%,rgba(246,178,204,.19),transparent 27rem),radial-gradient(circle at 18% 70%,rgba(202,231,220,.18),transparent 30rem),var(--pv-bg)!important}
+body.design-preview-scope .main{position:relative;background:transparent!important}
+body.design-preview-scope .main:before{content:"";position:fixed;z-index:-1;pointer-events:none;width:36vw;height:36vw;min-width:360px;min-height:360px;right:-12vw;top:18vh;border-radius:50%;background:radial-gradient(circle,rgba(237,91,145,.1),rgba(237,91,145,0) 68%);filter:blur(12px)}
+body.design-preview-scope .topbar{position:sticky!important;top:0;z-index:15;height:92px!important;margin:0 -10px 12px!important;padding:0 10px!important;background:rgba(244,241,237,.78)!important;border-bottom:1px solid rgba(24,23,21,.055)!important;backdrop-filter:blur(18px) saturate(145%);-webkit-backdrop-filter:blur(18px) saturate(145%)}
+body.design-preview-scope .topbar h1{letter-spacing:-.05em!important}
+body.design-preview-scope .base-tool,body.design-preview-scope .topbar .btn{border:1px solid rgba(22,21,19,.09)!important;background:rgba(255,255,255,.72)!important;box-shadow:0 5px 18px rgba(37,29,24,.045)!important;transition:transform .18s,box-shadow .18s,background .18s!important}
+body.design-preview-scope .base-tool:hover,body.design-preview-scope .topbar .btn:hover{transform:translateY(-2px);background:#fff!important;box-shadow:0 9px 25px rgba(37,29,24,.075)!important}
+body.design-preview-scope .sidebar{background:linear-gradient(180deg,#111210 0%,#181816 66%,#111210 100%)!important;box-shadow:12px 0 40px rgba(14,14,12,.12)!important}
+body.design-preview-scope .workspace-badge{background:rgba(255,255,255,.055)!important;border-color:rgba(255,255,255,.09)!important}
+body.design-preview-scope .nav-root,body.design-preview-scope .nav-item,body.design-preview-scope .nav-folder-btn{transition:background .18s,color .18s,transform .18s!important}
+body.design-preview-scope .nav-item:hover,body.design-preview-scope .nav-folder-btn:hover{transform:translateX(2px)}
+body.design-preview-scope .nav-item.active{box-shadow:0 8px 24px rgba(0,0,0,.18)!important}
+
+/* Main */
+body.design-preview-home #dashboard{max-width:1680px;margin:0 auto}
+body.design-preview-home #dashboard .lush-hero{isolation:isolate;min-height:252px;padding:34px 38px!important;border:1px solid rgba(255,255,255,.72)!important;border-radius:30px!important;color:var(--pv-ink)!important;background:linear-gradient(118deg,rgba(255,255,255,.96) 0%,rgba(255,247,250,.92) 44%,rgba(249,233,240,.88) 100%)!important;box-shadow:0 30px 70px rgba(68,49,42,.1),inset 0 1px 0 rgba(255,255,255,.95)!important;overflow:hidden}
+body.design-preview-home #dashboard .lush-hero:before{content:"";position:absolute;z-index:-1;pointer-events:none;width:480px;height:480px;right:-100px;top:-265px;border-radius:50%;background:radial-gradient(circle at 45% 60%,rgba(239,87,144,.32),rgba(244,157,190,.13) 42%,transparent 69%);animation:pvFloat 10s ease-in-out infinite alternate}
+body.design-preview-home #dashboard .lush-hero:after{content:"";position:absolute;z-index:-1;pointer-events:none;width:320px;height:320px;right:240px;bottom:-245px;border-radius:50%;background:radial-gradient(circle,rgba(94,183,151,.18),transparent 67%);animation:pvFloat2 13s ease-in-out infinite alternate}
+body.design-preview-home #dashboard .lush-hero-date{color:#77716c!important;font-weight:750!important}
+body.design-preview-home #dashboard .lush-hero .lush-hero-hello{color:#171614!important;font-size:38px!important;line-height:1.15!important;font-weight:900!important;letter-spacing:-.055em!important}
+body.design-preview-home #dashboard .lush-hero .lush-hero-sub{color:#77716c!important;margin-top:12px!important;font-size:14px!important;font-weight:600!important}
+body.design-preview-home #dashboard .lush-hero-stats{gap:10px!important;align-self:stretch;align-items:center}
+body.design-preview-home #dashboard .lush-hero-stat{min-width:126px!important;padding:16px 17px!important;border:1px solid rgba(255,255,255,.82)!important;border-radius:18px!important;background:rgba(255,255,255,.66)!important;color:var(--pv-ink)!important;box-shadow:0 12px 30px rgba(54,42,37,.08),inset 0 1px 0 #fff!important;backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);transition:transform .2s,box-shadow .2s,background .2s!important}
+body.design-preview-home #dashboard .lush-hero-stat:hover{transform:translateY(-4px);background:rgba(255,255,255,.86)!important;box-shadow:0 18px 34px rgba(54,42,37,.12),inset 0 1px 0 #fff!important}
+body.design-preview-home #dashboard .lush-hero-stat small{color:#77716c!important}body.design-preview-home #dashboard .lush-hero-stat b{color:#171614!important;font-size:29px!important}body.design-preview-home #dashboard .lush-hero-stat span{color:#827c76!important}
+body.design-preview-home #dashboard>.dash-section{margin-top:18px!important;padding:20px!important;border:1px solid var(--pv-line)!important;border-radius:24px!important;background:var(--pv-surface)!important;box-shadow:0 18px 46px rgba(54,44,37,.065),inset 0 1px 0 rgba(255,255,255,.85)!important;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);overflow:hidden;transition:transform .22s,box-shadow .22s!important}
+body.design-preview-home #dashboard>.dash-section:before{display:none!important}
+body.design-preview-home #dashboard>.dash-section:hover{box-shadow:0 24px 56px rgba(54,44,37,.085),inset 0 1px 0 rgba(255,255,255,.9)!important}
+body.design-preview-home #dashboard .dashboard-info-panel,body.design-preview-home #dashboard .request-mini-card,body.design-preview-home #dashboard .monthly-card{border:1px solid rgba(21,20,18,.075)!important;border-radius:18px!important;background:rgba(255,255,255,.78)!important;box-shadow:0 10px 28px rgba(48,38,32,.045)!important;transition:transform .2s,box-shadow .2s,border-color .2s!important}
+body.design-preview-home #dashboard .dashboard-info-panel:hover,body.design-preview-home #dashboard .request-mini-card:hover,body.design-preview-home #dashboard .monthly-card:hover{transform:translateY(-3px);border-color:rgba(234,90,142,.18)!important;box-shadow:0 18px 36px rgba(48,38,32,.08)!important}
+body.design-preview-home #dashboard .request-badge{border:0!important;background:#f7edf1!important;color:#bb426d!important}
+body.design-preview-home #dashboard .schedule-full-card{background:radial-gradient(circle at 92% 7%,rgba(233,91,144,.09),transparent 280px),rgba(255,255,255,.88)!important}
+body.design-preview-home #dashboard .dashboard-two-week-calendar{border-radius:16px;overflow:hidden}
+body.design-preview-home #dashboard .monthly-grid{gap:14px!important}
+body.design-preview-home #dashboard .monthly-card:first-child{background:linear-gradient(145deg,#fff 0%,#f5fbf8 100%)!important}
+body.design-preview-home #dashboard .monthly-card:last-child{background:linear-gradient(145deg,#fff 0%,#fff2f6 100%)!important}
+body.design-preview-home #dashboard button,body.design-preview-home #dashboard [role="button"]{transition:transform .18s,box-shadow .18s,background-color .18s,border-color .18s!important}
+body.design-preview-home #dashboard button:hover:not(:disabled){transform:translateY(-1px)}
+
+/* Status board */
+body.design-preview-status #statusBoardView{max-width:1680px;margin:0 auto}
+body.design-preview-status #statusBoardView .status-board-shell{max-width:none!important}
+body.design-preview-status #statusBoardView .status-board-top{position:relative;isolation:isolate;overflow:hidden;padding:28px 30px!important;margin-bottom:16px!important;border:1px solid rgba(255,255,255,.78)!important;border-radius:26px!important;background:linear-gradient(120deg,rgba(255,255,255,.96),rgba(255,247,250,.93) 56%,rgba(244,237,241,.9))!important;box-shadow:0 24px 60px rgba(55,44,39,.085),inset 0 1px 0 #fff!important}
+body.design-preview-status #statusBoardView .status-board-top:after{content:"";position:absolute;z-index:-1;pointer-events:none;width:330px;height:330px;right:-70px;top:-210px;border-radius:50%;background:radial-gradient(circle,rgba(235,85,140,.28),rgba(235,85,140,0) 69%);animation:pvFloat 11s ease-in-out infinite alternate}
+body.design-preview-status #statusBoardView .status-board-top .eyebrow{color:#bd4a73!important}body.design-preview-status #statusBoardView .status-board-top h2{color:#181715!important;font-size:31px!important;letter-spacing:-.045em!important}body.design-preview-status #statusBoardView .status-board-top p{color:#77716c!important}
+body.design-preview-status #statusBoardView .status-board-api-state{border:1px solid rgba(255,255,255,.9)!important;border-radius:999px!important;background:rgba(255,255,255,.65)!important;color:#5f5a55!important;box-shadow:0 8px 24px rgba(43,34,29,.06)!important;backdrop-filter:blur(10px)}
+body.design-preview-status #statusBoardView .status-board-tabs{position:sticky;top:100px;z-index:12;gap:5px!important;padding:5px!important;margin:0 0 16px!important;border:1px solid rgba(24,23,21,.07)!important;border-radius:15px!important;background:rgba(249,247,244,.8)!important;box-shadow:0 10px 30px rgba(50,41,35,.05)!important;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+body.design-preview-status #statusBoardView .status-board-tab{min-height:40px!important;border-radius:11px!important;color:#77716c!important;background:transparent!important;transition:background .18s,color .18s,transform .18s,box-shadow .18s!important}
+body.design-preview-status #statusBoardView .status-board-tab:hover{transform:translateY(-1px);color:#181715!important}
+body.design-preview-status #statusBoardView .status-board-tab.active{color:#fff!important;background:#191917!important;box-shadow:0 8px 20px rgba(24,23,21,.15)!important}
+body.design-preview-status #statusBoardView .status-board-tab.active:after{display:none!important}
+body.design-preview-status #statusBoardView .status-panel.active{animation:pvPanelIn .3s cubic-bezier(.2,.72,.2,1) both}
+body.design-preview-status #statusBoardView .shipping-display-board{border:1px solid rgba(25,24,22,.07)!important;border-radius:24px!important;background:radial-gradient(circle at 95% 5%,rgba(238,93,146,.055),transparent 250px),rgba(255,255,255,.9)!important;box-shadow:0 22px 52px rgba(49,40,34,.075),inset 0 1px 0 rgba(255,255,255,.95)!important}
+body.design-preview-status #statusBoardView :is(.shipping-store-board,.shipping-progress-zone,.status-card,.table-card,.analysis-card,.productivity-card,.boxcount-card,.store-history-card){border-color:rgba(25,24,22,.075)!important;border-radius:18px!important;background:rgba(255,255,255,.78)!important;box-shadow:0 10px 28px rgba(48,38,32,.045)!important}
+body.design-preview-status #statusBoardView .shipping-ring{filter:drop-shadow(0 12px 18px rgba(26,25,23,.1))}
+body.design-preview-status #statusBoardView .shipping-fullscreen-btn,body.design-preview-status #statusBoardView .btn{border-radius:11px!important;border-color:rgba(25,24,22,.09)!important;box-shadow:0 5px 15px rgba(47,37,32,.04)!important;transition:transform .18s,box-shadow .18s,background .18s!important}
+body.design-preview-status #statusBoardView .shipping-fullscreen-btn:hover,body.design-preview-status #statusBoardView .btn:hover{transform:translateY(-2px);box-shadow:0 9px 24px rgba(47,37,32,.08)!important}
+body.design-preview-status #statusBoardView .shipping-display-board:fullscreen,body.design-preview-status #statusBoardView .shipping-display-board:-webkit-full-screen{border:0!important;border-radius:0!important;box-shadow:none!important}
+
+.design-preview-enter{animation:pvPreviewEnter .38s cubic-bezier(.2,.72,.2,1) both}
+@keyframes pvPreviewEnter{from{opacity:.55;transform:translateY(7px) scale(.997)}to{opacity:1;transform:none}}
+@keyframes pvPanelIn{from{opacity:.15;transform:translateY(8px)}to{opacity:1;transform:none}}
+@keyframes pvFloat{from{transform:translate3d(0,0,0) scale(1)}to{transform:translate3d(-22px,18px,0) scale(1.05)}}
+@keyframes pvFloat2{from{transform:translate3d(0,0,0)}to{transform:translate3d(25px,-12px,0)}}
+
+@media(max-width:900px){.design-preview-toggle{margin-bottom:10px}body.design-preview-scope .topbar{position:relative!important;top:auto;margin:0!important;padding-left:52px!important;background:transparent!important;backdrop-filter:none}body.design-preview-home #dashboard .lush-hero{min-height:0;padding:24px 20px!important;border-radius:23px!important}body.design-preview-home #dashboard .lush-hero .lush-hero-hello{font-size:27px!important}body.design-preview-home #dashboard>.dash-section{margin-top:12px!important;padding:14px!important;border-radius:18px!important}body.design-preview-status #statusBoardView .status-board-top{padding:22px 18px!important;border-radius:20px!important}body.design-preview-status #statusBoardView .status-board-tabs{top:0}}
+@media(max-width:600px){body.design-preview-home #dashboard .lush-hero-stats{grid-template-columns:repeat(2,minmax(0,1fr))!important}body.design-preview-home #dashboard .lush-hero-stat{min-width:0!important;padding:12px!important;border-radius:14px!important}body.design-preview-home #dashboard .lush-hero-stat b{font-size:24px!important}body.design-preview-home #dashboard :is(.dashboard-info-panel,.request-mini-card,.monthly-card){border-radius:14px!important;box-shadow:none!important}body.design-preview-status #statusBoardView .shipping-display-board{border-radius:18px!important;box-shadow:0 12px 30px rgba(49,40,34,.06)!important}}
+@media(prefers-reduced-motion:reduce){.design-preview-toggle,body.design-preview-scope *,body.design-preview-scope *:before,body.design-preview-scope *:after{animation:none!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
