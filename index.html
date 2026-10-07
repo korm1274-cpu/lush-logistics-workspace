@@ -14532,6 +14532,10 @@ window.__bubblePop=function(el,done){
     h.insertBefore(sp,h.firstChild);
     if(window.lucide&&lucide.createIcons)try{lucide.createIcons()}catch(e){}
   }
+  /* 메인화면 '출고 요청'·'이번 달 입출고 현황' 제목에도 같은 동그라미 아이콘 */
+  TITLE_ICONS['출고 요청']=['truck','#ece6fb','#6a4fc0'];
+  TITLE_ICONS['이번 달 입출고 현황']=['arrow-down-up','#fff3d6','#9a6400'];
+  document.querySelectorAll('#dashboard .dash-section-head h3').forEach(function(h){addTitleIcon(h)});
   document.querySelectorAll('.view h2').forEach(function(h){
     addTitleIcon(h);
     /* 제목 글씨가 바뀌면(담당자 재고파일 등) 아이콘을 다시 붙임 */
