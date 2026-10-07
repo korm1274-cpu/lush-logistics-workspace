@@ -177,3 +177,5 @@
   #appShell #todoManagerView .box-entry-card .field textarea{min-height:40px!important;box-sizing:border-box!important;}
   #appShell #todoManagerView .box-entry-card>.btn{margin-top:var(--todo-label-h,19px)!important;height:40px!important;}
 }
+/* 색 띠가 있는 카드(panel) 안에 들어 있는 조회 줄은 검정 띠 빼기 — 분홍 띠 카드 안에 검정 띠가 겹쳐 보이던 문제 (출고 상세조회 출고 추이 등) */
+#appShell :is(#inboundMonthlyView,#inboundAnalysis,#outboundAnalysis) .panel .data-filter-row::before{content:none!important;display:none!important;}
