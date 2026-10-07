@@ -170,8 +170,6 @@ module.exports = async (req, res) => {
 
     // 5) 이번에 받은 전체 출고 데이터를 기준으로 월별 요약을 새로 계산해, 기존 요약과 병합합니다.
     //    (오래된 달의 수동 입력 요약이나 이전 달 계산은 그대로 두고, 이번 시트가 다루는 달만 새로 덮어씁니다.)
-    const freshSummary = computeMonthlySummary(finalRows, priceMap);
-    data.outboundMonthlySummary = { ...(data.outboundMonthlySummary || {}), ...freshSummary };
 
     // 6) 원본 상세 행은 최근 18개월치만 보관합니다 (그 이전은 위 요약에만 남습니다).
     const cutoff = shiftMonth(new Date().toISOString().slice(0, 7), -RETENTION_MONTHS);
@@ -179,12 +177,25 @@ module.exports = async (req, res) => {
 
     // 7) 출고 상세는 공유 데이터 한 덩어리가 아니라 달별로 따로 저장합니다(api/_lib/outbound-store.js).
     //    내용이 바뀐 달만 다시 쓰고, 보관 기간이 지난 달은 지웁니다. 화면은 바뀐 달만 새로 받아갑니다.
-    const monthsMap = outboundStore.splitByMonth(recentRows);
+    //    시트에는 최근 며칠치만 남기고 나머지는 보관함 시트로 옮기므로(apps-script/archive-old-months.gs),
+    //    '시트에 있는 날짜'만 새 내용으로 바꾸고, 시트에 없는 날짜는 이미 저장된 행을 그대로 둡니다.
     const kvStore = outboundStore.client(KV_URL, KV_TOKEN);
+    const sheetDates = new Set(recentRows.map(r => r[0]));
+    const sheetMonthsMap = outboundStore.splitByMonth(recentRows);
+    const monthsMap = {};
+    for (const m of Object.keys(sheetMonthsMap)) {
+      const stored = await outboundStore.readMonth(kvStore, m);
+      const kept = stored.filter(r => r && !sheetDates.has(r[0]));
+      monthsMap[m] = kept.concat(sheetMonthsMap[m]).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
+    }
+    // 월별 요약도 합친 결과(그 달 전체)로 계산해야 일부 날짜만 있는 달이 작게 잡히지 않음
+    const mergedRows = [].concat(...Object.values(monthsMap));
+    const freshSummary = computeMonthlySummary(mergedRows, priceMap);
+    data.outboundMonthlySummary = { ...(data.outboundMonthlySummary || {}), ...freshSummary };
     const monthResult = await outboundStore.writeMonths(kvStore, monthsMap, {
       sourceFile: '구글시트 자동연동',
       mode: '구글시트 자동연동 (매일 새벽 4시)'
-    }, { pruneBefore: cutoff }); // 시트에서 보관함으로 옮긴 달은 지우지 않음(18개월 지난 달만 정리)
+    }, { pruneBefore: cutoff }); // 시트에 없는 달·날짜는 지우지 않음(18개월 지난 달만 정리)
     delete data.outbound; // 예전 방식(한 덩어리 안의 출고)은 더 이상 두지 않음
 
     // 8) 공유 데이터(출고 제외) 저장
