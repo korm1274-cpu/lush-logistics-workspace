@@ -13839,7 +13839,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   window.renderNav=renderNav=function(){var r=origRenderNav.apply(this,arguments);patchTopTabs();render();return r};
 
   /* 메인 화면 테마는 메인(대시보드)을 보고 있을 때만 적용 */
-  var LUSH_THEME_VIEWS=['inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView'];
+  var LUSH_THEME_VIEWS=['outboundBasicView','outboundAnalysis','outboundBoxView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView'];
   var syncDashTheme=function(){var a=document.querySelector('.view.active');shell.classList.toggle('on-dashboard',!!a&&a.id==='dashboard');shell.classList.toggle('on-lush',!!a&&LUSH_THEME_VIEWS.indexOf(a.id)>=0);if(a&&a.id==='dashboard'&&window.updateLushHero)window.updateLushHero()};
   var origActivate2=activateMenu;
   window.activateMenu=activateMenu=function(){try{return origActivate2.apply(this,arguments)}finally{syncDashTheme()}};
@@ -14588,6 +14588,9 @@ window.__bubblePop=function(el,done){
   }
   /* 메인화면 '출고 요청'·'이번 달 입출고 현황' 제목에도 같은 동그라미 아이콘 */
   TITLE_ICONS['출고 요청']=['truck','#ece6fb','#6a4fc0'];
+  TITLE_ICONS['출고']=['truck','#ece6fb','#6a4fc0'];
+  TITLE_ICONS['출고 상세조회']=['search','#ece6fb','#6a4fc0'];
+  TITLE_ICONS['출고 박스 관리']=['boxes','#ece6fb','#6a4fc0'];
   TITLE_ICONS['이번 달 입출고 현황']=['arrow-down-up','#fff3d6','#9a6400'];
   document.querySelectorAll('#dashboard .dash-section-head h3').forEach(function(h){addTitleIcon(h)});
   document.querySelectorAll('.view h2').forEach(function(h){
@@ -14901,7 +14904,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   });
   try{window.lucide&&lucide.createIcons()}catch(e){}
   /* 러쉬 테마 화면 목록에 재고·생산성·데이터·Admin 추가 */
-  var more=['inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings'];
+  var more=['inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','outboundBasicView','outboundAnalysis','outboundBoxView'];
   function sync(){var a=document.querySelector('.view.active'),sh=document.getElementById('appShell');if(a&&sh&&more.indexOf(a.id)>=0){sh.classList.add('on-lush');sh.classList.remove('on-dashboard')}}
   if(window.MutationObserver)document.querySelectorAll('.view').forEach(function(v){new MutationObserver(function(){if(v.classList.contains('active'))setTimeout(sync,0)}).observe(v,{attributes:true,attributeFilter:['class']})});
   sync();
@@ -15424,5 +15427,18 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   window.addEventListener('load',function(){setTimeout(render,2500)});
 })();
 </script>
+<style id="outbound-mobile-tables">
+/* 출고 화면(출고·출고 상세조회·출고 박스 관리) 휴대폰 표: 입고 화면과 같게 작은 글씨 + 첫 칸 고정 */
+@media (max-width:900px){
+  #appShell #outboundBasicView .data-table th,#appShell #outboundBasicView .data-table td,
+  #appShell #outboundAnalysis .data-table th,#appShell #outboundAnalysis .data-table td,
+  #appShell #outboundBoxView .data-table th,#appShell #outboundBoxView .data-table td{font-size:12px!important;padding:8px 7px!important;white-space:nowrap!important;}
+  #appShell #outboundBasicView .data-table th:first-child,#appShell #outboundBasicView .data-table td:first-child,
+  #appShell #outboundAnalysis .data-table th:first-child,#appShell #outboundAnalysis .data-table td:first-child,
+  #appShell #outboundBoxView .data-table th:first-child,#appShell #outboundBoxView .data-table td:first-child{position:sticky!important;left:0!important;z-index:1!important;background:#fff!important;box-shadow:1px 0 0 #eee8dc!important;}
+  #appShell #outboundBasicView .data-table thead th:first-child,#appShell #outboundAnalysis .data-table thead th:first-child,#appShell #outboundBoxView .data-table thead th:first-child{background:#f5f3ed!important;z-index:2!important;}
+  #appShell #outboundBasicView .panel,#appShell #outboundAnalysis .panel,#appShell #outboundBoxView .panel{padding-left:12px!important;padding-right:12px!important;}
+}
+</style>
 </body>
 </html>
