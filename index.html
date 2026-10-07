@@ -15293,5 +15293,18 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   configs.forEach(setup);
 })();
 </script>
+<style id="top5-type">
+/* 현황판 TOP 5 표: 글씨 키움 (PC 제목 15 · 머리글 13 · 내용 14 / 휴대폰 14 · 12 · 13) */
+#appShell #statusBoardView#statusBoardView .product-top-grid h4{font-size:15px!important;font-weight:800!important;margin-bottom:8px!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid th{font-size:13px!important;font-weight:700!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td{font-size:14px!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td:first-child{font-weight:700!important;}
+#appShell #statusBoardView#statusBoardView .product-top-grid td:last-child{font-weight:800!important;}
+@media (max-width:900px){
+  #appShell #statusBoardView#statusBoardView .product-top-grid h4{font-size:14px!important;}
+  #appShell #statusBoardView#statusBoardView .product-top-grid th{font-size:12px!important;}
+  #appShell #statusBoardView#statusBoardView .product-top-grid td{font-size:13px!important;}
+}
+</style>
 </body>
 </html>
