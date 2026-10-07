@@ -84,3 +84,79 @@
   #appShell #statusBoardView .store-history-toolbar input::-webkit-datetime-edit{padding:0;}
   #appShell #statusBoardView .store-history-toolbar input::-webkit-datetime-edit-fields-wrapper{padding:0;}
 }
+
+/* ===== 현황판 순위·요약 목록 글씨 키움 — 이전 TOP 5 표와 같은 크기 (PC 내용 14 · 보조 12 · 소제목 13 / 휴대폰 13 · 11 · 12) =====
+   대상: 생산성(요일별 평균·상승/하락 TOP5·요일별 평균 생산성), 출고 분석(출고량 상/하위·출고 주요 현황·제품 TOP5·월간 TOP5·매장 급증/급감),
+         출고 박스(월간 TOP5·요일별 평균 박스·최대 물량 호차·매장별 박스수·매장별 박스 구성비·급증/급감·분석 요약) */
+#appShell #statusBoardView#statusBoardView .analysis-rank-list>div>b,
+#appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-no{font-size:12px!important;min-width:22px!important;height:22px!important;line-height:22px!important;}
+#appShell #statusBoardView#statusBoardView .analysis-rank-list>div>span,
+#appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>b,
+#appShell #statusBoardView#statusBoardView .outbound-monthly-mover-row>span{font-size:14px!important;font-weight:700!important;}
+#appShell #statusBoardView#statusBoardView .analysis-rank-list>div>strong,
+#appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>strong{font-size:14px!important;font-weight:800!important;}
+#appShell #statusBoardView#statusBoardView .analysis-rank-list>div>small,
+#appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>small,
+#appShell #statusBoardView#statusBoardView .outbound-monthly-mover-value small{font-size:12px!important;}
+#appShell #statusBoardView#statusBoardView .outbound-monthly-mover-value b{font-size:16px!important;}
+#appShell #statusBoardView#statusBoardView .outbound-monthly-movers h4,
+#appShell #statusBoardView#statusBoardView .boxcount-topbottom-grid h4{font-size:13px!important;font-weight:800!important;}
+#appShell #statusBoardView#statusBoardView .outbound-major-summary span,
+#appShell #statusBoardView#statusBoardView .boxcount-change-summary span{font-size:12.5px!important;}
+#appShell #statusBoardView#statusBoardView .outbound-major-summary b,
+#appShell #statusBoardView#statusBoardView .boxcount-change-summary b{font-size:15px!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-change-summary small{font-size:14px!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-arc-layout b{font-size:14px!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-arc-layout strong{font-size:14px!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-arc-layout small,
+#appShell #statusBoardView#statusBoardView .boxcount-arc-layout span{font-size:12px!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-arc-layout .boxcount-arc-visual strong{font-size:28px!important;}
+@media (max-width:900px){
+  #appShell #statusBoardView#statusBoardView .analysis-rank-list>div>b,
+  #appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-no{font-size:11px!important;min-width:20px!important;height:20px!important;line-height:20px!important;}
+  #appShell #statusBoardView#statusBoardView .analysis-rank-list>div>span,
+  #appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>b,
+  #appShell #statusBoardView#statusBoardView .outbound-monthly-mover-row>span,
+  #appShell #statusBoardView#statusBoardView .analysis-rank-list>div>strong,
+  #appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>strong,
+  #appShell #statusBoardView#statusBoardView .boxcount-arc-layout b,
+  #appShell #statusBoardView#statusBoardView .boxcount-arc-layout strong{font-size:13px!important;}
+  #appShell #statusBoardView#statusBoardView .analysis-rank-list>div>small,
+  #appShell #statusBoardView#statusBoardView .boxcount-rank-list .boxcount-rank-row>small,
+  #appShell #statusBoardView#statusBoardView .outbound-monthly-mover-value small,
+  #appShell #statusBoardView#statusBoardView .boxcount-arc-layout small,
+  #appShell #statusBoardView#statusBoardView .boxcount-arc-layout span{font-size:11px!important;}
+  #appShell #statusBoardView#statusBoardView .outbound-monthly-mover-value b{font-size:15px!important;}
+  #appShell #statusBoardView#statusBoardView .outbound-monthly-movers h4,
+  #appShell #statusBoardView#statusBoardView .boxcount-topbottom-grid h4{font-size:12px!important;}
+  #appShell #statusBoardView#statusBoardView .outbound-major-summary span,
+  #appShell #statusBoardView#statusBoardView .boxcount-change-summary span{font-size:11.5px!important;}
+  #appShell #statusBoardView#statusBoardView .outbound-major-summary b,
+  #appShell #statusBoardView#statusBoardView .boxcount-change-summary b,
+  #appShell #statusBoardView#statusBoardView .boxcount-change-summary small{font-size:14px!important;}
+  #appShell #statusBoardView#statusBoardView .boxcount-arc-layout .boxcount-arc-visual strong{font-size:25px!important;}
+}
+/* 매장 급증/급감: 글씨가 커져도 두 칸이 카드 폭을 반씩 나눠 쓰고, 긴 매장명은 … 처리 */
+#appShell #statusBoardView#statusBoardView .outbound-monthly-movers{grid-template-columns:minmax(0,1fr) minmax(0,1fr)!important;}
+#appShell #statusBoardView#statusBoardView .outbound-monthly-movers>div{min-width:0!important;}
+#appShell #statusBoardView#statusBoardView .outbound-monthly-mover-row{grid-template-columns:minmax(0,1fr) auto!important;gap:6px!important;}
+#appShell #statusBoardView#statusBoardView .outbound-monthly-mover-row>span{min-width:0!important;overflow:hidden!important;text-overflow:ellipsis!important;white-space:nowrap!important;}
+@media (max-width:900px){
+  #appShell #statusBoardView#statusBoardView .outbound-major-summary>div{min-width:0!important;}
+  #appShell #statusBoardView#statusBoardView .outbound-major-summary b{font-size:13.5px!important;white-space:normal!important;word-break:keep-all!important;overflow-wrap:anywhere!important;min-width:0!important;text-align:right;}
+}
+
+/* ===== 현황판 카드 위쪽 색 띠: 분홍이 너무 많아 분홍 → 보라 → 초록 → 노랑 순서로 번갈아, 조회·설정 카드는 검정 ===== */
+#appShell #statusBoardView .chart-card:nth-of-type(4n+1):before,#appShell #statusBoardView .table-card:nth-of-type(4n+1):before{background:#e87ba4!important;}
+#appShell #statusBoardView .chart-card:nth-of-type(4n+2):before,#appShell #statusBoardView .table-card:nth-of-type(4n+2):before{background:#8a6fd1!important;}
+#appShell #statusBoardView .chart-card:nth-of-type(4n+3):before,#appShell #statusBoardView .table-card:nth-of-type(4n+3):before{background:#1baf7a!important;}
+#appShell #statusBoardView .chart-card:nth-of-type(4n+4):before,#appShell #statusBoardView .table-card:nth-of-type(4n+4):before{background:#eda100!important;}
+#appShell #statusBoardView .status-card:before{background:#1d1d1b!important;}
+
+/* ===== 출고 박스 > 배송 설정: 호차별 매장 이름·배송 기준 글씨 키움 ===== */
+#appShell #statusBoardView#statusBoardView .boxcount-setting-store-main b{font-size:14px!important;font-weight:800!important;}
+#appShell #statusBoardView#statusBoardView .boxcount-setting-store-main small{font-size:12px!important;}
+@media (max-width:900px){
+  #appShell #statusBoardView#statusBoardView .boxcount-setting-store-main b{font-size:13px!important;}
+  #appShell #statusBoardView#statusBoardView .boxcount-setting-store-main small{font-size:11px!important;}
+}
