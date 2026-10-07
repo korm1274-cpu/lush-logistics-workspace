@@ -43,7 +43,7 @@
   #appShell #dashboard .schedule-staff-primary em{font-size:11px!important;}
   #appShell #dashboard .schedule-staff-secondary b{font-size:15px!important;}
 }
-/* 금일 제외 인원: 이름을 숫자(0명) 바로 옆으로 */
-#appShell #dashboard .schedule-staff-secondary span{text-align:right!important;margin-right:2px!important;}
+/* TODAY STAFF·금일 제외 인원: 이름을 각 숫자 바로 옆으로 */
+#appShell #dashboard .schedule-staff-primary span,#appShell #dashboard .schedule-staff-secondary span{text-align:right!important;margin-right:2px!important;}
 /* 메인 '이번 달 입출고 현황' 제목 옆 월 표시(2026년 10월) 숨김 */
 #appShell #dashboard #dashboardMonth{display:none!important;}
