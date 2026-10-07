@@ -29,6 +29,7 @@
 #appShell.on-lush #defectView [data-df-pane]>.panel{position:relative;overflow:hidden;background:var(--lush-card)!important;border:2px solid var(--lush-ink)!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important}
 #appShell.on-lush #defectView [data-df-pane]>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--lush-pink)}
 #appShell.on-lush #defectView [data-df-pane="list"]>.panel::before{background:var(--lush-violet)}
+#appShell.on-lush #defectView [data-df-pane="list"]>.df-pending-panel::before{background:var(--lush-pink)}
 #appShell.on-lush #defectView [data-df-pane]>.data-filter-row{background:#fff!important;border:1.5px solid var(--lush-kraft)!important;border-radius:14px!important;box-shadow:none!important}
 #appShell.on-lush #defectView .df-form input,#appShell.on-lush #defectView .df-form select,#appShell.on-lush #defectView .df-form textarea{border-color:var(--lush-kraft)!important;background:#fff!important}
 #appShell.on-lush #defectView .df-form input:focus,#appShell.on-lush #defectView .df-form select:focus,#appShell.on-lush #defectView .df-form textarea:focus{outline:none;border-color:var(--lush-ink)!important}

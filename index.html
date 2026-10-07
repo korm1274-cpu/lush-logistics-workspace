@@ -1368,9 +1368,13 @@ window.ensureChart=function(){
       </div>
       </div>
       <div data-df-pane="list">
-      <div class="data-filter-row"><div class="field"><label>년도</label><select id="dfFilterYear"><option value="">전체</option></select></div><div class="field"><label>처리 여부</label><select id="dfFilterDone"><option value="N" selected>미처리</option><option value="Y">처리</option><option value="">전체</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div></div>
-      <div class="panel mt14"><div class="panel-head"><div><h3>불량 목록</h3></div><span class="badge" id="dfCount">0건</span></div>
-        <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfBody"></tbody></table></div>
+      <div class="panel mr-pending-panel df-pending-panel"><div class="panel-head"><div><h3>미완료 불량 <span id="dfPendingTitleCount" style="color:#d64545"></span></h3></div></div>
+        <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>등록일</th><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfPendingBody"></tbody></table></div>
+      </div>
+      <div class="mt14"></div>
+      <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="dfStart"></div><div class="field"><label>종료일</label><input type="date" id="dfEnd"></div><div class="field"><label>처리여부</label><select id="dfFilterDone"><option value="">전체</option><option value="Y">처리</option><option value="N">미처리</option></select></div><div class="field grow"><label>검색</label><input id="dfFilterQuery" placeholder="카테고리 / 제품코드 / 제품명 / LOT / 내용"></div><button class="btn primary" id="dfRun" type="button">조회</button><button class="btn" id="dfReset" type="button">전체</button></div>
+      <div class="panel mt14 df-records-panel"><div class="panel-head"><div><h3>불량 기록</h3></div><span class="badge" id="dfCount">0건</span></div>
+        <div class="data-table-wrap"><table class="data-table df-table"><thead><tr><th>등록일</th><th>년도</th><th>카테고리</th><th>차수</th><th>PLU</th><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th class="num">수량</th><th>내용</th><th>처리 여부</th><th>관리</th></tr></thead><tbody id="dfBody"></tbody></table></div>
       </div>
       </div>
     </div></section>
