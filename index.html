@@ -15455,5 +15455,12 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #appShell.on-lush #sheetView .sheet-footer{border-top:1px solid #eee8dc!important;}
 @media (max-width:900px){#appShell.on-lush #sheetView .sheet-title{padding:14px 18px!important;}#appShell.on-lush #sheetView .sheet-title h2{font-size:19px!important;}#appShell.on-lush #sheetView .sheet-title p{display:none!important;}}
 </style>
+<style id="rq-list-buttons-compact">
+/* 트래픽 > 등록된 출고 요청: 처리상태(미처리·처리)와 관리(수정·삭제) 버튼을 작게 */
+#appShell #outboundRequestManager .request-manager-item button[data-toggle],
+#appShell #outboundRequestManager .request-manager-item>span:last-child .btn{height:30px!important;min-height:0!important;padding:0 10px!important;font-size:12.5px!important;line-height:1!important;border-radius:8px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;}
+#appShell #outboundRequestManager .request-manager-item button[data-toggle]{min-width:58px!important;}
+#appShell #outboundRequestManager .request-manager-item>span:last-child{display:flex!important;gap:4px!important;align-items:center!important;}
+</style>
 </body>
 </html>
