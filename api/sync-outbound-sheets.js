@@ -11,6 +11,7 @@
 //   출고 시트      : A 출고일자 | B 제품코드 | C 제품군 | D 제품명 | E 단위 | F 주문출고_수량
 //   출고제외 시트  : A 출고일자 | B 제품코드 | ... | I 실제출고량  (A+B로 매칭해서 F에서 뺌)
 
+const outboundStore = require('./_lib/outbound-store');
 const KV_TIMEOUT_MS = 8000;
 const SHARED_KEY = 'lush_shared_file_data_v1';
 const RETENTION_MONTHS = 18; // 원본 상세 데이터는 최근 18개월치만 보관 (그 이전은 요약만 남김, 클라이언트와 동일한 정책)
@@ -175,15 +176,18 @@ module.exports = async (req, res) => {
     // 6) 원본 상세 행은 최근 18개월치만 보관합니다 (그 이전은 위 요약에만 남습니다).
     const cutoff = shiftMonth(new Date().toISOString().slice(0, 7), -RETENTION_MONTHS);
     const recentRows = finalRows.filter(r => ym(r[0]) >= cutoff);
-    data.outbound = {
-      header: ['출고일자', '제품코드', '제품군', '제품명', '단위', '수량'],
-      rows: recentRows,
-      updatedAt: new Date().toISOString(),
+
+    // 7) 출고 상세는 공유 데이터 한 덩어리가 아니라 달별로 따로 저장합니다(api/_lib/outbound-store.js).
+    //    내용이 바뀐 달만 다시 쓰고, 보관 기간이 지난 달은 지웁니다. 화면은 바뀐 달만 새로 받아갑니다.
+    const monthsMap = outboundStore.splitByMonth(recentRows);
+    const kvStore = outboundStore.client(KV_URL, KV_TOKEN);
+    const monthResult = await outboundStore.writeMonths(kvStore, monthsMap, {
       sourceFile: '구글시트 자동연동',
       mode: '구글시트 자동연동 (매일 새벽 4시)'
-    };
+    }, { keepOnly: Object.keys(monthsMap) });
+    delete data.outbound; // 예전 방식(한 덩어리 안의 출고)은 더 이상 두지 않음
 
-    // 7) 저장
+    // 8) 공유 데이터(출고 제외) 저장
     const setR = await fetchWithTimeout(`${KV_URL}/set/${SHARED_KEY}`, {
       method: 'POST',
       headers: { Authorization: `Bearer ${KV_TOKEN}`, 'Content-Type': 'text/plain' },
@@ -197,6 +201,7 @@ module.exports = async (req, res) => {
       출고제외시트_행수: excRows.length,
       최종반영행수: finalRows.length,
       보관되는최근행수: recentRows.length,
+      출고_달별저장: monthResult,
       제외수량_적용후_0으로_보정된_행수: clampedCount,
       갱신된월: Object.keys(freshSummary).sort(),
       실행시각: new Date().toISOString()

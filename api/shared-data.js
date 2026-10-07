@@ -1,6 +1,7 @@
 // api/shared-data.js
 // Vercel KV(Upstash Redis) 기반 팀 공유 저장소 — 입고/출고/오출고/파손/출고박스 데이터를 저장합니다.
 const KEY = 'lush_shared_file_data_v1';
+const outboundStore = require('./_lib/outbound-store');
 const KV_TIMEOUT_MS = 8000;
 
 function fetchWithTimeout(url, options) {
@@ -36,6 +37,14 @@ module.exports = async (req, res) => {
         try { body = JSON.parse(body); } catch {}
       }
       body = body && typeof body === 'object' ? body : {};
+      // 출고 상세는 달별로 따로 저장합니다(api/outbound.js). 달별 저장소가 생긴 뒤에는
+      // 화면이 보낸 출고를 한 덩어리에 다시 넣지 않아 크기 한도(약 4.5MB)를 넘지 않게 합니다.
+      if (body.outbound) {
+        try {
+          const idx = await outboundStore.readIndex(outboundStore.client(KV_URL, KV_TOKEN));
+          if (Object.keys(idx.months).length) delete body.outbound;
+        } catch (e) { /* 확인 실패 시 그대로 둠 */ }
+      }
       // 구글시트 자동연동 항목(오출고·파손·입고·출고 등)은 다른 기기가 예전 사본을 통째로 올려도
       // 서버에 있는 더 최신 데이터(updatedAt 기준)가 지워지지 않도록 항목별로 최신 쪽을 유지합니다.
       try {

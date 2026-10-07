@@ -9434,7 +9434,8 @@ setTimeout(initInventoryColumnResize,0);
     // 단가표는 자주 바뀌지 않고 용량이 커서, 매번 서버로 동기화되는 공유 데이터에서는 제외하고 이 기기에만 저장합니다.
     // (서버 저장 용량 한도를 아끼기 위함이며, 단가표는 각 기기에서 직접 업로드해서 씁니다.)
     const{priceList,...shared}=d;
-    pushSharedData(shared);
+    if(Object.keys(readObHashes()).length){const{outbound,...rest}=shared;pushSharedData(rest);pushOutboundMonths(outbound)}
+    else pushSharedData(shared);
   }
 
   /* 출고 데이터에 '제품군' 컬럼이 새로 추가되어 기존 5컬럼 형식의 출고 데이터는 더 이상 맞지 않으므로 한 번만 자동으로 비웁니다. */
@@ -9518,6 +9519,57 @@ setTimeout(initInventoryColumnResize,0);
   function clearSyncIssue(){document.getElementById('syncIssueBar')?.remove()}
   window.showSyncIssue=showSyncIssue;window.clearSyncIssue=clearSyncIssue;
   // 반환값: 'updated' | 'same' | 'memory'(저장 공간 부족으로 이번 접속에서만 표시) | 'busy' | 'error'
+  /* ── 출고는 달(YYYY-MM)별로 따로 저장(api/outbound.js) ──
+     공유 데이터 한 덩어리에 출고까지 넣으면 크기 한도(약 4.5MB)를 넘게 되어, 출고만 달별로 나눠 둡니다.
+     화면은 '목록표'(달마다 지문 hash)를 먼저 받고, 이 기기에 없는 달·바뀐 달만 새로 받아 합칩니다.
+     합친 결과는 예전과 같은 모양(read().outbound.rows)이라 출고를 쓰는 화면들은 그대로 동작합니다. */
+  /* var: 이 아래보다 먼저 실행되는 저장(save)에서도 쓰일 수 있어 선언을 끌어올림 */
+  var OUTBOUND_API='/api/outbound',OB_HASH_KEY='lush-outbound-month-hashes-v1';
+  var __lastObRef=null;
+  function obHash(rows){const s=JSON.stringify(rows||[]);let h=0x811c9dc5;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,0x01000193)>>>0}return h.toString(16)+':'+(rows||[]).length}
+  function obSplit(rows){const m={};(rows||[]).forEach(r=>{const k=String((r&&r[0])||'').slice(0,7);if(/^\d{4}-\d{2}$/.test(k))(m[k]=m[k]||[]).push(r)});return m}
+  function readObHashes(){try{return JSON.parse(localStorage.getItem(OB_HASH_KEY)||'{}')||{}}catch{return{}}}
+  function writeObHashes(h){try{localStorage.setItem(OB_HASH_KEY,JSON.stringify(h))}catch{}}
+  // 서버의 달별 출고를 받아 merged.outbound를 채움. 달별 저장소가 아직 없으면 false(예전 방식 그대로 둠)
+  async function attachOutbound(merged){
+    const r=await fetch(OUTBOUND_API,{cache:'no-store'});
+    if(!r.ok)throw new Error('출고 목록표 HTTP '+r.status);
+    const j=await r.json(),idx=(j&&j.index)||{},months=idx.months||{},keys=Object.keys(months).sort();
+    if(!keys.length)return false;
+    const cur=read().outbound,local=cur&&Array.isArray(cur.rows)?obSplit(cur.rows):{},known=readObHashes(),got={},need=[];
+    keys.forEach(k=>{if(local[k]&&known[k]===months[k].hash)got[k]=local[k];else need.push(k)});
+    for(let i=0;i<need.length;i+=3){
+      const part=need.slice(i,i+3);
+      const res=await Promise.all(part.map(k=>fetch(OUTBOUND_API+'?month='+encodeURIComponent(k),{cache:'no-store'}).then(x=>{if(!x.ok)throw new Error('출고 '+k+' HTTP '+x.status);return x.json()})));
+      res.forEach((g,n)=>{got[part[n]]=Array.isArray(g&&g.rows)?g.rows:[]});
+    }
+    const rows=[];keys.forEach(k=>{const a=got[k]||[];for(let i=0;i<a.length;i++)rows.push(a[i])});
+    const meta=idx.meta||{};
+    merged.outbound={header:meta.header||['출고일자','제품코드','제품군','제품명','단위','수량'],rows,updatedAt:meta.updatedAt||'',sourceFile:meta.sourceFile||'',mode:meta.mode||''};
+    const h={};keys.forEach(k=>{h[k]=months[k].hash});writeObHashes(h);
+    __lastObRef=merged.outbound;
+    return true;
+  }
+  // 이 기기에서 출고를 바꾼 경우(출고 Excel 업로드 등) 바뀐 달만 서버에 올림
+  var __obPushing=false;
+  async function pushOutboundMonths(outbound){
+    if(!outbound||!Array.isArray(outbound.rows)||outbound===__lastObRef||__obPushing)return;
+    __obPushing=true;__suppressPullUntil=Date.now()+15000;
+    try{
+      const known=readObHashes(),parts=obSplit(outbound.rows),meta={sourceFile:outbound.sourceFile||'',mode:outbound.mode||''};
+      for(const k of Object.keys(parts).sort()){
+        const hash=obHash(parts[k]);if(known[k]===hash)continue;
+        const r=await fetch(OUTBOUND_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({month:k,rows:parts[k],meta})});
+        const j=await r.json().catch(()=>null);
+        if(!r.ok||!j||!j.success)throw new Error((j&&j.error)||('HTTP '+r.status));
+        known[k]=hash;writeObHashes(known);
+      }
+      __lastObRef=outbound;
+    }catch(e){console.error('출고 달별 저장 실패:',e);window.showSyncIssue?.('출고 데이터를 서버에 저장하지 못했습니다: '+(e&&e.message||e)+' — 잠시 후 다시 업로드해주세요.')}
+    finally{__obPushing=false;__suppressPullUntil=Date.now()+2000}
+  }
+  window.LUSH_OUTBOUND_STORE={active:()=>Object.keys(readObHashes()).length>0};
+
   async function pullSharedData(silent){
     if(__sharedSyncing)return'busy';
     // 처음 불러오기(IndexedDB)가 끝나기 전에 받으면 이 기기에만 있는 단가표를 잃을 수 있어 먼저 기다림
@@ -9531,7 +9583,9 @@ setTimeout(initInventoryColumnResize,0);
       if(j&&j.success&&j.data){
         const localPriceList=read().priceList;
         const current=JSON.stringify(read());
-        const merged=localPriceList?{...j.data,priceList:localPriceList}:j.data;
+        const merged=localPriceList?{...j.data,priceList:localPriceList}:{...j.data};
+        // 출고: 달별 저장소에서 받아 붙임(실패하면 이 기기에 있던 출고를 그대로 씀)
+        try{await attachOutbound(merged)}catch(e){console.error('출고 달별 불러오기 실패:',e);if(!merged.outbound&&read().outbound)merged.outbound=read().outbound}
         const incoming=JSON.stringify(merged);
         if(current!==incoming){
           const status='updated';
@@ -15350,15 +15404,17 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   function render(){
     var host=document.getElementById('upload');if(!host||!window.FILE_DATA_ENGINE)return;
     var d=window.FILE_DATA_ENGINE.getData()||{},shared={};Object.keys(d).forEach(function(k){if(k!=='priceList')shared[k]=d[k]});
-    var total=bytes(shared),pct=Math.round(total/LIMIT*100);
+    /* 출고를 달별로 따로 저장하는 중이면, 한도에 걸리는 '한 덩어리'에서는 출고를 빼고 계산 */
+    var split=window.LUSH_OUTBOUND_STORE&&window.LUSH_OUTBOUND_STORE.active(),blob={};Object.keys(shared).forEach(function(k){if(!(split&&k==='outbound'))blob[k]=shared[k]});
+    var total=bytes(blob),pct=Math.round(total/LIMIT*100);
     var card=document.getElementById('sharedSizeCard');
     if(!card){card=document.createElement('div');card.id='sharedSizeCard';var head=host.querySelector('.lush-page-head');(head&&head.nextSibling)?host.insertBefore(card,head.nextSibling):host.insertBefore(card,host.firstChild)}
     card.className=pct>=85?'danger':pct>=65?'warn':'';
     var rows=Object.keys(shared).map(function(k){return[k,bytes(shared[k]),shared[k]&&shared[k].rows?shared[k].rows.length:null]}).sort(function(a,b){return b[1]-a[1]});
     card.innerHTML='<div class="ss-head"><b>팀 공유 데이터 용량</b><span>'+fmt(total)+' / 4.5MB ('+pct+'%)</span></div>'+
       '<div class="ss-bar"><i style="width:'+Math.min(100,pct)+'%"></i></div>'+
-      '<div class="ss-note">입고·출고 등 공유 데이터는 한 번에 주고받아서 약 4.5MB를 넘으면 불러오기·저장이 실패할 수 있습니다. 65% 이상 노랑, 85% 이상 빨강.</div>'+
-      '<div class="ss-list">'+rows.map(function(r){return '<div><span>'+(NAMES[r[0]]||r[0])+(r[2]!=null?' ('+r[2].toLocaleString('ko-KR')+'줄)':'')+'</span><b>'+fmt(r[1])+'</b></div>'}).join('')+'</div>';
+      '<div class="ss-note">'+(split?'출고는 달별로 따로 저장되어 한도에 포함되지 않습니다. 나머지 공유 데이터가 약 4.5MB를 넘으면 불러오기·저장이 실패할 수 있습니다.':'공유 데이터는 한 번에 주고받아서 약 4.5MB를 넘으면 불러오기·저장이 실패할 수 있습니다.')+' 65% 이상 노랑, 85% 이상 빨강.</div>'+
+      '<div class="ss-list">'+rows.map(function(r){return '<div><span>'+(NAMES[r[0]]||r[0])+(split&&r[0]==='outbound'?' · 달별 따로 저장':'')+(r[2]!=null?' ('+r[2].toLocaleString('ko-KR')+'줄)':'')+'</span><b>'+fmt(r[1])+'</b></div>'}).join('')+'</div>';
   }
   document.addEventListener('team-data-updated',function(){setTimeout(render,300)});
   if(window.MutationObserver){var up=document.getElementById('upload');if(up)new MutationObserver(function(){if(up.classList.contains('active'))render()}).observe(up,{attributes:true,attributeFilter:['class']})}
