@@ -184,7 +184,7 @@ module.exports = async (req, res) => {
     const monthResult = await outboundStore.writeMonths(kvStore, monthsMap, {
       sourceFile: '구글시트 자동연동',
       mode: '구글시트 자동연동 (매일 새벽 4시)'
-    }, { keepOnly: Object.keys(monthsMap) });
+    }, { pruneBefore: cutoff }); // 시트에서 보관함으로 옮긴 달은 지우지 않음(18개월 지난 달만 정리)
     delete data.outbound; // 예전 방식(한 덩어리 안의 출고)은 더 이상 두지 않음
 
     // 8) 공유 데이터(출고 제외) 저장

@@ -156,7 +156,10 @@ module.exports = async (req, res) => {
     data.inboundMonthlySummary = { ...(data.inboundMonthlySummary || {}), ...freshSummary };
 
     const cutoff = shiftMonth(new Date().toISOString().slice(0, 7), -RETENTION_MONTHS);
-    const recentRows = finalRows.filter(r => ym(r[0]) >= cutoff);
+    // 시트에 있는 달은 시트 내용으로 바꾸고, 시트에 없는 달(보관함 시트로 옮긴 지난 달)은 기존 데이터를 그대로 둡니다.
+    const sheetMonths = new Set(finalRows.map(r => ym(r[0])));
+    const keptRows = ((data.inbound && Array.isArray(data.inbound.rows)) ? data.inbound.rows : []).filter(r => r && !sheetMonths.has(ym(r[0])));
+    const recentRows = keptRows.concat(finalRows).filter(r => ym(r[0]) >= cutoff).sort((a, b) => String(a[0]).localeCompare(String(b[0])));
     data.inbound = {
       header: ['입고일자', '차수', '팔렛수', '제품코드', '제품군', '제품명', '단위', '수량'],
       rows: recentRows,

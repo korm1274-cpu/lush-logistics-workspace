@@ -74,6 +74,15 @@ async function writeMonths(kv, monthsMap, meta, options = {}) {
     index.months[month] = { hash, count: rows.length, updatedAt: now };
     written.push(month);
   }
+  // options.pruneBefore('YYYY-MM'): 이 달보다 오래된 달만 지움(시트에서 보관함으로 옮긴 최근 달은 유지)
+  if (options.pruneBefore && isMonth(options.pruneBefore)) {
+    for (const month of Object.keys(index.months)) {
+      if (month >= options.pruneBefore) continue;
+      await kv.del(MONTH_PREFIX + month);
+      delete index.months[month];
+      removed.push(month);
+    }
+  }
   if (Array.isArray(options.keepOnly)) {
     const keep = new Set(options.keepOnly);
     for (const month of Object.keys(index.months)) {
