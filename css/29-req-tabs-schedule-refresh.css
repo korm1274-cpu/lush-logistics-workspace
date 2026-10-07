@@ -1,0 +1,26 @@
+/* ===== 메인 출고요청(휴대폰): 대량·트래픽·본사·노즐/비닐 글자와 옆 숫자를 같은 크기·굵기·높이로 ===== */
+@media (max-width:900px){
+  #appShell #dashboard .req-m-tabs button{font-size:13px!important;font-weight:800!important;line-height:1!important;gap:4px!important;padding:0 3px!important;letter-spacing:-.2px}
+  #appShell #dashboard .req-m-tabs button em{font-size:inherit!important;font-weight:inherit!important;line-height:1!important;font-style:normal;display:inline!important;vertical-align:baseline;font-variant-numeric:tabular-nums}
+  #appShell #dashboard .req-m-tabs button em:empty{display:none}
+}
+
+/* ===== 스케줄 새로고침: 아이콘 버튼 (누르면 회전, 끝나면 초록 체크 표시) ===== */
+#appShell #dashRefreshImportScheduleBtn,#appShell #refreshImportScheduleBtn{
+  display:inline-flex!important;align-items:center!important;justify-content:center!important;gap:6px;
+  background:#fff!important;border:1.5px solid #e4d9c7!important;color:#1d1d1b!important;
+  box-shadow:none!important;cursor:pointer;transition:border-color .2s,color .2s,background .2s;
+}
+#appShell #dashRefreshImportScheduleBtn{width:32px!important;min-width:32px!important;height:32px!important;min-height:32px!important;max-height:32px!important;align-self:center!important;flex:none!important;padding:0!important;border-radius:50%!important;margin-left:8px!important;}
+#appShell #refreshImportScheduleBtn{height:38px!important;min-height:38px!important;padding:0 16px 0 13px!important;border-radius:999px!important;font-size:13.5px!important;font-weight:800!important;}
+#appShell #dashRefreshImportScheduleBtn svg,#appShell #refreshImportScheduleBtn svg{width:16px;height:16px;stroke-width:2.4;transition:transform .45s ease;}
+#appShell #dashRefreshImportScheduleBtn:hover,#appShell #refreshImportScheduleBtn:hover{border-color:#e87ba4!important;color:#c2477a!important;background:#fff6fa!important;}
+#appShell #dashRefreshImportScheduleBtn:hover svg,#appShell #refreshImportScheduleBtn:hover svg{transform:rotate(180deg);}
+#appShell .sr-spin svg{animation:srSpin .8s linear infinite!important;}
+#appShell .sr-done{border-color:#2fb37a!important;color:#11795a!important;background:#eefaf4!important;}
+@keyframes srSpin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){#appShell .sr-spin svg{animation:none!important}}
+@media (max-width:900px){
+  #appShell #dashRefreshImportScheduleBtn{width:30px!important;min-width:30px!important;height:30px!important;min-height:30px!important;max-height:30px!important;}
+  #appShell #refreshImportScheduleBtn{height:34px!important;min-height:34px!important;padding:0 13px 0 11px!important;font-size:13px!important;}
+}
