@@ -8127,7 +8127,7 @@ html,body{max-width:100%;overflow-x:hidden}
 
     <section id="defectView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">PRODUCT DEFECT</div><h2>제품 불량</h2><p>제품 불량 건을 직접 등록하고 처리 여부를 관리합니다.</p></div></div>
-      <div class="kpis data-kpis"><div class="kpi"><span>전체</span><b id="dfTotal">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="dfOpen">0</b><small>건</small></div><div class="kpi"><span>불량 수량</span><b id="dfQty">0</b><small>개</small></div></div>
+      <div class="kpis data-kpis"><div class="kpi"><span>전체</span><b id="dfTotal">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="dfOpen">0</b><small>건</small></div></div>
       <div class="df-tabs mt14"><button type="button" class="on" data-df-tab="list">불량 목록 <em id="dfTabOpen"></em></button><button type="button" data-df-tab="form">불량 등록</button></div>
       <div data-df-pane="form" hidden>
       <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
@@ -15640,7 +15640,6 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     $('dfTotal').textContent=num(list.length);
     var openN=list.filter(function(x){return x.done!=='Y'}).length;
     $('dfOpen').textContent=num(openN);$('dfTabOpen').textContent=openN?openN:'';
-    $('dfQty').textContent=num(rows.reduce(function(s,x){return s+(Number(x.qty)||0)},0));
     $('dfCount').textContent=rows.length+'건';
     if(!rows.length){$('dfBody').innerHTML='<tr class="df-row-empty"><td class="df-empty" colspan="12">'+(list.length?'조건에 맞는 불량 건이 없습니다.':'등록된 불량 건이 없습니다.')+'</td></tr>';return}
     $('dfBody').innerHTML=rows.map(function(x){
