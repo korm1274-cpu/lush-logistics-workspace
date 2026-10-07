@@ -1,6 +1,7 @@
 /* Design Preview v1 — Main + Status Board only */
 (function(){
   'use strict';
+
   var STORAGE_KEY='lush-design-preview-v1';
   var button=document.getElementById('designPreviewToggle');
   var stateLabel=document.getElementById('designPreviewToggleState');
@@ -10,18 +11,23 @@
     try{return localStorage.getItem(STORAGE_KEY)==='on';}
     catch(e){return false;}
   }
+
   function getActiveView(){
     var active=document.querySelector('.view.active');
     return active ? active.id : '';
   }
+
   function animateCurrentView(){
     var view=document.querySelector('.view.active');
     if(!view || (view.id!=='dashboard' && view.id!=='statusBoardView'))return;
     view.classList.remove('design-preview-enter');
     void view.offsetWidth;
     view.classList.add('design-preview-enter');
-    window.setTimeout(function(){view.classList.remove('design-preview-enter');},450);
+    window.setTimeout(function(){
+      view.classList.remove('design-preview-enter');
+    },450);
   }
+
   function sync(){
     var enabled=isEnabled();
     var activeId=getActiveView();
@@ -44,25 +50,32 @@
 
   button.addEventListener('click',function(){
     var next=!isEnabled();
-    try{localStorage.setItem(STORAGE_KEY,next ? 'on' : 'off');}catch(e){}
+    try{
+      localStorage.setItem(STORAGE_KEY,next ? 'on' : 'off');
+    }catch(e){}
     sync();
     animateCurrentView();
   });
 
-  var observer=new MutationObserver(function(mutations){
-    for(var i=0;i<mutations.length;i++){
-      if(mutations[i].type==='attributes'){
-        sync();
-        if(isEnabled())animateCurrentView();
-        break;
-      }
-    }
+  /* Only react when the actual active view changes.
+     Preview animation itself also changes a view class, so reacting to every
+     class mutation can create a self-triggering observer loop. */
+  var lastActiveId=getActiveView();
+  var observer=new MutationObserver(function(){
+    var nextActiveId=getActiveView();
+    if(nextActiveId===lastActiveId)return;
+    lastActiveId=nextActiveId;
+    sync();
+    if(isEnabled())animateCurrentView();
   });
+
   document.querySelectorAll('.view').forEach(function(view){
     observer.observe(view,{attributes:true,attributeFilter:['class']});
   });
+
   window.addEventListener('storage',function(event){
     if(event.key===STORAGE_KEY)sync();
   });
+
   sync();
 })();
