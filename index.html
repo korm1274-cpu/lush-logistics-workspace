@@ -11780,6 +11780,13 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
         pushTeamData();
         return;
       }
+      const serverDefectIds=new Set((j.data.defects||[]).map(d=>d&&d.id));
+      if(readLocal(KEYS.defects).some(d=>d&&d.id&&!serverDefectIds.has(d.id))){
+        // 이 기기에만 있는 제품 불량 기록은 지우지 않고 서버로 올립니다(서버에서 건별로 합쳐짐).
+        pulling=false;
+        pushTeamData();
+        return;
+      }
       const cur=JSON.stringify(snapshot());
       const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd,defects:j.data.defects||[]});
       if(cur!==incoming){
@@ -11802,7 +11809,7 @@ $('requestManagerTypeFilter')?.addEventListener('change',render);$('requestManag
   const origSetItem=localStorage.setItem.bind(localStorage);
   localStorage.setItem=function(k,v){
     origSetItem(k,v);
-    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity)pushTeamData();
+    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects)pushTeamData();
   };
   window.pullTeamData=pullTeamData;
   pullTeamData(true);
@@ -15575,7 +15582,8 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     document.querySelectorAll('#defectView [data-df-tab]').forEach(function(b){b.classList.toggle('on',b.getAttribute('data-df-tab')===t)});
     document.querySelectorAll('#defectView [data-df-pane]').forEach(function(p){p.hidden=p.getAttribute('data-df-pane')!==t});
   }
-  function load(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function loadAll(){try{var v=JSON.parse(localStorage.getItem(KEY)||'[]');return Array.isArray(v)?v:[]}catch(e){return[]}}
+  function load(){return loadAll().filter(function(x){return x&&!x.deleted})}
   function store(list){localStorage.setItem(KEY,JSON.stringify(list))}
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function num(n){var v=Number(n)||0;return v.toLocaleString('ko-KR')}
@@ -15592,7 +15600,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     item.qty=item.qty===''?'':Number(item.qty);
     if(!item.year){alert('년도를 입력해 주세요.');$('dfYear').focus();return}
     if(!item.name&&!item.code){alert('제품코드나 제품명 중 하나는 입력해 주세요.');$('dfName').focus();return}
-    var list=load(),now=new Date().toISOString();
+    var list=loadAll(),now=new Date().toISOString();
     if(editingId){
       var i=list.findIndex(function(x){return x.id===editingId});
       if(i>=0)list[i]=Object.assign({},list[i],item,{updatedAt:now});
@@ -15613,11 +15621,13 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
   function del(id){
     var it=load().find(function(x){return x.id===id});if(!it)return;
     if(!confirm('['+(it.name||it.code||'')+'] 불량 건을 삭제할까요?'))return;
-    store(load().filter(function(x){return x.id!==id}));
+    var all=loadAll(),now=new Date().toISOString();
+    all.forEach(function(x){if(x.id===id){x.deleted=true;x.updatedAt=now}});
+    store(all);
     if(editingId===id)resetForm();else render();
   }
   function toggle(id){
-    var list=load(),it=list.find(function(x){return x.id===id});if(!it)return;
+    var list=loadAll(),it=list.find(function(x){return x.id===id});if(!it)return;
     it.done=it.done==='Y'?'N':'Y';it.updatedAt=new Date().toISOString();store(list);render();
   }
   function sortKey(x){return [String(x.year||''),String(x.mfgDate||''),String(x.createdAt||'')].join('|')}

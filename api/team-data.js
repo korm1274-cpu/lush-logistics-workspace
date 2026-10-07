@@ -59,6 +59,19 @@ module.exports = async (req, res) => {
         const current = await kvGet();
         if (current && typeof current === 'object' && body && typeof body === 'object') {
           Object.keys(current).forEach(k => { if (!(k in body)) body[k] = current[k]; });
+          // 제품 불량(defects)은 누적 기록: 여러 사람이 동시에 올려도 서로 지우지 않도록 건(id)별로 합칩니다.
+          // 같은 건이면 updatedAt이 더 최근인 쪽을 남기고, 삭제는 deleted 표시로 전달됩니다.
+          if (Array.isArray(current.defects) && Array.isArray(body.defects)) {
+            const byId = new Map();
+            const put = d => {
+              if (!d || !d.id) return;
+              const prev = byId.get(d.id);
+              if (!prev || String(d.updatedAt || '') >= String(prev.updatedAt || '')) byId.set(d.id, d);
+            };
+            current.defects.forEach(put);
+            body.defects.forEach(put);
+            body.defects = Array.from(byId.values());
+          }
         }
       } catch (e) { /* 병합 실패 시 받은 그대로 저장 */ }
       const ok = await kvSet(body);
