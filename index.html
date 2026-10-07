@@ -8130,7 +8130,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="kpis data-kpis"><div class="kpi"><span>전체</span><b id="dfTotal">0</b><small>건</small></div><div class="kpi"><span>미처리</span><b id="dfOpen">0</b><small>건</small></div></div>
       <div class="df-tabs mt14"><button type="button" class="on" data-df-tab="list">불량 목록 <em id="dfTabOpen"></em></button><button type="button" data-df-tab="form">불량 등록</button></div>
       <div data-df-pane="form" hidden>
-      <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
+      <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div></div>
         <div class="df-form">
           <div class="field df-c4"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
           <div class="field df-c4"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: 미입고, 중량미달"><datalist id="dfCategoryList"></datalist></div>
@@ -15538,7 +15538,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 #defectView .df-form input,#defectView .df-form select,#defectView .df-form textarea{width:100%;box-sizing:border-box;min-height:38px;border:1.5px solid #e2ddd3;border-radius:10px;padding:8px 10px;font:inherit;font-size:14px;background:#fff}
 #defectView .df-form textarea{resize:vertical;min-height:84px;line-height:1.5;white-space:pre-wrap!important;overflow:hidden}
 #defectView .df-actions{display:flex;justify-content:center;gap:8px;margin-top:14px}
-#defectView .df-actions .btn{min-width:140px!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;height:42px!important;padding:0 18px!important;box-sizing:border-box}
+#defectView .df-actions .btn{min-width:0!important;width:auto!important;flex:none!important;max-width:none!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;height:42px!important;padding:0 18px!important;box-sizing:border-box}
 #defectView .df-actions .btn[hidden]{display:none!important}
 #defectView .df-actions .btn{min-width:84px}
 #defectView .df-table td{vertical-align:middle;white-space:nowrap}
@@ -15562,7 +15562,6 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
 @media(max-width:900px){
   #defectView .df-form{gap:8px}
   #defectView .df-form .df-m6{grid-column:span 6}
-  #defectView .df-actions .btn{flex:1;max-width:220px}
   #defectView .df-table thead{display:none}
   #defectView .df-table,#defectView .df-table tbody{display:block;width:100%!important;min-width:0!important;max-width:100%!important}
   #defectView .data-table-wrap{overflow:visible!important;min-width:0!important}
@@ -15598,7 +15597,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     FIELDS.forEach(function(f){var el=$(f[1]);if(el)el.value=''});
     $('dfYear').value=new Date().getFullYear();$('dfDone').value='N';
     if(window.__dfFitNote)setTimeout(window.__dfFitNote,0);
-    editingId=null;$('dfSave').textContent='등록';$('dfCancel').hidden=true;$('dfEditBadge').hidden=true;$('dfFormTitle').textContent='불량 등록';
+    editingId=null;$('dfSave').textContent='등록';$('dfCancel').hidden=true;$('dfFormTitle').textContent='불량 등록';
     render();
   }
   function save(){
@@ -15620,7 +15619,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     FIELDS.forEach(function(f){$(f[1]).value=it[f[0]]==null?'':it[f[0]]});
     if(!it.done)$('dfDone').value='N';
     if(window.__dfFitNote)setTimeout(window.__dfFitNote,0);
-    editingId=id;$('dfSave').textContent='수정 저장';$('dfCancel').hidden=false;$('dfEditBadge').hidden=false;$('dfFormTitle').textContent='불량 수정';
+    editingId=id;$('dfSave').textContent='수정 저장';$('dfCancel').hidden=false;$('dfFormTitle').textContent='불량 수정';
     render();
     showTab('form');
     var p=document.querySelector('#defectView .df-tabs');if(p)p.scrollIntoView({behavior:'smooth',block:'start'});
