@@ -8133,7 +8133,7 @@ html,body{max-width:100%;overflow-x:hidden}
       <div class="panel df-form-panel"><div class="panel-head"><div><h3 id="dfFormTitle">불량 등록</h3></div><span class="badge" id="dfEditBadge" hidden>수정 중</span></div>
         <div class="df-form">
           <div class="field"><label>년도</label><input id="dfYear" type="number" min="2000" max="2100" step="1"></div>
-          <div class="field"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: 미입고"><datalist id="dfCategoryList"></datalist></div>
+          <div class="field"><label>카테고리</label><input id="dfCategory" list="dfCategoryList" placeholder="예: 미입고, 중량미달"><datalist id="dfCategoryList"></datalist></div>
           <div class="field"><label>차수</label><input id="dfBatch" placeholder="예: 71차"></div>
           <div class="field"><label>PLU</label><input id="dfPlu"></div>
           <div class="field"><label>제품코드</label><input id="dfCode" placeholder="예: T0017200"></div>
@@ -15625,7 +15625,7 @@ html.ux-dark #appShell .main .inventory-head,html.ux-dark #appShell .main .lush-
     if(!$('dfBody'))return;
     var list=load();
     // 년도 필터·카테고리 추천 목록
-    var years={},cats={};list.forEach(function(x){if(x.year)years[x.year]=1;if(x.category)cats[x.category]=1});
+    var years={},cats={"미입고":1,"중량미달":1};list.forEach(function(x){if(x.year)years[x.year]=1;if(x.category)cats[x.category]=1});
     var ySel=$('dfFilterYear'),yCur=ySel.value;
     ySel.innerHTML='<option value="">전체</option>'+Object.keys(years).sort().reverse().map(function(y){return '<option value="'+esc(y)+'">'+esc(y)+'</option>'}).join('');
     if(yCur&&years[yCur])ySel.value=yCur;
