@@ -59,6 +59,29 @@ module.exports = async (req, res) => {
             const it = inc && typeof inc === 'object' ? Date.parse(inc.updatedAt || '') : NaN;
             if (Number.isFinite(ct) && Number.isFinite(it) && ct > it) body[k] = cur;
           });
+          // 월요약(입고·출고)에는 updatedAt이 없어 위 비교가 적용되지 않습니다. 화면은 처음 열 때 기기에 있는
+          // 일부 데이터로 요약을 다시 계산해 올리기도 해서, 동기화가 새로 계산한 서버 요약을 덮어쓰는 일이 있었습니다.
+          // → 서버에 원본이 있는 달의 요약은 서버 값을 유지하고, 원본이 없는 달(직접 입력한 과거 요약 등)만 받은 값을 씁니다.
+          const keepServerMonths = (key, serverMonths) => {
+            const cur = current[key];
+            if (!(key in body) || !cur || typeof cur !== 'object') return;
+            const merged = { ...(body[key] && typeof body[key] === 'object' ? body[key] : {}) };
+            serverMonths.forEach(m => { if (cur[m]) merged[m] = cur[m]; });
+            body[key] = merged;
+          };
+          const ym = d => String(d || '').slice(0, 7);
+          // 입고: 이 기기가 입고 원본을 새로 올린 경우(받은 쪽 updatedAt이 더 최신)는 받은 요약을 그대로 씁니다.
+          const ict = Date.parse((current.inbound && current.inbound.updatedAt) || '');
+          const iit = Date.parse((body.inbound && body.inbound.updatedAt) || '');
+          if (!(Number.isFinite(iit) && (!Number.isFinite(ict) || iit > ict))) {
+            const rows = current.inbound && Array.isArray(current.inbound.rows) ? current.inbound.rows : [];
+            keepServerMonths('inboundMonthlySummary', new Set(rows.map(r => ym(r && r[0]))));
+          }
+          // 출고: 원본은 달별 저장소에 있으므로 그 목록의 달은 서버 요약 유지
+          try {
+            const oidx = await outboundStore.readIndex(outboundStore.client(KV_URL, KV_TOKEN));
+            keepServerMonths('outboundMonthlySummary', new Set(Object.keys(oidx.months || {})));
+          } catch (e) { /* 확인 실패 시 받은 그대로 */ }
         }
       } catch (e) { /* 비교 실패 시에는 받은 그대로 저장 */ }
       const value = JSON.stringify(body);
