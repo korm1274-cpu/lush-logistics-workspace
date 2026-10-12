@@ -3,6 +3,8 @@
 // outboundMonthlySummary를 채웁니다. 원본 출고 데이터(출고 시트 동기화)가 이미 계산해둔 달은
 // 그쪽이 더 정확하므로 건드리지 않고, 원본이 없는 과거 달만 이 시트 값으로 채웁니다.
 //
+const outboundStore = require('./_lib/outbound-store');
+
 // 필요한 환경변수:
 //   OUTBOUND_SUMMARY_SHEET_CSV_URL - "출고 요약" 시트를 CSV로 내보낸 주소
 //
@@ -84,6 +86,12 @@ module.exports = async (req, res) => {
     if (getJ && getJ.result) { try { data = JSON.parse(getJ.result) || {}; } catch { data = {}; } }
 
     const rawMonths = new Set((data.outbound?.rows || []).map(r => ym(r[0])).filter(Boolean));
+    // 출고 원본은 이제 달별 저장소(api/_lib/outbound-store.js)에 있어 data.outbound가 비어 있습니다.
+    // 그 목록의 달도 '원본 있는 달'로 보고 건너뜁니다(안 그러면 요약 시트 값이 실제 계산값을 덮어씀).
+    try {
+      const idx = await outboundStore.readIndex(outboundStore.client(KV_URL, KV_TOKEN));
+      Object.keys(idx.months || {}).forEach(m => rawMonths.add(m));
+    } catch (e) { /* 목록을 못 읽으면 기존 방식대로 */ }
     const summary = data.outboundMonthlySummary || {};
 
     let applied = 0, skippedHasRaw = 0, skippedEmpty = 0;
