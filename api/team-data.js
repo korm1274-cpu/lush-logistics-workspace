@@ -61,6 +61,23 @@ module.exports = async (req, res) => {
           Object.keys(current).forEach(k => { if (!(k in body)) body[k] = current[k]; });
           // 제품 불량(defects)은 누적 기록: 여러 사람이 동시에 올려도 서로 지우지 않도록 건(id)별로 합칩니다.
           // 같은 건이면 updatedAt이 더 최근인 쪽을 남기고, 삭제는 deleted 표시로 전달됩니다.
+          // 출고 요청(requests): 목록을 통째로 올리면 다른 기기에서 막 등록한 요청이 덮여 사라지므로 건(id)별로 합칩니다.
+          // 같은 건이면 updatedAt(없으면 createdAt)이 더 최근인 쪽, 지운 요청은 requestsDeleted(id 목록)로 전달돼 다시 살아나지 않음.
+          if (Array.isArray(current.requests) && Array.isArray(body.requests)) {
+            const deleted = new Set([].concat(current.requestsDeleted || [], body.requestsDeleted || []).filter(Boolean));
+            const stamp = r => String(r.updatedAt || r.createdAt || '');
+            const byId = new Map();
+            const put = r => {
+              if (!r || !r.id) return;
+              const prev = byId.get(r.id);
+              if (!prev || stamp(r) > stamp(prev)) byId.set(r.id, r);
+            };
+            body.requests.forEach(put);   // 보낸 쪽 순서를 먼저 유지
+            current.requests.forEach(put); // 서버에만 있거나 서버 쪽이 더 최신인 건 반영
+            const noId = body.requests.filter(r => r && !r.id); // id 없는 예전 요청은 그대로 둠
+            body.requests = Array.from(byId.values()).filter(r => !deleted.has(r.id)).concat(noId);
+            body.requestsDeleted = Array.from(deleted).slice(-2000);
+          }
           if (Array.isArray(current.defects) && Array.isArray(body.defects)) {
             const byId = new Map();
             const put = d => {
