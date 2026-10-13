@@ -133,7 +133,10 @@
 
   patchTopTabs();
   var savedMenuId='';
-  try{savedMenuId=localStorage.getItem(ACTIVE_MENU_KEY)||''}catch(e){}
+  /* 보던 메뉴 복원은 '같은 창에서 새로고침'일 때만: 이 창의 sessionStorage에 마지막 화면 기록(keep-view-on-reload)이 있을 때.
+     사이트를 닫았다가 새로 열면(기록 없음) 어제 보던 화면 대신 메인부터 보여 줌 */
+  var sessionLast='';try{sessionLast=sessionStorage.getItem('lush_last_menu_v1')||''}catch(e){}
+  if(sessionLast&&sessionLast!=='__dashboard'){try{savedMenuId=localStorage.getItem(ACTIVE_MENU_KEY)||''}catch(e){}}
   var start=savedMenuId&&menus.find(function(x){return x.id===savedMenuId&&x.visible&&canAccess(x)});
   if(start){
     activateMenu(start,null);
