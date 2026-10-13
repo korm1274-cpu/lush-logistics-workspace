@@ -1,11 +1,13 @@
 /* <script id="v75-team-data-sync"> (index.html에서 그대로 옮김) */
 (function(){
   const TEAM_API='/api/team-data';
-  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',requestsDeleted:'lush_outbound_requests_deleted_v1'};
+  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',requestsDeleted:'lush_outbound_requests_deleted_v1',noticesDeleted:'lush-v51-notices-deleted',todosDeleted:'lush-v51-todos-deleted'};
+  /* 건(id)별로 합치는 목록과 그 '지운 id' 기록 키: 출고 요청·공지·제품 확보 */
+  const MERGE_LISTS=[['requests','requestsDeleted'],['notices','noticesDeleted'],['todos','todosDeleted']];
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function readLocalObj(k,def){try{const v=JSON.parse(localStorage.getItem(k)||'null');return(v&&typeof v==='object'&&!Array.isArray(v))?v:def}catch{return def}}
   function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
-  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),requestsDeleted:readLocal(KEYS.requestsDeleted)}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false,applyingServer=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
@@ -85,16 +87,18 @@
         pushTeamData();
         return;
       }
-      // 출고 요청: 이 기기에만 있고 서버에서 지운 기록도 없는 요청은 지우지 않고 서버로 올립니다(서버에서 건별로 합쳐짐).
-      const serverReqIds=new Set((j.data.requests||[]).map(r=>r&&r.id));
-      const serverDeleted=new Set(j.data.requestsDeleted||[]);
-      if(readLocal(KEYS.requests).some(r=>r&&r.id&&!serverReqIds.has(r.id)&&!serverDeleted.has(r.id))){
+      // 출고 요청·공지·제품 확보: 이 기기에만 있고 서버에서 지운 기록도 없는 건은 지우지 않고 서버로 올립니다(서버에서 건별로 합쳐짐).
+      const hasLocalOnly=MERGE_LISTS.some(([k,dk])=>{
+        const ids=new Set((j.data[k]||[]).map(r=>r&&r.id)),del=new Set(j.data[dk]||[]);
+        return readLocal(KEYS[k]).some(r=>r&&r.id&&!ids.has(r.id)&&!del.has(r.id));
+      });
+      if(hasLocalOnly){
         pulling=false;
         pushTeamData();
         return;
       }
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd,defects:j.data.defects||[],requestsDeleted:j.data.requestsDeleted||[]});
+      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd,defects:j.data.defects||[],requestsDeleted:j.data.requestsDeleted||[],noticesDeleted:j.data.noticesDeleted||[],todosDeleted:j.data.todosDeleted||[]});
       if(cur!==incoming){
         applyingServer=true;
         try{
@@ -104,6 +108,8 @@
         localStorage.setItem(KEYS.productivity,JSON.stringify(serverProd));
         localStorage.setItem(KEYS.defects,JSON.stringify(j.data.defects||[]));
         localStorage.setItem(KEYS.requestsDeleted,JSON.stringify(j.data.requestsDeleted||[]));
+        localStorage.setItem(KEYS.noticesDeleted,JSON.stringify(j.data.noticesDeleted||[]));
+        localStorage.setItem(KEYS.todosDeleted,JSON.stringify(j.data.todosDeleted||[]));
         }finally{applyingServer=false}
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
@@ -118,14 +124,23 @@
   }
   const origSetItem=localStorage.setItem.bind(localStorage);
   localStorage.setItem=function(k,v){
-    /* 출고 요청을 이 기기에서 지우면(서버에서 받은 내용으로 바꾸는 경우 제외) 지운 id를 따로 기록해 서버에 알려 줌
-       → 서버가 요청을 건별로 합칠 때 지운 요청이 다시 살아나지 않음 */
-    if(k===KEYS.requests&&!applyingServer){
+    /* 출고 요청·공지·제품 확보를 이 기기에서 저장할 때(서버에서 받은 내용으로 바꾸는 경우 제외)
+       - 지운 건: id를 따로 기록해 서버에 알려 줌 → 서버가 건별로 합칠 때 다시 살아나지 않음
+       - 새로 생기거나 내용이 바뀐 건: updatedAt을 지금 시각으로 → 서버가 더 최근 수정본을 고를 수 있음 */
+    const ml=!applyingServer&&MERGE_LISTS.find(([lk])=>KEYS[lk]===k);
+    if(ml){
       try{
-        const before=readLocal(KEYS.requests).map(r=>r&&r.id).filter(Boolean);
-        let after=[];try{const a=JSON.parse(v||'[]');after=Array.isArray(a)?a.map(r=>r&&r.id).filter(Boolean):[]}catch(e){}
-        const keep=new Set(after),removed=before.filter(id=>!keep.has(id));
-        if(removed.length){const del=readLocal(KEYS.requestsDeleted);removed.forEach(id=>{if(!del.includes(id))del.push(id)});origSetItem(KEYS.requestsDeleted,JSON.stringify(del.slice(-2000)))}
+        const dk=KEYS[ml[1]];
+        const beforeArr=readLocal(k),beforeMap=new Map(beforeArr.filter(r=>r&&r.id).map(r=>[r.id,r]));
+        const strip=r=>{const o=Object.assign({},r);delete o.updatedAt;return JSON.stringify(o)};
+        let arr=null;try{const a=JSON.parse(v||'[]');arr=Array.isArray(a)?a:null}catch(e){}
+        if(arr){
+          const now=new Date().toISOString();let touched=false;
+          arr.forEach(r=>{if(!r||!r.id)return;const p=beforeMap.get(r.id);if((!p||strip(p)!==strip(r))&&(!p||r.updatedAt===p.updatedAt||!r.updatedAt)){r.updatedAt=now;touched=true}});
+          if(touched)v=JSON.stringify(arr);
+          const keep=new Set(arr.map(r=>r&&r.id).filter(Boolean)),removed=[...beforeMap.keys()].filter(id=>!keep.has(id));
+          if(removed.length){const del=readLocal(dk);removed.forEach(id=>{if(!del.includes(id))del.push(id)});origSetItem(dk,JSON.stringify(del.slice(-2000)))}
+        }
       }catch(e){}
     }
     origSetItem(k,v);

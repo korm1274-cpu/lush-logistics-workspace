@@ -63,8 +63,10 @@ module.exports = async (req, res) => {
           // 같은 건이면 updatedAt이 더 최근인 쪽을 남기고, 삭제는 deleted 표시로 전달됩니다.
           // 출고 요청(requests): 목록을 통째로 올리면 다른 기기에서 막 등록한 요청이 덮여 사라지므로 건(id)별로 합칩니다.
           // 같은 건이면 updatedAt(없으면 createdAt)이 더 최근인 쪽, 지운 요청은 requestsDeleted(id 목록)로 전달돼 다시 살아나지 않음.
-          if (Array.isArray(current.requests) && Array.isArray(body.requests)) {
-            const deleted = new Set([].concat(current.requestsDeleted || [], body.requestsDeleted || []).filter(Boolean));
+          // 공지(notices)·제품 확보(todos)도 같은 방식(지운 건은 noticesDeleted·todosDeleted).
+          [['requests', 'requestsDeleted'], ['notices', 'noticesDeleted'], ['todos', 'todosDeleted']].forEach(([key, delKey]) => {
+            if (!Array.isArray(current[key]) || !Array.isArray(body[key])) return;
+            const deleted = new Set([].concat(current[delKey] || [], body[delKey] || []).filter(Boolean));
             const stamp = r => String(r.updatedAt || r.createdAt || '');
             const byId = new Map();
             const put = r => {
@@ -72,12 +74,12 @@ module.exports = async (req, res) => {
               const prev = byId.get(r.id);
               if (!prev || stamp(r) > stamp(prev)) byId.set(r.id, r);
             };
-            body.requests.forEach(put);   // 보낸 쪽 순서를 먼저 유지
-            current.requests.forEach(put); // 서버에만 있거나 서버 쪽이 더 최신인 건 반영
-            const noId = body.requests.filter(r => r && !r.id); // id 없는 예전 요청은 그대로 둠
-            body.requests = Array.from(byId.values()).filter(r => !deleted.has(r.id)).concat(noId);
-            body.requestsDeleted = Array.from(deleted).slice(-2000);
-          }
+            body[key].forEach(put);    // 보낸 쪽 순서를 먼저 유지
+            current[key].forEach(put); // 서버에만 있거나 서버 쪽이 더 최신인 건 반영
+            const noId = body[key].filter(r => r && !r.id); // id 없는 예전 기록은 그대로 둠
+            body[key] = Array.from(byId.values()).filter(r => !deleted.has(r.id)).concat(noId);
+            body[delKey] = Array.from(deleted).slice(-2000);
+          });
           if (Array.isArray(current.defects) && Array.isArray(body.defects)) {
             const byId = new Map();
             const put = d => {
