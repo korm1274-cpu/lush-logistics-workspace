@@ -196,3 +196,36 @@
   #appShell #noticeManagerView .box-entry-card .field textarea{box-sizing:border-box!important;}
   #appShell #noticeManagerView .box-entry-card>.btn{margin-top:19px!important;height:40px!important;}
 }
+
+/* ===== 메인 공지: 3번째 이후 공지(#dashNoticeMore)도 2번째 공지와 같은 모양 ===== */
+#appShell #dashboard .notice-board .dn-more{display:contents;}
+#appShell #dashboard .notice-board .dn-title{display:block!important;font-size:15px!important;font-weight:800!important;line-height:1.5!important;color:#191f28!important;letter-spacing:-.02em!important;}
+#appShell #dashboard .notice-board .dn-text{display:-webkit-box!important;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;white-space:pre-line!important;margin:3px 0 0!important;font-size:12px!important;font-weight:500!important;line-height:1.45!important;color:#6b7684!important;word-break:break-all;}
+#appShell #dashboard .notice-board .notice-main.n-open .dn-text{-webkit-line-clamp:unset;line-clamp:unset;display:block!important;}
+@media (max-width:900px){
+  #appShell #dashboard .notice-board .dn-title{font-size:13.5px!important;line-height:1.4!important;white-space:nowrap!important;overflow:hidden!important;text-overflow:ellipsis!important;}
+  #appShell #dashboard .notice-board .notice-main.n-open .dn-title{white-space:normal!important;}
+  #appShell #dashboard .notice-board .dn-text{font-size:11px!important;}
+}
+/* ⋯ 버튼과 메뉴(수정 / 공지 내리기) */
+#appShell #dashboard .notice-board .notice-main{position:relative;}
+#appShell #dashboard .notice-board .notice-main:has(> .dn-act)>div{padding-right:30px;min-width:0;}
+#appShell #dashboard .notice-board .dn-act{position:absolute;top:50%;right:10px;transform:translateY(-50%);width:30px;height:30px;border:0;border-radius:50%;background:transparent;color:#8a8a85;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0;}
+#appShell #dashboard .notice-board .dn-act svg{fill:currentColor;}
+#appShell #dashboard .notice-board .dn-act:hover{background:#f2efe9;color:#1d1d1b;}
+#appShell #dashboard .notice-board .dn-menu{position:absolute;top:calc(50% + 18px);right:10px;z-index:20;display:flex;flex-direction:column;min-width:118px;padding:5px;background:#fff;border:1.5px solid #e4d9c7;border-radius:12px;box-shadow:0 10px 26px rgba(0,0,0,.12);}
+#appShell #dashboard .notice-board .dn-menu button{border:0;background:none;text-align:left;padding:9px 12px;border-radius:8px;font-size:13px;font-weight:700;color:#1d1d1b;cursor:pointer;white-space:nowrap;}
+#appShell #dashboard .notice-board .dn-menu button:hover{background:#f6f3ee;}
+#appShell #dashboard .notice-board .dn-menu button.del{color:#c93838;}
+
+/* ===== 공지 등록: 1줄 제목·작성자·등록 / 2줄 내용(제목 시작부터 작성자 끝까지 넓게) ===== */
+@media (min-width:901px){
+  #appShell #noticeManagerView .box-entry-card{display:grid!important;grid-template-columns:minmax(0,1fr) 220px auto auto!important;column-gap:12px!important;row-gap:10px!important;align-items:end!important;}
+  #appShell #noticeManagerView .box-entry-card>.field:has(#noticeMgrTitle){grid-column:1;grid-row:1;}
+  #appShell #noticeManagerView .box-entry-card>.field:has(#noticeMgrAuthor){grid-column:2;grid-row:1;}
+  #appShell #noticeManagerView .box-entry-card>#noticeMgrAdd{grid-column:3;grid-row:1;margin-top:0!important;}
+  #appShell #noticeManagerView .box-entry-card>#noticeMgrCancel{grid-column:4;grid-row:1;margin-top:0!important;}
+  #appShell #noticeManagerView .box-entry-card>.field:has(#noticeMgrNote){grid-column:1 / 3;grid-row:2;}
+  #appShell #noticeManagerView .box-entry-card .field{min-width:0!important;width:auto!important;}
+  #appShell #noticeManagerView #noticeMgrNote{width:100%!important;min-height:62px!important;}
+}
