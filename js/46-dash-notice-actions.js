@@ -12,13 +12,20 @@
     var m=noticeMenu();if(!m)return false;
     try{return typeof canAccess!=='function'||canAccess(m)}catch(e){return false}
   }
-  function closeMenus(except){document.querySelectorAll('#dashboard .dn-menu').forEach(function(x){if(x!==except)x.remove()})}
+  /* 메뉴는 카드 밖(body)에 띄워서 카드 테두리에 잘리지 않게, 아래 공간이 모자라면 버튼 위로 엶 */
+  function closeMenus(except){document.querySelectorAll('.dn-menu').forEach(function(x){if(x!==except)x.remove()})}
+  function placeMenu(m,btn){
+    var r=btn.getBoundingClientRect(),mh=m.offsetHeight,mw=m.offsetWidth,gap=6;
+    var top=r.bottom+gap;if(top+mh>window.innerHeight-8)top=Math.max(8,r.top-gap-mh);
+    var left=Math.min(window.innerWidth-mw-8,Math.max(8,r.right-mw));
+    m.style.top=top+'px';m.style.left=left+'px';
+  }
   function openMenu(btn,id){
-    var item=btn.closest('.notice-main');var cur=item.querySelector('.dn-menu');
+    var cur=document.querySelector('.dn-menu[data-for="'+id+'"]');
     closeMenus(cur);if(cur){cur.remove();return}
-    var m=document.createElement('div');m.className='dn-menu';
+    var m=document.createElement('div');m.className='dn-menu';m.setAttribute('data-for',id);
     m.innerHTML='<button type="button" data-dn="edit">수정</button><button type="button" data-dn="del" class="del">공지 내리기</button>';
-    item.appendChild(m);
+    document.body.appendChild(m);placeMenu(m,btn);
     m.addEventListener('click',function(e){
       e.stopPropagation();
       var b=e.target.closest('button[data-dn]');if(!b)return;
@@ -66,6 +73,8 @@
     closeMenus();
   };
   document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('.dn-menu,.dn-act'))closeMenus()});
+  window.addEventListener('scroll',function(){closeMenus()},true);
+  window.addEventListener('resize',function(){closeMenus()});
   function init(){if(typeof window.renderOpsDashboard==='function')window.renderOpsDashboard()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
