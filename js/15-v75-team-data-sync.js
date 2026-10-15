@@ -80,37 +80,31 @@
         pushTeamData();
         return;
       }
-      const serverDefectIds=new Set((j.data.defects||[]).map(d=>d&&d.id));
-      if(readLocal(KEYS.defects).some(d=>d&&d.id&&!serverDefectIds.has(d.id))){
-        // 이 기기에만 있는 제품 불량 기록은 지우지 않고 서버로 올립니다(서버에서 건별로 합쳐짐).
-        pulling=false;
-        pushTeamData();
-        return;
-      }
-      // 출고 요청·공지·제품 확보: 이 기기에만 있고 서버에서 지운 기록도 없는 건은 지우지 않고 서버로 올립니다(서버에서 건별로 합쳐짐).
-      const hasLocalOnly=MERGE_LISTS.some(([k,dk])=>{
-        const ids=new Set((j.data[k]||[]).map(r=>r&&r.id)),del=new Set(j.data[dk]||[]);
-        return readLocal(KEYS[k]).some(r=>r&&r.id&&!ids.has(r.id)&&!del.has(r.id));
+      /* 이 기기에만 있고 서버에서 지운 기록도 없는 건(제품 불량·출고 요청·공지·제품 확보)은 지우지 않고,
+         서버에서 받은 내용에 붙여 화면에 바로 보여 준 뒤 서버로도 올립니다(서버에서 건별로 합쳐짐).
+         (예전에는 이런 건이 있으면 받은 내용을 반영하지 않고 넘어가서, 다른 기기에서 등록한 건이 바로 안 보였음) */
+      const sd=Object.assign({},j.data);let needPush=false;
+      {const ids=new Set((sd.defects||[]).map(d=>d&&d.id));const lo=readLocal(KEYS.defects).filter(d=>d&&d.id&&!ids.has(d.id));if(lo.length){sd.defects=(sd.defects||[]).concat(lo);needPush=true}}
+      MERGE_LISTS.forEach(([k,dk])=>{
+        const ids=new Set((sd[k]||[]).map(r=>r&&r.id)),del=new Set(sd[dk]||[]);
+        const lo=readLocal(KEYS[k]).filter(r=>r&&r.id&&!ids.has(r.id)&&!del.has(r.id));
+        if(lo.length){sd[k]=(sd[k]||[]).concat(lo);needPush=true}
       });
-      if(hasLocalOnly){
-        pulling=false;
-        pushTeamData();
-        return;
-      }
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:j.data.notices||[],todos:j.data.todos||[],requests:j.data.requests||[],productivity:serverProd,defects:j.data.defects||[],requestsDeleted:j.data.requestsDeleted||[],noticesDeleted:j.data.noticesDeleted||[],todosDeleted:j.data.todosDeleted||[]});
+      const incoming=JSON.stringify({notices:sd.notices||[],todos:sd.todos||[],requests:sd.requests||[],productivity:serverProd,defects:sd.defects||[],requestsDeleted:sd.requestsDeleted||[],noticesDeleted:sd.noticesDeleted||[],todosDeleted:sd.todosDeleted||[]});
       if(cur!==incoming){
         applyingServer=true;
         try{
-        localStorage.setItem(KEYS.notices,JSON.stringify(j.data.notices||[]));
-        localStorage.setItem(KEYS.todos,JSON.stringify(j.data.todos||[]));
-        localStorage.setItem(KEYS.requests,JSON.stringify(j.data.requests||[]));
+        localStorage.setItem(KEYS.notices,JSON.stringify(sd.notices||[]));
+        localStorage.setItem(KEYS.todos,JSON.stringify(sd.todos||[]));
+        localStorage.setItem(KEYS.requests,JSON.stringify(sd.requests||[]));
         localStorage.setItem(KEYS.productivity,JSON.stringify(serverProd));
-        localStorage.setItem(KEYS.defects,JSON.stringify(j.data.defects||[]));
-        localStorage.setItem(KEYS.requestsDeleted,JSON.stringify(j.data.requestsDeleted||[]));
-        localStorage.setItem(KEYS.noticesDeleted,JSON.stringify(j.data.noticesDeleted||[]));
-        localStorage.setItem(KEYS.todosDeleted,JSON.stringify(j.data.todosDeleted||[]));
+        localStorage.setItem(KEYS.defects,JSON.stringify(sd.defects||[]));
+        localStorage.setItem(KEYS.requestsDeleted,JSON.stringify(sd.requestsDeleted||[]));
+        localStorage.setItem(KEYS.noticesDeleted,JSON.stringify(sd.noticesDeleted||[]));
+        localStorage.setItem(KEYS.todosDeleted,JSON.stringify(sd.todosDeleted||[]));
         }finally{applyingServer=false}
+        if(needPush)pushTeamData();
         window.renderTodayOutboundRequests?.();
         window.refreshOutboundRequestManager?.();
         window.populatePersonSelect?.();
@@ -148,5 +142,16 @@
   };
   window.pullTeamData=pullTeamData;
   pullTeamData(true);
+  /* 화면을 오래 켜 두면(특히 PC) 처음 열 때만 받아서 다른 기기에서 등록한 공지·요청이 안 보이던 문제:
+     화면이 보이는 동안 1분마다, 그리고 다른 창/앱을 보다 돌아올 때마다 새로 받음.
+     앞서 저장이 실패해 받기가 멈춘 상태면 먼저 저장을 다시 시도(성공하면 다음부터 정상적으로 받음) */
+  function refreshWhenVisible(){
+    if(document.visibilityState!=='visible')return;
+    if(window.__teamPushFailed){if(Date.now()-(window.__lastRetryPush||0)>30000){window.__lastRetryPush=Date.now();attemptPush(0)}return}
+    pullTeamData(true);
+  }
+  setInterval(refreshWhenVisible,60000);
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')refreshWhenVisible()});
+  window.addEventListener('focus',refreshWhenVisible);
 })();
 
