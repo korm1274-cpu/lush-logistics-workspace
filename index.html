@@ -1166,7 +1166,7 @@ window.ensureChart=function(){
 <section id="noticeManagerView" class="view">
   <div class="data-workbench">
     <div class="data-workbench-head"><div><div class="eyebrow">TEAM NOTICE</div><h2>공지 등록</h2><p>대시보드에 표시할 팀 공지를 등록·수정·삭제합니다.</p></div></div>
-    <div class="box-entry-card"><div class="field grow"><label>제목</label><input id="noticeMgrTitle" placeholder="공지 제목"></div><div class="field"><label>작성자</label><input id="noticeMgrAuthor" placeholder="이름"></div><button class="btn primary" id="noticeMgrAdd">등록</button><button class="btn" id="noticeMgrCancel" hidden>취소</button></div>
+    <div class="box-entry-card"><div class="field grow"><label>제목</label><input id="noticeMgrTitle" placeholder="공지 제목"></div><div class="field grow"><label>내용</label><textarea id="noticeMgrNote" rows="2" placeholder="예: 08:50 퀵 상차, 135개 (Enter로 줄바꿈)"></textarea></div><div class="field"><label>작성자</label><input id="noticeMgrAuthor" placeholder="이름"></div><button class="btn primary" id="noticeMgrAdd">등록</button><button class="btn" id="noticeMgrCancel" hidden>취소</button></div>
     <div class="panel"><div class="panel-head"><div><small>NOTICE LIST</small><h3>등록된 공지</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>등록일</th><th>제목</th><th>작성자</th><th>관리</th></tr></thead><tbody id="noticeMgrBody"></tbody></table></div></div>
   </div>
 </section>

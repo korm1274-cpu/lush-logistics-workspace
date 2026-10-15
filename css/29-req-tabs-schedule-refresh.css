@@ -182,3 +182,17 @@
 
 /* ===== 버튼 글자 가운데 정렬: 출고 요청 등록(초기화·저장), 파손·오출고 분석 기간의 '전체' — 휴대폰에서 글자가 왼쪽으로 쏠리던 것 ===== */
 @media (max-width:900px){#appShell #cancelRequestEditBtn,#appShell #saveOutboundRequestBtn,#appShell #diAllBtn,#appShell #msAllBtn{display:inline-flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}}
+
+/* ===== 공지 내용: 제품 확보 현황처럼 제목 아래 작게(최대 2줄, 입력한 줄바꿈 유지). 공지를 누르면(n-open) 전체 표시 ===== */
+#appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeText2{display:-webkit-box!important;-webkit-box-orient:vertical!important;-webkit-line-clamp:2!important;line-clamp:2!important;white-space:pre-line!important;overflow:hidden!important;text-overflow:ellipsis!important;margin-top:3px!important;font-size:12px!important;font-weight:500!important;line-height:1.45!important;color:#6b7684!important;word-break:break-all;}
+#appShell #dashboard #dashNoticeText:empty,#appShell #dashboard #dashNoticeText2:empty{display:none!important;}
+#appShell #dashboard .notice-main.n-open #dashNoticeText,#appShell #dashboard .notice-main.n-open #dashNoticeText2{-webkit-line-clamp:unset!important;line-clamp:unset!important;display:block!important;}
+@media (max-width:900px){#appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeText2{font-size:11px!important;}}
+#appShell #noticeManagerView .notice-note{display:block;margin-top:3px;font-size:12px;font-weight:500;color:#6b7684;white-space:pre-line;line-height:1.45;}
+#appShell #noticeManagerView #noticeMgrNote{min-height:40px;resize:vertical;line-height:1.45;}
+@media (min-width:901px){
+  #appShell #noticeManagerView .box-entry-card{align-items:flex-start!important;}
+  #appShell #noticeManagerView .box-entry-card .field input{height:40px!important;min-height:40px!important;box-sizing:border-box!important;}
+  #appShell #noticeManagerView .box-entry-card .field textarea{box-sizing:border-box!important;}
+  #appShell #noticeManagerView .box-entry-card>.btn{margin-top:19px!important;height:40px!important;}
+}
