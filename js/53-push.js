@@ -202,8 +202,8 @@
     var btn=document.getElementById('pushEnableBtn'),out=document.getElementById('pushEnableStatus');if(!btn)return;
     var show=function(t,ok){if(out){out.textContent=t;out.className='push-status'+(ok===true?' ok':ok===false?' err':'')}};
     var refresh=function(){
-      if(!mobileApp()){btn.hidden=true;show('알림 상태는 모바일에 설치한 LUSH Logistics 앱에서만 확인합니다. 앱을 설치한 뒤 실행해 주세요.');return}
-      btn.hidden=false;
+      if(!mobileApp()){btn.hidden=true;btn.style.display='none';show('알림 상태는 모바일에 설치한 LUSH Logistics 앱에서만 확인합니다. 앱을 설치한 뒤 실행해 주세요.');return}
+      btn.hidden=false;btn.style.display='';
       if(!currentUser()){show('앱에서 로그인한 뒤 이 화면을 다시 열어 주세요.',false);return}
       check().then(function(s){
         if(s==='active')show('✅ 알림이 활성화되어 있습니다. ('+(currentUser().name||currentUser().id)+')',true);
