@@ -112,18 +112,59 @@
   function eventLabel(e){if(e.type==='import')return[e.source||'수입',e.title];if(e.type==='holiday')return['휴일',e.title];return[types[e.type]||'일정',e.person||e.title||''];}
   function eventSort(a,b){const order={annual:0,half_am:1,half_pm:1,field:2,import:3,holiday:4};return (order[a.type]??9)-(order[b.type]??9)||(a.title||'').localeCompare(b.title||'ko')}
 
+  /* 통합 일정 달력(요약 + 상세 패널)
+     - 달력 칸: 종류별 개수만 작게(입고·출고·연차), 휴일은 이름
+     - 날짜를 누르면 오른쪽(휴대폰은 아래) 패널에 그날 일정을 제목 그대로 종류별로 표시
+     - 내부 등록 연차·반차·외근·건강검진은 패널에서 누르면 수정 화면으로 */
+  const CAL_CATS=[['in','입고','#c35a00'],['out','출고','#1f7a45'],['leave','연차','#2455b0'],['holiday','휴일','#667278']];
+  function eventCat(e){
+    if(e.type==='holiday')return'holiday';
+    if(e.type==='import'){const s=String(e.source||'');if(s.includes('연차'))return'leave';if(s.includes('출고'))return'out';return'in'}
+    return'leave';
+  }
+  let calendarSelected='';
   function renderMasterCalendar(){
     if(!$('masterCalendarGrid'))return;
     const y=calendarCursor.getFullYear(),m=calendarCursor.getMonth(),first=new Date(y,m,1),gridStart=new Date(y,m,1-first.getDay()),events=allEventsForYears([y-1,y,y+1]);
     $('calendarMonthLabel').textContent=`${y}년 ${m+1}월`;
+    const monthKey=`${y}-${pad(m+1)}`;
+    if(!calendarSelected||calendarSelected.slice(0,7)!==monthKey)calendarSelected=todayKey().slice(0,7)===monthKey?todayKey():`${monthKey}-01`;
     let html='';
     for(let i=0;i<42;i++){
-      const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key)).sort(eventSort);
-      const visible=list.slice(0,5);
-      html+=`<div class="master-calendar-day ${list.length?'hover-tip-target':''} ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''}" ${list.length?`data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}"`:''}><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span><small>${dows[d.getDay()]}</small></div><div class="master-day-events">${visible.map(e=>{const [,title]=eventLabel(e);const inner=`<span class="event-title" title="${escHtml(title)}">${escHtml(title)}</span>`;return absenceTypes.has(e.type)?`<button type="button" class="master-event ${e.type}${importSourceClass(e)}" data-attendance-id="${e.id}">${inner}</button>`:`<div class="master-event ${e.type}${importSourceClass(e)}">${inner}</div>`}).join('')}${list.length>5?`<div class="master-more hover-tip-target" data-tip="${escHtml(JSON.stringify(list.map(e=>{const[,t]=eventLabel(e);return{t,c:eventColor(e)}})))}">+ ${list.length-5}건 더 있음</div>`:''}</div></div>`;
+      const d=new Date(gridStart.getFullYear(),gridStart.getMonth(),gridStart.getDate()+i),key=dateKey(d),list=events.filter(e=>eventCovers(e,key));
+      const counts={in:0,out:0,leave:0,holiday:0};list.forEach(e=>counts[eventCat(e)]++);
+      const hol=list.filter(e=>e.type==='holiday').map(e=>e.title).join(' · ');
+      const chips=CAL_CATS.filter(([c])=>c!=='holiday'&&counts[c]).map(([c,label])=>`<span class="mc-chip mc-${c}"><i></i><em>${label}</em><b>${counts[c]}</b></span>`).join('');
+      html+=`<button type="button" class="master-calendar-day mc-day ${d.getMonth()!==m?'outside':''} ${key===todayKey()?'today':''} ${key===calendarSelected?'mc-selected':''} ${hol?'mc-holiday':''}" data-date="${key}"><div class="master-day-head"><span class="master-day-num">${d.getDate()}</span>${hol?`<small class="mc-hol">${escHtml(hol)}</small>`:''}</div><div class="mc-counts">${chips}</div></button>`;
     }
     $('masterCalendarGrid').innerHTML=html;
-    $('masterCalendarGrid').querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
+    $('masterCalendarGrid').querySelectorAll('[data-date]').forEach(b=>b.onclick=()=>{
+      const key=b.dataset.date;calendarSelected=key;
+      if(key.slice(0,7)!==monthKey){calendarCursor=new Date(Number(key.slice(0,4)),Number(key.slice(5,7))-1,1)}
+      renderMasterCalendar();
+      const p=$('masterDayDetail');if(p&&window.matchMedia('(max-width:900px)').matches)p.scrollIntoView({behavior:'smooth',block:'start'});
+    });
+    renderMasterDayDetail(events);
+  }
+  function renderMasterDayDetail(events){
+    const p=$('masterDayDetail');if(!p)return;
+    const key=calendarSelected,d=new Date(key+'T00:00:00');
+    const list=events.filter(e=>eventCovers(e,key));
+    const head=`<div class="mc-detail-head"><b>${d.getMonth()+1}/${d.getDate()} (${dows[d.getDay()]})</b>${key===todayKey()?'<span class="mc-today">오늘</span>':''}<small>${list.length?list.length+'건':''}</small></div>`;
+    if(!list.length){p.innerHTML=head+'<div class="mc-empty">일정이 없습니다.</div>';return}
+    const range=e=>{const s=e.startDate,en=e.endDate||e.startDate;if(!s||s===en)return'';const f=x=>`${Number(x.slice(5,7))}/${Number(x.slice(8,10))}`;return`<small class="mc-range">${f(s)} ~ ${f(en)}</small>`};
+    const groups=CAL_CATS.map(([c,label,color])=>{
+      const items=list.filter(e=>eventCat(e)===c).sort((a,b)=>(a.title||'').localeCompare(b.title||'','ko'));
+      if(!items.length)return'';
+      return`<div class="mc-group mc-${c}"><div class="mc-group-head"><i style="background:${color}"></i>${label}<span>${items.length}</span></div>${items.map(e=>{
+        const [,title]=eventLabel(e);
+        return absenceTypes.has(e.type)
+          ?`<button type="button" class="mc-item mc-edit" data-attendance-id="${escHtml(e.id)}"><span>${escHtml(title)}</span>${range(e)}<em>수정</em></button>`
+          :`<div class="mc-item"><span>${escHtml(title)}</span>${range(e)}</div>`;
+      }).join('')}</div>`;
+    }).join('');
+    p.innerHTML=head+groups;
+    p.querySelectorAll('[data-attendance-id]').forEach(b=>b.onclick=()=>loadSchedule(b.dataset.attendanceId));
   }
 
   function weekBounds(){const now=new Date(),day=now.getDay(),monday=new Date(now.getFullYear(),now.getMonth(),now.getDate()-((day+6)%7)),sunday=new Date(monday.getFullYear(),monday.getMonth(),monday.getDate()+6);return{monday,sunday,start:dateKey(monday),end:dateKey(sunday)}}
