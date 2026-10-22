@@ -38,6 +38,7 @@
     try{if(m&&typeof activateMenu==='function')activateMenu(m,document.querySelector('#navContainer [data-menu-id="'+m.id+'"]')||undefined);else if(typeof showView==='function')showView('noticeManagerView')}catch(e){}
     setTimeout(function(){
       if(window.__noticeOps)window.__noticeOps.startEdit(id);
+      var tab=document.querySelector('#noticeManagerView [data-td-tab="form"]');if(tab)tab.click();
       var f=document.querySelector('#noticeManagerView .box-entry-card');if(f)f.scrollIntoView({behavior:'smooth',block:'center'});
     },60);
   }
