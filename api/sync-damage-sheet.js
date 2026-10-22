@@ -103,6 +103,8 @@ function convert(values) {
 }
 
 module.exports = async (req, res) => {
+  // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
+  if (!(await require('./_lib/auth').guard(req, res, { allowCron: true, write: true }))) return;
   const KV_URL = process.env.KV_REST_API_URL;
   const KV_TOKEN = process.env.KV_REST_API_TOKEN;
   const SHEET_URL = process.env.DAMAGE_SHEET_CSV_URL;

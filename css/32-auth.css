@@ -1,0 +1,116 @@
+/* ===== 로그인 화면 (러쉬 칠판 + 물류 트럭 장면 + 시즌 장식) ===== */
+/* 로그인 확인 전에는 앱을 가림 */
+html.auth-pending body>*:not(#authScreen):not(#auPwModal){visibility:hidden!important;}
+html.auth-pending body{overflow:hidden;}
+
+#authScreen{--au-ink:#1d1d1b;--au-kraft:#e4d9c7;--au-accent:#e87ba4;--au-accent2:#1baf7a;--au-accent3:#eda100;
+  position:fixed;inset:0;z-index:100000;display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);background:#f2f4f6;
+  font-family:inherit;color:var(--au-ink);overflow:auto;}
+#authScreen[hidden]{display:none!important;}
+#authScreen[data-season="halloween"]{--au-accent:#ff7a1a;--au-accent2:#8a4fd1;--au-accent3:#ffc04d;}
+#authScreen[data-season="christmas"]{--au-accent:#d6453d;--au-accent2:#1f8a50;--au-accent3:#f2c14e;}
+#authScreen[data-season="newyear"]{--au-accent:#d4a017;--au-accent2:#e87ba4;--au-accent3:#6fa8ff;}
+
+/* 왼쪽: 칠판 브랜드 영역 */
+#authScreen .au-brand{position:relative;overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;gap:24px;padding:44px 48px 0;background:#1d1d1b;color:#fff;
+  background-image:radial-gradient(circle at 88% 14%,color-mix(in srgb,var(--au-accent) 34%,transparent) 0 90px,transparent 91px),
+                   radial-gradient(circle at 12% 70%,color-mix(in srgb,var(--au-accent2) 26%,transparent) 0 70px,transparent 71px),
+                   radial-gradient(circle at 72% 58%,color-mix(in srgb,var(--au-accent3) 22%,transparent) 0 40px,transparent 41px);}
+#authScreen .au-logo{position:relative;z-index:2;display:flex;align-items:center;gap:10px;}
+#authScreen .au-logo-mark{width:44px;height:44px;border-radius:12px;background:#fff;color:#1d1d1b;display:flex;align-items:center;justify-content:center;}
+#authScreen .au-logo b{font-size:24px;font-weight:900;letter-spacing:.08em;}
+#authScreen .au-logo small{font-size:11px;font-weight:800;letter-spacing:.18em;color:#cfcac0;margin-left:2px;}
+#authScreen .au-copy{position:relative;z-index:2;max-width:520px;}
+#authScreen .au-tag{display:inline-block;font-size:12px;font-weight:900;letter-spacing:.2em;color:var(--au-accent);border:1.5px solid var(--au-accent);border-radius:999px;padding:5px 12px;margin-bottom:16px;}
+#authScreen .au-copy h1{margin:0 0 12px;font-size:42px;line-height:1.22;font-weight:900;letter-spacing:-.03em;color:#fff;}
+#authScreen .au-copy p{margin:0;font-size:15px;color:#d9d4cb;}
+
+/* 물류 장면: 팔레트 + 달리는 트럭 + 도로 */
+#authScreen .au-scene{position:relative;height:150px;margin:0 -48px;z-index:1;}
+#authScreen .au-road{position:absolute;left:0;right:0;bottom:26px;height:4px;background:repeating-linear-gradient(90deg,#55534d 0 26px,transparent 26px 44px);animation:auRoad 1.2s linear infinite;}
+#authScreen .au-scene::after{content:"";position:absolute;left:0;right:0;bottom:0;height:24px;background:#151513;}
+#authScreen .au-pallet{position:absolute;left:56px;bottom:30px;width:96px;height:62px;}
+#authScreen .au-pallet::after{content:"";position:absolute;left:0;right:0;bottom:0;height:8px;border-radius:2px;background:repeating-linear-gradient(90deg,#b8925f 0 18px,#8d6c40 18px 22px);}
+#authScreen .au-pallet i{position:absolute;bottom:8px;width:44px;height:26px;background:#c9a46b;border-radius:3px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.12);}
+#authScreen .au-pallet i::after{content:"";position:absolute;left:50%;top:0;bottom:0;width:6px;margin-left:-3px;background:rgba(255,255,255,.35);}
+#authScreen .au-pallet i:nth-child(1){left:2px;}#authScreen .au-pallet i:nth-child(2){left:48px;}#authScreen .au-pallet i:nth-child(3){left:25px;bottom:34px;}
+#authScreen .au-truck{position:absolute;bottom:30px;left:-200px;width:170px;height:76px;animation:auDrive 7s linear infinite;}
+#authScreen .au-box-load{position:absolute;left:0;bottom:12px;width:112px;height:58px;background:#fff;border-radius:6px 4px 4px 6px;box-shadow:inset 0 -6px 0 #ece6db;}
+#authScreen .au-box-load::before{content:"LUSH";position:absolute;left:14px;top:16px;font-size:16px;font-weight:900;letter-spacing:.12em;color:#1d1d1b;}
+#authScreen .au-box-load::after{content:"";position:absolute;left:14px;top:38px;width:60px;height:4px;border-radius:2px;background:var(--au-accent);}
+#authScreen .au-cab{position:absolute;left:114px;bottom:12px;width:52px;height:44px;background:var(--au-accent);border-radius:4px 14px 4px 4px;}
+#authScreen .au-cab::before{content:"";position:absolute;right:6px;top:7px;width:22px;height:15px;border-radius:2px 8px 2px 2px;background:#cfe6f3;}
+#authScreen .au-wheel{position:absolute;bottom:0;width:22px;height:22px;border-radius:50%;background:#2b2a27;border:4px solid #55534d;box-sizing:border-box;animation:auSpin .6s linear infinite;}
+#authScreen .au-wheel.w1{left:18px;}#authScreen .au-wheel.w2{left:128px;}
+#authScreen .au-cargo{position:absolute;left:78px;top:-18px;font-size:22px;line-height:1;filter:drop-shadow(0 2px 2px rgba(0,0,0,.3));}
+#authScreen[data-season="default"] .au-cargo{display:none;}
+@keyframes auDrive{0%{left:-200px}100%{left:calc(100% + 30px)}}
+@keyframes auRoad{to{background-position:-44px 0}}
+@keyframes auSpin{to{transform:rotate(360deg)}}
+
+/* 시즌 장식 */
+#authScreen .au-deco span{position:absolute;z-index:1;font-size:26px;opacity:.85;animation:auFloat 6s ease-in-out infinite;animation-delay:calc(var(--i) * -1.1s);}
+#authScreen .au-deco span:nth-child(1){left:62%;top:9%;}#authScreen .au-deco span:nth-child(2){left:80%;top:30%;font-size:20px;}
+#authScreen .au-deco span:nth-child(3){left:46%;top:24%;font-size:18px;}#authScreen .au-deco span:nth-child(4){left:88%;top:52%;}
+#authScreen .au-deco span:nth-child(5){left:58%;top:44%;font-size:16px;}#authScreen .au-deco span:nth-child(6){left:72%;top:66%;font-size:22px;}
+@keyframes auFloat{0%,100%{transform:translateY(0) rotate(-6deg)}50%{transform:translateY(-12px) rotate(6deg)}}
+#authScreen .au-snow{position:absolute;inset:0;z-index:1;pointer-events:none;background-image:radial-gradient(#fff 1.5px,transparent 2px),radial-gradient(#fff 1px,transparent 1.5px);background-size:60px 60px,34px 34px;opacity:.5;animation:auSnow 10s linear infinite;}
+@keyframes auSnow{to{background-position:0 600px,0 340px}}
+#authScreen .au-confetti{position:absolute;inset:0;z-index:1;pointer-events:none;opacity:.55;
+  background-image:linear-gradient(45deg,var(--au-accent) 0 6px,transparent 6px),linear-gradient(-30deg,var(--au-accent2) 0 5px,transparent 5px),linear-gradient(60deg,var(--au-accent3) 0 5px,transparent 5px);
+  background-size:90px 70px,70px 90px,110px 80px;animation:auSnow 14s linear infinite;}
+
+/* 오른쪽: 로그인 카드 */
+#authScreen .au-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 24px;
+  background-image:radial-gradient(#e7e1d6 1px,transparent 1px);background-size:22px 22px;}
+#authScreen .au-card{position:relative;overflow:hidden;width:100%;max-width:400px;box-sizing:border-box;background:#fff;border:2px solid #1d1d1b;border-radius:20px;padding:34px 30px 28px;}
+#authScreen .au-card::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:var(--au-accent);}
+#authScreen .au-card-head h2{margin:0 0 6px;font-size:26px;font-weight:900;letter-spacing:-.02em;}
+#authScreen .au-card-head p{margin:0 0 22px;font-size:13.5px;color:#7a7a74;}
+#authScreen .au-msg{margin:-8px 0 16px;padding:10px 12px;border-radius:10px;background:#fff6e5;color:#8a5a00;font-size:13px;font-weight:700;}
+.au-field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+.au-field span{font-size:12.5px;font-weight:800;color:#4a4a45;}
+.au-field input{height:46px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:12px;padding:0 14px;font:inherit;font-size:15px;background:#fff;color:#1d1d1b;outline:none;transition:border-color .15s,box-shadow .15s;}
+.au-field input:focus{border-color:#1d1d1b;box-shadow:0 0 0 3px rgba(29,29,27,.08);}
+.au-err{min-height:18px;margin:-4px 0 10px;font-size:12.5px;font-weight:700;color:#c93838;}
+.au-btn{width:100%;height:48px;border:0;border-radius:12px;background:#1d1d1b;color:#fff;font:inherit;font-size:15px;font-weight:900;letter-spacing:.02em;cursor:pointer;transition:background .15s,transform .1s;}
+.au-btn:hover{background:#000;}.au-btn:active{transform:translateY(1px);}.au-btn:disabled{opacity:.6;cursor:default;}
+.au-btn.ghost{background:#fff;color:#1d1d1b;border:1.5px solid #e4d9c7;}
+#authScreen .au-help{margin:16px 0 0;text-align:center;font-size:12.5px;color:#8a8a85;}
+#authScreen .au-foot{margin:18px 0 0;font-size:11.5px;color:#a3a39c;letter-spacing:.04em;}
+
+/* 비밀번호 변경 창 */
+.au-modal{position:fixed;inset:0;z-index:100001;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(29,29,27,.55);}
+.au-modal-box{position:relative;overflow:hidden;width:100%;max-width:400px;box-sizing:border-box;background:#fff;border:2px solid #1d1d1b;border-radius:18px;padding:28px 24px 22px;color:#1d1d1b;}
+.au-modal-box::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#e87ba4;}
+.au-modal-badge{display:inline-block;margin-bottom:10px;padding:4px 10px;border-radius:999px;background:#fff1f6;color:#c2477a;font-size:12px;font-weight:900;}
+.au-modal-box h3{margin:0 0 8px;font-size:21px;font-weight:900;}
+.au-modal-box p{margin:0 0 18px;font-size:13.5px;line-height:1.6;color:#5c5c57;}
+.au-modal-actions{display:flex;gap:8px;}.au-modal-actions .au-btn{flex:1;}
+
+@media (max-width:900px){
+  #authScreen{grid-template-columns:1fr;grid-template-rows:auto 1fr;}
+  #authScreen .au-brand{padding:22px 22px 0;gap:14px;}
+  #authScreen .au-logo-mark{width:36px;height:36px;border-radius:10px;}
+  #authScreen .au-logo b{font-size:20px;}
+  #authScreen .au-logo small{display:none;}
+  #authScreen .au-tag{font-size:10.5px;padding:4px 10px;margin-bottom:10px;}
+  #authScreen .au-copy h1{font-size:24px;margin-bottom:6px;}
+  #authScreen .au-copy p{font-size:13px;}
+  #authScreen .au-scene{height:104px;margin:0 -22px;}
+  #authScreen .au-truck{transform-origin:left bottom;scale:.75;}
+  #authScreen .au-pallet{left:20px;scale:.8;transform-origin:left bottom;}
+  #authScreen .au-deco span{font-size:18px!important;}
+  #authScreen .au-panel{justify-content:flex-start;padding:22px 16px 28px;}
+  #authScreen .au-card{padding:26px 20px 22px;}
+  #authScreen .au-card-head h2{font-size:22px;}
+}
+@media (prefers-reduced-motion:reduce){
+  #authScreen .au-truck{animation:none;left:40%;}
+  #authScreen .au-road,#authScreen .au-wheel,#authScreen .au-deco span,#authScreen .au-snow,#authScreen .au-confetti{animation:none;}
+}
+/* 앱 공통 글자·버튼 스타일에 덮이지 않게 */
+#authScreen .au-copy h1{color:#fff!important;}
+#authScreen .au-card-head h2,.au-modal-box h3{color:#1d1d1b!important;}
+.au-btn{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;}
+#authScreen .au-logo b{color:#fff!important;}

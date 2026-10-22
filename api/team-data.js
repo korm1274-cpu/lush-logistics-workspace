@@ -33,6 +33,8 @@ async function kvSet(value) {
 }
 
 module.exports = async (req, res) => {
+  // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
+  if (!(await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' }))) return;
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });

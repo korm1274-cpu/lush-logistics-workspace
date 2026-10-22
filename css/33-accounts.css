@@ -1,0 +1,53 @@
+/* ===== Admin > 계정 관리 · 상단 프로필 메뉴 · 게스트 화면 정리 ===== */
+#accountsView .ac-form{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
+#accountsView .ac-form .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+#accountsView .ac-form .field.grow{flex:1 1 200px;}
+#accountsView .ac-form label{font-size:12px;font-weight:800;color:#4a4a45;}
+#accountsView .ac-form input,#accountsView .ac-form select{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#accountsView #acCreate{height:40px;padding:0 18px;font-weight:800;}
+#accountsView .ac-hint{margin:10px 0 0;font-size:12.5px;color:#7a7a74;}
+#accountsView .ac-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+#accountsView .ac-table th{background:#f6f4ef;color:#4a4a45;font-size:12.5px;font-weight:800;text-align:left;padding:9px 10px;border-bottom:1.5px solid #e4d9c7;white-space:nowrap;}
+#accountsView .ac-table td{padding:9px 10px;border-bottom:1px solid #f1ede4;vertical-align:middle;}
+#accountsView .ac-table select{height:32px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 6px;font:inherit;font-size:13px;background:#fff;}
+#accountsView tr.ac-off td{color:#a3a39c;}
+#accountsView .ac-me{margin-left:6px;font-size:11px;font-weight:800;color:#fff;background:#1d1d1b;border-radius:999px;padding:1px 7px;}
+#accountsView .ac-badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;}
+#accountsView .ac-badge.on{background:#e3f5ec;color:#11795a;}
+#accountsView .ac-badge.off{background:#fdecec;color:#c93838;}
+#accountsView .ac-badge.temp{background:#fff1e6;color:#c35a00;}
+#accountsView .ac-when{white-space:nowrap;color:#5c6670;font-variant-numeric:tabular-nums;}
+#accountsView .ac-manage{white-space:nowrap;}
+#accountsView .ac-manage button{border:1px solid #e4d9c7;background:#fff;border-radius:8px;padding:5px 9px;margin-right:4px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+#accountsView .ac-manage button:hover{background:#f6f3ee;}
+#accountsView .ac-manage button.del{color:#c93838;border-color:#f1d4d4;}
+#accountsView .ac-empty{text-align:center;color:#8a8a85;padding:24px 0!important;}
+#accountsView .ac-scroll{overflow:auto;}
+#accountsView .ac-log-bar{display:flex;align-items:center;gap:8px;}
+#accountsView .ac-log-bar select{height:34px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 8px;font:inherit;font-size:13px;background:#fff;}
+#appShell.on-lush #accountsView .ac-card{position:relative;overflow:hidden;background:#fff;border:1.5px solid #e4d9c7;border-radius:14px;padding:19px 16px 14px;}
+#appShell.on-lush #accountsView .ac-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;}
+#appShell.on-lush #accountsView .ac-panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
+#appShell.on-lush #accountsView .ac-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#8a6fd1;}
+#appShell.on-lush #accountsView .ac-panel.logs::before{background:#1baf7a;}
+@media (max-width:900px){
+  #accountsView .ac-form .field{flex:1 1 100%;}
+  #accountsView #acCreate{flex:1 1 100%;}
+  #accountsView .ac-table{min-width:760px;}
+}
+
+/* 상단 프로필(눌러서 비밀번호 변경·로그아웃) */
+.au-profile{cursor:pointer;border-radius:12px;transition:background .15s;}
+.au-profile:hover{background:rgba(255,255,255,.08);}
+.au-profile-menu{position:fixed;z-index:9500;min-width:200px;padding:6px;background:#fff;border:1.5px solid #e4d9c7;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,.14);display:flex;flex-direction:column;}
+.au-profile-menu .au-pm-head{padding:8px 10px 10px;border-bottom:1px solid #f1ede4;margin-bottom:4px;display:flex;flex-direction:column;gap:2px;}
+.au-profile-menu .au-pm-head b{font-size:14px;font-weight:900;color:#1d1d1b;}
+.au-profile-menu .au-pm-head small{font-size:12px;color:#7a7a74;}
+.au-profile-menu .au-pm-guest{color:#c35a00!important;}
+.au-profile-menu button{border:0;background:none;text-align:left;padding:9px 10px;border-radius:8px;font:inherit;font-size:13.5px;font-weight:700;color:#1d1d1b;cursor:pointer;}
+.au-profile-menu button:hover{background:#f6f3ee;}
+.au-profile-menu button.out{color:#c93838;}
+
+/* 게스트: 보기 전용 — 저장·동기화·백업 같은 버튼 숨김 */
+html.role-guest #appShell #baseSyncBtn,html.role-guest #appShell #exportBackup,html.role-guest #appShell #importBackup,html.role-guest #appShell #baseExportBtn,
+html.role-guest #appShell #dashboard [data-dash-todo-toggle],html.role-guest #appShell #dashboard .dn-act{display:none!important;}

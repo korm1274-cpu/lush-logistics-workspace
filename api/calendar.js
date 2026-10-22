@@ -4,6 +4,8 @@
 // 예: https://script.google.com/macros/s/AKfycb.../exec
 
 module.exports = async (req, res) => {
+  // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
+  if (!(await require('./_lib/auth').guard(req, res, {}))) return;
   const url = process.env.CALENDAR_APPS_SCRIPT_URL;
   if (!url) {
     res.status(200).json({ success: false, events: [], error: 'CALENDAR_APPS_SCRIPT_URL 환경변수가 설정되지 않았습니다.' });
