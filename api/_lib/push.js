@@ -48,6 +48,13 @@ async function saveSettings(store, input, by) {
 }
 
 const sidOf = endpoint => A.sha256(endpoint).slice(0, 24);
+const isMobileAppSub = s => !!(s && s.standalone === true && /^(Android|iPhone|iPad)(?:\\b|\\s*\\()/i.test(String(s.os || '')));
+const isMobileRequest = req => /Android|iPhone|iPad|iPod/i.test(String((req.headers && req.headers['user-agent']) || ''));
+function safeDeviceId(v) {
+  const id = String(v || '');
+  if (!/^[a-zA-Z0-9_-]{10,128}$/.test(id)) throw new Error('앱 설치 식별자가 올바르지 않습니다.');
+  return id;
+}
 function parseHash(arr) {
   const out = [];
   for (let i = 0; arr && i < arr.length; i += 2) { try { out.push(JSON.parse(arr[i + 1])); } catch (e) { /* 깨진 항목 무시 */ } }
@@ -66,7 +73,9 @@ function uaInfo(req) {
 }
 
 // 구독 등록/갱신. 같은 기기(endpoint)를 다른 사람이 로그인해 쓰면 마지막 로그인 사용자로 연결
-async function upsertSub(store, req, user, subscription, standalone) {
+async function upsertSub(store, req, user, subscription, standalone, deviceId) {
+  if(standalone!==true || !isMobileRequest(req))throw new Error('설치된 모바일 앱에서만 알림을 등록할 수 있습니다.');
+  const appDeviceId=safeDeviceId(deviceId);
   const endpoint = String((subscription && subscription.endpoint) || '');
   const keys = (subscription && subscription.keys) || {};
   if (!/^https:\/\//.test(endpoint) || !keys.p256dh || !keys.auth) throw new Error('구독 정보가 올바르지 않습니다.');
@@ -74,9 +83,19 @@ async function upsertSub(store, req, user, subscription, standalone) {
   const all = await listSubs(store);
   const prev = all.find(s => s.sid === sid);
   const now = new Date().toISOString();
-  const sub = { ...(prev || {}), sid, userId: user.id, endpoint, keys: { p256dh: String(keys.p256dh), auth: String(keys.auth) }, ...uaInfo(req), standalone: !!standalone, createdAt: (prev && prev.createdAt) || now, updatedAt: now };
+  const sub = { ...(prev || {}), sid, userId: user.id, endpoint, keys: { p256dh: String(keys.p256dh), auth: String(keys.auth) }, ...uaInfo(req), standalone: true, deviceId: appDeviceId, appPermission:'granted', lastAppCheckedAt:now, createdAt: (prev && prev.createdAt) || now, updatedAt: now };
   await saveSub(store, sub);
   return { sub, isNew: !prev };
+}
+
+// 모바일 앱에서 실제 확인한 OS 알림 권한을 저장합니다.
+async function updateDevicePermission(store, userId, deviceId, permission) {
+  const id = safeDeviceId(deviceId);
+  if (!['granted','default','denied'].includes(permission)) throw new Error('앱 알림 권한 값이 올바르지 않습니다.');
+  const now = new Date().toISOString();
+  const mine = (await listSubs(store)).filter(s => isMobileAppSub(s) && s.userId===userId && s.deviceId===id);
+  await Promise.all(mine.map(s => saveSub(store, {...s, appPermission:permission, lastAppCheckedAt:now})));
+  return mine.length;
 }
 
 // 구독 여러 건에 같은 알림 발송(만료 404/410은 자동 정리) → 성공 건수
@@ -117,7 +136,7 @@ async function notifyNew(store, items) {
   if (!targets.length) return { sent: 0, skipped: 'type-off' };
   // 사용 중인 계정에 연결된 기기만
   const acc = await A.loadAccounts(store);
-  const subs = (await listSubs(store)).filter(s => acc.users[s.userId] && acc.users[s.userId].active !== false);
+  const subs = (await listSubs(store)).filter(s => isMobileAppSub(s) && s.appPermission !== 'denied' && s.appPermission !== 'default' && acc.users[s.userId] && acc.users[s.userId].active !== false);
   let sent = 0;
   for (const { kind, item } of targets.slice(0, 10)) { // 한 번 저장에 최대 10건
     const fresh = await store.cmd(['SET', `${SENT_PREFIX}${kind}:${item.id}`, '1', 'NX', 'EX', String(SENT_TTL_SEC)]);
@@ -141,7 +160,7 @@ async function runInitialTest(store, by) {
   if (lock !== 'OK') return { ok: false, error: '다른 관리자가 초기 검증을 실행 중입니다. 잠시 후 다시 확인해 주세요.' };
   try {
     const acc = await A.loadAccounts(store);
-    const subs = (await listSubs(store)).filter(s => acc.users[s.userId] && acc.users[s.userId].active !== false);
+    const subs = (await listSubs(store)).filter(s => isMobileAppSub(s) && s.appPermission !== 'denied' && s.appPermission !== 'default' && acc.users[s.userId] && acc.users[s.userId].active !== false);
     if (!subs.length) return { ok: false, error: '알림을 허용한 기기가 없어 실행하지 않았습니다. 먼저 휴대폰에서 알림을 허용해 주세요.' };
     const data = (await store.getJSON('lush_team_data_v1')) || {};
     const stamp = r => String((r && (r.createdAt || r.updatedAt || r.date)) || '');
@@ -177,6 +196,6 @@ async function pwaMap(store) {
 }
 
 // 화면용(민감 값 제외)
-const publicSub = s => ({ sid: s.sid, userId: s.userId, os: s.os || '', browser: s.browser || '', standalone: !!s.standalone, createdAt: s.createdAt || '', updatedAt: s.updatedAt || '', lastOkAt: s.lastOkAt || '', status: s.lastError ? 'error' : 'active' });
+const publicSub = s => ({ sid: s.sid, userId: s.userId, os: s.os || '', browser: s.browser || '', standalone: !!s.standalone, createdAt: s.createdAt || '', updatedAt: s.updatedAt || '', lastOkAt: s.lastOkAt || '', lastAppCheckedAt:s.lastAppCheckedAt||'', status: s.lastError ? 'error' : s.appPermission==='denied'||s.appPermission==='default'?'inactive':s.appPermission==='granted'?'active':'unknown' });
 
-module.exports = { TYPES, getVapid, getSettings, saveSettings, listSubs, removeSub, upsertSub, sendTo, notifyNew, recordPwa, pwaMap, publicSub, sidOf, messageOf, initialStatus, runInitialTest };
+module.exports = { TYPES, getVapid, getSettings, saveSettings, listSubs, removeSub, upsertSub, updateDevicePermission, isMobileAppSub, isMobileRequest, sendTo, notifyNew, recordPwa, pwaMap, publicSub, sidOf, messageOf, initialStatus, runInitialTest };
