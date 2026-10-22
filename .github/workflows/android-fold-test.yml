@@ -31,19 +31,36 @@ jobs:
           gradle-version: '8.9'
       - name: Build debug APK
         run: gradle :app:assembleDebug --no-daemon "-PlushSiteUrl=https://lush-logistics-workspace.vercel.app/"
-      - name: Verify APK permissions and signing
+      - name: Verify APK manifest, signature and SHA-256
         run: |
-          set -eu
+          set -euo pipefail
           APK="app/build/outputs/apk/debug/app-debug.apk"
           test -s "$APK"
           AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
           "$AAPT" dump permissions "$APK" | tee /tmp/lush-permissions.txt
-          grep -q "android.permission.INTERNET" /tmp/lush-permissions.txt
-          if grep -E 'android.permission.(READ_CONTACTS|READ_SMS|READ_CALL_LOG|ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|RECORD_AUDIO|CAMERA|MANAGE_EXTERNAL_STORAGE|QUERY_ALL_PACKAGES)' /tmp/lush-permissions.txt; then
-            echo "Unexpected sensitive permission"; exit 1
+          python3 - <<'PY'
+          import re
+          text=open('/tmp/lush-permissions.txt').read()
+          permissions=set(re.findall(r'android\\.permission\\.[A-Z_]+', text))
+          if permissions != {'android.permission.INTERNET'}:
+              raise SystemExit(f'Unexpected APK permissions: {sorted(permissions)}')
+          PY
+          "$AAPT" dump badging "$APK" | tee /tmp/lush-badging.txt
+          grep -q "package: name='kr.co.lush.logistics.foldtest'" /tmp/lush-badging.txt
+          "$AAPT" dump xmltree "$APK" AndroidManifest.xml | tee /tmp/lush-manifest.txt
+          if grep -A 2 'android:debuggable' /tmp/lush-manifest.txt | grep -q '0xffffffff'; then
+            echo "APK is debuggable"; exit 1
           fi
-          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
-          sha256sum "$APK"
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/lush-signature.txt
+          mkdir -p security-report
+          sha256sum "$APK" | tee security-report/SHA256SUMS.txt
+          cp /tmp/lush-permissions.txt /tmp/lush-signature.txt /tmp/lush-badging.txt security-report/
+      - name: Upload security report
+        uses: actions/upload-artifact@v4
+        with:
+          name: lush-logistics-fold-security-report
+          path: android-test/security-report/
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         with:
           name: lush-logistics-fold-debug-apk
