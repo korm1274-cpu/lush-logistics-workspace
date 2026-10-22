@@ -3,11 +3,42 @@
   const TEAM_API='/api/team-data';
   const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',stock:'lush-stock-items-v1',requestsDeleted:'lush_outbound_requests_deleted_v1',noticesDeleted:'lush-v51-notices-deleted',todosDeleted:'lush-v51-todos-deleted'};
   /* 건(id)별로 합치는 목록과 그 '지운 id' 기록 키: 출고 요청·공지·제품 확보 */
+  /* 메뉴 설정(Admin > 메뉴 관리) 팀 공유: { menus, groups, updatedAt, by } — 관리자만 바꿀 수 있음(서버에서도 확인) */
+  const MENU_CFG_KEY='lush-menu-config-v1',MENU_KEY_LOCAL='lush-logistics-v4-menus',GROUP_KEY_LOCAL='lush-logistics-v4-groups';
+  function isAdminUser(){try{const u=window.LUSH_AUTH&&window.LUSH_AUTH.user();return !!u&&u.role==='admin'}catch(e){return false}}
+  function readMenuCfg(){const v=readLocalObj(MENU_CFG_KEY,null);return v&&Array.isArray(v.menus)?v:null}
+  function writeMenuCfgFromLocal(){
+    let ms=[],gs=null;try{ms=JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]')}catch(e){}try{gs=JSON.parse(localStorage.getItem(GROUP_KEY_LOCAL)||'null')}catch(e){}
+    const u=window.LUSH_AUTH&&window.LUSH_AUTH.user();
+    localStorage.setItem(MENU_CFG_KEY,JSON.stringify({menus:ms,groups:gs,updatedAt:new Date().toISOString(),by:u&&u.id||''}));
+  }
+  /* 처음 공유할 때 지금 보이는 메뉴가 그대로 유지되도록 권한 칸을 옮겨 담음:
+     관리자(leader) = Admin 외 전체, 팀원(editor) = 관리자가 보는 메뉴 전체, 게스트(restricted) = 메인·현황판만 */
+  function migrateRoles(list){
+    return (list||[]).map(m=>{
+      if(!m||m.group==='admin')return m;
+      const r=new Set(m.roles||[]);r.add('admin');r.add('leader');r.add('editor');
+      if(m.group==='dashboard'||m.group==='statusboard')r.add('restricted');else r.delete('restricted');
+      return Object.assign({},m,{roles:['admin','leader','editor','restricted'].filter(x=>r.has(x))});
+    });
+  }
+  function applyMenuCfg(cfg){
+    try{
+      origSetItem(MENU_CFG_KEY,JSON.stringify(cfg));
+      origSetItem(MENU_KEY_LOCAL,JSON.stringify(cfg.menus));
+      if(cfg.groups)origSetItem(GROUP_KEY_LOCAL,JSON.stringify(cfg.groups));
+      try{menus=cfg.menus}catch(e){}
+      try{if(cfg.groups)GROUPS=cfg.groups}catch(e){}
+      try{if(typeof normalizeMenus==='function')normalizeMenus()}catch(e){}
+      try{if(typeof renderNav==='function')renderNav()}catch(e){}
+      try{const s=document.getElementById('settings');if(s&&s.classList.contains('active')&&typeof renderAdmin==='function')renderAdmin()}catch(e){}
+    }catch(e){}
+  }
   const MERGE_LISTS=[['requests','requestsDeleted'],['notices','noticesDeleted'],['todos','todosDeleted']];
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function readLocalObj(k,def){try{const v=JSON.parse(localStorage.getItem(k)||'null');return(v&&typeof v==='object'&&!Array.isArray(v))?v:def}catch{return def}}
   function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
-  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),stock:readLocal(KEYS.stock),requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),stock:readLocal(KEYS.stock),menuConfig:readMenuCfg()||undefined,requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false,applyingServer=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
@@ -91,6 +122,13 @@
         const lo=readLocal(KEYS[k]).filter(r=>r&&r.id&&!ids.has(r.id)&&!del.has(r.id));
         if(lo.length){sd[k]=(sd[k]||[]).concat(lo);needPush=true}
       });
+      /* 메뉴 설정: 서버 것이 더 최신이면 적용 / 서버에 아직 없고 관리자면 지금 메뉴(권한 옮겨 담음)를 처음 공유 */
+      {const sc=j.data.menuConfig,lc=readMenuCfg();
+        if(sc&&Array.isArray(sc.menus)){if(!lc||String(sc.updatedAt||'')>String(lc.updatedAt||''))applyMenuCfg(sc)}
+        else if(isAdminUser()){
+          try{const ms=migrateRoles(JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]'));origSetItem(MENU_KEY_LOCAL,JSON.stringify(ms));try{menus=ms}catch(e){}}catch(e){}
+          writeMenuCfgFromLocal();try{if(typeof renderNav==='function')renderNav()}catch(e){}
+        }}
       const cur=JSON.stringify(snapshot());
       const incoming=JSON.stringify({notices:sd.notices||[],todos:sd.todos||[],requests:sd.requests||[],productivity:serverProd,defects:sd.defects||[],stock:sd.stock||[],requestsDeleted:sd.requestsDeleted||[],noticesDeleted:sd.noticesDeleted||[],todosDeleted:sd.todosDeleted||[]});
       if(cur!==incoming){
@@ -140,9 +178,11 @@
       }catch(e){}
     }
     origSetItem(k,v);
-    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects||k===KEYS.stock)pushTeamData();
+    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects||k===KEYS.stock||k===MENU_CFG_KEY)pushTeamData();
   };
   window.pullTeamData=pullTeamData;
+  /* 관리자가 메뉴 관리에서 저장(saveMenus·saveGroups)하면 공유 메뉴 설정도 갱신 → 서버로 */
+  ['saveMenus','saveGroups'].forEach(fn=>{const o=window[fn];if(typeof o!=='function')return;window[fn]=function(){const r=o.apply(this,arguments);if(isAdminUser())writeMenuCfgFromLocal();return r}});
   pullTeamData(true);
   /* 화면을 오래 켜 두면(특히 PC) 처음 열 때만 받아서 다른 기기에서 등록한 공지·요청이 안 보이던 문제:
      화면이 보이는 동안 1분마다, 그리고 다른 창/앱을 보다 돌아올 때마다 새로 받음.

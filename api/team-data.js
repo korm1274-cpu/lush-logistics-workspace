@@ -34,7 +34,8 @@ async function kvSet(value) {
 
 module.exports = async (req, res) => {
   // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
-  if (!(await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' }))) return;
+  const authUser = await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' });
+  if (!authUser) return;
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
@@ -82,6 +83,12 @@ module.exports = async (req, res) => {
             body[key] = Array.from(byId.values()).filter(r => !deleted.has(r.id)).concat(noId);
             body[delKey] = Array.from(deleted).slice(-2000);
           });
+          // 메뉴 설정(menuConfig): 관리자만 바꿀 수 있고, 더 최신(updatedAt) 것만 반영
+          if (body.menuConfig !== undefined) {
+            const cur = current.menuConfig, inc = body.menuConfig;
+            if (authUser.role !== 'admin' || !inc || !Array.isArray(inc.menus)) { if (cur) body.menuConfig = cur; else delete body.menuConfig; }
+            else if (cur && String(cur.updatedAt || '') > String(inc.updatedAt || '')) body.menuConfig = cur;
+          }
           // 재고(stock, 화면 '재고'): 제품 불량과 같이 건(id)별 병합, 삭제는 deleted 표시로 전달
           if (Array.isArray(current.stock) && Array.isArray(body.stock)) {
             const byId = new Map();

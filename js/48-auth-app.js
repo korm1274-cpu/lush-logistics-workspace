@@ -4,7 +4,13 @@
    - 권한 미리보기는 관리자에게만 보임 */
 (function(){
   if(!window.LUSH_AUTH)return;
-  var ROLE_MAP={admin:'admin',member:'leader',guest:'guest'};
+  /* 로그인 역할 → 메뉴 권한 칸: 관리자='관리자'(leader) 칸 + Admin 메뉴, 팀원='팀원'(editor) 칸, 게스트='게스트'(restricted) 칸 */
+  var ROLE_MAP={admin:'admin',member:'editor',guest:'restricted'};
+  window.canAccess=function(m){
+    if(!m)return false;var roles=m.roles||[];
+    if(currentRole==='admin')return m.group==='admin'||roles.indexOf('leader')>=0;
+    return roles.indexOf(currentRole)>=0;
+  };
   var ROLE_NAME={admin:'관리자',member:'팀원',guest:'게스트'};
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function applyRole(user){
@@ -12,10 +18,6 @@
     document.documentElement.classList.toggle('role-guest',role==='guest');
     document.documentElement.classList.toggle('role-admin',role==='admin');
     try{currentRole=ROLE_MAP[role]||'guest'}catch(e){}
-    if(role==='guest'){
-      /* 게스트: 메인·현황판 메뉴만 */
-      window.canAccess=function(m){return !!m&&(m.group==='dashboard'||m.group==='statusboard')};
-    }
     var rp=document.getElementById('rolePreview');
     if(rp){if(role==='admin'){rp.value='admin'}else{rp.style.display='none'}}
     try{if(typeof renderNav==='function')renderNav()}catch(e){}
@@ -28,7 +30,10 @@
   /* 지금 화면을 볼 수 없는 역할이면 메인으로 */
   function enforce(role){
     var active=document.querySelector('.view.active');if(!active)return;
-    var bad=(role==='guest'&&active.id!=='dashboard'&&active.id!=='statusBoardView')||(role!=='admin'&&(active.id==='settings'||active.id==='accountsView'));
+    /* 지금 화면의 메뉴를 볼 권한이 없으면 메인으로 */
+    var list=(typeof menus!=='undefined'&&Array.isArray(menus))?menus:[];
+    var m=list.find(function(x){return x&&x.target===active.id});
+    var bad=(role!=='admin'&&active.id==='settings')||(active.id!=='dashboard'&&m&&!canAccess(m));
     if(bad){try{showView('dashboard')}catch(e){}}
   }
   function renderProfile(user){

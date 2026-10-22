@@ -5,7 +5,8 @@ const MENU_KEY="lush-logistics-v4-menus";
 const GROUP_KEY="lush-logistics-v4-groups";
 const USER_KEY="lush-logistics-v4-users";
 const HIST_KEY="lush-logistics-upload-history";
-const ROLE_LABEL={admin:"관리자",leader:"팀 리더",editor:"팀원",restricted:"제한 열람"};
+/* 로그인 역할과 맞춤: 메뉴 권한 칸 leader=관리자, editor=팀원, restricted=게스트 (admin은 Admin 메뉴 전용 내부값) */
+const ROLE_LABEL={admin:"관리자",leader:"관리자",editor:"팀원",restricted:"게스트"};
 const DEFAULT_GROUPS=[
  {id:"dashboard",label:"메인",icon:"layout-dashboard",visible:true,protected:true},{id:"statusboard",label:"현황판",icon:"monitor-up",visible:true},{id:"inventory",label:"재고",icon:"package-search",visible:true},{id:"inbound",label:"입고",icon:"package-plus",visible:true},{id:"outbound",label:"출고",icon:"truck",visible:true},{id:"traffic",label:"트래픽",icon:"signpost",visible:true},{id:"schedule",label:"일정",icon:"calendar-days",visible:true},{id:"issues",label:"이슈",icon:"triangle-alert",visible:true},{id:"productivity",label:"생산성",icon:"gauge",visible:true},{id:"floorboard",label:"대시보드",icon:"monitor",visible:true},{id:"upload",label:"데이터",icon:"file-up",visible:true},{id:"admin",label:"Admin",icon:"settings-2",visible:true,protected:true}
 ];
@@ -165,7 +166,7 @@ function normalizeMenus(){
   const damageMenu=cleaned.find(m=>m.id==="issue-damage");
   if(damageMenu){
     damageMenu.kind="view"; damageMenu.target="damageAnalyticsView"; if(!damageMenu.adminManaged)damageMenu.label="파손";
-    damageMenu.roles=["admin","leader","editor","restricted"];
+    if(!Array.isArray(damageMenu.roles)||!damageMenu.roles.length)damageMenu.roles=["admin","leader","editor","restricted"]; /* 메뉴 관리에서 바꾼 권한은 유지 */
     delete damageMenu.cat; delete damageMenu.sheet;
   }
 
@@ -173,7 +174,7 @@ function normalizeMenus(){
   const misshipMenu=cleaned.find(m=>m.id==="issue-wrong");
   if(misshipMenu&&misshipMenu.kind==="sheet"){
     misshipMenu.kind="view"; misshipMenu.target="misshipRecordsView";
-    misshipMenu.roles=["admin","leader","editor","restricted"];
+    if(!Array.isArray(misshipMenu.roles)||!misshipMenu.roles.length)misshipMenu.roles=["admin","leader","editor","restricted"];
     delete misshipMenu.cat; delete misshipMenu.sheet;
   }
 
@@ -191,7 +192,7 @@ function normalizeMenus(){
   const scheduleMenu=cleaned.find(m=>m.id==="schedule-main");
   if(scheduleMenu){
     if(!scheduleMenu.adminManaged){scheduleMenu.group="schedule"; scheduleMenu.label="통합 일정"} scheduleMenu.kind="scheduleManager";
-    scheduleMenu.visible=true; scheduleMenu.roles=["admin","leader","editor","restricted"];
+    if(scheduleMenu.visible===undefined)scheduleMenu.visible=true; if(!Array.isArray(scheduleMenu.roles)||!scheduleMenu.roles.length)scheduleMenu.roles=["admin","leader","editor","restricted"]; /* 메뉴 관리에서 바꾼 표시·권한은 유지 */
     delete scheduleMenu.cat; delete scheduleMenu.sheet; delete scheduleMenu.target;
   }
 
@@ -220,7 +221,7 @@ function normalizeMenus(){
   const outDailyMenu=cleaned.find(m=>m.id==="out-daily");
   if(outDailyMenu){
     if(!outDailyMenu.adminManaged)outDailyMenu.label="출고"; outDailyMenu.kind="view"; outDailyMenu.target="outboundBasicView";
-    outDailyMenu.visible=true; outDailyMenu.roles=["admin","leader","editor","restricted"];
+    if(outDailyMenu.visible===undefined)outDailyMenu.visible=true; if(!Array.isArray(outDailyMenu.roles)||!outDailyMenu.roles.length)outDailyMenu.roles=["admin","leader","editor","restricted"]; /* 메뉴 관리에서 바꾼 표시·권한은 유지 */
     delete outDailyMenu.cat; delete outDailyMenu.sheet;
   }
 
@@ -649,7 +650,7 @@ function renderMenusTable(){
         <div class="menu-inline-group">
           <select aria-label="대분류" data-menu-move="${m.id}" ${m.protected?"disabled":""}>${menuGroupOptions(m.group,true)}</select>
         </div>
-        <div class="menu-inline-permissions">${["leader","editor","restricted"].map(r=>`<button type="button" class="permission-mini ${m.roles.includes(r)?"on":""}" data-menu-role-id="${m.id}" data-menu-role="${r}">${r==="leader"?"팀 리더":r==="editor"?"팀원":"제한 열람"}</button>`).join("")}</div>
+        <div class="menu-inline-permissions">${["leader","editor","restricted"].map(r=>`<button type="button" class="permission-mini ${m.roles.includes(r)?"on":""}" data-menu-role-id="${m.id}" data-menu-role="${r}">${r==="leader"?"관리자":r==="editor"?"팀원":"게스트"}</button>`).join("")}</div>
         <div class="menu-inline-actions">
           ${m.protected?'<span class="muted">고정</span>':`<button class="btn remove" data-menu-del="${m.id}">삭제</button>`}
         </div>
