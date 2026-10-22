@@ -1,9 +1,9 @@
 /* ===== 제품 확보 목록 · 등록된 공지: 러쉬 스타일 카드 목록 (PC·모바일 공통) ===== */
-#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding:24px 20px 20px!important;}
-#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#1baf7a;}
-#appShell #noticeManagerView [data-td-pane="list"]>.panel::before{background:#8a4fd1;}
-#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"] .panel-head{margin-bottom:14px!important;}
-#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"] .panel-head h3{font-size:17px!important;font-weight:900!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) .panel:has(:is(#todoMgrBody,#noticeMgrBody)){position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding:24px 20px 20px!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) .panel:has(:is(#todoMgrBody,#noticeMgrBody))::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#1baf7a;}
+#appShell #noticeManagerView .panel:has(#noticeMgrBody)::before{background:#8a4fd1;}
+#appShell :is(#todoManagerView,#noticeManagerView) .panel:has(:is(#todoMgrBody,#noticeMgrBody)) .panel-head{margin-bottom:14px!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) .panel:has(:is(#todoMgrBody,#noticeMgrBody)) .panel-head h3{font-size:17px!important;font-weight:900!important;}
 #appShell :is(#todoManagerView,#noticeManagerView) .data-table-wrap{overflow:visible!important;border:0!important;background:none!important;box-shadow:none!important;padding:0!important;}
 #appShell :is(#todoManagerView,#noticeManagerView) table.data-table{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:none!important;}
 #appShell :is(#todoManagerView,#noticeManagerView) table.data-table thead{display:none!important;}
@@ -46,7 +46,7 @@
 #appShell #noticeMgrBody>tr>td:nth-child(3)::before{content:"✎";color:#8b95a1;}
 #appShell #noticeMgrBody>tr>td:nth-child(4){grid-area:act;}
 @media (max-width:900px){
-  #appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel{padding:20px 14px 14px!important;}
+  #appShell :is(#todoManagerView,#noticeManagerView) .panel:has(:is(#todoMgrBody,#noticeMgrBody)){padding:20px 14px 14px!important;}
   #appShell :is(#todoMgrBody,#noticeMgrBody){gap:10px;}
   #appShell :is(#todoMgrBody,#noticeMgrBody)>tr{padding:13px 14px!important;}
   #appShell #todoMgrBody>tr{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"title title status" "note note note" "in reg reg" "act act act";}
@@ -56,3 +56,10 @@
 #appShell :is(#todoMgrBody,#noticeMgrBody)>tr>td.td-hide{display:none!important;}
 #appShell #todoMgrBody>tr>td:nth-child(4),#appShell #noticeMgrBody>tr>td:nth-child(2){justify-self:stretch;width:auto!important;max-width:none!important;}
 #appShell #todoMgrBody>tr:has(>td.td-hide)>td:nth-child(1){grid-area:in;}
+/* 제품 확보 목록: [미완료] [전체] 보기 */
+#appShell #todoManagerView .panel:has(#todoMgrBody) .panel-head{display:flex!important;align-items:center;justify-content:space-between;gap:10px;}
+#appShell #todoManagerView .td-filter{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:#f3efe7;}
+#appShell #todoManagerView .td-filter button{height:30px;padding:0 14px;border:0;border-radius:999px;background:none;color:#5f5e5a;font-size:12.5px;font-weight:800;cursor:pointer;}
+#appShell #todoManagerView .td-filter button.on{background:#1d1d1b;color:#fff;}
+#appShell #todoMgrBody>tr.td-filtered{display:none!important;}
+#appShell #todoManagerView .td-none{margin:0;padding:22px 12px;text-align:center;font-size:13px;color:#8b95a1;border:1.5px dashed #ece6db;border-radius:14px;background:#faf8f4;}
