@@ -200,8 +200,8 @@ window.ensureChart=function(){
             <button type="button" class="mio-card mio-in" data-go="inboundAnalysis"><span class="mio-label">입고 수량</span><div class="mio-num"><b id="fileInboundQty">0</b><small>EA</small><em class="mio-delta" id="mioInDelta"></em></div><div class="mio-chips" id="mioInChips"></div></button>
             <button type="button" class="mio-card mio-out" data-go="outboundAnalysis"><span class="mio-label">출고 수량</span><div class="mio-num"><b id="fileOutboundQty">0</b><small>EA</small><em class="mio-delta" id="mioOutDelta"></em></div><div class="mio-chips" id="mioOutChips"></div></button>
           </div>
-          <div class="mio-flow"><div class="mio-flow-head"><span>일별 흐름</span><span class="mio-legend"><i class="in"></i>입고<i class="out"></i>출고</span></div><div class="mio-bars" id="mioBars"></div><div class="mio-axis" id="mioAxis"></div></div>
-          <p class="mio-note">G 단위는 EA로 환산 · 전월은 같은 기간(1일~오늘)과 비교 · 누르면 상세조회로 이동</p>
+          <div class="mio-flow"><div class="mio-flow-head"><span>누적 흐름 <small>(1일부터 쌓인 수량)</small></span><span class="mio-legend"><i class="in"></i>입고<i class="out"></i>출고<b id="mioLegendPrev"><i class="prev"></i>전월</b></span></div><div class="mio-bars" id="mioBars"></div><div class="mio-axis" id="mioAxis"></div></div>
+          <p class="mio-note">G 단위는 EA로 환산 · 점선은 전월 누적, 전월 대비는 같은 기간(1일~오늘) · 누르면 상세조회로 이동</p>
         </div>
       </div>
     </section>

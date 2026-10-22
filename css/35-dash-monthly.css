@@ -40,3 +40,29 @@
   #dashboard .mio-bars{height:60px;gap:2px;}
   #dashboard .mio-range{font-size:11px;}
 }
+/* 누적 흐름(누적 진행선) — 막대 대신 */
+#dashboard .mio-flow-head small{font-size:11px;font-weight:600;color:#a3a9b0;margin-left:4px;}
+#dashboard .mio-legend b{display:inline-flex;align-items:center;gap:5px;font-weight:700;}
+#dashboard .mio-legend b[hidden]{display:none;}
+#dashboard .mio-legend i.prev{width:14px;height:0;border-radius:0;background:none;border-top:2px dashed #b4b2a9;margin-left:8px;}
+#dashboard .mio-bars{position:relative;display:block;height:130px;border-bottom:1.5px solid #ece6db;margin:0 4px;}
+#dashboard .mio-svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible;}
+#dashboard .mio-svg polyline{fill:none;vector-effect:non-scaling-stroke;stroke-linejoin:round;stroke-linecap:round;}
+#dashboard .mio-svg .cur{stroke-width:3;}
+#dashboard .mio-svg .prev{stroke-width:1.6;stroke-dasharray:5 4;opacity:.55;}
+#dashboard .mio-svg .in{stroke:#1baf7a;}
+#dashboard .mio-svg .out{stroke:#e87ba4;}
+#dashboard .mio-svg .grid{stroke:#f1ede4;stroke-width:1;vector-effect:non-scaling-stroke;}
+#dashboard .mio-svg .now{stroke:#c9c2b4;stroke-width:1;stroke-dasharray:2 3;vector-effect:non-scaling-stroke;}
+#dashboard .mio-dot{position:absolute;width:10px;height:10px;margin:-5px 0 0 -5px;border-radius:50%;background:#1baf7a;border:2px solid #fff;box-shadow:0 0 0 1px #1baf7a;pointer-events:none;}
+#dashboard .mio-dot.out{background:#e87ba4;box-shadow:0 0 0 1px #e87ba4;}
+#dashboard .mio-end{position:absolute;transform:translate(-100%,-130%);margin-left:-8px;padding:2px 7px;border-radius:999px;font-size:11.5px;font-weight:800;color:#fff;background:#1baf7a;white-space:nowrap;pointer-events:none;}
+#dashboard .mio-end.out{background:#e87ba4;transform:translate(-100%,30%);}
+#dashboard .mio-hit{position:absolute;top:0;bottom:0;display:block;}
+#dashboard .mio-hit:hover{background:rgba(29,29,27,.04);}
+@media (max-width:900px){
+  #dashboard .mio-bars{height:110px;}
+  #dashboard .mio-end{font-size:10.5px;padding:1px 6px;}
+}
+#dashboard .mio-end.up{transform:translate(-100%,-130%)!important;}
+#dashboard .mio-end.down{transform:translate(-100%,30%)!important;}

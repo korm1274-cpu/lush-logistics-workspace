@@ -339,14 +339,27 @@
     $('mioInChips').innerHTML=chip([['차수',batches.size?fmt(batches.size)+'회':''],['팔렛',pallets?fmt(pallets):''],['SKU',inSku?fmt(inSku):'']])||'<span class="mio-empty">이번 달 입고 기록 없음</span>';
     $('mioOutChips').innerHTML=chip([['출고일',outDays?fmt(outDays)+'일':''],['일평균',outDays?fmt(Math.round(outQ/outDays)):'']])||'<span class="mio-empty">이번 달 출고 기록 없음</span>';
     if($('mioRange'))$('mioRange').textContent=`1일 ~ ${day}일 기준`;
-    // 일별 흐름: 1일 ~ 말일, 오늘 이후는 빈 칸
-    const last=new Date(+t.slice(0,4),+t.slice(5,7),0).getDate(),di=new Array(last+1).fill(0),dO=new Array(last+1).fill(0);
-    inCur.forEach(r=>{di[+normDate(r[0]).slice(8,10)]+=eaEquivQty(r)});
-    outCur.forEach(r=>{dO[+normDate(r[oc.date]).slice(8,10)]+=outQty(r)});
-    const max=Math.max(1,...di,...dO),h=v=>v?Math.max(4,Math.round(v/max*100)):0;
-    let bars='';for(let i=1;i<=last;i++){bars+=`<div class="mio-day${i===day?' today':''}${i>day?' future':''}" title="${i}일 · 입고 ${fmt(Math.round(di[i]))} · 출고 ${fmt(Math.round(dO[i]))}"><i class="in" style="height:${h(di[i])}%"></i><i class="out" style="height:${h(dO[i])}%"></i></div>`}
-    $('mioBars').innerHTML=bars;
-    $('mioAxis').innerHTML=[1,8,15,22,last].filter((v,i,a)=>a.indexOf(v)===i).map(v=>`<span style="left:${((v-0.5)/last*100).toFixed(2)}%">${v}일</span>`).join('');
+    // 일별 흐름(누적 진행선): 이번 달 1일~오늘 입고·출고가 쌓이는 선 + 전월 같은 날까지 쌓인 양(점선)
+    const last=new Date(+t.slice(0,4),+t.slice(5,7),0).getDate();
+    const daily=(rows,di,fn,m)=>{const a=new Array(32).fill(0);rows.forEach(r=>{const nd=normDate(r[di]);if(nd.slice(0,7)===m)a[+nd.slice(8,10)]+=fn(r)});return a};
+    const cum=a=>{let s=0;return a.map((v,i)=>i?(s+=v):0)};
+    const cIn=cum(daily(inCur,0,eaEquivQty,cur)),cOut=cum(daily(outCur,oc.date,outQty,cur));
+    const pIn=cum(daily(inRows,0,eaEquivQty,prev)),pOut=cum(daily(outRows,oc.date,outQty,prev));
+    const pLast=new Date(pd.getFullYear(),pd.getMonth()+1,0).getDate(),span=Math.min(last,pLast);
+    const max=Math.max(1,cIn[day],cOut[day],pIn[span],pOut[span])*1.08;
+    const X=dd=>((dd-1)/Math.max(1,last-1)*100),Y=v=>(100-v/max*100);
+    const pts=(a,to)=>{let s='';for(let i=1;i<=to;i++)s+=`${X(i).toFixed(2)},${Y(a[i]).toFixed(2)} `;return s.trim()};
+    const hasPrev=pIn[span]>0||pOut[span]>0;
+    $('mioBars').innerHTML=`<svg class="mio-svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">`+
+      [25,50,75].map(g=>`<line x1="0" x2="100" y1="${g}" y2="${g}" class="grid"/>`).join('')+
+      (hasPrev?`<polyline class="prev in" points="${pts(pIn,span)}"/><polyline class="prev out" points="${pts(pOut,span)}"/>`:'')+
+      `<line class="now" x1="${X(day)}" x2="${X(day)}" y1="0" y2="100"/>`+
+      `<polyline class="cur in" points="${pts(cIn,day)}"/><polyline class="cur out" points="${pts(cOut,day)}"/></svg>`+
+      `<span class="mio-dot in" style="left:${X(day)}%;top:${Y(cIn[day])}%"></span><span class="mio-dot out" style="left:${X(day)}%;top:${Y(cOut[day])}%"></span>`+
+      `<span class="mio-end in ${cIn[day]>=cOut[day]?'up':'down'}" style="left:${X(day)}%;top:${Y(cIn[day])}%">${fmt(Math.round(cIn[day]))}</span><span class="mio-end out ${cIn[day]>=cOut[day]?'down':'up'}" style="left:${X(day)}%;top:${Y(cOut[day])}%">${fmt(Math.round(cOut[day]))}</span>`+
+      Array.from({length:last},(_,k)=>{const i=k+1;return `<i class="mio-hit" style="left:${(X(i)-50/Math.max(1,last-1)).toFixed(2)}%;width:${(100/Math.max(1,last-1)).toFixed(2)}%" title="${i}일까지 누적 · 입고 ${i<=day?fmt(Math.round(cIn[i])):'-'} · 출고 ${i<=day?fmt(Math.round(cOut[i])):'-'}${hasPrev&&i<=pLast?` (전월 입고 ${fmt(Math.round(pIn[i]))} · 출고 ${fmt(Math.round(pOut[i]))})`:''}"></i>`}).join('');
+    if($('mioLegendPrev'))$('mioLegendPrev').hidden=!hasPrev;
+    $('mioAxis').innerHTML=[1,8,15,22,last].filter((v,i,a)=>a.indexOf(v)===i).map(v=>`<span style="left:${X(v).toFixed(2)}%">${v}일</span>`).join('');
   }
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[6]||'').trim().toUpperCase()}
