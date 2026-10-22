@@ -177,6 +177,17 @@
     recordPwa();
     refresh();
   }
+  // Installability: prepare the existing service worker on initial page load,
+  // even before login or notification consent. This never requests notification
+  // permission and never creates a Push subscription.
+  if('serviceWorker' in navigator){
+    window.addEventListener('load',function(){
+      navigator.serviceWorker.register('./sw.js').catch(function(error){
+        console.warn('[LUSH PWA] service worker registration failed:',error);
+      });
+    },{once:true});
+  }
+
   function init(){if(document.getElementById('pushEnableBtn'))initInstall();else initApp()}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
