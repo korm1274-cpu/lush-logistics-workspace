@@ -43,6 +43,7 @@ const DEFAULT_MENUS=[
  {id:"status-products",group:"statusboard",label:"제품별 출고현황",kind:"statusTab",target:"statusBoardView",statusTab:"products",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"status-outbound-analysis",group:"statusboard",label:"출고 분석",kind:"statusTab",target:"statusBoardView",statusTab:"outboundanalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"inv-total",group:"inventory",label:"총 재고파일",kind:"inventoryTotal",visible:true,roles:["admin","leader","editor"]},
+ {id:"inv-stock",group:"inventory",label:"재고",kind:"view",target:"stockView",visible:true,roles:["admin","leader","editor"]},
  {id:"inv-oos",group:"inventory",label:"품절 재고 분석",kind:"view",target:"inventoryOosView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"inv-time",group:"inventory",label:"TIME (SOILD)",kind:"inventoryOwner",owner:"TIME (SOILD)",visible:true,roles:["admin","leader","editor"]},
  {id:"in-basic",group:"inbound",label:"입고",kind:"view",target:"inboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
@@ -264,6 +265,15 @@ function normalizeMenus(){
       cleaned.splice(after<0?cleaned.length:after+1,0,item);
     }
     localStorage.setItem("lush-menu-defect-added-v1","1");
+  }
+  /* 새 메뉴 '재고'(샘플 재고 화면)도 저장된 메뉴 목록에 한 번만 추가(총 재고파일 바로 아래) */
+  if(!localStorage.getItem("lush-menu-stock-added-v1")){
+    if(!cleaned.some(m=>m.id==="inv-stock")){
+      const after=cleaned.findIndex(m=>m.id==="inv-total");
+      const item={id:"inv-stock",group:"inventory",label:"재고",kind:"view",target:"stockView",visible:true,roles:["admin","leader","editor"]};
+      cleaned.splice(after<0?cleaned.length:after+1,0,item);
+    }
+    localStorage.setItem("lush-menu-stock-added-v1","1");
   }
 
   menus=cleaned;

@@ -1,0 +1,51 @@
+/* ===== 재고 > 재고 (샘플 재고 화면): 표에서 바로 입력하는 시트형 ===== */
+#stockView .st-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
+#stockView .st-toolbar .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+#stockView .st-toolbar .field.grow{flex:1 1 260px;}
+#stockView .st-toolbar label{font-size:12px;font-weight:800;color:#4a4a45;}
+#stockView .st-toolbar input,#stockView .st-toolbar select{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#stockView #stAdd{height:40px;display:inline-flex;align-items:center;justify-content:center;gap:4px;padding:0 16px;font-weight:800;white-space:nowrap;}
+#stockView .st-sheet-wrap{overflow:auto;max-height:70vh;border:1.5px solid #e4d9c7;border-radius:12px;background:#fff;}
+#stockView .st-sheet{width:100%;min-width:980px;border-collapse:separate;border-spacing:0;font-size:13.5px;}
+#stockView .st-sheet thead th{position:sticky;top:0;z-index:2;background:#f6f4ef;color:#4a4a45;font-size:12.5px;font-weight:800;text-align:left;padding:9px 8px;border-bottom:1.5px solid #e4d9c7;white-space:nowrap;}
+#stockView .st-sheet thead th.num{text-align:right;}
+#stockView .st-sheet td{padding:0;border-bottom:1px solid #f1ede4;border-right:1px solid #f4f1ea;}
+#stockView .st-sheet td:last-child{border-right:0;}
+#stockView .st-sheet tr:hover td{background:#fffbf3;}
+#stockView .st-sheet tr.st-new td{background:#fff7fa;}
+#stockView .st-sheet td input{width:100%;box-sizing:border-box;height:36px;border:0;background:transparent;padding:0 8px;font:inherit;font-size:13.5px;color:#1d1d1b;}
+#stockView .st-sheet td input:focus{outline:2px solid #1d1d1b;outline-offset:-2px;background:#fff;border-radius:4px;}
+#stockView .st-sheet td.st-qty input{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;}
+#stockView .st-sheet td.st-code{width:110px;}#stockView .st-sheet td.st-category{width:110px;}#stockView .st-sheet td.st-name{min-width:220px;}
+#stockView .st-sheet td.st-mfgDate{width:130px;}#stockView .st-sheet td.st-qty{width:90px;}#stockView .st-sheet td.st-plu{width:90px;}
+#stockView .st-sheet td.st-barcode{width:140px;}#stockView .st-sheet td.st-location{width:110px;}
+#stockView .st-sheet td.st-manage{width:64px;text-align:center;}
+#stockView .st-del{border:1px solid #f1d4d4;background:#fff;color:#c93838;border-radius:8px;padding:4px 9px;font-size:12px;font-weight:700;cursor:pointer;}
+#stockView .st-del:hover{background:#fdecec;}
+#stockView .st-empty{padding:30px 0!important;text-align:center;color:#8a8a85;font-size:13px;}
+#stockView .st-note{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:8px;font-size:12px;color:#8a8a85;}
+/* 러쉬 테마 카드(다른 화면과 같은 테두리·띠) */
+#appShell.on-lush #stockView .st-panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
+#appShell.on-lush #stockView .st-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#1baf7a;}
+#appShell.on-lush #stockView .st-toolbar-card{position:relative;overflow:hidden;background:#fff;border:1.5px solid #e4d9c7;border-radius:14px;padding:19px 16px 14px;}
+#appShell.on-lush #stockView .st-toolbar-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;}
+@media (max-width:900px){
+  #stockView .st-toolbar .field.grow{flex:1 1 100%;}
+  #stockView .st-toolbar .field:not(.grow){flex:1 1 0;}
+  #stockView #stAdd{flex:1 1 0;}
+  #stockView .st-sheet-wrap{max-height:65vh;}
+  #stockView .st-sheet{font-size:13px;}
+}
+/* 앱 공통 입력칸 스타일(테두리·회색 바탕)을 걷어내고 엑셀처럼 칸 자체가 입력칸이 되게 */
+#appShell #stockView .st-sheet td input{border:0!important;background:transparent!important;box-shadow:none!important;border-radius:0!important;height:38px!important;min-height:38px!important;padding:0 9px!important;margin:0!important;}
+#appShell #stockView .st-sheet td input:focus{outline:2px solid #1d1d1b!important;outline-offset:-2px;background:#fff!important;}
+#appShell #stockView .st-sheet td.st-barcode{width:160px;}
+#appShell #stockView .st-sheet td.st-mfgDate input{min-width:130px;}
+/* 칸 최소 폭(휴대폰에서 옆으로 넘겨 볼 때도 글자가 잘리지 않게) */
+#appShell #stockView .st-sheet td.st-code input{min-width:104px;}
+#appShell #stockView .st-sheet td.st-category input{min-width:96px;}
+#appShell #stockView .st-sheet td.st-name input{min-width:200px;}
+#appShell #stockView .st-sheet td.st-qty input{min-width:72px;}
+#appShell #stockView .st-sheet td.st-plu input{min-width:76px;}
+#appShell #stockView .st-sheet td.st-barcode input{min-width:140px;}
+#appShell #stockView .st-sheet td.st-location input{min-width:96px;}

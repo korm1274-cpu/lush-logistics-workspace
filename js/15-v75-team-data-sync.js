@@ -1,13 +1,13 @@
 /* <script id="v75-team-data-sync"> (index.html에서 그대로 옮김) */
 (function(){
   const TEAM_API='/api/team-data';
-  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',requestsDeleted:'lush_outbound_requests_deleted_v1',noticesDeleted:'lush-v51-notices-deleted',todosDeleted:'lush-v51-todos-deleted'};
+  const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',stock:'lush-stock-items-v1',requestsDeleted:'lush_outbound_requests_deleted_v1',noticesDeleted:'lush-v51-notices-deleted',todosDeleted:'lush-v51-todos-deleted'};
   /* 건(id)별로 합치는 목록과 그 '지운 id' 기록 키: 출고 요청·공지·제품 확보 */
   const MERGE_LISTS=[['requests','requestsDeleted'],['notices','noticesDeleted'],['todos','todosDeleted']];
   function readLocal(k){try{const a=JSON.parse(localStorage.getItem(k)||'[]');return Array.isArray(a)?a:[]}catch{return[]}}
   function readLocalObj(k,def){try{const v=JSON.parse(localStorage.getItem(k)||'null');return(v&&typeof v==='object'&&!Array.isArray(v))?v:def}catch{return def}}
   function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
-  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
+  function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),stock:readLocal(KEYS.stock),requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
   let pushTimer=null,pulling=false,applyingServer=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
@@ -85,13 +85,14 @@
          (예전에는 이런 건이 있으면 받은 내용을 반영하지 않고 넘어가서, 다른 기기에서 등록한 건이 바로 안 보였음) */
       const sd=Object.assign({},j.data);let needPush=false;
       {const ids=new Set((sd.defects||[]).map(d=>d&&d.id));const lo=readLocal(KEYS.defects).filter(d=>d&&d.id&&!ids.has(d.id));if(lo.length){sd.defects=(sd.defects||[]).concat(lo);needPush=true}}
+      {const ids=new Set((sd.stock||[]).map(d=>d&&d.id));const lo=readLocal(KEYS.stock).filter(d=>d&&d.id&&!ids.has(d.id));if(lo.length){sd.stock=(sd.stock||[]).concat(lo);needPush=true}}
       MERGE_LISTS.forEach(([k,dk])=>{
         const ids=new Set((sd[k]||[]).map(r=>r&&r.id)),del=new Set(sd[dk]||[]);
         const lo=readLocal(KEYS[k]).filter(r=>r&&r.id&&!ids.has(r.id)&&!del.has(r.id));
         if(lo.length){sd[k]=(sd[k]||[]).concat(lo);needPush=true}
       });
       const cur=JSON.stringify(snapshot());
-      const incoming=JSON.stringify({notices:sd.notices||[],todos:sd.todos||[],requests:sd.requests||[],productivity:serverProd,defects:sd.defects||[],requestsDeleted:sd.requestsDeleted||[],noticesDeleted:sd.noticesDeleted||[],todosDeleted:sd.todosDeleted||[]});
+      const incoming=JSON.stringify({notices:sd.notices||[],todos:sd.todos||[],requests:sd.requests||[],productivity:serverProd,defects:sd.defects||[],stock:sd.stock||[],requestsDeleted:sd.requestsDeleted||[],noticesDeleted:sd.noticesDeleted||[],todosDeleted:sd.todosDeleted||[]});
       if(cur!==incoming){
         applyingServer=true;
         try{
@@ -100,6 +101,7 @@
         localStorage.setItem(KEYS.requests,JSON.stringify(sd.requests||[]));
         localStorage.setItem(KEYS.productivity,JSON.stringify(serverProd));
         localStorage.setItem(KEYS.defects,JSON.stringify(sd.defects||[]));
+        localStorage.setItem(KEYS.stock,JSON.stringify(sd.stock||[]));
         localStorage.setItem(KEYS.requestsDeleted,JSON.stringify(sd.requestsDeleted||[]));
         localStorage.setItem(KEYS.noticesDeleted,JSON.stringify(sd.noticesDeleted||[]));
         localStorage.setItem(KEYS.todosDeleted,JSON.stringify(sd.todosDeleted||[]));
@@ -138,7 +140,7 @@
       }catch(e){}
     }
     origSetItem(k,v);
-    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects)pushTeamData();
+    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects||k===KEYS.stock)pushTeamData();
   };
   window.pullTeamData=pullTeamData;
   pullTeamData(true);

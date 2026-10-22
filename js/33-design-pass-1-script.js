@@ -15,7 +15,7 @@
   /* 재고·입고·트래픽·일정 화면 제목에도 같은 아이콘(메뉴 아이콘과 같은 모양) */
   var TITLE_ICONS={'총 재고파일':['package-search','#e3f5ec','#11795a'],'담당자 재고파일':['package-search','#e3f5ec','#11795a'],'품절 재고 분석':['package-minus','#fdecec','#c93838'],
     '입고':['package-plus','#fde7f0','#c2477a'],'월별 입고현황':['calendar-range','#fde7f0','#c2477a'],'일일 입고관리':['clipboard-list','#fde7f0','#c2477a'],'입고 상세조회':['search','#fde7f0','#c2477a'],
-    '트래픽 출고 요청':['signpost','#e3f5ec','#11795a'],'통합 일정':['calendar-days','#fff3d6','#9a6400'],'공지 등록':['megaphone','#fde7f0','#c2477a'],'제품 확보 등록':['package-check','#e3f5ec','#11795a'],'제품 불량':['package-x','#fdecec','#c93838'],'불량 등록':['clipboard-plus','#fdecec','#c93838'],'불량 목록':['list-checks','#fdecec','#c93838']};
+    '트래픽 출고 요청':['signpost','#e3f5ec','#11795a'],'통합 일정':['calendar-days','#fff3d6','#9a6400'],'공지 등록':['megaphone','#fde7f0','#c2477a'],'제품 확보 등록':['package-check','#e3f5ec','#11795a'],'제품 불량':['package-x','#fdecec','#c93838'],'재고':['boxes','#e3f5ec','#11795a'],'불량 등록':['clipboard-plus','#fdecec','#c93838'],'불량 목록':['list-checks','#fdecec','#c93838']};
   function addTitleIcon(h){
     if(h.querySelector('.ux-ico'))return;
     var key=h.textContent.trim(),m=TITLE_ICONS[key];

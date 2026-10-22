@@ -80,6 +80,18 @@ module.exports = async (req, res) => {
             body[key] = Array.from(byId.values()).filter(r => !deleted.has(r.id)).concat(noId);
             body[delKey] = Array.from(deleted).slice(-2000);
           });
+          // 재고(stock, 화면 '재고'): 제품 불량과 같이 건(id)별 병합, 삭제는 deleted 표시로 전달
+          if (Array.isArray(current.stock) && Array.isArray(body.stock)) {
+            const byId = new Map();
+            const put = d => {
+              if (!d || !d.id) return;
+              const prev = byId.get(d.id);
+              if (!prev || String(d.updatedAt || '') >= String(prev.updatedAt || '')) byId.set(d.id, d);
+            };
+            current.stock.forEach(put);
+            body.stock.forEach(put);
+            body.stock = Array.from(byId.values());
+          }
           if (Array.isArray(current.defects) && Array.isArray(body.defects)) {
             const byId = new Map();
             const put = d => {
