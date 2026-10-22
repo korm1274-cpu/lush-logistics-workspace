@@ -1,4 +1,4 @@
-const VERSION = 'lush-logistics-pwa-push-v7-icon';
+const VERSION = 'lush-logistics-pwa-push-v6';
 
 self.addEventListener('install', event => {
   self.skipWaiting();
@@ -26,8 +26,8 @@ self.addEventListener('push', event => {
   const title = data.title || 'LUSH Logistics';
   event.waitUntil(self.registration.showNotification(title, {
     body: data.body || '',
-    icon: './app-icon-v2.svg',
-    badge: './app-icon-v2.svg',
+    icon: './app-icon.svg',
+    badge: './app-icon.svg',
     tag: data.tag || undefined,
     data: { url: data.url || './' },
   }));

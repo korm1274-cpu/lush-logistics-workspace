@@ -27,7 +27,7 @@
   }
   function unsupportedMsg(){return isIOS&&!standalone()?'iPhone은 Safari에서 [홈 화면에 추가]로 설치한 LUSH Logistics 앱에서 알림을 허용할 수 있습니다.':'이 브라우저는 모바일 알림을 지원하지 않습니다.'}
 
-  var state='unknown'; // active | inactive | denied | unsupported | browser | logout
+  var state='unknown'; // active | inactive | denied | unsupported | logout
   var listeners=[];
   function setState(s){state=s;listeners.forEach(function(f){try{f(s)}catch(e){}})}
 
@@ -35,7 +35,6 @@
   function enable(){
     var u=currentUser();
     if(!u||!authInfo())return Promise.resolve({ok:false,msg:'먼저 LUSH Logistics에 로그인해 주세요.'});
-    if(!standalone()){setState('browser');return Promise.resolve({ok:false,msg:'알림은 설치된 LUSH Logistics 앱에서만 활성화할 수 있습니다.'})}
     if(!supported()){setState('unsupported');return Promise.resolve({ok:false,msg:unsupportedMsg()})}
     var perm=Notification.permission;
     var ask=perm==='default'?Notification.requestPermission():Promise.resolve(perm);
@@ -63,7 +62,6 @@
   // 앱 실행 때 상태 확인(권한 창은 띄우지 않음)
   function check(){
     if(!currentUser()||!authInfo()){setState('logout');return Promise.resolve(state)}
-    if(!standalone()){setState('browser');return Promise.resolve(state)}
     if(!supported()){setState('unsupported');return Promise.resolve(state)}
     if(Notification.permission==='denied'){setState('denied');return Promise.resolve(state)}
     if(Notification.permission!=='granted'){setState('inactive');return Promise.resolve(state)}
@@ -99,7 +97,7 @@
   function renderChip(){
     var chip=document.getElementById('pushStatusChip');if(!chip)return;
     var u=currentUser();
-    if(!u||state==='logout'||state==='unknown'||state==='browser'){chip.hidden=true;return}
+    if(!u||state==='logout'||state==='unknown'){chip.hidden=true;return}
     var on=state==='active';
     chip.hidden=false;chip.classList.toggle('on',on);chip.classList.toggle('off',!on);
     chip.innerHTML=(on?'🔔 알림 활성화':'🔕 알림 비활성')+' <i>|</i> '+esc(u.name||u.id);
@@ -112,7 +110,7 @@
     var denied=kind==='denied';
     m.innerHTML='<div class="push-modal-card">'+
       '<b class="push-modal-title">'+(denied?'🔕 모바일 알림이 꺼져 있습니다':'🔔 모바일 알림을 활성화해주세요')+'</b>'+
-      '<p>'+(denied?'알림이 차단되어 있어 신규 등록 알림을 받을 수 없습니다. 휴대폰 <b>설정 → 알림</b>에서 LUSH Logistics 알림을 허용해 주세요.':'팀 공지사항, 제품 확보 현황 및 출고 요청의 신규 등록 알림을 모바일에서 받을 수 있습니다.')+'</p>'+
+      '<p>'+(denied?'알림이 차단되어 있어 신규 등록 알림을 받을 수 없습니다.<br>휴대폰 <b>설정 → 알림</b>에서 LUSH Logistics(또는 사용 중인 브라우저)의 알림을 허용해 주세요.':'팀 공지사항, 제품 확보 현황 및<br>출고 요청 신규 등록 알림을<br>모바일에서 받을 수 있습니다.')+'</p>'+
       '<p class="push-modal-msg" hidden></p>'+
       '<div class="push-modal-actions">'+(denied?'<button type="button" class="push-btn primary" data-pm="close">확인</button>':'<button type="button" class="push-btn" data-pm="later">나중에</button><button type="button" class="push-btn primary" data-pm="allow">알림 허용</button>')+'</div></div>';
     m.addEventListener('click',function(e){
@@ -130,7 +128,6 @@
   // 다른 팝업(새로 등록된 내용 안내 등)이 떠 있으면 닫힌 뒤에 표시(최대 2분 기다림)
   function otherPopupOpen(){var n=document.getElementById('newItemsPopup');return !!(n&&!n.hidden&&getComputedStyle(n).display!=='none'&&n.getClientRects().length)||!!document.querySelector('#authScreen:not([hidden]),.au-modal')}
   function autoPrompt(tries){
-    if(!standalone())return; // 일반 Chrome/Safari에서는 알림 안내를 띄우지 않음
     if(!isMobile())return; // PC는 헤더 상태만 표시
     if(!(state==='inactive'&&supported()&&Notification.permission==='default')&&state!=='denied')return;
     if(otherPopupOpen()){if((tries||0)<120)setTimeout(function(){autoPrompt((tries||0)+1)},1000);return}
@@ -164,17 +161,11 @@
   function initInstall(){
     var btn=document.getElementById('pushEnableBtn'),out=document.getElementById('pushEnableStatus');if(!btn)return;
     var show=function(t,ok){if(out){out.textContent=t;out.className='push-status'+(ok===true?' ok':ok===false?' err':'')}};
-    var card=btn.closest('.notify-card');
-    if(!standalone()){
-      if(card)card.hidden=true;
-      return;
-    }
-    if(card)card.hidden=false;
     var refresh=function(){
       if(!currentUser()){show('앱에서 로그인한 뒤 이 화면을 다시 열어 주세요.',false);return}
       check().then(function(s){
         if(s==='active')show('✅ 알림이 활성화되어 있습니다. ('+(currentUser().name||currentUser().id)+')',true);
-        else if(s==='denied')show('알림이 차단되어 있습니다. 휴대폰 설정 → 알림에서 LUSH Logistics 알림을 허용해 주세요.',false);
+        else if(s==='denied')show('알림이 차단되어 있습니다. 휴대폰 설정 → 알림에서 허용해 주세요.',false);
         else if(s==='unsupported')show(unsupportedMsg(),false);
         else show('아래 [알림 허용]을 눌러 주세요.');
       });

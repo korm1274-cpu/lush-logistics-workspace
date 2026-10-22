@@ -33,8 +33,7 @@ module.exports = async (req, res) => {
     }
     if (action === 'subscribe' && req.method === 'POST') {
       const b = body(req);
-      if (b.standalone !== true) return res.status(200).json({ success: false, error: '알림은 설치된 LUSH Logistics 앱에서만 활성화할 수 있습니다.' });
-      const { sub } = await P.upsertSub(store, req, user, b.subscription, true);
+      const { sub } = await P.upsertSub(store, req, user, b.subscription, b.standalone);
       let test = null;
       if (b.test) test = await P.sendTo(store, [sub], { title: 'LUSH Logistics', body: '모바일 알림이 정상적으로 활성화되었습니다.', url: './', tag: 'lush-push-activated' });
       return res.status(200).json({ success: true, test });
@@ -58,7 +57,7 @@ module.exports = async (req, res) => {
     }
     if (action === 'devices') {
       const acc = await A.loadAccounts(store);
-      const list = (await P.listSubs(store)).filter(s => s.standalone === true).map(P.publicSub).map(s => ({ ...s, userName: (acc.users[s.userId] && acc.users[s.userId].name) || s.userId, userExists: !!acc.users[s.userId] }));
+      const list = (await P.listSubs(store)).map(P.publicSub).map(s => ({ ...s, userName: (acc.users[s.userId] && acc.users[s.userId].name) || s.userId, userExists: !!acc.users[s.userId] }));
       list.sort((a, b) => a.userId.localeCompare(b.userId) || String(b.createdAt).localeCompare(String(a.createdAt)));
       return res.status(200).json({ success: true, devices: list });
     }
@@ -74,7 +73,7 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: r.ok, error: r.error || '', done: r.done || null, results: r.results || (r.done && r.done.results) || [] });
     }
     if (action === 'users') {
-      const subs = (await P.listSubs(store)).filter(s => s.standalone === true), pwa = await P.pwaMap(store);
+      const subs = await P.listSubs(store), pwa = await P.pwaMap(store);
       const out = {};
       subs.forEach(s => { if (!s.lastError) out[s.userId] = out[s.userId] || { activeSubs: 0 }; if (!s.lastError) out[s.userId].activeSubs++; });
       Object.keys(pwa).forEach(id => { out[id] = { ...(out[id] || { activeSubs: 0 }), ...pwa[id] }; });
