@@ -102,7 +102,7 @@
 
   function recordPwa(){
     if(!mobileApp()||!authInfo())return;
-    try{if(sessionStorage.getItem('lush_pwa_recorded')==='1')return;sessionStorage.setItem('lush_pwa_recorded','1')}catch(e){}
+    try{if(sessionStorage.getItem('lush_pwa_mobile_recorded_v2')==='1')return;sessionStorage.setItem('lush_pwa_mobile_recorded_v2','1')}catch(e){}
     api('pwa',{at:Date.now(),standalone:true});
   }
 
