@@ -45,6 +45,19 @@
         return '<td class="st-'+f[0]+'"><input type="'+f[2]+'" data-f="'+f[0]+'" value="'+esc(v)+'"'+extra+(f[2]==='number'?' step="1" inputmode="numeric"':'')+' aria-label="'+f[1]+'"></td>';
       }).join('')+'<td class="st-manage"><button type="button" class="st-del" data-act="del" title="삭제" aria-label="삭제">삭제</button></td></tr>';
     }).join('');
+    fitCols();
+  }
+  /* 제품군·제품명 칸은 가장 긴 글자에 맞춰 넓힘(휴대폰에서도 잘리지 않게, 표는 옆으로 넘겨 봄) */
+  var FIT={category:96,name:200},ctx=null;
+  function fitCols(){
+    if(!$('stBody'))return;
+    Object.keys(FIT).forEach(function(f){
+      var ins=document.querySelectorAll('#stBody input[data-f="'+f+'"]');if(!ins.length)return;
+      ctx=ctx||document.createElement('canvas').getContext('2d');
+      var cs=getComputedStyle(ins[0]);ctx.font=cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily;
+      var w=FIT[f];ins.forEach(function(i){w=Math.max(w,Math.ceil(ctx.measureText(i.value).width)+(i.hasAttribute('list')?48:26))});
+      ins.forEach(function(i){i.style.minWidth=w+'px'});
+    });
   }
   function saveField(input){
     var tr=input.closest('tr'),id=tr&&tr.getAttribute('data-id');if(!id)return;
@@ -83,6 +96,7 @@
     $('stSearch').addEventListener('input',render);
     var body=$('stBody');
     body.addEventListener('change',function(e){var i=e.target.closest('input[data-f]');if(i)saveField(i)});
+    body.addEventListener('input',function(e){var f=e.target.getAttribute&&e.target.getAttribute('data-f');if(FIT[f])fitCols()});
     body.addEventListener('keydown',function(e){
       var i=e.target.closest('input[data-f]');if(!i||e.key!=='Enter')return;
       e.preventDefault();saveField(i);

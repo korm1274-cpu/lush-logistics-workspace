@@ -19,3 +19,7 @@
   #analysisDrillView .data-workbench-head{flex-wrap:wrap;}
   #analysisDrillView .ad-back{width:100%;margin-top:8px;}
 }
+/* 휴대폰: 오출고 분석 위쪽 설명 문구 숨김 */
+@media(max-width:900px){
+  #misshipAnalyticsView .data-workbench-head p,#misshipAnalyticsView .data-workbench>p{display:none!important}
+}

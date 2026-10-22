@@ -49,3 +49,10 @@
 #appShell #stockView .st-sheet td.st-plu input{min-width:76px;}
 #appShell #stockView .st-sheet td.st-barcode input{min-width:140px;}
 #appShell #stockView .st-sheet td.st-location input{min-width:96px;}
+/* 가운데 정렬: 제품명만 왼쪽, 나머지 칸(제목 포함)은 가운데 */
+#appShell #stockView .st-sheet thead th,#appShell #stockView .st-sheet thead th.num{text-align:center!important;}
+#appShell #stockView .st-sheet thead th:nth-child(3){text-align:left!important;}
+#appShell #stockView .st-sheet td input,#appShell #stockView .st-sheet td.st-qty input{text-align:center!important;}
+#appShell #stockView .st-sheet td.st-name input{text-align:left!important;}
+#appShell #stockView .st-sheet td.st-mfgDate input::-webkit-datetime-edit{justify-content:center;}
+#appShell #stockView .st-sheet td.st-mfgDate input::-webkit-date-and-time-value{text-align:center;}

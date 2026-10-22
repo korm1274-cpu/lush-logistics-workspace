@@ -189,7 +189,9 @@
 #appShell #dashboard .notice-main.n-open #dashNoticeText,#appShell #dashboard .notice-main.n-open #dashNoticeText2{-webkit-line-clamp:unset!important;line-clamp:unset!important;display:block!important;}
 @media (max-width:900px){#appShell #dashboard #dashNoticeText,#appShell #dashboard #dashNoticeText2{font-size:11px!important;}}
 #appShell #noticeManagerView .notice-note{display:block;margin-top:3px;font-size:12px;font-weight:500;color:#6b7684;white-space:pre-line;line-height:1.45;}
-#appShell #noticeManagerView #noticeMgrNote{min-height:40px;resize:vertical;line-height:1.45;}
+#appShell #noticeManagerView #noticeMgrNote{min-height:40px;resize:vertical;line-height:1.45;width:100%;box-sizing:border-box;}
+/* 휴대폰: 등록된 공지 제목이 한 줄로 고정돼 잘리던 것 → 줄바꿈 */
+#appShell #noticeMgrBody td:nth-child(2){white-space:normal!important;overflow-wrap:anywhere;}
 @media (min-width:901px){
   #appShell #noticeManagerView .box-entry-card{align-items:flex-start!important;}
   #appShell #noticeManagerView .box-entry-card .field input{height:40px!important;min-height:40px!important;box-sizing:border-box!important;}

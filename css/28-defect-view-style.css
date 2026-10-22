@@ -58,3 +58,27 @@
   #defectView .df-table tr.df-row-empty{border:0;background:none}
 }
 
+/* 휴대폰 카드 정리: 제품명을 맨 위 제목으로, 나머지는 [이름 | 값] 왼쪽 정렬, 빈 내용은 숨김, 목록 안쪽 스크롤 없앰 */
+@media(max-width:900px){
+  #appShell #defectView .data-table-wrap{max-height:none!important}
+  #appShell #defectView .df-table tr{gap:7px 12px;padding:12px 14px}
+  #appShell #defectView .df-table td{justify-content:flex-start;align-items:center;gap:6px;line-height:1.35;overflow-wrap:anywhere;text-align:left!important}
+  #appShell #defectView .df-table td::before{width:58px;font-size:12px;font-weight:700}
+  #appShell #defectView .df-table td:nth-child(7){order:-1;grid-column:1/-1;font-size:15px;font-weight:800;color:#1d1d1b;padding:0 0 7px!important;margin-bottom:2px;border-bottom:1px solid #f1ede4!important}
+  #appShell #defectView .df-table td:nth-child(7)::before{content:none}
+  #appShell #defectView .df-table td.df-note{display:flex;align-items:flex-start}
+  #appShell #defectView .df-table td.df-note:empty{display:none}
+  #appShell #defectView .df-table td.df-empty{justify-content:center}
+  #appShell #defectView .df-table td:nth-child(12),#appShell #defectView .df-table td:nth-child(13){order:1;padding-top:8px!important;margin-top:2px;border-top:1px solid #f1ede4!important}
+  #appShell #defectView .df-table td:nth-child(12){grid-column:1}
+  #appShell #defectView .df-table td:nth-child(13){justify-content:flex-end}
+  #appShell #defectView .df-table td:nth-child(13)::before{content:none}
+  #appShell #defectView .df-table .df-manage button{white-space:nowrap;padding:5px 12px}
+}
+/* 날짜 칸: 휴대폰(특히 아이폰)에서 날짜 글자가 위로 붙는 것 → 세로 가운데 */
+@media(max-width:900px){
+  #appShell .data-filter-row input[type="date"]{display:flex!important;align-items:center;line-height:normal!important}
+  #appShell .data-filter-row input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0;line-height:normal}
+  #appShell .data-filter-row input[type="date"]::-webkit-datetime-edit{padding:0;line-height:normal}
+}
+@supports (-webkit-touch-callout:none){@media(max-width:900px){#appShell .data-filter-row input[type="date"]{-webkit-appearance:none}}}
