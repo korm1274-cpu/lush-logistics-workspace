@@ -75,3 +75,8 @@
   #appShell #defectView .df-table td:nth-child(13)::before{content:none}
   #appShell #defectView .df-table .df-manage button{white-space:nowrap;padding:5px 12px}
 }
+/* 휴대폰 카드: 칸 높이 고정(38px) 때문에 긴 내용·LOT번호가 잘리고 아래 줄과 겹치던 것 → 내용만큼 늘어나게 */
+@media(max-width:900px){
+  #appShell #defectView .df-table td{height:auto!important;min-height:22px!important;max-height:none!important;overflow:visible!important;}
+  #appShell #defectView .df-table td.df-note{white-space:pre-wrap!important;word-break:break-word;line-height:1.5;}
+}
