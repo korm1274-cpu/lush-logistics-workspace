@@ -164,11 +164,12 @@
   function initInstall(){
     var btn=document.getElementById('pushEnableBtn'),out=document.getElementById('pushEnableStatus');if(!btn)return;
     var show=function(t,ok){if(out){out.textContent=t;out.className='push-status'+(ok===true?' ok':ok===false?' err':'')}};
+    var card=btn.closest('.notify-card');
     if(!standalone()){
-      var card=btn.closest('.notify-card');
       if(card)card.hidden=true;
       return;
     }
+    if(card)card.hidden=false;
     var refresh=function(){
       if(!currentUser()){show('앱에서 로그인한 뒤 이 화면을 다시 열어 주세요.',false);return}
       check().then(function(s){
