@@ -37,6 +37,18 @@
     var s=document.createElement('span');s.className='hero-sunrise';s.setAttribute('aria-hidden','true');s.innerHTML='<span class="hero-sun"></span>';
     hero.insertBefore(s,hero.firstChild);
   }
-  function init(){apply();sunrise();setTimeout(function(){apply();sunrise()},600);setTimeout(apply,2000)}
+  /* 현장 대시보드(floorBoard)도 메인 배너와 같은 시즌 장식: 새해는 해 뜨는 장면, 그 외 시즌은 떨어지는 장식 */
+  var FLAKE={halloween:'🦇',xmas:'❄',newyear:'✦',hanbok:'✿'};
+  function floorSeason(){
+    var season=document.documentElement.getAttribute('data-season')||'';
+    var board=document.getElementById('floorBoard');if(!board||!season||board.querySelector('.floor-season'))return;
+    var layer=document.createElement('div');layer.className='floor-season';layer.setAttribute('aria-hidden','true');
+    var html='';
+    if(season==='newyear')html+='<span class="floor-sun"></span>';
+    for(var i=0;i<18;i++)html+='<span class="season-flake" style="left:'+(Math.random()*100).toFixed(1)+'%;font-size:'+(11+Math.random()*12).toFixed(0)+'px;animation-duration:'+(9+Math.random()*10).toFixed(1)+'s;animation-delay:-'+(Math.random()*15).toFixed(1)+'s">'+(FLAKE[season]||'✦')+'</span>';
+    layer.innerHTML=html;
+    board.insertBefore(layer,board.firstChild);
+  }
+  function init(){apply();sunrise();floorSeason();setTimeout(function(){apply();sunrise();floorSeason()},600);setTimeout(apply,2000)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

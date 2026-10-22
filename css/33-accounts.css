@@ -124,3 +124,24 @@ html[data-season="newyear"] #appShell #dashboard .lush-hero{background:linear-gr
 @keyframes heroSunRise{from{transform:translateY(150px)}to{transform:translateY(0)}}
 @media (max-width:900px){.lush-hero .hero-sun{left:auto;right:6%;bottom:-70px;width:140px;height:140px;}}
 @media (prefers-reduced-motion:reduce){.lush-hero .hero-sun{animation:none;}}
+
+/* ===== 현장 대시보드: 메인 배너와 같은 시즌 장식 ===== */
+#appShell .floor-board{position:relative;overflow:hidden;}
+#appShell .floor-board>*:not(.floor-season){position:relative;z-index:1;}
+#appShell .floor-board .floor-season{position:absolute!important;inset:0;z-index:0!important;pointer-events:none;overflow:hidden;border-radius:inherit;}
+#appShell .floor-board .floor-season .season-flake{top:-20px;}
+html[data-season="halloween"] #appShell .floor-board{background:radial-gradient(circle at 92% 8%,rgba(255,128,0,.30) 0 140px,transparent 141px),radial-gradient(circle at 6% 92%,rgba(138,80,200,.28) 0 120px,transparent 121px),#1d1d1b!important;}
+html[data-season="xmas"] #appShell .floor-board{background:radial-gradient(circle at 92% 8%,rgba(214,56,56,.30) 0 140px,transparent 141px),radial-gradient(circle at 6% 92%,rgba(30,150,90,.28) 0 120px,transparent 121px),#1d1d1b!important;}
+html[data-season="hanbok"] #appShell .floor-board{background:radial-gradient(circle at 90% 10%,rgba(255,210,90,.30) 0 130px,transparent 131px),radial-gradient(circle at 8% 90%,rgba(232,123,164,.26) 0 120px,transparent 121px),#1d1d1b!important;}
+/* 새해: 새벽 하늘 + 트럭 길 뒤로 떠오르는 해와 햇살 */
+html[data-season="newyear"] #appShell .floor-board{background:linear-gradient(180deg,#1d1d1b 0%,#252136 45%,#55344e 72%,#c4624a 92%,#f0a050 100%)!important;}
+#appShell .floor-board .floor-sun{position:absolute;left:50%;bottom:-110px;width:340px;height:340px;margin-left:-170px;border-radius:50%;
+  background:radial-gradient(circle,#fff3c4 0 34%,#ffd46a 46%,#ffab3d 62%,rgba(255,150,60,0) 72%);box-shadow:0 0 120px 60px rgba(255,170,70,.32);
+  animation:floorSunRise 5s cubic-bezier(.2,.7,.2,1) both,auSunGlow 5s ease-in-out 5s infinite;}
+#appShell .floor-board .floor-season:has(.floor-sun)::before{content:"";position:absolute;left:50%;bottom:-560px;width:1200px;height:1200px;margin-left:-600px;border-radius:50%;
+  background:repeating-conic-gradient(rgba(255,214,120,.12) 0 6deg,transparent 6deg 18deg);animation:auRays 70s linear infinite;}
+@keyframes floorSunRise{from{transform:translateY(300px)}to{transform:translateY(0)}}
+@keyframes auSunGlow{0%,100%{box-shadow:0 0 120px 60px rgba(255,170,70,.32)}50%{box-shadow:0 0 150px 80px rgba(255,180,80,.42)}}
+@keyframes auRays{to{transform:rotate(360deg)}}
+@media (max-width:900px){#appShell .floor-board .floor-sun{width:220px;height:220px;margin-left:-110px;bottom:-80px;}}
+@media (prefers-reduced-motion:reduce){#appShell .floor-board .floor-sun,#appShell .floor-board .floor-season::before{animation:none;}}
