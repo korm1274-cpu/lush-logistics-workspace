@@ -186,7 +186,7 @@ async function runInitialTest(store, by) {
 }
 
 async function recordPwa(store, userId) {
-  await store.cmd(['HSET', PWA_KEY, userId, JSON.stringify({ pwaDetected: true, lastPwaAccessAt: new Date().toISOString() })]);
+  await store.cmd(['HSET', PWA_KEY, userId, JSON.stringify({ pwaDetected: true, mobileApp: true, lastPwaAccessAt: new Date().toISOString() })]);
 }
 async function pwaMap(store) {
   const arr = await store.cmd(['HGETALL', PWA_KEY]);
