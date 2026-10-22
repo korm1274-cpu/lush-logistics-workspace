@@ -48,7 +48,7 @@ async function saveSettings(store, input, by) {
 }
 
 const sidOf = endpoint => A.sha256(endpoint).slice(0, 24);
-const isMobileAppSub = s => !!(s && s.standalone === true && /^(Android|iPhone|iPad)(?:\\b|\\s*\\()/i.test(String(s.os || '')));
+const isMobileAppSub = s => !!(s && s.standalone === true && /^(Android|iPhone|iPad)(?:\b|\s*\()/i.test(String(s.os || '')));
 const isMobileRequest = req => /Android|iPhone|iPad|iPod/i.test(String((req.headers && req.headers['user-agent']) || ''));
 function safeDeviceId(v) {
   const id = String(v || '');
