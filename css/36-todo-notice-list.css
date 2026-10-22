@@ -1,0 +1,58 @@
+/* ===== 제품 확보 목록 · 등록된 공지: 러쉬 스타일 카드 목록 (PC·모바일 공통) ===== */
+#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding:24px 20px 20px!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#1baf7a;}
+#appShell #noticeManagerView [data-td-pane="list"]>.panel::before{background:#8a4fd1;}
+#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"] .panel-head{margin-bottom:14px!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"] .panel-head h3{font-size:17px!important;font-weight:900!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) .data-table-wrap{overflow:visible!important;border:0!important;background:none!important;box-shadow:none!important;padding:0!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) table.data-table{display:block!important;width:100%!important;min-width:0!important;border:0!important;background:none!important;}
+#appShell :is(#todoManagerView,#noticeManagerView) table.data-table thead{display:none!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody){display:grid!important;grid-template-columns:repeat(auto-fill,minmax(min(100%,440px),1fr));gap:12px;}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr{display:grid!important;align-items:center;column-gap:8px;row-gap:8px;padding:15px 16px!important;border:1.5px solid #ece6db!important;border-radius:14px!important;background:#fffdf9!important;transition:border-color .15s;}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr:hover{border-color:#1d1d1b!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr>td{display:block!important;height:auto!important;min-height:0!important;padding:0!important;border:0!important;background:none!important;min-width:0;text-align:left!important;white-space:normal;}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr>td[colspan]{grid-column:1/-1;text-align:center!important;color:#8b95a1;padding:18px 0!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr:has(td[colspan]){border-style:dashed!important;background:#faf8f4!important;}
+/* 작은 정보 칩 */
+#appShell :is(#todoMgrBody,#noticeMgrBody) .td-meta{display:inline-flex!important;align-items:center;gap:4px;width:max-content;max-width:100%;font-size:12px!important;font-weight:700;color:#5f5e5a!important;padding:3px 9px!important;border-radius:999px;background:#f3efe7!important;white-space:nowrap!important;}
+/* 관리 버튼(수정·삭제)과 상태 버튼 */
+#appShell :is(#todoMgrBody,#noticeMgrBody) td:last-child{display:flex!important;justify-content:flex-end;gap:6px;white-space:nowrap!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody) td .btn{height:30px!important;min-height:0!important;padding:0 12px!important;border-radius:999px!important;border:1px solid #e4ddd0!important;background:#fff!important;color:#4e5968!important;font-size:12px!important;font-weight:800!important;box-shadow:none!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody) td .btn:hover{border-color:#1d1d1b!important;color:#1d1d1b!important;}
+#appShell :is(#todoMgrBody,#noticeMgrBody) td .btn:is([data-todo-del],[data-notice-del]){color:#c93838!important;border-color:#f1d4d4!important;}
+#appShell #todoMgrBody td .btn[data-todo-toggle]{border:0!important;background:#fdecec!important;color:#c93838!important;}
+#appShell #todoMgrBody tr.td-done td .btn[data-todo-toggle]{background:#e3f5ec!important;color:#11795a!important;}
+/* 제품 확보 카드: [할 일 | 상태] / 내용 / [입고요청 · 등록일 | 수정 삭제] */
+#appShell #todoMgrBody>tr{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"title title title status" "note note note note" "in reg . act";}
+#appShell #todoMgrBody>tr>td:nth-child(3){grid-area:title;font-size:15px!important;font-weight:800;color:#1d1d1b;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere;}
+#appShell #todoMgrBody>tr>td:nth-child(4){grid-area:note;font-size:13px!important;color:#4e5968!important;line-height:1.5;white-space:pre-line!important;padding:9px 11px!important;border-radius:10px;background:#f6f3ec!important;}
+#appShell #todoMgrBody>tr>td:nth-child(4):empty{display:none!important;}
+#appShell #todoMgrBody>tr>td:nth-child(5){grid-area:status;justify-self:end;}
+#appShell #todoMgrBody>tr>td:nth-child(2){grid-area:in;}
+#appShell #todoMgrBody>tr>td:nth-child(2)::before{content:"입고요청";color:#8b95a1;}
+#appShell #todoMgrBody>tr>td:nth-child(1){grid-area:reg;display:inline-flex!important;}
+#appShell #todoMgrBody>tr>td:nth-child(1)::before{content:"등록";color:#8b95a1;}
+#appShell #todoMgrBody>tr>td:nth-child(6){grid-area:act;}
+#appShell #todoMgrBody>tr.td-done{background:#faf8f4!important;}
+#appShell #todoMgrBody>tr.td-done>td:nth-child(3){color:#8b95a1;text-decoration:line-through;text-decoration-color:#c3bfb6;}
+/* 공지 카드: 제목(+내용) / [등록일 · 작성자 | 수정 삭제] */
+#appShell #noticeMgrBody>tr{grid-template-columns:auto auto minmax(0,1fr) auto;grid-template-areas:"title title title title" "date author . act";}
+#appShell #noticeMgrBody>tr>td:nth-child(2){grid-area:title;font-size:15px!important;line-height:1.4;word-break:keep-all;overflow-wrap:anywhere;}
+#appShell #noticeMgrBody>tr>td:nth-child(2) b{font-weight:800;color:#1d1d1b;}
+#appShell #noticeMgrBody>tr>td:nth-child(2) .notice-note{margin-top:8px!important;padding:9px 11px;border-radius:10px;background:#f6f3ec;font-size:13px!important;color:#4e5968!important;}
+#appShell #noticeMgrBody>tr>td:nth-child(1){grid-area:date;}
+#appShell #noticeMgrBody>tr>td:nth-child(3){grid-area:author;}
+#appShell #noticeMgrBody>tr>td:nth-child(3):empty{display:none!important;}
+#appShell #noticeMgrBody>tr>td:nth-child(3)::before{content:"✎";color:#8b95a1;}
+#appShell #noticeMgrBody>tr>td:nth-child(4){grid-area:act;}
+@media (max-width:900px){
+  #appShell :is(#todoManagerView,#noticeManagerView) [data-td-pane="list"]>.panel{padding:20px 14px 14px!important;}
+  #appShell :is(#todoMgrBody,#noticeMgrBody){gap:10px;}
+  #appShell :is(#todoMgrBody,#noticeMgrBody)>tr{padding:13px 14px!important;}
+  #appShell #todoMgrBody>tr{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"title title status" "note note note" "in reg reg" "act act act";}
+  #appShell #noticeMgrBody>tr{grid-template-columns:auto auto minmax(0,1fr);grid-template-areas:"title title title" "date author author" "act act act";}
+  #appShell :is(#todoMgrBody,#noticeMgrBody) td:last-child{padding-top:8px!important;border-top:1px solid #f1ede4!important;}
+}
+#appShell :is(#todoMgrBody,#noticeMgrBody)>tr>td.td-hide{display:none!important;}
+#appShell #todoMgrBody>tr>td:nth-child(4),#appShell #noticeMgrBody>tr>td:nth-child(2){justify-self:stretch;width:auto!important;max-width:none!important;}
+#appShell #todoMgrBody>tr:has(>td.td-hide)>td:nth-child(1){grid-area:in;}
