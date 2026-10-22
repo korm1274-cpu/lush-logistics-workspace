@@ -1292,7 +1292,7 @@
     const caseDone=new Map(misshipCases(inRange).map(c=>[c.key,c.done]));
     const rows=inRange.filter(r=>{const isDone=caseDone.get(msCaseKey(r));return(!status||(status==='done'?isDone:!isDone))&&(!q||r.some(x=>String(x??'').toLowerCase().includes(q)))}).sort((a,b)=>String(b[0])>String(a[0])?1:String(b[0])<String(a[0])?-1:0);
     const cases=misshipCases(rows),done=cases.filter(c=>caseDone.get(c.key)).length;
-    $('mrCount').textContent=fmt(cases.length);$('mrDone').textContent=fmt(done);$('mrPending').textContent=fmt(cases.length-done);$('mrItems').textContent=`품목 ${fmt(rows.length)}줄`;
+    $('mrCount').textContent=fmt(cases.length);$('mrDone').textContent=fmt(done);$('mrPending').textContent=fmt(cases.length-done);if($('mrItems'))$('mrItems').textContent=`품목 ${fmt(rows.length)}줄`;
     $('mrUpdated').textContent=d.misship?.updatedAt?`마지막 연동: ${new Date(d.misship.updatedAt).toLocaleString('ko-KR')}`:'아직 연동된 데이터가 없습니다. 상단 동기화 버튼을 눌러주세요.';
     /* 접수시각은 날짜(년-월-일)까지만 표시 */
     const mrDateOnly=v=>{const s=String(v??'').trim(),m=s.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:s};
