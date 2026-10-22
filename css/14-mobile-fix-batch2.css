@@ -68,9 +68,9 @@
 }
 /* 휴대폰 날짜 칸(입고·출고·불량 등 전체): 아이폰에서 날짜 글자가 위로 붙는 것 → 높이 고정 대신 위아래 같은 여백으로 세로 가운데 */
 @media (max-width:900px){
-  #appShell input[type="date"],#appShell .view .data-filter-row .field>input[type="date"]{-webkit-appearance:none;appearance:none;height:auto!important;min-height:38px;padding-top:8px!important;padding-bottom:8px!important;line-height:20px!important;box-sizing:border-box;}
-  #appShell input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0;min-height:20px;line-height:20px;}
-  #appShell input[type="date"]::-webkit-datetime-edit{padding:0;line-height:20px;}
+  #appShell input:is([type="date"],[type="month"]),#appShell .view .data-filter-row .field>input:is([type="date"],[type="month"]){-webkit-appearance:none;appearance:none;height:auto!important;min-height:38px;padding-top:8px!important;padding-bottom:8px!important;line-height:20px!important;box-sizing:border-box;}
+  #appShell input:is([type="date"],[type="month"])::-webkit-date-and-time-value{text-align:left;margin:0;min-height:20px;line-height:20px;}
+  #appShell input:is([type="date"],[type="month"])::-webkit-datetime-edit{padding:0;line-height:20px;}
 }
 /* 휴대폰: 항목 카드 사이 빈공간을 모든 메뉴에서 12px로 통일(화면마다 붙어 있던 위·아래 여백을 걷어냄) */
 @media (max-width:900px){

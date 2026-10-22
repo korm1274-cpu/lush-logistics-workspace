@@ -33,3 +33,9 @@
   #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView) .data-kpis .kpi{padding:11px 12px 11px 14px!important;row-gap:3px;}
   #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView) .data-kpis .kpi>b{font-size:22px!important;}
 }
+/* 휴대폰 파손: 건수·금액 숫자 크기를 같게 줄여 큰 금액도 잘리지 않고 한 줄에 */
+@media (max-width:900px){
+  #appShell #damageAnalyticsView .data-kpis .kpi>b{font-size:16px!important;letter-spacing:-.03em;}
+  #appShell #damageAnalyticsView .data-kpis .kpi{column-gap:4px!important;}
+  #appShell #damageAnalyticsView .data-kpis .kpi>span{font-size:11px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+}
