@@ -71,7 +71,7 @@ window.ensureChart=function(){
       <div class="top-actions">
         <div class="base-tools" id="baseTools">
         <a class="base-tool" id="pwaInstallGuideBtn" href="./install.html" title="앱 설치 및 다운로드 안내" style="text-decoration:none;display:inline-flex;align-items:center">앱 설치</a>
-        <button type="button" class="base-tool" id="pwaTestNotifyBtn" title="PWA 테스트 알림">테스트 알림</button>
+        <button type="button" class="base-tool push-chip" id="pushStatusChip" hidden></button>
         <button type="button" class="base-tool" id="baseNoticeBtn" title="알림센터">🔔 <span class="base-count" id="baseNoticeCount">0</span></button>
         <button type="button" class="base-tool" id="baseSyncBtn" title="구글시트(입고·출고) 즉시 연동 후 팀 공유 데이터 새로고침">↻ 동기화</button>
       </div>
@@ -1555,12 +1555,12 @@ window.ensureChart=function(){
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
     <section id="settings" class="view">
-      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button></div>
+      <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button><button class="admin-tab" data-admin="push">푸시알림</button></div>
       <div id="admin-users" class="admin-section active">
         <div class="us-tabs" role="tablist"><button type="button" class="us-tab on" data-us="list">사용자 목록 <em id="acCount"></em></button><button type="button" class="us-tab" data-us="add">사용자 추가</button><button type="button" class="us-tab" data-us="logs">로그인 기록</button><button type="button" class="btn us-refresh" id="acRefresh">새로고침</button></div>
         <div class="us-pane" data-us-pane="list">
           <div class="admin-card us-card"><div class="us-card-head"><div><h3>사용자 목록</h3><p>역할 변경 · 사용 중지 · 비밀번호 초기화(1111) · 삭제를 할 수 있습니다.</p></div><input id="acSearch" class="us-search" placeholder="아이디 · 이름 검색"></div>
-            <div class="ac-scroll"><table class="ac-table"><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>상태</th><th>최근 로그인</th><th>만든 날</th><th>관리</th></tr></thead><tbody id="acBody"></tbody></table></div>
+            <div class="ac-scroll"><table class="ac-table"><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>상태</th><th>앱 설치</th><th>알림</th><th>마지막 앱 접속</th><th>관리</th></tr></thead><tbody id="acBody"></tbody></table></div>
           </div>
         </div>
         <div class="us-pane" data-us-pane="add" hidden>
@@ -1618,6 +1618,11 @@ window.ensureChart=function(){
             <div class="menu-permission-table-wrap"><table class="admin-table menu-permission-table"><thead><tr><th>메뉴</th><th>관리자</th><th>팀원</th><th>게스트</th></tr></thead><tbody id="permissionRows"></tbody></table></div>
           </div>
         </div>
+      </div>
+      <div id="admin-push" class="admin-section">
+        <div class="us-tabs push-tabs" role="tablist"><button type="button" class="us-tab on" data-pa="settings">푸시알림 설정</button><button type="button" class="us-tab" data-pa="devices">Push 등록 기기 <em id="paDevCount"></em></button></div>
+        <div data-pa-pane="settings"><div class="pa-card" id="paSettings"><p class="pa-empty">불러오는 중…</p></div><div class="pa-card" id="paInitial"></div></div>
+        <div data-pa-pane="devices" hidden><div class="pa-card"><div class="pa-card-head"><b>Push 등록 기기</b><button type="button" class="btn" id="paRefresh">새로고침</button></div><div class="ac-scroll"><table class="ac-table pa-table"><thead><tr><th>사용자</th><th>기기/OS</th><th>브라우저</th><th>상태</th><th>등록일</th><th>관리</th></tr></thead><tbody id="paDevBody"></tbody></table></div><p class="pa-note">기기 주소·암호 키 같은 값은 화면에 표시하지 않습니다. 삭제한 기기는 다음에 앱을 열 때 다시 등록될 수 있습니다.</p></div></div>
       </div>
       <div id="admin-conversion" class="admin-section">
         <div class="unit-conversion-shell">
@@ -1718,7 +1723,6 @@ window.ensureChart=function(){
 <script id="mobile-chart-legend" src="js/25-mobile-chart-legend.js"></script>
 <link rel="stylesheet" href="css/15-rq-list-layout.css">
 <script id="keep-view-on-reload" src="js/26-keep-view-on-reload.js"></script>
-<script src="js/27-pwa-notify.js"></script>
 
 <script src="js/28-sw-register.js"></script>
 
@@ -1764,9 +1768,12 @@ window.ensureChart=function(){
 <script src="js/49-accounts-view.js"></script>
 <script src="js/50-season-truck.js"></script>
 <script src="js/51-todo-tabs.js"></script>
+<script src="js/53-push.js"></script>
+<script src="js/54-push-admin.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">
 <link rel="stylesheet" href="css/37-notice-link.css">
+<link rel="stylesheet" href="css/38-push.css">
 </body>
 </html>

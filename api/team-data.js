@@ -58,9 +58,23 @@ module.exports = async (req, res) => {
       }
       // 화면 버전에 따라 일부 항목(예: 제품 불량 defects)을 모르고 올리는 경우가 있어,
       // 보낸 데이터에 없는 항목은 서버에 있던 값을 그대로 유지합니다.
+      const freshItems = []; // 모바일 Push: 서버에 없던 신규 id만(수정·상태 변경·삭제·재저장은 제외)
       try {
         const current = await kvGet();
         if (current && typeof current === 'object' && body && typeof body === 'object') {
+          try {
+            const recent = r => { const t = Date.parse(r.createdAt || r.date || ''); return isNaN(t) || Date.now() - t < 3 * 24 * 3600 * 1000; };
+            [['notices', 'noticesDeleted'], ['todos', 'todosDeleted'], ['requests', 'requestsDeleted']].forEach(([key, delKey]) => {
+              if (!Array.isArray(body[key]) || !Array.isArray(current[key])) return; // 서버에 목록 자체가 없으면(최초 저장) 보내지 않음
+              const had = new Set(current[key].map(r => r && r.id).filter(Boolean));
+              const gone = new Set([].concat(current[delKey] || [], body[delKey] || []));
+              body[key].forEach(r => {
+                if (!r || !r.id || had.has(r.id) || gone.has(r.id) || !recent(r)) return;
+                const kind = key === 'notices' ? 'notice' : key === 'todos' ? 'todo' : r.type;
+                freshItems.push({ kind, item: r });
+              });
+            });
+          } catch (e) { /* 신규 판정 실패는 저장에 영향 없음 */ }
           Object.keys(current).forEach(k => { if (!(k in body)) body[k] = current[k]; });
           // 제품 불량(defects)은 누적 기록: 여러 사람이 동시에 올려도 서로 지우지 않도록 건(id)별로 합칩니다.
           // 같은 건이면 updatedAt이 더 최근인 쪽을 남기고, 삭제는 deleted 표시로 전달됩니다.
@@ -115,6 +129,13 @@ module.exports = async (req, res) => {
         }
       } catch (e) { /* 병합 실패 시 받은 그대로 저장 */ }
       const ok = await kvSet(body);
+      // 저장이 끝난 신규 건만 자동 Push(관리자 설정·중복 확인은 api/_lib/push.js). 실패해도 저장 결과는 그대로
+      if (ok && freshItems.length) {
+        try {
+          const P = require('./_lib/push'), A = require('./_lib/auth');
+          await Promise.race([P.notifyNew(A.kv(), freshItems), new Promise(r => setTimeout(r, 7000))]);
+        } catch (e) { console.error('push notify error', e); }
+      }
       res.status(200).json({ success: ok });
       return;
     }

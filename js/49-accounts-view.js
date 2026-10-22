@@ -8,6 +8,7 @@
   var ACTION_NAME={login:'로그인',logout:'로그아웃','change-password':'비밀번호 변경',create:'사용자 추가',update:'사용자 수정','reset-password':'비밀번호 초기화',remove:'사용자 삭제',setup:'최초 관리자 설정'};
   var RESULT_NAME={success:'성공',fail:'실패',locked:'잠김',inactive:'중지 계정'};
   var users=[];
+  var pushUsers={}; // 사용자별 앱 설치(PWA 실행 기록)·알림(유효 구독 수)·마지막 앱 접속 — /api/push?action=users
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function when(iso){if(!iso)return'-';var d=new Date(iso);if(isNaN(d))return'-';var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())}
   function api(action,opts){return window.LUSH_AUTH.fetch(action,opts)}
@@ -20,8 +21,9 @@
   }
 
   function loadUsers(){
-    return api('users').then(function(j){
-      if(!j||!j.success){$('acBody').innerHTML='<tr><td colspan="7" class="ac-empty">'+esc((j&&j.error)||'불러오지 못했습니다.')+'</td></tr>';return}
+    var pushReq=fetch('/api/push?action=users',{headers:{Authorization:'Bearer '+((function(){try{return JSON.parse(localStorage.getItem('lush_auth_v1')||'null').token}catch(e){return ''}})())}}).then(function(r){return r.json()}).then(function(j){pushUsers=(j&&j.success&&j.users)||{}}).catch(function(){pushUsers={}});
+    return Promise.all([api('users'),pushReq]).then(function(rs){var j=rs[0];
+      if(!j||!j.success){$('acBody').innerHTML='<tr><td colspan="8" class="ac-empty">'+esc((j&&j.error)||'불러오지 못했습니다.')+'</td></tr>';return}
       users=j.users||[];renderUsers();renderLogFilter();
     });
   }
@@ -35,11 +37,17 @@
         '<td>'+esc(u.name)+'</td>'+
         '<td><select data-act="role"'+(u.id===me?' disabled title="본인 역할은 바꿀 수 없습니다"':'')+'>'+['admin','member','guest'].map(function(r){return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+ROLE_NAME[r]+'</option>'}).join('')+'</select></td>'+
         '<td>'+(u.active?'<span class="ac-badge on">사용 중</span>':'<span class="ac-badge off">중지</span>')+(u.mustChange?' <span class="ac-badge temp">임시 비밀번호</span>':'')+'</td>'+
-        '<td class="ac-when">'+when(u.lastLoginAt)+'</td>'+
-        '<td class="ac-when">'+when(u.createdAt)+'</td>'+
+        pushCells(u.id)+
         '<td class="ac-manage">'+(u.id===me?'<span class="ac-self">본인 비밀번호는 오른쪽 위 프로필에서 변경</span>':'<button type="button" data-act="reset">비밀번호 초기화</button><button type="button" data-act="active">'+(u.active?'사용 중지':'다시 사용')+'</button><button type="button" data-act="remove" class="del">삭제</button>')+'</td>'+
       '</tr>';
-    }).join(''):'<tr><td colspan="7" class="ac-empty">'+(users.length?'검색 결과가 없습니다.':'사용자가 없습니다.')+'</td></tr>';
+    }).join(''):'<tr><td colspan="8" class="ac-empty">'+(users.length?'검색 결과가 없습니다.':'사용자가 없습니다.')+'</td></tr>';
+  }
+  // 앱 설치: PWA(설치한 앱)로 실행한 기록 있음→설치 완료 / 알림: 유효 구독 1개 이상→활성, 설치 기록만 있으면 비활성, 둘 다 없으면 -
+  function pushCells(id){
+    var p=pushUsers[id]||{},installed=!!p.pwaDetected,active=(p.activeSubs||0)>0;
+    var app=installed?'<span class="ac-badge on">설치 완료</span>':'<span class="ac-muted">미확인</span>';
+    var noti=active?'<span class="ac-badge on">활성</span>'+(p.activeSubs>1?' <small class="ac-muted">'+p.activeSubs+'대</small>':''):installed?'<span class="ac-badge off">비활성</span>':'<span class="ac-muted">-</span>';
+    return '<td>'+app+'</td><td>'+noti+'</td><td class="ac-when">'+(p.lastPwaAccessAt?when(p.lastPwaAccessAt):'-')+'</td>';
   }
   function renderLogFilter(){
     var sel=$('acLogUser'),cur=sel.value;
