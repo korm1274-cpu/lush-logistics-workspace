@@ -117,7 +117,7 @@ async function notifyNew(store, items) {
   if (!targets.length) return { sent: 0, skipped: 'type-off' };
   // 사용 중인 계정에 연결된 기기만
   const acc = await A.loadAccounts(store);
-  const subs = (await listSubs(store)).filter(s => acc.users[s.userId] && acc.users[s.userId].active !== false);
+  const subs = (await listSubs(store)).filter(s => s.standalone === true && acc.users[s.userId] && acc.users[s.userId].active !== false);
   let sent = 0;
   for (const { kind, item } of targets.slice(0, 10)) { // 한 번 저장에 최대 10건
     const fresh = await store.cmd(['SET', `${SENT_PREFIX}${kind}:${item.id}`, '1', 'NX', 'EX', String(SENT_TTL_SEC)]);
@@ -141,7 +141,7 @@ async function runInitialTest(store, by) {
   if (lock !== 'OK') return { ok: false, error: '다른 관리자가 초기 검증을 실행 중입니다. 잠시 후 다시 확인해 주세요.' };
   try {
     const acc = await A.loadAccounts(store);
-    const subs = (await listSubs(store)).filter(s => acc.users[s.userId] && acc.users[s.userId].active !== false);
+    const subs = (await listSubs(store)).filter(s => s.standalone === true && acc.users[s.userId] && acc.users[s.userId].active !== false);
     if (!subs.length) return { ok: false, error: '알림을 허용한 기기가 없어 실행하지 않았습니다. 먼저 휴대폰에서 알림을 허용해 주세요.' };
     const data = (await store.getJSON('lush_team_data_v1')) || {};
     const stamp = r => String((r && (r.createdAt || r.updatedAt || r.date)) || '');
