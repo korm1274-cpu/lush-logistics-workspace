@@ -144,3 +144,10 @@ html.auth-pending body{overflow:hidden;}
 #authScreen[data-season="newyear"] .au-scene::after{background:#2a1d1f;}
 @media (max-width:900px){#authScreen .au-sun{width:170px;height:170px;margin-left:-85px;left:66%;}}
 @media (prefers-reduced-motion:reduce){#authScreen .au-sun,#authScreen .au-sunrise::before{animation:none;}}
+/* 로그인 왼쪽 위 로고: 메인과 같은 바디스프레이 아이콘, 흰 칸은 옆 LUSH 글자 높이에 맞춤 */
+#authScreen .au-logo-mark{width:28px!important;height:28px!important;border-radius:7px!important;flex:0 0 auto;}
+#authScreen .au-logo-mark svg{width:18px;height:18px;}
+@media (max-width:900px){
+  #authScreen .au-logo-mark{width:24px!important;height:24px!important;border-radius:6px!important;}
+  #authScreen .au-logo-mark svg{width:16px;height:16px;}
+}

@@ -53,7 +53,7 @@
     newyear:{tag:'HAPPY NEW YEAR',title:'새해에도<br>안전하게, 정확하게',cargo:'☀️',deco:['✨','✦','✨','✦','✨','✦']},
     default:{tag:'LUSH LOGISTICS',title:'오늘의 물류를<br>신선하게 연결합니다',cargo:'📦',deco:[]}
   };
-  var LOGO='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.2 13.2c0-1.5.9-2.4 2.3-2.8V9.3h3.4v1.1c1.4.4 2.3 1.3 2.3 2.8v6.1c0 1-.8 1.8-1.8 1.8h-4.4c-1 0-1.8-.8-1.8-1.8z"/><path d="M10.5 9.3V6.8h3.4v2.5"/><path d="M11.3 6.8V4.6h1.8v2.2"/><path d="M13.1 4.6h2.6"/></svg>';
+  var LOGO='<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.2 13.2c0-1.5.9-2.4 2.3-2.8V9.3h3.4v1.1c1.4.4 2.3 1.3 2.3 2.8v7.6c0 .9-.7 1.6-1.6 1.6H9.8c-.9 0-1.6-.7-1.6-1.6z"/><path d="M10.4 20.4v-4.6a1.8 1.8 0 0 1 3.6 0v4.6z"/><path d="M10.9 9.3V6.6h4.2V4.1c0-.9-.7-1.6-1.6-1.6H7.2c-.6 0-1 .4-1 1v.9c0 .6.4 1 1 1h3.7"/><path d="M10.9 5.4v1.2"/><path d="M13.7 9.3V6.6"/><path d="M10.9 6.6c-2.1.2-3.3 1.7-3.6 4.1"/></svg>';
 
   var screen=null;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
