@@ -1,0 +1,39 @@
+/* ===== 통합 일정 달력: 일정 목록은 그대로, 보기만 깔끔하게 =====
+   색 바탕·굵은 왼쪽 띠 대신 작은 색 점 + 진한 회색 글씨, 줄 간격 일정하게 */
+#appShell #scheduleManagerView#scheduleManagerView .master-day-events{gap:1px!important;margin-top:4px;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event{
+  display:flex!important;align-items:center!important;gap:6px!important;
+  background:transparent!important;border:0!important;border-radius:6px!important;
+  padding:3px 4px!important;min-height:22px;
+  font-size:12px!important;font-weight:600!important;line-height:1.35!important;color:#33332f!important;
+}
+#appShell #scheduleManagerView#scheduleManagerView .master-event::before{content:"";flex:none;width:7px;height:7px;border-radius:50%;background:#2f6fd6;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event .event-title{font-weight:600!important;color:inherit!important;}
+#appShell #scheduleManagerView#scheduleManagerView button.master-event:hover,#appShell #scheduleManagerView#scheduleManagerView .master-event:hover{background:#f4f2ed!important;}
+/* 종류별 점 색: 수입(입고) 주황 · 출고 초록 · 연차·반차·외근·건강검진 파랑 · 휴일 회색 */
+#appShell #scheduleManagerView#scheduleManagerView .master-event.import-src::before{background:#e07a1f;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event.import-outbound::before{background:#1f9a55;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event.import-leave::before,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.annual::before,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.half_am::before,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.half_pm::before,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.field::before,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.checkup::before{background:#2f6fd6;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event.holiday{color:#d64545!important;font-weight:700!important;}
+#appShell #scheduleManagerView#scheduleManagerView .master-event.holiday::before{background:#d64545;}
+/* 연차류는 한 단계 옅게 → 입고·출고가 먼저 눈에 들어오게 */
+#appShell #scheduleManagerView#scheduleManagerView .master-event.import-leave,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.annual,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.half_am,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.half_pm,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.field,
+#appShell #scheduleManagerView#scheduleManagerView .master-event.checkup{color:#5c6670!important;font-weight:500!important;}
+/* 더 있음 표시 */
+#appShell #scheduleManagerView#scheduleManagerView .master-more{font-size:11px!important;font-weight:700!important;color:#8a8a85!important;padding:2px 4px 0 17px!important;}
+/* 범례 점 색도 같은 색으로 */
+#appShell #scheduleManagerView#scheduleManagerView .master-calendar-legend .legend-dot{width:8px!important;height:8px!important;}
+@media (max-width:900px){
+  #appShell #scheduleManagerView#scheduleManagerView .master-event{font-size:11px!important;padding:2px 3px!important;gap:4px!important;min-height:18px;}
+  #appShell #scheduleManagerView#scheduleManagerView .master-event::before{width:6px;height:6px;}
+  #appShell #scheduleManagerView#scheduleManagerView .master-more{padding-left:13px!important;font-size:10.5px!important;}
+}
