@@ -64,7 +64,7 @@
   .m-chart-legend.m-chart-focus button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
   .m-chart-legend.m-chart-focus button.dim{opacity:.55;}
   .m-chart-legend.m-chart-focus .m-chart-hint{flex:1 0 100%;font-size:11px;color:#8b95a1;margin-top:2px;}
-  #inboundAnalysis div:has(> #inCatTrendCanvas){height:300px!important;}
+  #inboundAnalysis div:has(> #inCatTrendCanvas),#outboundAnalysis div:has(> #outCatTrendCanvas){height:300px!important;}
 }
 /* 휴대폰 날짜 칸(입고·출고·불량 등 전체): 아이폰에서 날짜 글자가 위로 붙는 것 → 높이 고정 대신 위아래 같은 여백으로 세로 가운데 */
 @media (max-width:900px){

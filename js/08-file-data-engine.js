@@ -1030,6 +1030,8 @@
         borderWidth:2.5,tension:0.25,pointRadius:3,pointHoverRadius:5,fill:false
       };
     });
+    // 휴대폰: 선이 많아 겹치므로 최고·최저 숫자는 범례에서 고른 제품군만 표시
+    const mob=!!(window.matchMedia&&window.matchMedia('(max-width:900px)').matches);
     const pointLabelPlugin={
       id:'pointLabelPluginOut',
       afterDatasetsDraw(chart){
@@ -1037,6 +1039,7 @@
         chart.data.datasets.forEach((ds,di)=>{
           const meta=chart.getDatasetMeta(di);
           if(meta.hidden)return;
+          if(mob&&chart.$focus!==di)return;
           const vals=ds.data;
           const maxV=Math.max(...vals),minV=Math.min(...vals);
           const maxIdx=vals.indexOf(maxV),minIdx=vals.indexOf(minV);
@@ -1064,15 +1067,15 @@
         interaction:{mode:'index',intersect:false},
         plugins:{
           legend:(window.matchMedia&&window.matchMedia('(max-width:900px)').matches)?{display:false}:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14}},
-          tooltip:{enabled:true}
+          tooltip:{enabled:true,itemSort:(a,b)=>b.parsed.y-a.parsed.y,filter:it=>!mob||it.chart.$focus==null||it.datasetIndex===it.chart.$focus}
         },
         scales:{
-          y:{beginAtZero:true,ticks:{font:{size:10}}},
-          x:{ticks:{font:{size:11}}}
+          y:{beginAtZero:true,ticks:{font:{size:10},callback:v=>mob&&Math.abs(v)>=1000?(Math.round(v/100)/10)+'k':fmt(v)}},
+          x:{ticks:{font:{size:11},maxRotation:0,autoSkip:true}}
         }
       }
     });
-    window.__mobileChartLegend&&window.__mobileChartLegend(window.__outCatChart,canvas);
+    window.__mobileChartLegend&&window.__mobileChartLegend(window.__outCatChart,canvas,{focus:true});
   }
   function renderOutbound(){
     if(!$('outAnaBody'))return;
