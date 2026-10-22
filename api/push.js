@@ -84,7 +84,7 @@ module.exports = async (req, res) => {
       const subs = (await P.listSubs(store)).filter(P.isMobileAppSub), pwa = await P.pwaMap(store);
       const out = {};
       subs.forEach(s => { out[s.userId] = out[s.userId] || { activeSubs: 0 }; if (!s.lastError && s.appPermission === 'granted') out[s.userId].activeSubs++; });
-      Object.keys(pwa).forEach(id => { out[id] = { ...(out[id] || { activeSubs: 0 }), ...pwa[id] }; });
+      Object.keys(pwa).forEach(id => { if (pwa[id] && pwa[id].mobileApp === true) out[id] = { ...(out[id] || { activeSubs: 0 }), ...pwa[id] }; });
       return res.status(200).json({ success: true, users: out });
     }
     return res.status(400).json({ success: false, error: '알 수 없는 요청입니다.' });
