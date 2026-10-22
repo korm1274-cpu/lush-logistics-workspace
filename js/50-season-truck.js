@@ -4,7 +4,7 @@
   var THEME={
     halloween:{cab:'#ff7a1a',stripe:'#8a4fd1',cargo:'🎃',tail:'🦇'},
     xmas:{cab:'#d6453d',stripe:'#1f8a50',cargo:'🎁',tail:'❄️'},
-    newyear:{cab:'#d4a017',stripe:'#e87ba4',cargo:'🎉',tail:'✨'},
+    newyear:{cab:'#d4a017',stripe:'#e8894a',cargo:'☀️',tail:'✨'},
     hanbok:{cab:'#c2477a',stripe:'#eda100',cargo:'🌕',tail:''},
     '':{cab:'#e87ba4',stripe:'#1baf7a',cargo:'',tail:''}
   };
@@ -30,6 +30,13 @@
         (t.cargo?'<span class="st-cargo">'+t.cargo+'</span>':'')+(t.tail?'<span class="st-tail">'+t.tail+'</span>':'');
     });
   }
-  function init(){apply();setTimeout(apply,600);setTimeout(apply,2000)}
+  /* 새해: 메인 배너 뒤로 해가 떠오르는 장면 */
+  function sunrise(){
+    if(document.documentElement.getAttribute('data-season')!=='newyear')return;
+    var hero=document.querySelector('#dashboard .lush-hero');if(!hero||hero.querySelector('.hero-sunrise'))return;
+    var s=document.createElement('span');s.className='hero-sunrise';s.setAttribute('aria-hidden','true');s.innerHTML='<span class="hero-sun"></span>';
+    hero.insertBefore(s,hero.firstChild);
+  }
+  function init(){apply();sunrise();setTimeout(function(){apply();sunrise()},600);setTimeout(apply,2000)}
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();

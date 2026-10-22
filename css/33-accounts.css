@@ -114,3 +114,13 @@ html.role-guest #appShell #dashboard [data-dash-todo-toggle],html.role-guest #ap
 @media (prefers-reduced-motion:reduce){.hero-truck .st-cargo,.hero-truck .st-tail{animation:none;}}
 /* 어두운 화면: 트럭 색이 반전되지 않게(짐칸 흰색·시즌 색 유지) */
 html.ux-dark #appShell .main .hero-truck.st-truck{filter:none!important;}
+
+/* ===== 새해: 메인 배너 뒤로 해 뜨는 장면 ===== */
+html[data-season="newyear"] #appShell #dashboard .lush-hero{background:linear-gradient(180deg,#1d1d1b 0%,#2a2338 55%,#6a3a4a 82%,#c9704c 100%)!important;}
+.lush-hero .hero-sunrise{position:absolute!important;inset:0;z-index:0!important;pointer-events:none;overflow:hidden;border-radius:inherit;}
+.lush-hero .hero-sun{position:absolute;left:44%;bottom:-96px;width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,#fff3c4 0 34%,#ffd46a 46%,#ffab3d 62%,rgba(255,150,60,0) 72%);box-shadow:0 0 70px 30px rgba(255,170,70,.3);
+  animation:heroSunRise 4s cubic-bezier(.2,.7,.2,1) both;}
+@keyframes heroSunRise{from{transform:translateY(150px)}to{transform:translateY(0)}}
+@media (max-width:900px){.lush-hero .hero-sun{left:auto;right:6%;bottom:-70px;width:140px;height:140px;}}
+@media (prefers-reduced-motion:reduce){.lush-hero .hero-sun{animation:none;}}

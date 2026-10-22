@@ -50,7 +50,7 @@
   var SEASON={
     halloween:{tag:'HAPPY HALLOWEEN',title:'오늘도 무사히,<br>트릭 없이 출고 완료!',cargo:'🎃',deco:['🎃','🦇','🍬','🕸️','🦇','🎃']},
     christmas:{tag:'MERRY CHRISTMAS',title:'산타보다 빠른<br>러쉬 물류팀',cargo:'🎁',deco:['❄️','🎄','❄️','⭐','❄️','🎁']},
-    newyear:{tag:'HAPPY NEW YEAR',title:'새해에도<br>안전하게, 정확하게',cargo:'🎉',deco:['✨','🎉','✨','🧧','✨','🎊']},
+    newyear:{tag:'HAPPY NEW YEAR',title:'새해에도<br>안전하게, 정확하게',cargo:'☀️',deco:['✨','✦','✨','✦','✨','✦']},
     default:{tag:'LUSH LOGISTICS',title:'오늘의 물류를<br>신선하게 연결합니다',cargo:'📦',deco:[]}
   };
   var LOGO='<svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8.2 13.2c0-1.5.9-2.4 2.3-2.8V9.3h3.4v1.1c1.4.4 2.3 1.3 2.3 2.8v6.1c0 1-.8 1.8-1.8 1.8h-4.4c-1 0-1.8-.8-1.8-1.8z"/><path d="M10.5 9.3V6.8h3.4v2.5"/><path d="M11.3 6.8V4.6h1.8v2.2"/><path d="M13.1 4.6h2.6"/></svg>';
@@ -64,7 +64,7 @@
     screen.innerHTML=
       '<div class="au-brand">'+
         '<div class="au-deco" aria-hidden="true">'+S.deco.map(function(e,i){return '<span style="--i:'+i+'">'+e+'</span>'}).join('')+'</div>'+
-        (s==='christmas'?'<div class="au-snow" aria-hidden="true"></div>':'')+(s==='newyear'?'<div class="au-confetti" aria-hidden="true"></div>':'')+
+        (s==='christmas'?'<div class="au-snow" aria-hidden="true"></div>':'')+(s==='newyear'?'<div class="au-sunrise" aria-hidden="true"><span class="au-sun"></span></div>':'')+
         '<div class="au-logo"><span class="au-logo-mark">'+LOGO+'</span><b>LUSH</b><small>LOGISTICS WORKSPACE</small></div>'+
         '<div class="au-copy"><span class="au-tag">'+S.tag+'</span><h1>'+S.title+'</h1><p>입고 · 출고 · 재고 · 일정을 한 곳에서.</p></div>'+
         '<div class="au-scene" aria-hidden="true"><div class="au-pallet"><i></i><i></i><i></i></div><div class="au-truck"><div class="au-cargo">'+S.cargo+'</div><div class="au-box-load"></div><div class="au-cab"></div><span class="au-wheel w1"></span><span class="au-wheel w2"></span></div><div class="au-road"></div></div>'+

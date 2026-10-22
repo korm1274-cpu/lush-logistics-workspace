@@ -127,3 +127,20 @@ html.auth-pending body{overflow:hidden;}
   #authScreen .au-scene{margin:0 -18px!important;}
 }
 @media (min-width:901px){#authScreen .au-copy{transform:translateY(23px);}}
+
+/* ===== 새해: 해 뜨는 장면 (색종이 대신) ===== */
+#authScreen[data-season="newyear"] .au-brand{background:linear-gradient(180deg,#1d1d1b 0%,#262238 38%,#5a3550 62%,#c4624a 84%,#f0a050 100%)!important;}
+#authScreen .au-sunrise{position:absolute;left:0;right:0;bottom:0;height:62%;z-index:0;pointer-events:none;overflow:hidden;}
+#authScreen .au-sun{position:absolute;left:58%;bottom:8px;width:260px;height:260px;margin-left:-130px;border-radius:50%;
+  background:radial-gradient(circle at 50% 50%,#fff3c4 0 34%,#ffd46a 46%,#ffab3d 62%,rgba(255,150,60,0) 72%);
+  box-shadow:0 0 90px 40px rgba(255,170,70,.35);animation:auSunRise 4.5s cubic-bezier(.2,.7,.2,1) both,auSunGlow 5s ease-in-out 4.5s infinite;}
+#authScreen .au-sunrise::before{content:"";position:absolute;left:58%;bottom:-260px;width:900px;height:900px;margin-left:-450px;border-radius:50%;
+  background:repeating-conic-gradient(rgba(255,214,120,.16) 0 6deg,transparent 6deg 18deg);animation:auRays 60s linear infinite,auFadeIn 3s ease 1.5s both;}
+@keyframes auSunRise{0%{transform:translateY(240px);opacity:.6}100%{transform:translateY(0);opacity:1}}
+@keyframes auSunGlow{0%,100%{box-shadow:0 0 90px 40px rgba(255,170,70,.35)}50%{box-shadow:0 0 120px 60px rgba(255,180,80,.45)}}
+@keyframes auRays{to{transform:rotate(360deg)}}
+@keyframes auFadeIn{from{opacity:0}to{opacity:1}}
+#authScreen[data-season="newyear"] .au-copy p{color:#f3e2d6;}
+#authScreen[data-season="newyear"] .au-scene::after{background:#2a1d1f;}
+@media (max-width:900px){#authScreen .au-sun{width:170px;height:170px;margin-left:-85px;left:66%;}}
+@media (prefers-reduced-motion:reduce){#authScreen .au-sun,#authScreen .au-sunrise::before{animation:none;}}
