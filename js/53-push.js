@@ -165,8 +165,8 @@
     var btn=document.getElementById('pushEnableBtn'),out=document.getElementById('pushEnableStatus');if(!btn)return;
     var show=function(t,ok){if(out){out.textContent=t;out.className='push-status'+(ok===true?' ok':ok===false?' err':'')}};
     if(!standalone()){
-      btn.hidden=true;
-      show('알림 설정은 설치한 LUSH Logistics 앱에서만 진행됩니다. 앱 설치 후 홈 화면의 LUSH Logistics를 실행해 주세요.');
+      var card=btn.closest('.notify-card');
+      if(card)card.hidden=true;
       return;
     }
     var refresh=function(){
