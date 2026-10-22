@@ -41,7 +41,7 @@ jobs:
           python3 - <<'PY'
           import re
           text=open('/tmp/lush-permissions.txt').read()
-          permissions=set(re.findall(r'android\\.permission\\.[A-Z_]+', text))
+          permissions=set(re.findall(r'android\.permission\.[A-Z_]+', text))
           if permissions != {'android.permission.INTERNET'}:
               raise SystemExit(f'Unexpected APK permissions: {sorted(permissions)}')
           PY
