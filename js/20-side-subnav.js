@@ -123,7 +123,7 @@
   window.renderNav=renderNav=function(){var r=origRenderNav.apply(this,arguments);patchTopTabs();render();return r};
 
   /* 메인 화면 테마는 메인(대시보드)을 보고 있을 때만 적용 */
-  var LUSH_THEME_VIEWS=['sheetView','outboundBasicView','outboundAnalysis','outboundBoxView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView','defectView','stockView','accountsView'];
+  var LUSH_THEME_VIEWS=['sheetView','outboundBasicView','outboundAnalysis','outboundBoxView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','inboundBasicView','inboundMonthlyView','inboundDailyView','inboundAnalysis','outboundRequestManager','misshipRecordsView','damageAnalyticsView','misshipAnalyticsView','damageInsightView','scheduleManagerView','noticeManagerView','todoManagerView','defectView','stockView','accountsView','analysisDrillView'];
   var syncDashTheme=function(){var a=document.querySelector('.view.active');shell.classList.toggle('on-dashboard',!!a&&a.id==='dashboard');shell.classList.toggle('on-lush',!!a&&LUSH_THEME_VIEWS.indexOf(a.id)>=0);if(a&&a.id==='dashboard'&&window.updateLushHero)window.updateLushHero()};
   var origActivate2=activateMenu;
   window.activateMenu=activateMenu=function(){try{return origActivate2.apply(this,arguments)}finally{syncDashTheme()}};

@@ -1816,6 +1816,64 @@
     });
     window.renderInboundDailyView?.();window.renderInboundMonthlyView?.()
   }
+  /* ===== 분석 상세 목록: 오출고 분석·파손 분석에서 항목(담당자·사유·매장 등)을 누르면 그 항목의 기록만 모아 보여 주는 페이지 =====
+     건수는 분석 화면과 같은 기준(오출고=접수일+매장, 파손=기안 단위)으로 세고, 기간도 분석 화면의 기준월(비우면 전체 기간)을 따름 */
+  let drillBackView='';
+  function openDrill(o){
+    drillBackView=o.back;
+    $('adEyebrow').textContent=o.eyebrow;
+    $('adTitle').textContent=o.title;
+    $('adSub').textContent=o.sub;
+    $('adBack').textContent='← '+o.backLabel+'으로';
+    $('adKpis').innerHTML=o.kpis.map(k=>`<div class="kpi"><span>${esc(k[0])}</span><b>${esc(k[1])}</b><small>${esc(k[2]||'')}</small></div>`).join('');
+    $('adHead').innerHTML='<tr>'+o.cols.map(c=>`<th${c.num?' class="num"':''}>${esc(c.label)}</th>`).join('')+'</tr>';
+    $('adBody').innerHTML=o.rows.length?o.rows.map(r=>'<tr>'+o.cols.map((c,i)=>`<td${c.num?' class="num"':''}>${esc(r[i])}</td>`).join('')+'</tr>').join(''):`<tr><td colspan="${o.cols.length}" class="data-empty">해당 기록이 없습니다.</td></tr>`;
+    $('adCount').textContent=o.rows.length+'줄';
+    if(typeof showView==='function')showView('analysisDrillView');
+    window.scrollTo(0,0);
+  }
+  function drillMisship(idx,key){
+    const all=read().misship?.rows||[],m=$('msMonth')?.value||'',period=m||'전체 기간';
+    const inPeriod=m?all.filter(r=>ym(r[0])===m):all;
+    const rows=key==null?inPeriod:inPeriod.filter(r=>msLabel(r[idx],MS_BLANK[idx])===key);
+    const cases=misshipCases(rows),done=cases.filter(c=>c.done).length;
+    const dimName=idx===7?'담당자':'사유';
+    openDrill({back:'misshipAnalyticsView',backLabel:'오출고 분석',eyebrow:'MISSHIP DETAIL',
+      title:key==null?'오출고 전체':`오출고 · ${dimName}: ${key}`,
+      sub:`${period} · ${fmt(cases.length)}건 (접수일+매장 기준)`,
+      kpis:[['오출고 건수',fmt(cases.length),'건'],['처리완료',fmt(done),'건'],['미완료',fmt(cases.length-done),'건']],
+      cols:[{label:'접수일'},{label:'매장'},{label:'제품명'},{label:'전산',num:1},{label:'실입고',num:1},{label:'미입고',num:1},{label:'과입고',num:1},{label:'담당자'},{label:'처리여부'},{label:'처리일'},{label:'처리 내용'},{label:'사유'}],
+      rows:rows.slice().sort((a,b)=>normDate(b[0]).localeCompare(normDate(a[0]))||String(a[1]??'').localeCompare(String(b[1]??''),'ko')).map(r=>[normDate(r[0]),r[1],r[2],r[3],r[4],r[5],r[6],r[7],r[8],normDate(r[9])||r[9],r[10],r[11]].map(v=>v??''))});
+  }
+  function drillDamage(dimKey,key){
+    const dim=DI_DIMS.find(d=>d.key===dimKey);if(!dim)return;
+    const all=read().damage?.rows||[],m=$('diMonth')?.value||'',period=m||'전체 기간';
+    const inPeriod=m?all.filter(r=>ym(r[1]??r[0])===m):all;
+    const rows=key==null?inPeriod:inPeriod.filter(r=>diLabel(r[dim.idx])===key);
+    const amt=rows.reduce((s,r)=>s+num(r[7]),0),cases=new Set(rows.map(dmCaseKey)).size;
+    openDrill({back:'damageInsightView',backLabel:'파손 분석',eyebrow:'DAMAGE DETAIL',
+      title:key==null?'파손 전체':`파손 · ${dim.label}: ${key}`,
+      sub:`${period} · ${fmt(cases)}건 (기안 기준) · ${fmt(amt)}원`,
+      kpis:[['파손 건수',fmt(cases),'건'],['파손 금액',fmt(amt),'원'],['품목 줄',fmt(rows.length),'줄']],
+      cols:[{label:'No'},{label:'기안 작성일'},{label:'매장'},{label:'출고 방식'},{label:'제품명'},{label:'파손 수량',num:1},{label:'파손 합계(원)',num:1},{label:'제품군'},{label:'담당자'}],
+      rows:rows.slice().sort((a,b)=>normDate(b[1]??b[0]).localeCompare(normDate(a[1]??a[0]))).map(r=>[r[0],normDate(r[1]??r[0]),r[2],r[3],r[4],fmt(r[6]),fmt(r[7]),r[8],r[9]].map(v=>v??''))});
+  }
+  /* 누를 곳: 표의 항목 줄(맨 위 합계 줄은 전체), 원형 그래프 범례의 항목 */
+  document.addEventListener('click',e=>{
+    const t=e.target;if(!t.closest)return;
+    if(t.closest('#adBack')){if(drillBackView&&typeof showView==='function')showView(drillBackView);return}
+    // 오출고 분석
+    const msTr=t.closest('#msMgrBody tr,#msRsnBody tr');
+    if(msTr&&!msTr.querySelector('.data-empty')){const idx=msTr.closest('#msMgrBody')?7:11;const first=msTr.parentElement.firstElementChild===msTr;drillMisship(idx,first?null:msTr.cells[0].textContent.trim());return}
+    const msLeg=t.closest('#msMgrLegend .ms-legend-row,#msRsnLegend .ms-legend-row');
+    if(msLeg){const span=msLeg.querySelector('span[title]');if(span)drillMisship(msLeg.closest('#msMgrLegend')?7:11,span.getAttribute('title'));return}
+    // 파손 분석
+    const sec=t.closest('#diSections [data-dim]');if(!sec)return;
+    const diTr=t.closest('tbody tr');
+    if(diTr&&!diTr.querySelector('.data-empty')){const first=diTr.parentElement.firstElementChild===diTr;drillDamage(sec.dataset.dim,first?null:diTr.cells[0].textContent.trim());return}
+    const diLeg=t.closest('.ms-legend-row');
+    if(diLeg){const span=diLeg.querySelector('span[title]');if(span)drillDamage(sec.dataset.dim,span.getAttribute('title'))}
+  });
   window.FILE_DATA_ENGINE={handle,getData:read,renderDashboard,renderAll,renderInbound,renderOutbound,renderMisship,renderDamage,renderBox,renderOos};
   document.addEventListener('DOMContentLoaded',()=>{if($('oosOwner')&&typeof inventoryDb!=='undefined')$('oosOwner').innerHTML='<option value="">전체</option>'+Object.keys(inventoryDb.owners||{}).map(x=>`<option>${esc(x)}</option>`).join('');[['inAnaRun',runInAnaSearch],['outAnaRun',renderOutbound],['msRun',renderMisship],['dmRun',runDamageSearch],['dmMomRun',renderDamageMoM],['boxRun',runBoxSearch],['oosRun',renderOos],['archiveRun',renderDataArchive]].forEach(([id,fn])=>$(id)?.addEventListener('click',fn));
     $('archiveType')?.addEventListener('change',renderDataArchive);

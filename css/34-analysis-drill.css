@@ -1,0 +1,21 @@
+/* ===== 오출고·파손 분석 → 항목을 누르면 상세 목록 ===== */
+/* 누를 수 있는 곳 표시 */
+#msMgrBody tr:not(:has(.data-empty)),#msRsnBody tr:not(:has(.data-empty)),
+#diSections tbody tr:not(:has(.data-empty)),
+#msMgrLegend .ms-legend-row,#msRsnLegend .ms-legend-row,#diSections .ms-legend-row{cursor:pointer;}
+#msMgrBody tr:not(:has(.data-empty)):hover td,#msRsnBody tr:not(:has(.data-empty)):hover td,#diSections tbody tr:not(:has(.data-empty)):hover td{background:#fff4f8!important;}
+#msMgrBody tr:not(:has(.data-empty)) td:first-child::after,#msRsnBody tr:not(:has(.data-empty)) td:first-child::after,
+#diSections tbody tr:not(:has(.data-empty)) td:first-child::after{content:"›";margin-left:6px;color:#c9c3b8;font-weight:900;}
+#msMgrBody tr:hover td:first-child::after,#msRsnBody tr:hover td:first-child::after,#diSections tbody tr:hover td:first-child::after{color:#e87ba4;}
+#msMgrLegend .ms-legend-row:hover,#msRsnLegend .ms-legend-row:hover,#diSections .ms-legend-row:hover{background:#fff4f8;border-radius:8px;}
+/* 상세 목록 페이지 */
+#analysisDrillView .ad-back{flex:none;align-self:center;height:38px;padding:0 16px;font-weight:800;background:#fff!important;color:#1d1d1b!important;border:0!important;border-radius:999px!important;}
+#analysisDrillView .ad-back:hover{background:#f6f3ee!important;}
+#analysisDrillView .ad-table td{white-space:nowrap;}
+#analysisDrillView .ad-table td:nth-child(3){white-space:normal;min-width:180px;}
+#appShell.on-lush #analysisDrillView .ad-panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
+#appShell.on-lush #analysisDrillView .ad-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#e87ba4;}
+@media (max-width:900px){
+  #analysisDrillView .data-workbench-head{flex-wrap:wrap;}
+  #analysisDrillView .ad-back{width:100%;margin-top:8px;}
+}

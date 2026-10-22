@@ -1397,6 +1397,14 @@ window.ensureChart=function(){
       </div>
     </div></section>
 
+    <section id="analysisDrillView" class="view"><div class="data-workbench">
+      <div class="data-workbench-head"><div><div class="eyebrow" id="adEyebrow">DETAIL</div><h2 id="adTitle">상세 목록</h2><p id="adSub"></p></div><button type="button" class="btn ad-back" id="adBack">← 돌아가기</button></div>
+      <div class="kpis data-kpis" id="adKpis"></div>
+      <div class="panel mt14 ad-panel"><div class="panel-head"><div><h3>기록</h3></div><span class="badge" id="adCount">0줄</span></div>
+        <div class="data-table-wrap"><table class="data-table ad-table"><thead id="adHead"></thead><tbody id="adBody"></tbody></table></div>
+      </div>
+    </div></section>
+
     <section id="damageInsightView" class="view"><div class="data-workbench">
       <div class="data-workbench-head"><div><div class="eyebrow">DAMAGE INSIGHT</div><h2>파손 분석</h2><p>매장·출고방식·담당자·제품군별 파손 금액과 건수를 월별로 비교합니다(건수는 기안 단위, 도넛은 금액 비중).</p></div></div>
       <div class="panel mt14"><div class="panel-head"><div><small>MONTHLY COMPARE</small><h3>월별 파손 비교 (전월 대비)</h3></div><div class="ms-period"><div class="field" style="margin:0"><label>기준월</label><input type="month" id="diMonth"></div><button type="button" class="btn" id="diAllBtn">전체</button></div></div>
@@ -1749,5 +1757,6 @@ window.ensureChart=function(){
 <script src="js/48-auth-app.js"></script>
 <script src="js/49-accounts-view.js"></script>
 <script src="js/50-season-truck.js"></script>
+<link rel="stylesheet" href="css/34-analysis-drill.css">
 </body>
 </html>
