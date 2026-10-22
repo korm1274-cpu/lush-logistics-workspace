@@ -57,3 +57,35 @@
   #appShell #dashboard .monthly-card{padding:12px 8px!important;}
 }
 
+/* 휴대폰: 제품군 그래프 범례를 누르기 쉬운 칩으로(누르면 그 선만 진하게) */
+@media (max-width:900px){
+  .m-chart-legend.m-chart-focus{gap:6px;padding:10px 0 2px;}
+  .m-chart-legend.m-chart-focus button{gap:5px;padding:6px 10px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font-size:11.5px;color:#4e5968;}
+  .m-chart-legend.m-chart-focus button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+  .m-chart-legend.m-chart-focus button.dim{opacity:.55;}
+  .m-chart-legend.m-chart-focus .m-chart-hint{flex:1 0 100%;font-size:11px;color:#8b95a1;margin-top:2px;}
+  #inboundAnalysis div:has(> #inCatTrendCanvas){height:300px!important;}
+}
+/* 휴대폰 날짜 칸(입고·출고·불량 등 전체): 아이폰에서 날짜 글자가 위로 붙는 것 → 높이 고정 대신 위아래 같은 여백으로 세로 가운데 */
+@media (max-width:900px){
+  #appShell input[type="date"],#appShell .view .data-filter-row .field>input[type="date"]{-webkit-appearance:none;appearance:none;height:auto!important;min-height:38px;padding-top:8px!important;padding-bottom:8px!important;line-height:20px!important;box-sizing:border-box;}
+  #appShell input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0;min-height:20px;line-height:20px;}
+  #appShell input[type="date"]::-webkit-datetime-edit{padding:0;line-height:20px;}
+}
+/* 휴대폰: 항목 카드 사이 빈공간을 모든 메뉴에서 12px로 통일(화면마다 붙어 있던 위·아래 여백을 걷어냄) */
+@media (max-width:900px){
+  #appShell .view .data-workbench{gap:12px!important;row-gap:12px!important;}
+  #appShell .view .data-workbench>*{margin-top:0!important;margin-bottom:0!important;}
+  #appShell.on-lush .view.active .data-workbench>.data-workbench-head{margin-bottom:0!important;}
+  #appShell .view .data-workbench>.mt14:empty,#appShell .view .data-workbench>*>.mt14:empty{display:none!important;}
+  #appShell .view .data-workbench>[data-df-pane]:not([hidden]){display:grid!important;gap:12px;}
+  #appShell .view .data-workbench>*>.mt14,#appShell .view .data-workbench>*>.mt12,#appShell .view .data-workbench>*>.panel+.panel{margin-top:0!important;}
+}
+/* 메인·현황판도 같은 12px 간격 */
+@media (max-width:900px){
+  #appShell #dashboard>.lush-hero{margin-bottom:12px!important;}
+  #appShell #dashboard>.dash-section{margin-top:0!important;margin-bottom:12px!important;}
+  #appShell #dashboard>.dash-section:last-child{margin-bottom:0!important;}
+  #appShell #statusBoardView .status-board-shell{gap:12px!important;}
+  #appShell #statusBoardView .status-board-top{margin-bottom:0!important;}
+}

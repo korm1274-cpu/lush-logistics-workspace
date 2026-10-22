@@ -75,10 +75,3 @@
   #appShell #defectView .df-table td:nth-child(13)::before{content:none}
   #appShell #defectView .df-table .df-manage button{white-space:nowrap;padding:5px 12px}
 }
-/* 날짜 칸: 휴대폰(특히 아이폰)에서 날짜 글자가 위로 붙는 것 → 세로 가운데 */
-@media(max-width:900px){
-  #appShell .data-filter-row input[type="date"]{display:flex!important;align-items:center;line-height:normal!important}
-  #appShell .data-filter-row input[type="date"]::-webkit-date-and-time-value{text-align:left;margin:0;line-height:normal}
-  #appShell .data-filter-row input[type="date"]::-webkit-datetime-edit{padding:0;line-height:normal}
-}
-@supports (-webkit-touch-callout:none){@media(max-width:900px){#appShell .data-filter-row input[type="date"]{-webkit-appearance:none}}}
