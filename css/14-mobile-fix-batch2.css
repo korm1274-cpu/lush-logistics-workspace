@@ -78,7 +78,7 @@
   #appShell .view .data-workbench>*{margin-top:0!important;margin-bottom:0!important;}
   #appShell.on-lush .view.active .data-workbench>.data-workbench-head{margin-bottom:0!important;}
   #appShell .view .data-workbench>.mt14:empty,#appShell .view .data-workbench>*>.mt14:empty{display:none!important;}
-  #appShell .view .data-workbench>[data-df-pane]:not([hidden]){display:grid!important;gap:12px;}
+  #appShell .view .data-workbench>[data-df-pane]:not([hidden]),#appShell .view .data-workbench>[data-td-pane]:not([hidden]){display:grid!important;gap:12px;}
   #appShell .view .data-workbench>*>.mt14,#appShell .view .data-workbench>*>.mt12,#appShell .view .data-workbench>*>.panel+.panel{margin-top:0!important;}
 }
 /* 메인·현황판도 같은 12px 간격 */

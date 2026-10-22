@@ -231,3 +231,10 @@
   #appShell #noticeManagerView .box-entry-card .field{min-width:0!important;width:auto!important;}
   #appShell #noticeManagerView #noticeMgrNote{width:100%!important;min-height:62px!important;}
 }
+/* 제품 확보 등록: [목록] [등록] 탭(제품 불량과 같은 모양) */
+#todoManagerView .td-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+#todoManagerView .td-tabs button{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font-size:14px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+#todoManagerView .td-tabs button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#todoManagerView .td-tabs em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4;}
+#todoManagerView [data-td-pane][hidden]{display:none!important;}
+@media(max-width:900px){#todoManagerView .td-tabs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));}#todoManagerView .td-tabs button{justify-content:center;padding:0 6px;font-size:13.5px;}}
