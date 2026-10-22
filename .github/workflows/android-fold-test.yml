@@ -1,0 +1,45 @@
+name: Build Android Fold test APK
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: android-test
+    steps:
+      - name: Check out isolated Android test branch
+        uses: actions/checkout@v4
+        with:
+          ref: test/android-fold-apk
+          persist-credentials: false
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: android-actions/setup-android@v3
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build debug APK
+        run: gradle :app:assembleDebug --no-daemon "-PlushSiteUrl=https://lush-logistics-workspace.vercel.app/"
+      - name: Verify APK permissions and signing
+        run: |
+          set -eu
+          APK="app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          AAPT="$ANDROID_HOME/build-tools/35.0.0/aapt"
+          "$AAPT" dump permissions "$APK" | tee /tmp/lush-permissions.txt
+          grep -q "android.permission.INTERNET" /tmp/lush-permissions.txt
+          if grep -E 'android.permission.(READ_CONTACTS|READ_SMS|READ_CALL_LOG|ACCESS_FINE_LOCATION|ACCESS_COARSE_LOCATION|RECORD_AUDIO|CAMERA|MANAGE_EXTERNAL_STORAGE|QUERY_ALL_PACKAGES)' /tmp/lush-permissions.txt; then
+            echo "Unexpected sensitive permission"; exit 1
+          fi
+          "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK"
+          sha256sum "$APK"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: lush-logistics-fold-debug-apk
+          path: android-test/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 7
