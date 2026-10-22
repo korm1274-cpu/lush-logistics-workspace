@@ -56,6 +56,7 @@ jobs:
               'android.permission.ACCESS_NETWORK_STATE',
               'android.permission.RECEIVE_BOOT_COMPLETED',
               'com.google.android.c2dm.permission.RECEIVE',
+              'kr.co.lush.logistics.foldtest.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION',
           }
           required = {'android.permission.INTERNET', 'android.permission.POST_NOTIFICATIONS'}
           if not required.issubset(permissions):
