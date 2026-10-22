@@ -854,7 +854,7 @@
         chart.data.datasets.forEach((ds,di)=>{
           const meta=chart.getDatasetMeta(di);
           if(meta.hidden)return;
-          if(mob&&chart.$focus!==di)return;
+          if(chart.$focus!=null?chart.$focus!==di:mob)return;
           const vals=ds.data;
           const maxV=Math.max(...vals),minV=Math.min(...vals);
           const maxIdx=vals.indexOf(maxV),minIdx=vals.indexOf(minV);
@@ -881,8 +881,8 @@
         responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:(window.matchMedia&&window.matchMedia('(max-width:900px)').matches)?{display:false}:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14}},
-          tooltip:{enabled:true,itemSort:(a,b)=>b.parsed.y-a.parsed.y,filter:it=>!mob||it.chart.$focus==null||it.datasetIndex===it.chart.$focus}
+          legend:(window.matchMedia&&window.matchMedia('(max-width:900px)').matches)?{display:false}:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14,sort:(a,b)=>a.datasetIndex-b.datasetIndex},onClick:(e,item,lg)=>window.__chartFocus&&window.__chartFocus(lg.chart,item.datasetIndex),onHover:e=>{if(e.native&&e.native.target)e.native.target.style.cursor='pointer'},onLeave:e=>{if(e.native&&e.native.target)e.native.target.style.cursor=''}},
+          tooltip:{enabled:true,itemSort:(a,b)=>b.parsed.y-a.parsed.y,filter:it=>it.chart.$focus==null||it.datasetIndex===it.chart.$focus}
         },
         scales:{
           y:{beginAtZero:true,ticks:{font:{size:10},callback:v=>mob&&Math.abs(v)>=1000?(Math.round(v/100)/10)+'k':fmt(v)}},
@@ -1071,7 +1071,7 @@
         chart.data.datasets.forEach((ds,di)=>{
           const meta=chart.getDatasetMeta(di);
           if(meta.hidden)return;
-          if(mob&&chart.$focus!==di)return;
+          if(chart.$focus!=null?chart.$focus!==di:mob)return;
           const vals=ds.data;
           const maxV=Math.max(...vals),minV=Math.min(...vals);
           const maxIdx=vals.indexOf(maxV),minIdx=vals.indexOf(minV);
@@ -1098,8 +1098,8 @@
         responsive:true,maintainAspectRatio:false,
         interaction:{mode:'index',intersect:false},
         plugins:{
-          legend:(window.matchMedia&&window.matchMedia('(max-width:900px)').matches)?{display:false}:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14}},
-          tooltip:{enabled:true,itemSort:(a,b)=>b.parsed.y-a.parsed.y,filter:it=>!mob||it.chart.$focus==null||it.datasetIndex===it.chart.$focus}
+          legend:(window.matchMedia&&window.matchMedia('(max-width:900px)').matches)?{display:false}:{position:'bottom',labels:{font:{size:13,weight:'700'},boxWidth:12,boxHeight:12,padding:14,sort:(a,b)=>a.datasetIndex-b.datasetIndex},onClick:(e,item,lg)=>window.__chartFocus&&window.__chartFocus(lg.chart,item.datasetIndex),onHover:e=>{if(e.native&&e.native.target)e.native.target.style.cursor='pointer'},onLeave:e=>{if(e.native&&e.native.target)e.native.target.style.cursor=''}},
+          tooltip:{enabled:true,itemSort:(a,b)=>b.parsed.y-a.parsed.y,filter:it=>it.chart.$focus==null||it.datasetIndex===it.chart.$focus}
         },
         scales:{
           y:{beginAtZero:true,ticks:{font:{size:10},callback:v=>mob&&Math.abs(v)>=1000?(Math.round(v/100)/10)+'k':fmt(v)}},
