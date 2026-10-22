@@ -1,0 +1,42 @@
+/* ===== 메인 '이번 달 입출고 현황' (입고·출고 수량 + 전월 대비 + 칩 + 일별 흐름) ===== */
+#dashboard .dash-section-head:has(#mioRange){display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#dashboard .mio-range{font-size:12px;font-weight:700;color:#8b95a1;white-space:nowrap;}
+#dashboard .mio{display:grid;gap:14px;}
+#dashboard .mio-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
+#dashboard .mio-card{all:unset;box-sizing:border-box;display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px 16px;border:1.5px solid #ece6db;border-radius:14px;background:#faf8f4;cursor:pointer;transition:border-color .15s,background .15s;}
+#dashboard .mio-card:hover{border-color:#1d1d1b;background:#fff;}
+#dashboard .mio-card:focus-visible{outline:2px solid #1d1d1b;outline-offset:2px;}
+#dashboard .mio-label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;color:#4e5968;}
+#dashboard .mio-label::before{content:"";width:8px;height:8px;border-radius:50%;background:#1baf7a;}
+#dashboard .mio-out .mio-label::before{background:#e87ba4;}
+#dashboard .mio-num{display:flex;align-items:baseline;gap:5px;min-width:0;flex-wrap:wrap;}
+#dashboard .mio-num b{font-size:28px;font-weight:900;color:#1d1d1b;letter-spacing:-.02em;line-height:1.1;font-variant-numeric:tabular-nums;}
+#dashboard .mio-num small{font-size:12px;font-weight:700;color:#8b95a1;}
+#dashboard .mio-delta{margin-left:auto;font-style:normal;font-size:12px;font-weight:800;padding:3px 9px;border-radius:999px;background:#f1efe8;color:#5f5e5a;white-space:nowrap;}
+#dashboard .mio-delta:empty{display:none;}
+#dashboard .mio-delta.up{background:#e3f5ec;color:#11795a;}
+#dashboard .mio-delta.down{background:#fdecec;color:#c93838;}
+#dashboard .mio-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#dashboard .mio-chips span{font-size:12px;font-weight:700;color:#4e5968;padding:3px 9px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;white-space:nowrap;}
+#dashboard .mio-chips .mio-empty{border:0;background:none;padding:3px 0;color:#a3a9b0;font-weight:600;}
+#dashboard .mio-flow-head{display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:800;color:#4e5968;margin-bottom:8px;}
+#dashboard .mio-legend{display:inline-flex;align-items:center;gap:5px;font-weight:700;color:#8b95a1;}
+#dashboard .mio-legend i{width:9px;height:9px;border-radius:2px;display:inline-block;background:#1baf7a;}
+#dashboard .mio-legend i.out{background:#e87ba4;margin-left:8px;}
+#dashboard .mio-bars{display:flex;align-items:flex-end;gap:3px;height:84px;border-bottom:1.5px solid #ece6db;}
+#dashboard .mio-day{flex:1 1 0;min-width:0;height:100%;display:flex;align-items:flex-end;gap:1px;border-radius:3px 3px 0 0;}
+#dashboard .mio-day i{flex:1 1 0;border-radius:2px 2px 0 0;background:#1baf7a;}
+#dashboard .mio-day i.out{background:#e87ba4;}
+#dashboard .mio-day.today{background:#f6f1e7;}
+#dashboard .mio-day.future{opacity:.35;}
+#dashboard .mio-axis{position:relative;height:16px;margin-top:4px;}
+#dashboard .mio-axis span{position:absolute;transform:translateX(-50%);font-size:11px;font-weight:700;color:#a3a9b0;white-space:nowrap;}
+#dashboard .mio-note{margin:0;font-size:11px;color:#a3a9b0;}
+@media (max-width:900px){
+  #dashboard .mio{gap:12px;}
+  #dashboard .mio-grid{grid-template-columns:minmax(0,1fr);gap:10px;}
+  #dashboard .mio-card{padding:12px 14px;gap:7px;}
+  #dashboard .mio-num b{font-size:24px;}
+  #dashboard .mio-bars{height:60px;gap:2px;}
+  #dashboard .mio-range{font-size:11px;}
+}

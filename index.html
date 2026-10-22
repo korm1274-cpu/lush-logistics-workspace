@@ -194,10 +194,14 @@ window.ensureChart=function(){
       </div>
 
       <div class="dash-section">
-        <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div></div>
-        <div class="monthly-grid">
-          <div class="monthly-card inbound-month"><div class="monthly-head"><div><h4>입고</h4></div></div><div class="monthly-stats"><div><span>입고 건수</span><b id="fileInboundCount">0</b><small>건</small></div><div><span>입고 수량</span><b id="fileInboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileInboundFoot">파일 업로드 데이터 누적</div></div>
-          <div class="monthly-card outbound-month"><div class="monthly-head"><div><h4>출고</h4></div></div><div class="monthly-stats"><div><span>출고 수량</span><b id="fileOutboundQty">0</b><small>EA</small><div class="muted" style="font-size:10px;margin-top:4px;font-weight:400">G단위를 EA로 환산한 수량입니다.</div></div></div><div class="monthly-foot" id="fileOutboundFoot">파일 업로드 데이터 누적</div></div>
+        <div class="dash-section-head"><div><h3>이번 달 입출고 현황</h3><span class="dash-month" id="dashboardMonth"></span></div><span class="mio-range" id="mioRange"></span></div>
+        <div class="mio" id="mioBox">
+          <div class="mio-grid">
+            <button type="button" class="mio-card mio-in" data-go="inboundAnalysis"><span class="mio-label">입고 수량</span><div class="mio-num"><b id="fileInboundQty">0</b><small>EA</small><em class="mio-delta" id="mioInDelta"></em></div><div class="mio-chips" id="mioInChips"></div></button>
+            <button type="button" class="mio-card mio-out" data-go="outboundAnalysis"><span class="mio-label">출고 수량</span><div class="mio-num"><b id="fileOutboundQty">0</b><small>EA</small><em class="mio-delta" id="mioOutDelta"></em></div><div class="mio-chips" id="mioOutChips"></div></button>
+          </div>
+          <div class="mio-flow"><div class="mio-flow-head"><span>일별 흐름</span><span class="mio-legend"><i class="in"></i>입고<i class="out"></i>출고</span></div><div class="mio-bars" id="mioBars"></div><div class="mio-axis" id="mioAxis"></div></div>
+          <p class="mio-note">G 단위는 EA로 환산 · 전월은 같은 기간(1일~오늘)과 비교 · 누르면 상세조회로 이동</p>
         </div>
       </div>
     </section>
@@ -1758,5 +1762,6 @@ window.ensureChart=function(){
 <script src="js/49-accounts-view.js"></script>
 <script src="js/50-season-truck.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
+<link rel="stylesheet" href="css/35-dash-monthly.css">
 </body>
 </html>

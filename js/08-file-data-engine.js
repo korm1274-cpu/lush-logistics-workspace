@@ -315,7 +315,39 @@
     const cur=today().slice(0,7),a=(rows||[]).filter(r=>ym(r[0])===cur);
     return{count:new Set(a.map(r=>normDate(r[0])).filter(Boolean)).size,qty:a.reduce((z,r)=>z+qtyFn(r),0),rows:a.length,ym:cur};
   }
-  function renderDashboard(){if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}const d=read(),i=monthStats(d.inbound?.rows,eaEquivQty),oc=outboundColIndex(),o=monthStats(d.outbound?.rows,r=>{const q=num(r[oc.qty]);if(outboundUnit(r,oc)!=='G')return q;const f=PRODUCT_EA_CONVERSION[String(r[oc.code]||'').trim()];return f?q/f:0});if($('fileInboundCount'))$('fileInboundCount').textContent=fmt(i?.count);if($('fileInboundQty'))$('fileInboundQty').textContent=fmt(Math.round(i?.qty||0));if($('fileOutboundCount'))$('fileOutboundCount').textContent=fmt(o?.count);if($('fileOutboundQty'))$('fileOutboundQty').textContent=fmt(Math.round(o?.qty||0));if($('fileInboundFoot'))$('fileInboundFoot').textContent=i?.rows?`${i.ym} · 누적 ${fmt(i.rows)}행`:'파일 업로드 데이터 누적';if($('fileOutboundFoot'))$('fileOutboundFoot').textContent=o?.rows?`${o.ym} · 누적 ${fmt(o.rows)}행`:'파일 업로드 데이터 누적'}
+  /* 메인 '이번 달 입출고 현황': 입고·출고 수량(EA 환산) + 전월 같은 기간 대비 + 요약 칩 + 일별 흐름 막대 */
+  function renderDashboard(){
+    if($('dashboardMonth')&&!$('dashboardMonth').textContent){const n=new Date();$('dashboardMonth').textContent=`${n.getFullYear()}년 ${n.getMonth()+1}월`}
+    if(!$('mioBox'))return;
+    const d=read(),oc=outboundColIndex(),t=today(),cur=t.slice(0,7),day=+t.slice(8,10);
+    const pd=new Date(+t.slice(0,4),+t.slice(5,7)-2,1),prev=`${pd.getFullYear()}-${String(pd.getMonth()+1).padStart(2,'0')}`;
+    const outQty=r=>{const q=num(r[oc.qty]);if(outboundUnit(r,oc)!=='G')return q;const f=PRODUCT_EA_CONVERSION[String(r[oc.code]||'').trim()];return f?q/f:0};
+    const inRows=d.inbound?.rows||[],outRows=d.outbound?.rows||[];
+    const pick=(rows,di,m)=>rows.filter(r=>{const nd=normDate(r[di]);return nd.slice(0,7)===m&&+nd.slice(8,10)<=day});
+    const inCur=pick(inRows,0,cur),inPrev=pick(inRows,0,prev),outCur=pick(outRows,oc.date,cur),outPrev=pick(outRows,oc.date,prev);
+    const sum=(rows,fn)=>rows.reduce((a,r)=>a+fn(r),0);
+    const inQ=sum(inCur,eaEquivQty),inPQ=sum(inPrev,eaEquivQty),outQ=sum(outCur,outQty),outPQ=sum(outPrev,outQty);
+    $('fileInboundQty').textContent=fmt(Math.round(inQ));
+    $('fileOutboundQty').textContent=fmt(Math.round(outQ));
+    const delta=(el,a,b)=>{if(!el)return;if(!b){el.textContent='';el.className='mio-delta';return}const p=Math.round((a-b)/b*100);el.textContent=(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'% 전월';el.className='mio-delta '+(p>0?'up':p<0?'down':'')};
+    delta($('mioInDelta'),inQ,inPQ);delta($('mioOutDelta'),outQ,outPQ);
+    const chip=a=>a.filter(x=>x[1]).map(x=>`<span>${esc(x[0])} ${esc(x[1])}</span>`).join('');
+    const batches=new Map();inCur.forEach(r=>{if(r[1])batches.set(String(r[1]),r[2]!==''&&r[2]!=null?num(r[2]):(batches.get(String(r[1]))||0))});
+    let pallets=0;batches.forEach(v=>pallets+=v);
+    const inSku=new Set(inCur.map(r=>String(r[3]||'').trim()).filter(Boolean)).size;
+    const outDays=new Set(outCur.map(r=>normDate(r[oc.date])).filter(Boolean)).size;
+    $('mioInChips').innerHTML=chip([['차수',batches.size?fmt(batches.size)+'회':''],['팔렛',pallets?fmt(pallets):''],['SKU',inSku?fmt(inSku):'']])||'<span class="mio-empty">이번 달 입고 기록 없음</span>';
+    $('mioOutChips').innerHTML=chip([['출고일',outDays?fmt(outDays)+'일':''],['일평균',outDays?fmt(Math.round(outQ/outDays)):'']])||'<span class="mio-empty">이번 달 출고 기록 없음</span>';
+    if($('mioRange'))$('mioRange').textContent=`1일 ~ ${day}일 기준`;
+    // 일별 흐름: 1일 ~ 말일, 오늘 이후는 빈 칸
+    const last=new Date(+t.slice(0,4),+t.slice(5,7),0).getDate(),di=new Array(last+1).fill(0),dO=new Array(last+1).fill(0);
+    inCur.forEach(r=>{di[+normDate(r[0]).slice(8,10)]+=eaEquivQty(r)});
+    outCur.forEach(r=>{dO[+normDate(r[oc.date]).slice(8,10)]+=outQty(r)});
+    const max=Math.max(1,...di,...dO),h=v=>v?Math.max(4,Math.round(v/max*100)):0;
+    let bars='';for(let i=1;i<=last;i++){bars+=`<div class="mio-day${i===day?' today':''}${i>day?' future':''}" title="${i}일 · 입고 ${fmt(Math.round(di[i]))} · 출고 ${fmt(Math.round(dO[i]))}"><i class="in" style="height:${h(di[i])}%"></i><i class="out" style="height:${h(dO[i])}%"></i></div>`}
+    $('mioBars').innerHTML=bars;
+    $('mioAxis').innerHTML=[1,8,15,22,last].filter((v,i,a)=>a.indexOf(v)===i).map(v=>`<span style="left:${((v-0.5)/last*100).toFixed(2)}%">${v}일</span>`).join('');
+  }
   function trendHtml(rows,qtyIdx=4){const map={};(rows||[]).forEach(r=>{const m=ym(r[0]);if(m)map[m]=(map[m]||0)+num(r[qtyIdx])});const arr=Object.entries(map).sort().slice(-12),max=Math.max(1,...arr.map(x=>x[1]));return arr.length?arr.map(([m,v])=>`<div class="mini-bar-row"><span>${m}</span><div class="mini-bar-track"><div class="mini-bar-fill" style="width:${Math.max(2,v/max*100)}%"></div></div><b class="mini-bar-value">${fmt(v)}</b></div>`).join(''):'<div class="data-empty">업로드된 데이터가 없습니다.</div>'}
   function inboundUnit(r){return String(r[6]||'').trim().toUpperCase()}
   window.inboundUnit=inboundUnit;
@@ -1868,6 +1900,9 @@
   document.addEventListener('click',e=>{
     const t=e.target;if(!t.closest)return;
     if(t.closest('#adBack')){if(drillBackView&&typeof showView==='function')showView(drillBackView);return}
+    // 메인 이번 달 입출고 카드 → 상세조회
+    const go=t.closest('#mioBox [data-go]');
+    if(go){const m=typeof menus!=='undefined'&&menus.find(x=>x.target===go.dataset.go);if(m&&typeof activateMenu==='function')activateMenu(m,null);return}
     // 오출고 분석
     const msTr=t.closest('#msMgrBody tr,#msRsnBody tr');
     if(msTr&&!msTr.querySelector('.data-empty')){const idx=msTr.closest('#msMgrBody')?7:11;const first=msTr.parentElement.firstElementChild===msTr;drillMisship(idx,first?null:msTr.cells[0].textContent.trim());return}
