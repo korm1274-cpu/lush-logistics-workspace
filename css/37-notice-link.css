@@ -1,0 +1,19 @@
+/* ===== 공지 내용 링크: 표시 글자 + 링크 주소 입력창 + 우클릭 메뉴 (js/52-notice-link.js) ===== */
+a.notice-link{color:#1f6fd1;font-weight:700;text-decoration:underline;text-underline-offset:2px;word-break:break-all;cursor:pointer;}
+a.notice-link:hover{color:#174f96;}
+.nl-pop,.nl-menu{position:fixed;z-index:10050;background:#fff;border:1.5px solid #1d1d1b;border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.14);font-family:inherit;}
+.nl-pop{width:min(360px,calc(100vw - 16px));padding:12px;box-sizing:border-box;display:grid;gap:8px;}
+.nl-pop-head{display:flex;align-items:baseline;gap:8px;min-width:0;}
+.nl-pop-head b{font-size:13px;font-weight:900;color:#1d1d1b;white-space:nowrap;}
+.nl-pop-text{font-size:12px;color:#6b7684;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0;}
+.nl-pop-input{width:100%;box-sizing:border-box;height:38px;border:1.5px solid #e4ddd0;border-radius:9px;padding:0 10px;font:inherit;font-size:13px;}
+.nl-pop-input:focus{outline:none;border-color:#1d1d1b;}
+.nl-pop-err{margin:0;font-size:12px;color:#c93838;}
+.nl-pop-actions{display:flex;justify-content:flex-end;gap:6px;}
+.nl-pop-actions button{height:32px;padding:0 14px;border-radius:999px;border:1px solid #e4ddd0;background:#fff;color:#4e5968;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;}
+.nl-pop-actions .nl-ok{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+.nl-menu{min-width:150px;padding:5px;display:grid;}
+.nl-menu button{display:flex;justify-content:space-between;align-items:center;gap:12px;height:34px;padding:0 10px;border:0;border-radius:8px;background:none;color:#1d1d1b;font:inherit;font-size:13px;font-weight:700;text-align:left;cursor:pointer;}
+.nl-menu button:hover{background:#f3efe7;}
+.nl-menu button[data-nl="remove"]{color:#c93838;}
+.nl-menu kbd{font:inherit;font-size:11px;color:#8b95a1;font-weight:600;}

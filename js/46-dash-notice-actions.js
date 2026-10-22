@@ -65,7 +65,7 @@
     var more=document.getElementById('dashNoticeMore');
     if(!more){more=document.createElement('div');more.id='dashNoticeMore';more.className='dn-more';board.appendChild(more)}
     more.innerHTML=n.slice(2).map(function(x){
-      return '<div class="notice-main notice-second dn-extra" data-notice-id="'+esc(x.id)+'"><span class="notice-pin">공지</span><div><b class="dn-title">'+esc(x.title)+'</b>'+(x.note?'<p class="dn-text">'+esc(x.note)+'</p>':'')+'</div></div>';
+      return '<div class="notice-main notice-second dn-extra" data-notice-id="'+esc(x.id)+'"><span class="notice-pin">공지</span><div><b class="dn-title">'+esc(x.title)+'</b>'+(x.note?'<p class="dn-text">'+(window.noticeNoteHtml?window.noticeNoteHtml(x.note):esc(x.note))+'</p>':'')+'</div></div>';
     }).join('');
     if(first)first.dataset.noticeId=n[0]?n[0].id:'';
     if(second)second.dataset.noticeId=n[1]?n[1].id:'';
