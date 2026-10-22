@@ -196,6 +196,6 @@ async function pwaMap(store) {
 }
 
 // 화면용(민감 값 제외)
-const publicSub = s => ({ sid: s.sid, userId: s.userId, os: s.os || '', browser: s.browser || '', standalone: !!s.standalone, createdAt: s.createdAt || '', updatedAt: s.updatedAt || '', lastOkAt: s.lastOkAt || '', lastAppCheckedAt:s.lastAppCheckedAt||'', status: s.lastError ? 'error' : s.appPermission==='denied'||s.appPermission==='default'?'inactive':s.appPermission==='granted'?'active':'unknown' });
+const publicSub = s => ({ sid: s.sid, userId: s.userId, os: s.os || '', browser: s.browser || '', standalone: !!s.standalone, createdAt: s.createdAt || '', updatedAt: s.updatedAt || '', lastOkAt: s.lastOkAt || '', lastAppCheckedAt:s.lastAppCheckedAt||'', status: (s.appPermission==='denied'||s.appPermission==='default')?'inactive':s.lastError?'error':s.appPermission==='granted'?'active':'unknown' });
 
 module.exports = { TYPES, getVapid, getSettings, saveSettings, listSubs, removeSub, upsertSub, updateDevicePermission, isMobileAppSub, isMobileRequest, sendTo, notifyNew, recordPwa, pwaMap, publicSub, sidOf, messageOf, initialStatus, runInitialTest };
