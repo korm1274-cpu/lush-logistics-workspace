@@ -6,17 +6,49 @@
 #pushStatusChip.push-chip.on{color:#11795a!important;border-color:#bfe6d2!important;background:#eefaf4!important;cursor:default;}
 #pushStatusChip.push-chip.off{color:#a05a00!important;border-color:#f3ddb8!important;background:#fff8ec!important;}
 
-/* 알림 허용 팝업 */
-.push-modal{position:fixed;inset:0;z-index:10060;display:flex;align-items:center;justify-content:center;padding:16px;background:rgba(17,17,17,.45);}
-.push-modal-card{width:min(380px,100%);box-sizing:border-box;background:#fff;border:2px solid #1d1d1b;border-radius:18px;padding:22px 20px 18px;text-align:center;font-family:inherit;}
-.push-modal-title{display:block;font-size:17px;font-weight:900;color:#1d1d1b;margin-bottom:10px;}
-.push-modal-card p{margin:0 0 14px;font-size:14px;line-height:1.6;color:#4e5968;}
-.push-modal-msg{font-size:13px!important;color:#c93838!important;}
+/* 모바일 앱 전용 알림 허용 팝업: 좁은 휴대폰과 갤럭시 폴드 모두 동일한 비율 */
+.push-modal{
+  position:fixed;inset:0;z-index:10060;
+  display:flex;align-items:center;justify-content:center;
+  padding:max(16px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));
+  box-sizing:border-box;background:rgba(17,17,17,.58);
+}
+.push-modal-card{
+  display:flex;flex-direction:column;align-items:stretch;flex:0 1 auto;
+  width:min(400px,100%);min-width:0;max-height:calc(100vh - 48px);
+  max-height:calc(100dvh - 48px);
+  overflow-y:auto;box-sizing:border-box;
+  background:#fff;border:1px solid #e8e7e3;border-radius:20px;
+  box-shadow:0 18px 56px rgba(0,0,0,.24);
+  padding:26px 22px 20px;text-align:center;
+  font-family:inherit;color:#1d1d1b;
+  -webkit-overflow-scrolling:touch;
+}
+.push-modal-symbol{font-size:27px;line-height:1;margin-bottom:14px;}
+.push-modal-title{display:block;font-size:18px;font-weight:900;line-height:1.45;letter-spacing:-.025em;color:#1d1d1b;margin:0 0 12px;word-break:keep-all;}
+.push-modal-card p{margin:0 0 18px;font-size:14px;font-weight:500;line-height:1.65;color:#4e5968;word-break:keep-all;overflow-wrap:anywhere;}
+.push-modal-card .push-modal-msg[hidden]{display:none!important;}
+.push-modal-msg{font-size:12px!important;color:#b54040!important;line-height:1.55!important;}
 .push-modal-msg.ok{color:#11795a!important;}
-.push-modal-actions{display:flex;gap:8px;justify-content:center;}
-.push-btn{min-width:96px;height:44px;padding:0 18px;border-radius:999px;border:1px solid #e4ddd0;background:#fff;color:#4e5968;font:inherit;font-size:14px;font-weight:800;cursor:pointer;touch-action:manipulation;}
-.push-btn.primary{background:#1d1d1b;border-color:#1d1d1b;color:#fff;flex:1 1 auto;max-width:200px;}
+.push-modal-actions{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:9px;width:100%;margin-top:2px;}
+.push-btn{display:flex;align-items:center;justify-content:center;min-width:0;min-height:46px;width:100%;padding:10px 8px;
+  box-sizing:border-box;border-radius:12px;border:1px solid #e4ddd0;background:#fff;color:#4e5968;
+  font:inherit;font-size:14px;font-weight:800;line-height:1.2;cursor:pointer;touch-action:manipulation;white-space:nowrap;}
+.push-btn.primary{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
 .push-btn:disabled{opacity:.6;cursor:default;}
+@media(max-width:480px){
+  .push-modal{padding:14px;}
+  .push-modal-card{width:100%;max-width:360px;padding:24px 18px 18px;border-radius:18px;}
+  .push-modal-title{font-size:17px;}
+  .push-modal-card p{font-size:13px;}
+  .push-btn{min-height:44px;font-size:13px;}
+}
+@media(max-height:560px){
+  .push-modal-card{padding-top:16px;padding-bottom:15px;}
+  .push-modal-symbol{margin-bottom:8px;}
+  .push-modal-title{margin-bottom:7px;}
+  .push-modal-card p{margin-bottom:10px;}
+}
 
 /* Admin > 푸시알림 */
 #admin-push .push-tabs{margin-bottom:12px;}
