@@ -1,8 +1,9 @@
 // /api/push?action=...   (모두 로그인 필요)
 //   key            GET   VAPID 공개키(구독할 때 필요)
-//   subscribe      POST  { subscription, standalone, test } 이 기기 구독을 로그인 사용자와 연결(test=true면 테스트 알림 1건 발송)
+//   subscribe      POST  { subscription, standalone:true, deviceId, test } 모바일 PWA 앱만 등록
 //   status         POST  { endpoint } 이 기기 구독이 서버에 등록돼 있는지
-//   pwa            POST  설치한 앱(standalone)으로 실행한 기록 남기기
+//   device-state   POST  {deviceId,permission} 모바일 앱에서 확인한 알림 권한 동기화
+//   pwa            POST  설치한 모바일 앱(standalone)으로 실행한 기록 남기기
 //   settings       GET/POST (관리자) 전체·항목별 푸시알림 ON/OFF
 //   devices        GET   (관리자) 사용자별 등록 기기 목록(endpoint·키 값은 내보내지 않음)
 //   device-remove  POST  (관리자) { sid } 등록 기기 삭제
@@ -33,7 +34,7 @@ module.exports = async (req, res) => {
     }
     if (action === 'subscribe' && req.method === 'POST') {
       const b = body(req);
-      const { sub } = await P.upsertSub(store, req, user, b.subscription, b.standalone);
+      const { sub } = await P.upsertSub(store, req, user, b.subscription, b.standalone, b.deviceId);
       let test = null;
       if (b.test) test = await P.sendTo(store, [sub], { title: 'LUSH Logistics', body: '모바일 알림이 정상적으로 활성화되었습니다.', url: './', tag: 'lush-push-activated' });
       return res.status(200).json({ success: true, test });
@@ -41,10 +42,17 @@ module.exports = async (req, res) => {
     if (action === 'status' && req.method === 'POST') {
       const b = body(req), endpoint = String(b.endpoint || '');
       const subs = await P.listSubs(store);
-      const mine = endpoint ? subs.find(s => s.sid === P.sidOf(endpoint)) : null;
+      const mine = endpoint ? subs.find(s => P.isMobileAppSub(s) && s.sid === P.sidOf(endpoint) && s.appPermission === 'granted') : null;
       return res.status(200).json({ success: true, registered: !!(mine && mine.userId === user.id) });
     }
+    if (action === 'device-state' && req.method === 'POST') {
+      const b = body(req);
+      if (!P.isMobileRequest(req)) return res.status(400).json({ success: false, error: '모바일 앱에서만 상태를 확인할 수 있습니다.' });
+      await P.updateDevicePermission(store, user.id, b.deviceId, b.permission);
+      return res.status(200).json({ success: true });
+    }
     if (action === 'pwa' && req.method === 'POST') {
+      if (!P.isMobileRequest(req) || body(req).standalone !== true) return res.status(400).json({ success: false, error: '설치된 모바일 앱만 기록합니다.' });
       await P.recordPwa(store, user.id);
       return res.status(200).json({ success: true });
     }
@@ -57,7 +65,7 @@ module.exports = async (req, res) => {
     }
     if (action === 'devices') {
       const acc = await A.loadAccounts(store);
-      const list = (await P.listSubs(store)).map(P.publicSub).map(s => ({ ...s, userName: (acc.users[s.userId] && acc.users[s.userId].name) || s.userId, userExists: !!acc.users[s.userId] }));
+      const list = (await P.listSubs(store)).filter(P.isMobileAppSub).map(P.publicSub).map(s => ({ ...s, userName: (acc.users[s.userId] && acc.users[s.userId].name) || s.userId, userExists: !!acc.users[s.userId] }));
       list.sort((a, b) => a.userId.localeCompare(b.userId) || String(b.createdAt).localeCompare(String(a.createdAt)));
       return res.status(200).json({ success: true, devices: list });
     }
@@ -73,9 +81,9 @@ module.exports = async (req, res) => {
       return res.status(200).json({ success: r.ok, error: r.error || '', done: r.done || null, results: r.results || (r.done && r.done.results) || [] });
     }
     if (action === 'users') {
-      const subs = await P.listSubs(store), pwa = await P.pwaMap(store);
+      const subs = (await P.listSubs(store)).filter(P.isMobileAppSub), pwa = await P.pwaMap(store);
       const out = {};
-      subs.forEach(s => { if (!s.lastError) out[s.userId] = out[s.userId] || { activeSubs: 0 }; if (!s.lastError) out[s.userId].activeSubs++; });
+      subs.forEach(s => { out[s.userId] = out[s.userId] || { activeSubs: 0 }; if (!s.lastError && s.appPermission === 'granted') out[s.userId].activeSubs++; });
       Object.keys(pwa).forEach(id => { out[id] = { ...(out[id] || { activeSubs: 0 }), ...pwa[id] }; });
       return res.status(200).json({ success: true, users: out });
     }
