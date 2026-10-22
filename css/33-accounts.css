@@ -1,39 +1,39 @@
 /* ===== Admin > 계정 관리 · 상단 프로필 메뉴 · 게스트 화면 정리 ===== */
-#accountsView .ac-form{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
-#accountsView .ac-form .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
-#accountsView .ac-form .field.grow{flex:1 1 200px;}
-#accountsView .ac-form label{font-size:12px;font-weight:800;color:#4a4a45;}
-#accountsView .ac-form input,#accountsView .ac-form select{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
-#accountsView #acCreate{height:40px;padding:0 18px;font-weight:800;}
-#accountsView .ac-hint{margin:10px 0 0;font-size:12.5px;color:#7a7a74;}
-#accountsView .ac-table{width:100%;border-collapse:collapse;font-size:13.5px;}
-#accountsView .ac-table th{background:#f6f4ef;color:#4a4a45;font-size:12.5px;font-weight:800;text-align:left;padding:9px 10px;border-bottom:1.5px solid #e4d9c7;white-space:nowrap;}
-#accountsView .ac-table td{padding:9px 10px;border-bottom:1px solid #f1ede4;vertical-align:middle;}
-#accountsView .ac-table select{height:32px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 6px;font:inherit;font-size:13px;background:#fff;}
-#accountsView tr.ac-off td{color:#a3a39c;}
-#accountsView .ac-me{margin-left:6px;font-size:11px;font-weight:800;color:#fff;background:#1d1d1b;border-radius:999px;padding:1px 7px;}
-#accountsView .ac-badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;}
-#accountsView .ac-badge.on{background:#e3f5ec;color:#11795a;}
-#accountsView .ac-badge.off{background:#fdecec;color:#c93838;}
-#accountsView .ac-badge.temp{background:#fff1e6;color:#c35a00;}
-#accountsView .ac-when{white-space:nowrap;color:#5c6670;font-variant-numeric:tabular-nums;}
-#accountsView .ac-manage{white-space:nowrap;}
-#accountsView .ac-manage button{border:1px solid #e4d9c7;background:#fff;border-radius:8px;padding:5px 9px;margin-right:4px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
-#accountsView .ac-manage button:hover{background:#f6f3ee;}
-#accountsView .ac-manage button.del{color:#c93838;border-color:#f1d4d4;}
-#accountsView .ac-empty{text-align:center;color:#8a8a85;padding:24px 0!important;}
-#accountsView .ac-scroll{overflow:auto;}
-#accountsView .ac-log-bar{display:flex;align-items:center;gap:8px;}
-#accountsView .ac-log-bar select{height:34px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 8px;font:inherit;font-size:13px;background:#fff;}
-#appShell.on-lush #accountsView .ac-card{position:relative;overflow:hidden;background:#fff;border:1.5px solid #e4d9c7;border-radius:14px;padding:19px 16px 14px;}
-#appShell.on-lush #accountsView .ac-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;}
-#appShell.on-lush #accountsView .ac-panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
-#appShell.on-lush #accountsView .ac-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#8a6fd1;}
-#appShell.on-lush #accountsView .ac-panel.logs::before{background:#1baf7a;}
+#admin-users .ac-form{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;}
+#admin-users .ac-form .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+#admin-users .ac-form .field.grow{flex:1 1 200px;}
+#admin-users .ac-form label{font-size:12px;font-weight:800;color:#4a4a45;}
+#admin-users .ac-form input,#admin-users .ac-form select{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#admin-users #acCreate{height:40px;padding:0 18px;font-weight:800;}
+#admin-users .ac-hint{margin:10px 0 0;font-size:12.5px;color:#7a7a74;}
+#admin-users .ac-table{width:100%;border-collapse:collapse;font-size:13.5px;}
+#admin-users .ac-table th{background:#f6f4ef;color:#4a4a45;font-size:12.5px;font-weight:800;text-align:left;padding:9px 10px;border-bottom:1.5px solid #e4d9c7;white-space:nowrap;}
+#admin-users .ac-table td{padding:9px 10px;border-bottom:1px solid #f1ede4;vertical-align:middle;}
+#admin-users .ac-table select{height:32px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 6px;font:inherit;font-size:13px;background:#fff;}
+#admin-users tr.ac-off td{color:#a3a39c;}
+#admin-users .ac-me{margin-left:6px;font-size:11px;font-weight:800;color:#fff;background:#1d1d1b;border-radius:999px;padding:1px 7px;}
+#admin-users .ac-badge{display:inline-block;font-size:11.5px;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;}
+#admin-users .ac-badge.on{background:#e3f5ec;color:#11795a;}
+#admin-users .ac-badge.off{background:#fdecec;color:#c93838;}
+#admin-users .ac-badge.temp{background:#fff1e6;color:#c35a00;}
+#admin-users .ac-when{white-space:nowrap;color:#5c6670;font-variant-numeric:tabular-nums;}
+#admin-users .ac-manage{white-space:nowrap;}
+#admin-users .ac-manage button{border:1px solid #e4d9c7;background:#fff;border-radius:8px;padding:5px 9px;margin-right:4px;font:inherit;font-size:12px;font-weight:700;cursor:pointer;}
+#admin-users .ac-manage button:hover{background:#f6f3ee;}
+#admin-users .ac-manage button.del{color:#c93838;border-color:#f1d4d4;}
+#admin-users .ac-empty{text-align:center;color:#8a8a85;padding:24px 0!important;}
+#admin-users .ac-scroll{overflow:auto;}
+#admin-users .ac-log-bar{display:flex;align-items:center;gap:8px;}
+#admin-users .ac-log-bar select{height:34px;border:1.5px solid #e4d9c7;border-radius:8px;padding:0 8px;font:inherit;font-size:13px;background:#fff;}
+#appShell.on-lush #admin-users .ac-card{position:relative;overflow:hidden;background:#fff;border:1.5px solid #e4d9c7;border-radius:14px;padding:19px 16px 14px;}
+#appShell.on-lush #admin-users .ac-card::before{content:"";position:absolute;left:0;right:0;top:0;height:5px;background:#1d1d1b;}
+#appShell.on-lush #admin-users .ac-panel{position:relative;overflow:hidden;background:#fff!important;border:2px solid #1d1d1b!important;border-radius:16px!important;box-shadow:none!important;padding-top:22px!important;}
+#appShell.on-lush #admin-users .ac-panel::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#8a6fd1;}
+#appShell.on-lush #admin-users .ac-panel.logs::before{background:#1baf7a;}
 @media (max-width:900px){
-  #accountsView .ac-form .field{flex:1 1 100%;}
-  #accountsView #acCreate{flex:1 1 100%;}
-  #accountsView .ac-table{min-width:760px;}
+  #admin-users .ac-form .field{flex:1 1 100%;}
+  #admin-users #acCreate{flex:1 1 100%;}
+  #admin-users .ac-table{min-width:760px;}
 }
 
 /* 상단 프로필(눌러서 비밀번호 변경·로그아웃) */
@@ -51,3 +51,47 @@
 /* 게스트: 보기 전용 — 저장·동기화·백업 같은 버튼 숨김 */
 html.role-guest #appShell #baseSyncBtn,html.role-guest #appShell #exportBackup,html.role-guest #appShell #importBackup,html.role-guest #appShell #baseExportBtn,
 html.role-guest #appShell #dashboard [data-dash-todo-toggle],html.role-guest #appShell #dashboard .dn-act{display:none!important;}
+
+/* ===== Admin > 사용자 관리: [사용자 목록] [사용자 추가] [로그인 기록] ===== */
+#admin-users .us-tabs{display:flex;align-items:center;gap:6px;margin:0 0 14px;flex-wrap:wrap;}
+#admin-users .us-tab{height:40px;padding:0 18px;border:1px solid #e5e0d6;border-radius:10px;background:#fff;color:#4e5968;font:inherit;font-size:14px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:6px;}
+#admin-users .us-tab.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#admin-users .us-tab em{font-style:normal;font-size:12px;font-weight:900;color:#e87ba4;}
+#admin-users .us-refresh{margin-left:auto;height:36px;}
+#admin-users [data-us-pane][hidden]{display:none!important;}
+#admin-users .us-card{position:relative;overflow:hidden;border:2px solid #1d1d1b!important;border-radius:16px!important;padding-top:22px!important;}
+#admin-users .us-card::before{content:"";position:absolute;left:0;right:0;top:0;height:6px;background:#8a6fd1;}
+#admin-users [data-us-pane="add"] .us-card::before{background:#e87ba4;}
+#admin-users [data-us-pane="logs"] .us-card::before{background:#1baf7a;}
+#admin-users .us-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:12px;}
+#admin-users .us-card h3{margin:0 0 4px;}
+#admin-users .us-card p{margin:0;font-size:13px;color:#7a7a74;}
+#admin-users .us-search{height:38px;min-width:220px;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 12px;font:inherit;font-size:14px;}
+#admin-users .us-add-card{max-width:720px;}
+#admin-users .us-add-card>p{margin:4px 0 16px;}
+#admin-users .ac-form{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+#admin-users .ac-form .field{display:flex;flex-direction:column;gap:5px;min-width:0;}
+#admin-users .ac-form .field:nth-child(3){grid-column:1 / -1;}
+#admin-users .ac-form label{font-size:12.5px;font-weight:800;color:#4a4a45;}
+#admin-users .ac-form input,#admin-users .ac-form select{height:42px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 12px;font:inherit;font-size:14px;background:#fff;}
+#admin-users #acCreate{grid-column:1 / -1;height:44px;font-weight:900;display:flex;align-items:center;justify-content:center;}
+#admin-users .us-rules{display:grid;gap:8px;margin-top:16px;padding:12px 14px;border-radius:12px;background:#f8f6f1;border:1px dashed #e4d9c7;}
+#admin-users .us-rules div{display:flex;gap:10px;font-size:13px;line-height:1.5;}
+#admin-users .us-rules b{flex:none;width:90px;color:#1d1d1b;}
+#admin-users .us-rules span{color:#5c5c57;}
+#admin-users .us-created{margin-top:14px;padding:14px 16px;border-radius:12px;background:#eefaf4;border:1.5px solid #bfe6d2;}
+#admin-users .us-created>b{display:block;margin-bottom:10px;color:#11795a;font-size:14.5px;}
+#admin-users .us-created-grid{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;font-size:13.5px;margin-bottom:10px;}
+#admin-users .us-created-grid span{color:#5c6670;font-weight:700;}
+#admin-users .us-created-grid code{font-family:inherit;font-weight:900;color:#1d1d1b;background:#fff;border-radius:6px;padding:1px 8px;justify-self:start;}
+#admin-users .us-created-grid em{font-style:normal;font-weight:700;}
+#admin-users .us-created small{display:block;margin-bottom:10px;font-size:12.5px;color:#5c5c57;}
+#admin-users .ac-self{font-size:12px;color:#8a8a85;}
+@media (max-width:900px){
+  #admin-users .us-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));}
+  #admin-users .us-tab{justify-content:center;padding:0 6px;font-size:13px;}
+  #admin-users .us-refresh{grid-column:1 / -1;margin-left:0;}
+  #admin-users .us-search{min-width:0;width:100%;}
+  #admin-users .ac-form{grid-template-columns:1fr;}
+  #admin-users .ac-table{min-width:760px;}
+}
