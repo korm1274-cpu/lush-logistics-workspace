@@ -54,6 +54,8 @@ jobs:
           "$ANDROID_HOME/build-tools/35.0.0/apksigner" verify --verbose --print-certs "$APK" | tee /tmp/lush-signature.txt
           mkdir -p security-report
           sha256sum "$APK" | tee security-report/SHA256SUMS.txt
+          git rev-parse HEAD | tee security-report/SOURCE_COMMIT.txt
+          printf "TEST APK: automatically debug-signed, not a production identity. Do not disable Play Protect.\\n" | tee security-report/README.txt
           cp /tmp/lush-permissions.txt /tmp/lush-signature.txt /tmp/lush-badging.txt security-report/
       - name: Upload security report
         uses: actions/upload-artifact@v4
