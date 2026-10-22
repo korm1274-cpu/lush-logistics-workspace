@@ -42,7 +42,7 @@
       '</tr>';
     }).join(''):'<tr><td colspan="8" class="ac-empty">'+(users.length?'검색 결과가 없습니다.':'사용자가 없습니다.')+'</td></tr>';
   }
-  // 앱 설치: PWA(설치한 앱)로 실행한 기록 있음→설치 완료 / 알림: 유효 구독 1개 이상→활성, 설치 기록만 있으면 비활성, 둘 다 없으면 -
+  // 모바일에 설치된 PWA가 확인한 알림 상태만 표시합니다. 일반 브라우저의 구독은 서버에서 제외됩니다.
   function pushCells(id){
     var p=pushUsers[id]||{},installed=!!p.pwaDetected,active=(p.activeSubs||0)>0;
     var app=installed?'<span class="ac-badge on">설치 완료</span>':'<span class="ac-muted">미확인</span>';
