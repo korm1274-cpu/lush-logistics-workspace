@@ -1,4 +1,4 @@
-/* Admin > 푸시알림 (관리자 전용) — [푸시알림 설정] [Push 등록 기기]
+/* Admin > 푸시알림 (관리자 전용) — 모바일 설치형 PWA의 상태만 표시
    - 설정: 전체 ON/OFF + 항목별(팀 공지사항·제품 확보 현황·대량 주문·트래픽·본사 출고·노즐/비닐) ON/OFF
    - 최초 기존 데이터 1회 검증: 항목별 최근 기존 건 1개씩 실제 알림으로 발송, 완료 후 다시 실행 안 됨
    - 등록 기기: 사용자·기기/OS·브라우저·상태·등록일, 관리자만 삭제(endpoint·키 값은 표시하지 않음) */
@@ -65,11 +65,11 @@
       var list=(j&&j.success&&j.devices)||[];
       $('paDevCount').textContent=list.length?String(list.length):'';
       body.innerHTML=list.length?list.map(function(d){
-        var st=d.status==='active'?'<span class="ac-badge on">정상</span>':'<span class="ac-badge off">발송 오류</span>';
+        var st=d.status==='active'?'<span class="ac-badge on">활성</span>':d.status==='inactive'?'<span class="ac-badge off">비활성</span>':d.status==='error'?'<span class="ac-badge off">발송 오류</span>':'<span class="ac-badge temp">앱 확인 전</span>';
         return '<tr data-sid="'+esc(d.sid)+'"><td><b>'+esc(d.userName)+'</b><small class="pa-muted"> '+esc(d.userId)+'</small>'+(d.userExists?'':' <span class="ac-badge off">삭제된 계정</span>')+'</td>'+
           '<td>'+esc(d.os)+(d.standalone?' <span class="ac-badge temp">앱</span>':'')+'</td><td>'+esc(d.browser)+'</td><td>'+st+'</td><td class="ac-when">'+when(d.createdAt)+'</td>'+
           '<td class="ac-manage"><button type="button" class="del" data-pa-del="'+esc(d.sid)+'">삭제</button></td></tr>';
-      }).join(''):'<tr><td colspan="6" class="ac-empty">'+(j&&j.success?'알림을 허용한 기기가 없습니다.':esc((j&&j.error)||'불러오지 못했습니다.'))+'</td></tr>';
+      }).join(''):'<tr><td colspan="6" class="ac-empty">'+(j&&j.success?'알림을 등록한 모바일 앱이 없습니다.':esc((j&&j.error)||'불러오지 못했습니다.'))+'</td></tr>';
     });
   }
 
