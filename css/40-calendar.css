@@ -41,3 +41,6 @@ input.lc-input::-webkit-calendar-picker-indicator{display:none!important;}
 .lc-cal .lc-head button,#appShell .lc-cal .lc-head button{display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;min-height:0!important;}
 /* 화면별 입력칸 스타일(예: 제품 불량 등록 칸 background:#fff!important)보다 우선해서 달력 아이콘 표시 */
 #appShell:is(.on-lush,:not(.on-lush)) :is(#defectView,#todoManagerView,#noticeManagerView,#scheduleManagerView,#outboundRequestManager,#settings,.view,.panel) input.lc-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 10px center!important;background-size:15px 15px!important;padding-right:32px!important;}
+/* 트래픽 출고 요청 등록: 요청일자 칸을 날짜 길이에 맞게(칸이 길어 달력 아이콘이 멀리 떨어지던 것) */
+#appShell .request-date-entry{grid-template-columns:minmax(0,170px)!important;}
+#appShell #requestDateInput{width:100%!important;max-width:170px!important;min-width:0!important;box-sizing:border-box;}
