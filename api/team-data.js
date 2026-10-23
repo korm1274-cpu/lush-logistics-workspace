@@ -69,6 +69,8 @@ async function inboundLists(req, res, user) {
       const rec = {
         id, country: clip(b.country, 3), batchNo: clip(b.batchNo, 4), label: clip(b.label, 20), date: clip(b.date, 10), fileName: clip(b.fileName, 200),
         sheets: (Array.isArray(b.sheets) ? b.sheets : []).slice(0, 60).map(s => clip(s, 40)), cols, rows,
+        // 파일 CHECK 시트 합계(전체·담당별) — 화면 합계는 이 기준
+        check: b.check && typeof b.check === 'object' ? { total: Number(b.check.total) || 0, bySheet: Object.fromEntries(Object.entries(b.check.bySheet || {}).slice(0, 60).map(([k, v]) => [clip(k, 40), Number(v) || 0])) } : null,
         uploadedAt: new Date().toISOString(), uploadedBy: user.id,
       };
       await store.cmd(['HSET', LIST_KEY, id, JSON.stringify(rec)]);

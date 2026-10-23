@@ -35,8 +35,10 @@
 #inboundListView .il-split b{color:#1d1d1b;font-weight:900;}
 #inboundListView .il-muted{color:#a3a9b0!important;background:none!important;padding:0!important;}
 #inboundListView .il-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
-#inboundListView .il-panel .badge[hidden]{display:none;}
-#inboundListView .il-panel .badge{max-width:60%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#inboundListView .il-panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#inboundListView .il-meta{display:block;margin-top:3px;font-size:12px;color:#8b95a1;overflow-wrap:anywhere;}
+#inboundListView .il-meta[hidden]{display:none;}
+#inboundListView .il-export{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
 @media (max-width:900px){
   #inboundListView .il-upload-btn{width:100%;justify-content:center;}
   #inboundListView .il-toolbar .field{flex:1 1 100%;min-width:0;}
@@ -44,5 +46,5 @@
   #inboundListView .il-chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
   #inboundListView .il-chip{flex:none;}
   #inboundListView .il-item{padding:12px 13px;}
-  #inboundListView .il-panel .badge{display:none;}
+  #inboundListView .il-export{height:36px;padding:0 12px;font-size:13px;}
 }
