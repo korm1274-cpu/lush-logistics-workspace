@@ -1,12 +1,12 @@
-/* 기간 조회 날짜 칸(시작일·종료일)에 공통 달력 붙이기 — 입고리스트 입고일 달력과 같은 디자인(css/40-calendar.css)
-   - 대상: id가 ...Start / ...End (…StartDate / …EndDate) 로 끝나는 조회 기간 칸 + 일자별 상세조회 '조회일자'. 일정 등록·박스 발생일 같은 입력 칸은 제외
+/* 날짜 칸에 공통 달력 붙이기 — 입고리스트 입고일 달력과 같은 디자인(css/40-calendar.css)
+   - 대상: 앱의 날짜 칸 전부(재고 표 안 바로 입력 칸만 제외)
    - 칸 자체(input type=date, 값 YYYY-MM-DD)는 그대로 두고, 누르면 기본 달력 대신 이 달력을 띄움 → 기존 조회 코드는 그대로 동작
    - 시작일·종료일이 짝이면 그 사이 날짜를 연하게 표시, min/max가 있으면 범위 밖 날짜는 막음
    - 고르면 input·change 이벤트를 보내 기존 화면이 그대로 반응 */
 (function(){
-  var SKIP={scheduleStartDate:1,scheduleEndDate:1};
-  var EXTRA={productDateDetailDate:1}; // 기간은 아니지만 조회용 날짜(일자별 상세조회 '조회일자')
-  var TARGET=/(Start|End)(Date)?$/;
+  // 앱의 날짜 칸 전부(조회 기간·일정 등록·입고요청일·출고 요청일·제조일자·박스 발생일·과거 인원 수정 일자 등)
+  // 단, 재고 표 안에서 바로 입력하는 제조일자 칸(#stBody)은 표 입력 방식 그대로 둠
+  function excluded(inp){return !!inp.closest('#stBody')}
   var pop=null,cur=null,month='';
   var $=function(id){return id?document.getElementById(id):null};
   function pad(n){return String(n).padStart(2,'0')}
@@ -58,7 +58,7 @@
     inp.dispatchEvent(new Event('change',{bubbles:true}));
   }
   function enhance(inp){
-    if(!inp||inp.dataset.lc||SKIP[inp.id]||!(TARGET.test(inp.id||'')||EXTRA[inp.id]))return;
+    if(!inp||inp.dataset.lc||excluded(inp))return;
     inp.dataset.lc='1';inp.readOnly=true;inp.setAttribute('inputmode','none');inp.classList.add('lc-input');
     inp.addEventListener('click',function(e){e.preventDefault();if(cur===inp&&pop&&!pop.hidden)close();else open(inp)});
     inp.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '||e.key==='ArrowDown'){e.preventDefault();open(inp)}});
