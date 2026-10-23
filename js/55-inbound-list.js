@@ -108,21 +108,21 @@
         cols.map(function(k){var v=r.values?r.values[k]:0;if(typeof v==='number'&&v>0){sum[k]=(sum[k]||0)+v;return '<td class="il-num">'+fmt(v)+'</td>'}return '<td class="il-num il-zero">-</td>'}).join('')+'</tr>';
     }).join('');
     return '<div class="il-table-wrap"><table class="il-table"><thead><tr><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
-      '<tbody>'+body+'</tbody><tfoot><tr><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약과 같은 기준(검색이 없으면 CHECK 시트)">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
+      '<tbody>'+body+'</tbody><tfoot><tr><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약의 총 입고수량과 같은 합계">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
   }
   /* 총 입고수량: 검색어가 없으면 파일 CHECK 시트 기준(전체·담당별 TOTAL), 검색 중이거나 CHECK가 없으면 보이는 행 합계 */
   function totalOf(list,q){
     var rowSum=list.reduce(function(s,r){return s+(Number(r.total)||0)},0);
     var bs=current()?[current()]:scope();
     var note=$('ilTotalNote');
-    if(q||!bs.length||bs.some(function(b){return !b.check})){if(note)note.textContent=q?'검색 결과 합계':'EA';return rowSum}
+    if(q||!bs.length||bs.some(function(b){return !b.check})){if(note)note.textContent='EA,G';return rowSum}
     var sum=0,ok=true;
     bs.forEach(function(b){
       if(sheetFilter){var v=b.check.bySheet[String(sheetFilter).toUpperCase()];if(typeof v==='number')sum+=v;else if((b.sheets||[]).indexOf(sheetFilter)>=0)ok=false}
       else{if(b.check.total)sum+=b.check.total;else ok=false}
     });
-    if(!ok){if(note)note.textContent='EA';return rowSum}
-    if(note)note.textContent='EA · CHECK 시트 기준';
+    if(!ok){if(note)note.textContent='EA,G';return rowSum}
+    if(note)note.textContent='EA,G';
     return sum;
   }
   function render(){
@@ -174,7 +174,7 @@
       var multi=!v.batch;
       var head=(multi?['차수']:[]).concat(['담당','제품코드','제품명','TOTAL']).concat(cols);
       var title=(v.batch?v.batch.label:'전체 차수')+' 입고리스트'+(sheetFilter?' · '+label(sheetFilter)+' ('+sheetFilter+')':'')+(v.q?' · 검색 "'+v.q+'"':'');
-      var info=(v.batch&&v.batch.date?'입고일 '+v.batch.date+' · ':'')+'품목 '+v.list.length+'건 · 총 입고수량 '+fmt(totalOf(v.list,v.q))+'개'+(document.getElementById('ilTotalNote')&&/CHECK/.test($('ilTotalNote').textContent)?' (CHECK 시트 기준)':'')+' · 출력 '+new Date().toLocaleDateString('ko-KR');
+      var info=(v.batch&&v.batch.date?'입고일 '+v.batch.date+' · ':'')+'품목 '+v.list.length+'건 · 총 입고수량 '+fmt(totalOf(v.list,v.q))+' (EA,G)'+' · 출력 '+new Date().toLocaleDateString('ko-KR');
       var aoa=[[title],[info],head];
       v.list.forEach(function(r){aoa.push((multi?[r.batch.label]:[]).concat([label(r.sheet),r.code,r.name,Number(r.total)||0]).concat(cols.map(function(k){var x=r.values?r.values[k]:'';return typeof x==='number'?(x||''):(x==null?'':x)})))});
       var ws=XLSX.utils.aoa_to_sheet(aoa);

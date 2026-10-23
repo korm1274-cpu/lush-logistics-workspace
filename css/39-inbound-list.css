@@ -64,3 +64,9 @@
   #inboundListView .il-toolbar .field.grow{flex:1 1 100%;}
   #inboundListView .il-toolbar select{width:100%;}
 }
+@media (max-width:900px){
+  /* 요약 카드: 숫자와 단위(건·EA,G·명)가 한 줄 오른쪽 끝에 오도록 숫자를 조금 작게 */
+  #appShell #inboundListView .data-kpis .kpi>b{font-size:17px!important;letter-spacing:-.02em;}
+  #appShell #inboundListView .data-kpis .kpi>small{font-size:11px!important;}
+  #appShell #inboundListView .data-kpis .kpi{column-gap:3px!important;padding-left:11px!important;padding-right:9px!important;}
+}
