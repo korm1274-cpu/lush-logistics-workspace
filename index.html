@@ -1228,8 +1228,7 @@ window.ensureChart=function(){
   <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th class="num">팔렛수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
 </div></section>
 <section id="inboundListView" class="view"><div class="data-workbench">
-  <div class="data-workbench-head"><div><div class="eyebrow">INBOUND LIST</div><h2>입고리스트</h2><p>입고 분배리스트 엑셀을 올리면 담당자(시트)별로 TOTAL 수량이 있는 제품과 매장 구분별 수량을 보여 줍니다.</p></div></div>
-  <div class="il-upload"><div class="il-upload-text"><b>입고 분배리스트 업로드</b><small>파일명의 <em>(JP 141차)</em>처럼 제조국·차수를 읽어 반영합니다. 같은 차수를 다시 올리면 새 파일로 바뀝니다.</small></div><label class="btn primary il-upload-btn">엑셀 파일 선택<input type="file" id="ilFile" accept=".xlsx,.xls" hidden></label></div>
+  <div class="data-workbench-head"><div><div class="eyebrow">INBOUND LIST</div><h2>입고리스트</h2><p>데이터 › 업로드에서 올린 입고 분배리스트를 담당자(시트)별로 보여 줍니다. TOTAL 수량이 있는 제품과 매장 구분별 수량만 표시합니다.</p></div></div>
   <div class="il-toolbar">
     <div class="field"><label>차수</label><select id="ilBatch"></select></div>
     <div class="field grow"><label>검색</label><input id="ilSearch" placeholder="담당(아마존·퍼즈…) / 제품코드 / 제품명" autocomplete="off"></div>

@@ -4,6 +4,7 @@
    - TOTAL이 0보다 큰 행만 반영, A열 PLU·C열 제품군을 뺀 나머지 칸(제품코드·제품명·TOTAL·리테일·디지털…)은 모두 저장
    - 화면: 차수 선택 + 담당(시트) 필터 + 검색(아마존·퍼즈처럼 한글 이름도 가능)
      "ULTRAPLANT 45G — TOTAL 25 중 리테일 20 · 디지털 4 · 수원스파 1"
+   - 업로드: 데이터 › 업로드의 '입고리스트 Excel' 카드에서만
    - 저장: /api/team-data?part=inbound-lists (차수별 보관, 팀 공유) */
 (function(){
   var API='/api/team-data?part=inbound-lists';
@@ -121,7 +122,7 @@
     $('ilTitle').textContent=(sheetFilter?label(sheetFilter)+' ':'')+'입고리스트'+(b?' · '+b.label:batches.length?' · 전체 차수':'');
     $('ilMeta').textContent=b?(b.fileName?b.fileName:'')+(b.uploadedAt?' · '+b.uploadedAt.slice(0,10)+' 업로드':''):'';
     $('ilMeta').hidden=!b;
-    if(!batches.length){$('ilList').innerHTML='<p class="il-empty">'+(canEdit()?'위에서 입고 분배리스트 엑셀을 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.')+'</p>';return}
+    if(!batches.length){$('ilList').innerHTML='<p class="il-empty">'+(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.')+'</p>';return}
     $('ilList').innerHTML=list.length?list.map(function(r){
       return '<div class="il-item"><div class="il-item-top"><span class="il-owner" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>'+(b?'':'<span class="il-batch">'+esc(r.batch.label)+'</span>')+'<b class="il-name">'+esc(r.name)+'</b></div>'+
         '<div class="il-item-sub"><code>'+esc(r.code)+'</code><span class="il-total">TOTAL <b>'+fmt(r.total)+'</b>개</span></div>'+
@@ -144,7 +145,7 @@
         toast(meta.label+' 입고리스트 '+fmt(p.rows.length)+'건 반영 (담당 '+p.sheets.length+'명)');
         sheetFilter='';return load().then(function(){renderBatches(meta.id);render()});
       });
-    }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){busy=false;var f=$('ilFile');if(f)f.value='';if(srcInput)srcInput.value=''});
+    }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){busy=false;if(srcInput)srcInput.value=''});
   }
   /* 엑셀 내보내기: 지금 화면에 보이는 목록(차수·담당 필터·검색 반영) → A4 가로, 폭 1페이지에 맞춤, 제목 행 반복 인쇄 */
   var lastView=null;
@@ -200,19 +201,16 @@
 
   function init(){
     var view=$('inboundListView');if(!view)return;
-    $('ilFile').addEventListener('change',function(e){upload(e.target.files&&e.target.files[0])});
     $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(canEdit()&&current());render()});
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);
     $('ilExport').addEventListener('click',exportExcel);
-    // 데이터 › 업로드 화면의 '입고리스트 Excel' 카드도 같은 방식으로 반영
+    // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');render()});
-    var up=view.querySelector('.il-upload');
-    var sync=function(){if(up)up.hidden=!canEdit()};
     // 화면이 열릴 때마다 새로 받기
-    new MutationObserver(function(){if(view.classList.contains('active')){sync();load()}}).observe(view,{attributes:true,attributeFilter:['class']});
-    if(view.classList.contains('active')){sync();load()}
+    new MutationObserver(function(){if(view.classList.contains('active')){load()}}).observe(view,{attributes:true,attributeFilter:['class']});
+    if(view.classList.contains('active'))load()
   }
   window.parseInboundListName=parseName; // 시험용
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
