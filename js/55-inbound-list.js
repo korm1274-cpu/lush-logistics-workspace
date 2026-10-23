@@ -3,13 +3,13 @@
    - 담당 시트: 'PLU | 제품코드 | 제품군 | 제품명 | TOTAL | 매장 구분…' 형식의 시트만(제조·SPA리스트는 제외, 전체·CHECK·DATA 같은 집계 시트는 형식이 달라 자동 제외)
    - TOTAL이 0보다 큰 행만 반영, A열 PLU·C열 제품군을 뺀 나머지 칸(제품코드·제품명·TOTAL·리테일·디지털…)은 모두 저장
    - 화면: 차수 선택 + 담당(시트) 필터 + 검색(아마존·퍼즈처럼 한글 이름도 가능)
-     "ULTRAPLANT 45G — TOTAL 25 중 리테일 20 · 디지털 4 · 수원스파 1"
+     목록은 표: 왼쪽 열 제품명, 위쪽 행 분배 매장명(리테일·디지털…), 칸에 수량, 맨 아래 합계
    - 업로드: 데이터 › 업로드의 '입고리스트 Excel' 카드에서만
    - 저장: /api/team-data?part=inbound-lists (차수별 보관, 팀 공유) */
 (function(){
   var API='/api/team-data?part=inbound-lists';
   var EXCLUDE={'제조':1,'SPA리스트':1};
-  var ALIAS={AMAZON:'아마존',FURZE:'퍼즈',ART:'아트',BLUE:'블루',VOL:'볼',BUS:'버스',NEW:'뉴',TIME:'타임',STAR:'스타',TAROT:'타로',BLACK:'블랙',SAND:'샌드',HANAMI:'하나미',VM:'VM',LIMITED:'리미티드',SPA:'스파',BOOK:'북'};
+  var ALIAS={AMAZON:'아마존',FURZE:'퍼즈',ART:'아트',BLUE:'블루',VOL:'볼케이노',BUS:'버스',NEW:'뉴',TIME:'타임',STAR:'스타',TAROT:'타로',BLACK:'블랙',SAND:'샌드',HANAMI:'하나미',VM:'VM',LIMITED:'리미티드',SPA:'스파',BOOK:'북'};
   var $=function(id){return document.getElementById(id)};
   var batches=[],sheetFilter='',busy=false;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -65,33 +65,55 @@
   function load(){
     return fetch(API).then(function(r){return r.json()}).then(function(j){
       if(!j||!j.success){toast((j&&j.error)||'입고리스트를 불러오지 못했습니다.');return}
-      batches=j.batches||[];renderBatches();render();
+      batches=j.batches||[];renderDates();renderBatches();render();
     }).catch(function(){toast('입고리스트를 불러오지 못했습니다.')});
   }
-  function current(){var v=$('ilBatch').value;return v==='*'?null:batches.find(function(b){return b.id===v})||null}
+  /* 필터: 입고일 선택 → 그 날짜에 입고된 차수만 차수 목록에 표시(같은 날 여러 차수면 '전체 차수'로 함께 보기) */
+  function scope(){var d=$('ilDate').value;return d?batches.filter(function(b){return (b.date||'')===d}):batches}
+  function current(){var v=$('ilBatch').value;return !v||v==='*'?null:scope().find(function(b){return b.id===v})||null}
+  function renderDates(keepDate){
+    var sel=$('ilDate'),cur=keepDate!=null?keepDate:sel.value,dates=[];
+    batches.forEach(function(b){var d=b.date||'';if(dates.indexOf(d)<0)dates.push(d)});
+    dates.sort(function(a,c){return c.localeCompare(a)});
+    sel.innerHTML=batches.length?'<option value="">전체 날짜</option>'+dates.map(function(d){return '<option value="'+esc(d)+'">'+(d?esc(d):'날짜 없음')+'</option>'}).join(''):'<option value="">업로드된 입고리스트 없음</option>';
+    var first=sel.dataset.init!=='1'&&!(keepDate!=null&&dates.indexOf(keepDate)>=0);if(batches.length)sel.dataset.init='1';
+    sel.value=first?(dates[0]||''):(cur===''||dates.indexOf(cur)>=0?cur:(dates[0]||'')); // 처음 열 때는 가장 최근 입고일
+  }
   function renderBatches(keep){
-    var sel=$('ilBatch'),cur=keep||sel.value;
-    sel.innerHTML=batches.length?batches.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+(b.date?' · '+esc(b.date):'')+'</option>'}).join('')+'<option value="*">전체 차수</option>':'<option value="">업로드된 입고리스트 없음</option>';
-    if(cur&&(cur==='*'||batches.some(function(b){return b.id===cur})))sel.value=cur;
+    var sel=$('ilBatch'),cur=keep||sel.value,list=scope();
+    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">차수 없음</option>';
+    if(cur&&(cur==='*'?list.length>1:list.some(function(b){return b.id===cur})))sel.value=cur;
     $('ilDelete').hidden=!(canEdit()&&current());
   }
   function rowsOf(){
     var b=current();
     if(b)return b.rows.map(function(r){return Object.assign({batch:b},r)});
-    var all=[];batches.forEach(function(x){(x.rows||[]).forEach(function(r){all.push(Object.assign({batch:x},r))})});return all;
+    var all=[];scope().forEach(function(x){(x.rows||[]).forEach(function(r){all.push(Object.assign({batch:x},r))})});return all;
   }
   function sheetsOf(){
     var b=current(),list=[];
-    (b?[b]:batches).forEach(function(x){(x.sheets||[]).forEach(function(s){if(list.indexOf(s)<0)list.push(s)})});
+    (b?[b]:scope()).forEach(function(x){(x.sheets||[]).forEach(function(s){if(list.indexOf(s)<0)list.push(s)})});
     return list;
   }
-  function breakdown(r){
-    return Object.keys(r.values||{}).filter(function(k){return typeof r.values[k]==='number'&&r.values[k]>0}).map(function(k){return '<span>'+esc(k)+' <b>'+fmt(r.values[k])+'</b></span>'}).join('');
+  /* 표: 행 = 제품(왼쪽 제품명), 열 = 분배 매장(리테일·디지털…), 칸 = 수량. 지금 보이는 목록에서 전부 0인 매장 열은 숨김 */
+  function tableHtml(list,b){
+    var cols=[];
+    list.forEach(function(r){Object.keys(r.values||{}).forEach(function(k){var v=r.values[k];if(typeof v==='number'&&v>0&&cols.indexOf(k)<0)cols.push(k)})});
+    var order=[];(b?[b]:scope()).forEach(function(x){(x.cols||[]).forEach(function(k){if(order.indexOf(k)<0)order.push(k)})});
+    cols.sort(function(a,c){var ia=order.indexOf(a),ic=order.indexOf(c);return (ia<0?999:ia)-(ic<0?999:ic)});
+    var showOwner=!sheetFilter,sum={};
+    var body=list.map(function(r){
+      return '<tr><th scope="row" class="il-pname"><b>'+esc(r.name)+'</b><small>'+esc(r.code)+(showOwner?' · <span class="il-owner-t" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>':'')+(b?'':' · '+esc(r.batch.label))+'</small></th>'+
+        '<td class="il-num il-tot">'+fmt(r.total)+'</td>'+
+        cols.map(function(k){var v=r.values?r.values[k]:0;if(typeof v==='number'&&v>0){sum[k]=(sum[k]||0)+v;return '<td class="il-num">'+fmt(v)+'</td>'}return '<td class="il-num il-zero">-</td>'}).join('')+'</tr>';
+    }).join('');
+    return '<div class="il-table-wrap"><table class="il-table"><thead><tr><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
+      '<tbody>'+body+'</tbody><tfoot><tr><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약과 같은 기준(검색이 없으면 CHECK 시트)">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
   }
   /* 총 입고수량: 검색어가 없으면 파일 CHECK 시트 기준(전체·담당별 TOTAL), 검색 중이거나 CHECK가 없으면 보이는 행 합계 */
   function totalOf(list,q){
     var rowSum=list.reduce(function(s,r){return s+(Number(r.total)||0)},0);
-    var bs=current()?[current()]:batches;
+    var bs=current()?[current()]:scope();
     var note=$('ilTotalNote');
     if(q||!bs.length||bs.some(function(b){return !b.check})){if(note)note.textContent=q?'검색 결과 합계':'EA';return rowSum}
     var sum=0,ok=true;
@@ -119,15 +141,11 @@
     $('ilCount').textContent=fmt(list.length);
     $('ilTotal').textContent=fmt(totalOf(list,q));
     $('ilOwners').textContent=fmt(Object.keys(list.reduce(function(o,r){o[r.sheet]=1;return o},{})).length);
-    $('ilTitle').textContent=(sheetFilter?label(sheetFilter)+' ':'')+'입고리스트'+(b?' · '+b.label:batches.length?' · 전체 차수':'');
+    $('ilTitle').textContent=(sheetFilter?label(sheetFilter)+' ':'')+'입고리스트'+(b?' · '+b.label:batches.length?' · '+($('ilDate').value?$('ilDate').value+' ':'')+'전체 차수':'');
     $('ilMeta').textContent=b?(b.fileName?b.fileName:'')+(b.uploadedAt?' · '+b.uploadedAt.slice(0,10)+' 업로드':''):'';
     $('ilMeta').hidden=!b;
     if(!batches.length){$('ilList').innerHTML='<p class="il-empty">'+(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.')+'</p>';return}
-    $('ilList').innerHTML=list.length?list.map(function(r){
-      return '<div class="il-item"><div class="il-item-top"><span class="il-owner" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>'+(b?'':'<span class="il-batch">'+esc(r.batch.label)+'</span>')+'<b class="il-name">'+esc(r.name)+'</b></div>'+
-        '<div class="il-item-sub"><code>'+esc(r.code)+'</code><span class="il-total">TOTAL <b>'+fmt(r.total)+'</b>개</span></div>'+
-        '<div class="il-split">'+(breakdown(r)||'<span class="il-muted">매장 구분 수량 없음</span>')+'</div></div>';
-    }).join(''):'<p class="il-empty">조건에 맞는 제품이 없습니다.</p>';
+    $('ilList').innerHTML=list.length?tableHtml(list,b):'<p class="il-empty">조건에 맞는 제품이 없습니다.</p>';
   }
 
   function upload(file,srcInput){
@@ -143,7 +161,7 @@
       return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',batch:batch})}).then(function(r){return r.json()}).then(function(j){
         if(!j||!j.success)throw new Error((j&&j.error)||'저장하지 못했습니다.');
         toast(meta.label+' 입고리스트 '+fmt(p.rows.length)+'건 반영 (담당 '+p.sheets.length+'명)');
-        sheetFilter='';return load().then(function(){renderBatches(meta.id);render()});
+        sheetFilter='';return load().then(function(){renderDates(meta.date);renderBatches(meta.id);render()});
       });
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){busy=false;if(srcInput)srcInput.value=''});
   }
@@ -201,6 +219,7 @@
 
   function init(){
     var view=$('inboundListView');if(!view)return;
+    $('ilDate').addEventListener('change',function(){renderBatches();render()});
     $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(canEdit()&&current());render()});
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);

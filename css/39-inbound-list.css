@@ -13,21 +13,24 @@
 #inboundListView .il-chip.zero em{color:#c3bfb6;}
 #inboundListView .il-chip.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
 #inboundListView .il-chip.on em{color:#ffb3cf;}
-#inboundListView .il-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,420px),1fr));gap:10px;}
-#inboundListView .il-item{border:1.5px solid #ece6db;border-radius:14px;background:#fffdf9;padding:13px 15px;display:grid;gap:7px;}
-#inboundListView .il-item:hover{border-color:#1d1d1b;}
-#inboundListView .il-item-top{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:wrap;}
-#inboundListView .il-owner{flex:none;font-size:12px;font-weight:900;color:#fff;background:#1d1d1b;border-radius:999px;padding:3px 10px;}
-#inboundListView .il-batch{flex:none;font-size:11.5px;font-weight:800;color:#5f5e5a;background:#f3efe7;border-radius:999px;padding:3px 9px;}
-#inboundListView .il-name{flex:1 1 200px;min-width:0;font-size:14.5px;font-weight:800;color:#1d1d1b;line-height:1.4;overflow-wrap:anywhere;}
-#inboundListView .il-item-sub{display:flex;align-items:center;justify-content:space-between;gap:8px;}
-#inboundListView .il-item-sub code{font-size:12px;color:#6b7684;background:none;}
-#inboundListView .il-total{font-size:13px;color:#4e5968;}
-#inboundListView .il-total b{font-size:17px;font-weight:900;color:#1baf7a;margin:0 2px;}
-#inboundListView .il-split{display:flex;flex-wrap:wrap;gap:6px;}
-#inboundListView .il-split span{font-size:12.5px;font-weight:700;color:#4e5968;background:#f6f3ec;border-radius:999px;padding:4px 10px;}
-#inboundListView .il-split b{color:#1d1d1b;font-weight:900;}
-#inboundListView .il-muted{color:#a3a9b0!important;background:none!important;padding:0!important;}
+#inboundListView .il-list{display:block;}
+#inboundListView .il-table-wrap{overflow:auto;max-height:70vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
+#inboundListView .il-table{width:max-content;min-width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;}
+#inboundListView .il-table th,#inboundListView .il-table td{padding:9px 12px;border-bottom:1px solid #f1ede4;white-space:nowrap;text-align:left;}
+#inboundListView .il-table thead th{position:sticky;top:0;z-index:2;background:#f6f4ef;color:#4a4a45;font-size:12.5px;font-weight:800;border-bottom:1.5px solid #e4d9c7;}
+#inboundListView .il-table .il-pname{position:sticky;left:0;z-index:1;background:#fff;min-width:240px;max-width:360px;white-space:normal;border-right:1.5px solid #ece6db;}
+#inboundListView .il-table thead .il-pname{z-index:3;background:#f6f4ef;}
+#inboundListView .il-table tbody .il-pname b{display:block;font-size:13.5px;font-weight:800;color:#1d1d1b;line-height:1.35;overflow-wrap:anywhere;}
+#inboundListView .il-table .il-pname small{display:block;margin-top:2px;font-size:11.5px;color:#8b95a1;font-weight:600;}
+#inboundListView .il-owner-t{color:#1d1d1b;font-weight:800;}
+#inboundListView .il-table .il-num{text-align:right;font-variant-numeric:tabular-nums;min-width:72px;}
+#inboundListView .il-table td.il-num{font-weight:700;color:#1d1d1b;}
+#inboundListView .il-table .il-tot{background:#f1faf5;color:#11795a!important;font-weight:900!important;}
+#inboundListView .il-table thead .il-tot{background:#e3f5ec;color:#11795a;}
+#inboundListView .il-table td.il-zero{color:#c9c4ba;font-weight:500;}
+#inboundListView .il-table tbody tr:hover td,#inboundListView .il-table tbody tr:hover th{background:#fffbf3;}
+#inboundListView .il-table tfoot th,#inboundListView .il-table tfoot td{position:sticky;bottom:0;background:#faf8f4;font-weight:900;color:#1d1d1b;border-top:1.5px solid #e4d9c7;border-bottom:0;}
+#inboundListView .il-table tfoot .il-pname{z-index:3;}
 #inboundListView .il-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
 #inboundListView .il-panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
 #inboundListView .il-meta{display:block;margin-top:3px;font-size:12px;color:#8b95a1;overflow-wrap:anywhere;}
@@ -38,6 +41,26 @@
   #inboundListView .il-del{flex:1 1 100%;}
   #inboundListView .il-chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
   #inboundListView .il-chip{flex:none;}
-  #inboundListView .il-item{padding:12px 13px;}
+  #inboundListView .il-table{font-size:12.5px;}
+  #inboundListView .il-table th,#inboundListView .il-table td{padding:8px 9px;}
+  #inboundListView .il-table .il-pname{min-width:150px;max-width:180px;}
+  #inboundListView .il-table .il-num{min-width:56px;}
+  #inboundListView .il-table-wrap{max-height:65vh;}
   #inboundListView .il-export{height:36px;padding:0 12px;font-size:13px;}
+}
+/* 앱 공통 표 스타일(가운데 정렬·회색 바탕) 덮어쓰기: 제품명은 왼쪽 정렬, 숫자는 오른쪽 */
+#appShell #inboundListView .il-table .il-pname{text-align:left!important;}
+#appShell #inboundListView .il-table tbody .il-pname{background:#fff!important;}
+#appShell #inboundListView .il-table thead th{text-align:right!important;}
+#appShell #inboundListView .il-table thead .il-pname{text-align:left!important;}
+#appShell #inboundListView .il-table .il-num{text-align:right!important;}
+#appShell #inboundListView .il-table tfoot th,#appShell #inboundListView .il-table tfoot td{background:#faf8f4!important;}
+#appShell #inboundListView .il-table tbody tr:hover .il-pname{background:#fffbf3!important;}
+@media (max-width:900px){
+  /* 휴대폰: 제품명 열을 좁혀 수량 칸이 바로 보이게(옆으로 밀어서 나머지 매장 확인) */
+  #appShell #inboundListView .il-table .il-pname{width:150px!important;min-width:150px!important;max-width:150px!important;}
+  #appShell #inboundListView .il-table tbody .il-pname b{font-size:12.5px;}
+  #inboundListView .il-toolbar .field:not(.grow){flex:1 1 40%;min-width:0;}
+  #inboundListView .il-toolbar .field.grow{flex:1 1 100%;}
+  #inboundListView .il-toolbar select{width:100%;}
 }
