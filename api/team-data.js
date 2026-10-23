@@ -52,16 +52,17 @@ async function inboundLists(req, res, user) {
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
     if (body.action === 'delete') {
-      const id = clip(body.id, 40);
+      if (user.role !== 'admin') return res.status(200).json({ success: false, error: '차수 삭제는 관리자만 할 수 있습니다.' });
+      const id = clip(body.id, 60);
       if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
       await store.cmd(['HDEL', LIST_KEY, id]);
       return res.status(200).json({ success: true });
     }
     if (body.action === 'save') {
       const b = body.batch || {};
-      const id = clip(b.id, 40);
-      // 예: JP-141, 같은 차수의 구분 리스트는 JP-130-AYR · JP-130-시즌
-      if (!/^[A-Z]{2,3}-\d{1,4}(-[0-9A-Za-z가-힣_]{1,20})?$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: JP-141)' });
+      const id = clip(b.id, 60);
+      // 예: JP-141 · JP-130-AYR · UK-32-33 · JP-110-프세제품 (구분 이름 최대 3개)
+      if (!/^[A-Z]{2,3}-\d{1,4}(-[0-9A-Za-z가-힣_]{1,20}){0,3}$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: JP-141)' });
       const cols = (Array.isArray(b.cols) ? b.cols : []).slice(0, 40).map(c => clip(c, 40));
       const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 20000).map(r => ({
         sheet: clip(r.sheet, 40), code: clip(r.code, 40), name: clip(r.name, 200), total: Number(r.total) || 0,

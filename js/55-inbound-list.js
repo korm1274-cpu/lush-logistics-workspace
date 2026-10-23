@@ -1,7 +1,7 @@
 /* 입고 > 입고리스트 (엑셀 '입고 분배리스트' 업로드)
    - 차수: 파일명에서 읽음. 예) "2026.10.21 입고 분배리스트 (JP 141차).xlsx" → 제조국 JP · 141차 → "141차 JP" (날짜 2026-10-21)
      괄호 뒤에 구분 이름이 있으면 따로 보관: "(JP 130차) AYR" → "130차 JP AYR", "(JP 130차) 시즌" → "130차 JP 시즌"
-   - 담당 시트: 'PLU | 제품코드 | 제품군 | 제품명 | TOTAL | 매장 구분…' 형식의 시트만(제조·SPA리스트는 제외, 전체·CHECK·DATA 같은 집계 시트는 형식이 달라 자동 제외)
+   - 담당 시트: 'PLU | 제품코드 | 제품군 | 제품명 | TOTAL | 매장 구분…' 형식의 시트만(프세 리스트처럼 TOTAL 칸이 없으면 제품명 다음 첫 수량 칸 FS를 TOTAL로)(제조·SPA리스트는 제외, 전체·CHECK·DATA 같은 집계 시트는 형식이 달라 자동 제외)
    - TOTAL이 0보다 큰 행만 반영, A열 PLU·C열 제품군을 뺀 나머지 칸(제품코드·제품명·TOTAL·리테일·디지털…)은 모두 저장
    - 화면: 차수 선택 + 담당(시트) 필터 + 검색(아마존·퍼즈처럼 한글 이름도 가능)
      목록은 표: 왼쪽 열 제품명, 위쪽 행 분배 매장명(리테일·디지털…), 칸에 수량, 맨 아래 합계
@@ -18,18 +18,37 @@
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
   function num(v){if(typeof v==='number')return isFinite(v)?v:0;var n=parseFloat(String(v==null?'':v).replace(/,/g,'').trim());return isFinite(n)?n:0}
   function label(sheet){var k=String(sheet||'').toUpperCase();return ALIAS[k]&&ALIAS[k]!==sheet?ALIAS[k]:sheet}
+  function isAdmin(){var u=window.LUSH_AUTH&&window.LUSH_AUTH.user&&window.LUSH_AUTH.user();return !!(u&&u.role==='admin')} // 차수 삭제는 관리자만
   function canEdit(){var u=window.LUSH_AUTH&&window.LUSH_AUTH.user&&window.LUSH_AUTH.user();return !!(u&&u.role!=='guest')}
 
   /* 파일명 → 차수 */
+  /* 파일명 → 차수
+     - "(JP 141차)" → 141차 JP (id JP-141)
+     - 괄호 안에 차수가 여러 개: "(UK 32, 33차)", "(JP 26.27차)", "(UK 38, JP 42차)" → 괄호 안 글자 그대로 표시(id UK-32-33 …)
+     - 괄호 앞 구분: "프세제품 분배리스트 (JP 110차)" → 110차 JP 프세제품 (일반 "분배리스트 (JP 110차)"와 따로 보관)
+     - 괄호 뒤 구분: "(JP 130차) AYR" / "(JP 130차) 시즌" → 130차 JP AYR / 130차 JP 시즌
+     이미 올린 차수(JP-141, JP-139-AYR …)의 id는 그대로 */
   function parseName(fn){
-    var m=fn.match(/\(\s*([A-Za-z]{2,3})\s*(\d{1,4})\s*차\s*\)/)||fn.match(/([A-Za-z]{2,3})\s*(\d{1,4})\s*차/);
-    if(!m)return null;
-    var d=fn.match(/(\d{4})[.\-_](\d{1,2})[.\-_](\d{1,2})/),p=function(x){return String(x).padStart(2,'0')};
-    var country=m[1].toUpperCase(),no=String(Number(m[2]));
-    // 같은 차수라도 괄호 뒤 구분 이름이 다르면 다른 리스트: "(JP 130차) AYR.xlsx" → 130차 JP AYR / "(JP 130차) 시즌.xlsx" → 130차 JP 시즌
-    var rest=fn.slice(m.index+m[0].length).replace(/\.(xlsx|xls|xlsm|csv)$/i,'').replace(/^[\s_\-–·.,]+|[\s_\-–·.,]+$/g,'').replace(/\s+/g,' ').slice(0,20);
-    var key=rest.replace(/[^0-9A-Za-z가-힣]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20);
-    return{id:country+'-'+no+(key?'-'+key:''),country:country,batchNo:no,part:rest,label:no+'차 '+country+(rest?' '+rest:''),date:d?d[1]+'-'+p(d[2])+'-'+p(d[3]):''};
+    var base=String(fn).replace(/\.(xlsx|xls|xlsm|csv)$/i,'');
+    var pm=null,re=/\(([^()]*?\d+[^()]*?차[^()]*?)\)/g,x;
+    while((x=re.exec(base))){if(/[A-Za-z]{2,3}/.test(x[1])){pm=x;break}}
+    var inside,pre,post;
+    if(pm){inside=pm[1];pre=base.slice(0,pm.index);post=base.slice(pm.index+pm[0].length)}
+    else{var loose=base.match(/[A-Za-z]{2,3}\s*\d{1,4}\s*차/);if(!loose)return null;inside=loose[0];pre=base.slice(0,loose.index);post=base.slice(loose.index+loose[0].length)}
+    var cm=inside.match(/([A-Za-z]{2,3})\s*(\d{1,4})/);if(!cm)return null;
+    var country=cm[1].toUpperCase(),no=String(Number(cm[2]));
+    var tidy=function(s){return String(s||'').replace(/^[\s_\-–·.,]+|[\s_\-–·.,]+$/g,'').replace(/\s+/g,' ')};
+    var keyOf=function(s){return String(s||'').replace(/[^0-9A-Za-z가-힣]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20)};
+    var d=pre.match(/(\d{4})[.\-_](\d{1,2})[.\-_](\d{1,2})/)||base.match(/(\d{4})[.\-_](\d{1,2})[.\-_](\d{1,2})/),p=function(v){return String(v).padStart(2,'0')};
+    // 괄호 안 첫 "국가 번호" 뒤에 남은 글자(다른 차수 번호 등)
+    var extra=tidy(inside.slice(cm.index+cm[0].length).replace(/차/g,' '));
+    // 괄호 앞 구분 이름: 날짜·"입고"·"분배리스트" 같은 공통 글자를 뺀 나머지(예: 프세제품)
+    var prefix=tidy(pre.replace(/\d{4}[.\-_]\d{1,2}[.\-_]\d{1,2}/,'').replace(/입고|분배\s*리스트|분배|리스트/g,' ')).slice(0,20);
+    var rest=tidy(post).slice(0,20);
+    var simple=!extra;
+    var label=(simple?no+'차 '+country:tidy(inside))+(prefix?' '+prefix:'')+(rest?' '+rest:'');
+    var id=country+'-'+no+[extra,prefix,rest].map(keyOf).filter(Boolean).map(function(k){return '-'+k}).join('');
+    return{id:id.slice(0,60),country:country,batchNo:no,part:[prefix,rest].filter(Boolean).join(' '),label:label.slice(0,40),date:d?d[1]+'-'+p(d[2])+'-'+p(d[3]):''};
   }
   function headerRow(aoa,ok){for(var i=0;i<Math.min(10,aoa.length);i++){var h=(aoa[i]||[]).map(function(x){return String(x).trim()});if(ok(h))return i}return -1}
   /* 엑셀 → 담당 시트별 TOTAL>0 행 */
@@ -39,10 +58,13 @@
       var name=String(raw).trim();if(EXCLUDE[name])return;
       var aoa=XLSX.utils.sheet_to_json(wb.Sheets[raw],{header:1,defval:'',raw:true});
       // 항목명 줄 찾기: 맨 위에 "JP 139차 입고리스트" 같은 제목 줄이 있는 파일도 있어 위쪽 10줄 안에서 PLU·제품코드·제품명·TOTAL이 있는 줄을 찾음
-      var hi=headerRow(aoa,function(h){return h.indexOf('PLU')>=0&&h.indexOf('제품코드')>=0&&h.indexOf('제품명')>=0&&h.some(function(x){return x.toUpperCase()==='TOTAL'})});
+      var hi=headerRow(aoa,function(h){return h.indexOf('PLU')>=0&&h.indexOf('제품코드')>=0&&h.indexOf('제품명')>=0});
       if(hi<0)return; // 담당 시트 형식이 아니면 건너뜀
       var h=aoa[hi].map(function(x){return String(x).replace(/\s+/g,' ').trim()}); // 칸 이름 안 줄바꿈은 한 칸 띄어쓰기로
       var ti=h.findIndex(function(x){return x.toUpperCase()==='TOTAL'}),ci=h.indexOf('제품코드'),ni=h.indexOf('제품명');
+      // 프세(프레시) 분배리스트는 TOTAL 칸 없이 'FS | FS-세트수량'만 있음 → 제품명 다음 첫 수량 칸(FS)을 TOTAL로(CHECK 시트 합계와 같음)
+      if(ti<0)ti=h.findIndex(function(x,i){return i>ni&&x});
+      if(ti<0)return;
       sheets.push(name);
       aoa.slice(hi+1).forEach(function(r){
         var total=num(r[ti]);if(!(total>0))return;
@@ -53,7 +75,8 @@
           values[k]=typeof v==='number'?v:(s===''||s==='-'?0:(/^-?[\d,]+(\.\d+)?$/.test(s)?num(s):s)); // 숫자는 숫자로, 글자(비고 등)는 그대로
           if(!colSet[k]){colSet[k]=1;cols.push(k)}
         });
-        rows.push({sheet:name,code:String(r[ci]).trim(),name:String(r[ni]).trim(),total:total,values:values});
+        // 제품코드·제품명이 비어 있어도 수량이 있으면 그대로 반영
+        rows.push({sheet:name,code:String(r[ci]==null?'':r[ci]).trim(),name:String(r[ni]==null?'':r[ni]).trim()||'(제품명 없음)',total:total,values:values});
       });
     });
     return{rows:rows,sheets:sheets,cols:cols,check:parseCheck(wb)};
@@ -65,9 +88,13 @@
     var hi=headerRow(aoa,function(h){return h.some(function(x){return x.toUpperCase()==='TOTAL'})});if(hi<0)return null;
     var h=aoa[hi].map(function(x){return String(x).trim()});
     var ti=h.findIndex(function(x){return x.toUpperCase()==='TOTAL'}),ai=h.indexOf('전체');
-    var bySheet={},total=ai>=0?num((aoa[hi+1]||[])[ai]):0;
+    // 전체 합계는 첫 줄의 TOTAL 칸(담당별 TOTAL 합). '전체' 칸은 파일에 따라 실제 합과 다를 때가 있어 TOTAL 칸이 비었을 때만 사용
+    var first=aoa[hi+1]||[],bySheet={},total=typeof first[ti]==='number'&&first[ti]>0?first[ti]:(ai>=0?num(first[ai]):0);
     aoa.slice(hi+1).forEach(function(r){var s=String(r[1]==null?'':r[1]).trim();if(s&&typeof r[ti]==='number')bySheet[s.toUpperCase()]=r[ti]});
-    return total||Object.keys(bySheet).length?{total:total,bySheet:bySheet}:null;
+    // 화면 합계 = 담당별 TOTAL 합(제조·SPA리스트 제외 — 목록에도 넣지 않는 시트). 담당별 값이 없으면 위 전체 값
+    var keys=Object.keys(bySheet).filter(function(k){return !EXCLUDE[k]&&!EXCLUDE[k.toUpperCase()]&&k!=='SPA리스트'});
+    if(keys.length)total=keys.reduce(function(s,k){return s+bySheet[k]},0);
+    return total||keys.length?{total:total,bySheet:bySheet}:null;
   }
 
   function load(){
@@ -80,18 +107,20 @@
   function scope(){var d=$('ilDate').value;return d?batches.filter(function(b){return (b.date||'')===d}):batches}
   function current(){var v=$('ilBatch').value;return !v||v==='*'?null:scope().find(function(b){return b.id===v})||null}
   function renderDates(keepDate){
-    var sel=$('ilDate'),cur=keepDate!=null?keepDate:sel.value,dates=[];
-    batches.forEach(function(b){var d=b.date||'';if(dates.indexOf(d)<0)dates.push(d)});
-    dates.sort(function(a,c){return c.localeCompare(a)});
-    sel.innerHTML=batches.length?'<option value="">전체 날짜</option>'+dates.map(function(d){return '<option value="'+esc(d)+'">'+(d?esc(d):'날짜 없음')+'</option>'}).join(''):'<option value="">업로드된 입고리스트 없음</option>';
-    var first=sel.dataset.init!=='1'&&!(keepDate!=null&&dates.indexOf(keepDate)>=0);if(batches.length)sel.dataset.init='1';
-    sel.value=first?'':(cur===''||dates.indexOf(cur)>=0?cur:''); // 처음 열 때는 전체 날짜
+    // 입고일은 달력(날짜 칸): 비우면 전체 날짜, 고르면 그날 들어온 차수만. 달력 범위는 올린 입고일의 처음~끝
+    var inp=$('ilDate'),cur=keepDate!=null?keepDate:inp.value,dates=[];
+    batches.forEach(function(b){if(b.date&&dates.indexOf(b.date)<0)dates.push(b.date)});
+    dates.sort();
+    inp.min=dates[0]||'';inp.max=dates[dates.length-1]||'';
+    var first=inp.dataset.init!=='1'&&!(keepDate!=null&&dates.indexOf(keepDate)>=0);if(batches.length)inp.dataset.init='1';
+    inp.value=first?'':(cur||''); // 처음 열 때는 전체 날짜(빈 칸)
+    var dl=$('ilDates');if(dl)dl.textContent=dates.length?'입고일: '+dates.slice().reverse().slice(0,6).join(', ')+(dates.length>6?' 외 '+(dates.length-6)+'일':''):'';
   }
   function renderBatches(keep){
     var sel=$('ilBatch'),cur=keep||sel.value,list=scope();
-    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">차수 없음</option>';
+    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">'+($('ilDate').value?'이 날짜 입고 없음':'차수 없음')+'</option>';
     if(cur&&(cur==='*'?list.length>1:list.some(function(b){return b.id===cur})))sel.value=cur;
-    $('ilDelete').hidden=!(canEdit()&&current());
+    $('ilDelete').hidden=!(isAdmin()&&current());
   }
   function rowsOf(){
     var b=current();
@@ -111,7 +140,7 @@
     cols.sort(function(a,c){var ia=order.indexOf(a),ic=order.indexOf(c);return (ia<0?999:ia)-(ic<0?999:ic)});
     var showOwner=!sheetFilter,sum={};
     var body=list.map(function(r){
-      return '<tr><th scope="row" class="il-pname"><b>'+esc(r.name)+'</b><small>'+esc(r.code)+(showOwner?' · <span class="il-owner-t" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>':'')+(b?'':' · '+esc(r.batch.label))+'</small></th>'+
+      return '<tr><th scope="row" class="il-pname"><b>'+esc(r.name)+'</b><small>'+[r.code?esc(r.code):'',showOwner?'<span class="il-owner-t" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>':'',b?'':esc(r.batch.label)].filter(Boolean).join(' · ')+'</small></th>'+
         '<td class="il-num il-tot">'+fmt(r.total)+'</td>'+
         cols.map(function(k){var v=r.values?r.values[k]:0;if(typeof v==='number'&&v>0){sum[k]=(sum[k]||0)+v;return '<td class="il-num">'+fmt(v)+'</td>'}return '<td class="il-num il-zero">-</td>'}).join('')+'</tr>';
     }).join('');
@@ -232,6 +261,7 @@
   }
   function remove(){
     var b=current();if(!b)return;
+    if(!isAdmin()){toast('차수 삭제는 관리자만 할 수 있습니다.');return}
     if(!confirm(b.label+' 입고리스트를 삭제할까요? (팀 전체에서 사라집니다)'))return;
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id:b.id})}).then(function(r){return r.json()}).then(function(j){
       if(!j||!j.success){toast((j&&j.error)||'삭제하지 못했습니다.');return}
@@ -242,9 +272,10 @@
   function init(){
     var view=$('inboundListView');if(!view)return;
     $('ilDate').addEventListener('change',function(){renderBatches();render()});
+    $('ilDateClear').addEventListener('click',function(){$('ilDate').value='';renderBatches();render()});
     $('ilRun').addEventListener('click',function(){searched=true;render()});
     $('ilSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){searched=true;render()}});
-    $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(canEdit()&&current());render()});
+    $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(isAdmin()&&current());render()});
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);
     $('ilExport').addEventListener('click',exportExcel);
