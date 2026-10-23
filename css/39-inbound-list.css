@@ -81,26 +81,4 @@
 #inboundListView .il-date-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;background:#fff;font:inherit;font-size:14px;color:#1d1d1b;cursor:pointer;text-align:left;width:100%;}
 #inboundListView .il-date-btn:hover,#inboundListView .il-date-btn[aria-expanded="true"]{border-color:#1d1d1b;}
 #inboundListView .il-date-btn svg{width:16px;height:16px;color:#8b95a1;flex:none;}
-#inboundListView .il-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:30;width:280px;max-width:calc(100vw - 32px);box-sizing:border-box;background:#fff;border:1.5px solid #1d1d1b;border-radius:14px;box-shadow:0 10px 28px rgba(0,0,0,.14);padding:10px 10px 8px;}
-#inboundListView .il-cal[hidden]{display:none;}
-#inboundListView .il-cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;}
-#inboundListView .il-cal-head b{font-size:14px;font-weight:900;color:#1d1d1b;}
-#inboundListView .il-cal-head button{width:30px;height:30px;border:0;border-radius:8px;background:#f3efe7;color:#1d1d1b;font-size:17px;font-weight:900;cursor:pointer;}
-#inboundListView .il-cal-head button:disabled{opacity:.3;cursor:default;}
-#inboundListView .il-cal-week,#inboundListView .il-cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
-#inboundListView .il-cal-week span{text-align:center;font-size:11px;font-weight:800;color:#8b95a1;padding:3px 0;}
-#inboundListView .il-cal-week .sun{color:#d64545;}#inboundListView .il-cal-week .sat{color:#2f6fed;}
-#inboundListView .il-cal-day{position:relative;height:34px;border:0;border-radius:9px;background:none;font:inherit;font-size:13px;color:#c3bfb6;cursor:default;padding:0;}
-#inboundListView .il-cal-day.has{color:#1d1d1b;font-weight:900;background:#fdf0f5;cursor:pointer;}
-#inboundListView .il-cal-day.has:hover{background:#fde0ea;}
-#inboundListView .il-cal-day.has i{position:absolute;left:50%;bottom:3px;transform:translateX(-50%);min-width:5px;height:5px;border-radius:999px;background:#e87ba4;font-style:normal;font-size:9px;line-height:5px;color:transparent;}
-#inboundListView .il-cal-day.has i:not(:empty){height:12px;line-height:12px;bottom:1px;padding:0 3px;color:#fff;font-weight:900;}
-#inboundListView .il-cal-day.today{box-shadow:inset 0 0 0 1.5px #e4d9c7;}
-#inboundListView .il-cal-day.on{background:#1d1d1b!important;color:#fff!important;}
-#inboundListView .il-cal-day.on i{background:#fff;color:#1d1d1b;}
-#inboundListView .il-cal-day.has.sun{color:#d64545;}#inboundListView .il-cal-day.has.sat{color:#2f6fed;}
-#inboundListView .il-cal-foot{display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:8px;border-top:1px solid #f1ede4;font-size:11.5px;color:#8b95a1;}
-#inboundListView .il-cal-foot span{display:inline-flex;align-items:center;gap:5px;}
-#inboundListView .il-cal-foot span i{width:6px;height:6px;border-radius:50%;background:#e87ba4;}
-#inboundListView .il-cal-foot button{height:28px;padding:0 12px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font:inherit;font-size:12px;font-weight:800;color:#4e5968;cursor:pointer;}
-#inboundListView .il-cal-foot button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#inboundListView .il-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:30;} /* 모양은 css/40-calendar.css(.lc-cal) */

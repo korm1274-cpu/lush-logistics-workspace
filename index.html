@@ -1230,7 +1230,7 @@ window.ensureChart=function(){
 <section id="inboundListView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND LIST</div><h2>입고리스트</h2><p>데이터 › 업로드에서 올린 입고 분배리스트를 담당자(시트)별로 보여 줍니다. TOTAL 수량이 있는 제품과 매장 구분별 수량만 표시합니다.</p></div></div>
   <div class="il-toolbar">
-    <div class="field il-date-field"><label for="ilDateBtn">입고일</label><input type="hidden" id="ilDate"><button type="button" class="il-date-btn" id="ilDateBtn" aria-haspopup="dialog" aria-expanded="false"><span>전체 날짜</span><i data-lucide="calendar-days"></i></button><div class="il-cal" id="ilCal" role="dialog" aria-label="입고일 선택" hidden></div></div><div class="field"><label>차수</label><select id="ilBatch"></select></div>
+    <div class="field il-date-field"><label for="ilDateBtn">입고일</label><input type="hidden" id="ilDate"><button type="button" class="il-date-btn" id="ilDateBtn" aria-haspopup="dialog" aria-expanded="false"><span>전체 날짜</span><i data-lucide="calendar-days"></i></button><div class="il-cal lc-cal" id="ilCal" role="dialog" aria-label="입고일 선택" hidden></div></div><div class="field"><label>차수</label><select id="ilBatch"></select></div>
     <div class="field grow"><label>검색</label><input id="ilSearch" placeholder="담당(아마존·퍼즈…) / 제품코드 / 제품명" autocomplete="off"></div><button type="button" class="btn primary il-run" id="ilRun">조회</button>
     <button type="button" class="btn il-del" id="ilDelete" hidden>이 차수 삭제</button>
   </div>
@@ -1783,11 +1783,13 @@ window.ensureChart=function(){
 <script src="js/53-push.js"></script>
 <script src="js/54-push-admin.js"></script>
 <script src="js/55-inbound-list.js"></script>
+<script src="js/56-date-calendar.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">
 <link rel="stylesheet" href="css/37-notice-link.css">
 <link rel="stylesheet" href="css/38-push.css">
 <link rel="stylesheet" href="css/39-inbound-list.css">
+<link rel="stylesheet" href="css/40-calendar.css">
 </body>
 </html>
