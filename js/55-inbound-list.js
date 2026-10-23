@@ -12,7 +12,7 @@
   var EXCLUDE={'제조':1,'SPA리스트':1};
   var ALIAS={AMAZON:'아마존',FURZE:'퍼즈',ART:'아트',BLUE:'블루',VOL:'볼케이노',BUS:'버스',NEW:'뉴',TIME:'타임',STAR:'스타',TAROT:'타로',BLACK:'블랙',SAND:'샌드',HANAMI:'하나미',VM:'VM',LIMITED:'리미티드',SPA:'스파',BOOK:'북'};
   var $=function(id){return document.getElementById(id)};
-  var batches=[],sheetFilter='',busy=false;
+  var batches=[],sheetFilter='',busy=false,searched=false;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
@@ -31,17 +31,20 @@
     var key=rest.replace(/[^0-9A-Za-z가-힣]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20);
     return{id:country+'-'+no+(key?'-'+key:''),country:country,batchNo:no,part:rest,label:no+'차 '+country+(rest?' '+rest:''),date:d?d[1]+'-'+p(d[2])+'-'+p(d[3]):''};
   }
+  function headerRow(aoa,ok){for(var i=0;i<Math.min(10,aoa.length);i++){var h=(aoa[i]||[]).map(function(x){return String(x).trim()});if(ok(h))return i}return -1}
   /* 엑셀 → 담당 시트별 TOTAL>0 행 */
   function parseBook(wb){
     var rows=[],sheets=[],cols=[],colSet={};
     wb.SheetNames.forEach(function(raw){
       var name=String(raw).trim();if(EXCLUDE[name])return;
       var aoa=XLSX.utils.sheet_to_json(wb.Sheets[raw],{header:1,defval:'',raw:true});
-      var h=(aoa[0]||[]).map(function(x){return String(x).trim()});
+      // 항목명 줄 찾기: 맨 위에 "JP 139차 입고리스트" 같은 제목 줄이 있는 파일도 있어 위쪽 10줄 안에서 PLU·제품코드·제품명·TOTAL이 있는 줄을 찾음
+      var hi=headerRow(aoa,function(h){return h.indexOf('PLU')>=0&&h.indexOf('제품코드')>=0&&h.indexOf('제품명')>=0&&h.some(function(x){return x.toUpperCase()==='TOTAL'})});
+      if(hi<0)return; // 담당 시트 형식이 아니면 건너뜀
+      var h=aoa[hi].map(function(x){return String(x).replace(/\s+/g,' ').trim()}); // 칸 이름 안 줄바꿈은 한 칸 띄어쓰기로
       var ti=h.findIndex(function(x){return x.toUpperCase()==='TOTAL'}),ci=h.indexOf('제품코드'),ni=h.indexOf('제품명');
-      if(ti<0||ci<0||ni<0||h.indexOf('PLU')<0)return; // 담당 시트 형식이 아니면 건너뜀
       sheets.push(name);
-      aoa.slice(1).forEach(function(r){
+      aoa.slice(hi+1).forEach(function(r){
         var total=num(r[ti]);if(!(total>0))return;
         var values={};
         h.forEach(function(k,i){
@@ -59,10 +62,11 @@
   function parseCheck(wb){
     var name=wb.SheetNames.find(function(n){return String(n).trim().toUpperCase()==='CHECK'});if(!name)return null;
     var aoa=XLSX.utils.sheet_to_json(wb.Sheets[name],{header:1,defval:'',raw:true});
-    var h=(aoa[0]||[]).map(function(x){return String(x).trim()});
-    var ti=h.findIndex(function(x){return x.toUpperCase()==='TOTAL'}),ai=h.indexOf('전체');if(ti<0)return null;
-    var bySheet={},total=ai>=0?num((aoa[1]||[])[ai]):0;
-    aoa.slice(1).forEach(function(r){var s=String(r[1]==null?'':r[1]).trim();if(s&&typeof r[ti]==='number')bySheet[s.toUpperCase()]=r[ti]});
+    var hi=headerRow(aoa,function(h){return h.some(function(x){return x.toUpperCase()==='TOTAL'})});if(hi<0)return null;
+    var h=aoa[hi].map(function(x){return String(x).trim()});
+    var ti=h.findIndex(function(x){return x.toUpperCase()==='TOTAL'}),ai=h.indexOf('전체');
+    var bySheet={},total=ai>=0?num((aoa[hi+1]||[])[ai]):0;
+    aoa.slice(hi+1).forEach(function(r){var s=String(r[1]==null?'':r[1]).trim();if(s&&typeof r[ti]==='number')bySheet[s.toUpperCase()]=r[ti]});
     return total||Object.keys(bySheet).length?{total:total,bySheet:bySheet}:null;
   }
 
@@ -81,7 +85,7 @@
     dates.sort(function(a,c){return c.localeCompare(a)});
     sel.innerHTML=batches.length?'<option value="">전체 날짜</option>'+dates.map(function(d){return '<option value="'+esc(d)+'">'+(d?esc(d):'날짜 없음')+'</option>'}).join(''):'<option value="">업로드된 입고리스트 없음</option>';
     var first=sel.dataset.init!=='1'&&!(keepDate!=null&&dates.indexOf(keepDate)>=0);if(batches.length)sel.dataset.init='1';
-    sel.value=first?(dates[0]||''):(cur===''||dates.indexOf(cur)>=0?cur:(dates[0]||'')); // 처음 열 때는 가장 최근 입고일
+    sel.value=first?'':(cur===''||dates.indexOf(cur)>=0?cur:''); // 처음 열 때는 전체 날짜
   }
   function renderBatches(keep){
     var sel=$('ilBatch'),cur=keep||sel.value,list=scope();
@@ -131,6 +135,9 @@
   }
   function render(){
     if(!$('ilList'))return;
+    // [조회]를 누르기 전에는 필터만 보이고 담당 칩·요약·목록은 숨김
+    var view=$('inboundListView');if(view)view.classList.toggle('il-before',!searched);
+    if(!searched){$('ilHint').textContent=batches.length?'입고일·차수를 고른 뒤 [조회]를 눌러 주세요.':(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.');return}
     var q=($('ilSearch').value||'').trim().toLowerCase();
     var all=rowsOf(),sheets=sheetsOf();
     if(sheetFilter&&sheets.indexOf(sheetFilter)<0)sheetFilter='';
@@ -224,6 +231,8 @@
   function init(){
     var view=$('inboundListView');if(!view)return;
     $('ilDate').addEventListener('change',function(){renderBatches();render()});
+    $('ilRun').addEventListener('click',function(){searched=true;sheetFilter='';render()});
+    $('ilSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){searched=true;render()}});
     $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(canEdit()&&current());render()});
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);
@@ -231,9 +240,11 @@
     // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');render()});
-    // 화면이 열릴 때마다 새로 받기
-    new MutationObserver(function(){if(view.classList.contains('active')){load()}}).observe(view,{attributes:true,attributeFilter:['class']});
-    if(view.classList.contains('active'))load()
+    // 화면이 새로 열릴 때만(안 보이다가 보일 때) 조회 전 상태·전체 날짜로 되돌리고 새로 받기 (il-before 클래스 변경에는 반응하지 않음)
+    var wasActive=false;
+    var opened=function(){var on=view.classList.contains('active');if(on&&!wasActive){searched=false;$('ilDate').dataset.init='';load()}wasActive=on};
+    new MutationObserver(opened).observe(view,{attributes:true,attributeFilter:['class']});
+    opened()
   }
   window.parseInboundListName=parseName; // 시험용
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
