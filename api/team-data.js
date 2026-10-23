@@ -52,22 +52,23 @@ async function inboundLists(req, res, user) {
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
     if (body.action === 'delete') {
-      const id = clip(body.id, 20);
+      const id = clip(body.id, 40);
       if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
       await store.cmd(['HDEL', LIST_KEY, id]);
       return res.status(200).json({ success: true });
     }
     if (body.action === 'save') {
       const b = body.batch || {};
-      const id = clip(b.id, 20);
-      if (!/^[A-Z]{2,3}-\d{1,4}$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: JP-141)' });
+      const id = clip(b.id, 40);
+      // 예: JP-141, 같은 차수의 구분 리스트는 JP-130-AYR · JP-130-시즌
+      if (!/^[A-Z]{2,3}-\d{1,4}(-[0-9A-Za-z가-힣_]{1,20})?$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: JP-141)' });
       const cols = (Array.isArray(b.cols) ? b.cols : []).slice(0, 40).map(c => clip(c, 40));
       const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 20000).map(r => ({
         sheet: clip(r.sheet, 40), code: clip(r.code, 40), name: clip(r.name, 200), total: Number(r.total) || 0,
         values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 40).map(([k, v]) => [clip(k, 40), typeof v === 'number' ? v : clip(v, 100)])),
       }));
       const rec = {
-        id, country: clip(b.country, 3), batchNo: clip(b.batchNo, 4), label: clip(b.label, 20), date: clip(b.date, 10), fileName: clip(b.fileName, 200),
+        id, country: clip(b.country, 3), batchNo: clip(b.batchNo, 4), part: clip(b.part, 20), label: clip(b.label, 40), date: clip(b.date, 10), fileName: clip(b.fileName, 200),
         sheets: (Array.isArray(b.sheets) ? b.sheets : []).slice(0, 60).map(s => clip(s, 40)), cols, rows,
         // 파일 CHECK 시트 합계(전체·담당별) — 화면 합계는 이 기준
         check: b.check && typeof b.check === 'object' ? { total: Number(b.check.total) || 0, bySheet: Object.fromEntries(Object.entries(b.check.bySheet || {}).slice(0, 60).map(([k, v]) => [clip(k, 40), Number(v) || 0])) } : null,

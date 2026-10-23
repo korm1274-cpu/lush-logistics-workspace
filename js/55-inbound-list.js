@@ -1,5 +1,6 @@
 /* 입고 > 입고리스트 (엑셀 '입고 분배리스트' 업로드)
    - 차수: 파일명에서 읽음. 예) "2026.10.21 입고 분배리스트 (JP 141차).xlsx" → 제조국 JP · 141차 → "141차 JP" (날짜 2026-10-21)
+     괄호 뒤에 구분 이름이 있으면 따로 보관: "(JP 130차) AYR" → "130차 JP AYR", "(JP 130차) 시즌" → "130차 JP 시즌"
    - 담당 시트: 'PLU | 제품코드 | 제품군 | 제품명 | TOTAL | 매장 구분…' 형식의 시트만(제조·SPA리스트는 제외, 전체·CHECK·DATA 같은 집계 시트는 형식이 달라 자동 제외)
    - TOTAL이 0보다 큰 행만 반영, A열 PLU·C열 제품군을 뺀 나머지 칸(제품코드·제품명·TOTAL·리테일·디지털…)은 모두 저장
    - 화면: 차수 선택 + 담당(시트) 필터 + 검색(아마존·퍼즈처럼 한글 이름도 가능)
@@ -25,7 +26,10 @@
     if(!m)return null;
     var d=fn.match(/(\d{4})[.\-_](\d{1,2})[.\-_](\d{1,2})/),p=function(x){return String(x).padStart(2,'0')};
     var country=m[1].toUpperCase(),no=String(Number(m[2]));
-    return{id:country+'-'+no,country:country,batchNo:no,label:no+'차 '+country,date:d?d[1]+'-'+p(d[2])+'-'+p(d[3]):''};
+    // 같은 차수라도 괄호 뒤 구분 이름이 다르면 다른 리스트: "(JP 130차) AYR.xlsx" → 130차 JP AYR / "(JP 130차) 시즌.xlsx" → 130차 JP 시즌
+    var rest=fn.slice(m.index+m[0].length).replace(/\.(xlsx|xls|xlsm|csv)$/i,'').replace(/^[\s_\-–·.,]+|[\s_\-–·.,]+$/g,'').replace(/\s+/g,' ').slice(0,20);
+    var key=rest.replace(/[^0-9A-Za-z가-힣]+/g,'_').replace(/^_+|_+$/g,'').slice(0,20);
+    return{id:country+'-'+no+(key?'-'+key:''),country:country,batchNo:no,part:rest,label:no+'차 '+country+(rest?' '+rest:''),date:d?d[1]+'-'+p(d[2])+'-'+p(d[3]):''};
   }
   /* 엑셀 → 담당 시트별 TOTAL>0 행 */
   function parseBook(wb){
