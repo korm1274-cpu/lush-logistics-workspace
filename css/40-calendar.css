@@ -34,3 +34,8 @@
 input.lc-input{cursor:pointer!important;caret-color:transparent;}
 input.lc-input::-webkit-calendar-picker-indicator{display:none!important;}
 #appShell input.lc-input{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b95a1' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='4' width='18' height='18' rx='2'/%3E%3Cpath d='M16 2v4M8 2v4M3 10h18'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 10px center!important;background-size:15px 15px!important;padding-right:32px!important;}
+/* 날짜 숫자는 칸 가운데(앱 공통 버튼 스타일이 왼쪽 정렬·여백을 넣는 경우가 있어 덮어씀) */
+.lc-cal .lc-day,#appShell .lc-cal .lc-day{display:flex!important;align-items:center!important;justify-content:center!important;text-align:center!important;padding:0!important;margin:0!important;width:auto!important;min-width:0!important;min-height:0!important;height:34px!important;box-shadow:none;line-height:1!important;}
+.lc-cal .lc-day.today,#appShell .lc-cal .lc-day.today{box-shadow:inset 0 0 0 1.5px #e4d9c7!important;}
+.lc-cal .lc-week span{display:block;text-align:center!important;}
+.lc-cal .lc-head button,#appShell .lc-cal .lc-head button{display:flex!important;align-items:center!important;justify-content:center!important;padding:0!important;min-height:0!important;}
