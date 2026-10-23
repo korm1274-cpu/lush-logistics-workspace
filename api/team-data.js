@@ -74,7 +74,18 @@ async function inboundLists(req, res, user) {
         check: b.check && typeof b.check === 'object' ? { total: Number(b.check.total) || 0, bySheet: Object.fromEntries(Object.entries(b.check.bySheet || {}).slice(0, 60).map(([k, v]) => [clip(k, 40), Number(v) || 0])) } : null,
         uploadedAt: new Date().toISOString(), uploadedBy: user.id,
       };
+      const existed = await store.cmd(['HEXISTS', LIST_KEY, id]);
       await store.cmd(['HSET', LIST_KEY, id, JSON.stringify(rec)]);
+      // 새 차수를 처음 올렸을 때만 모바일 Push(같은 차수 다시 올려 교체할 때는 보내지 않음). 실패해도 저장 결과는 그대로
+      if (!existed) {
+        try {
+          const owners = new Set(rows.map(r => r.sheet)).size;
+          await Promise.race([
+            require('./_lib/push').notifyNew(store, [{ kind: 'inboundList', item: { id, label: rec.label, date: rec.date, rows: rows.length, owners } }]),
+            new Promise(r => setTimeout(r, 7000)),
+          ]);
+        } catch (e) { console.error('inbound list push error', e); }
+      }
       return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length } });
     }
     return res.status(200).json({ success: false, error: 'Unsupported action' });

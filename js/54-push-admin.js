@@ -1,11 +1,11 @@
 /* Admin > 푸시알림 (관리자 전용) — 모바일 설치형 PWA의 상태만 표시
-   - 설정: 전체 ON/OFF + 항목별(팀 공지사항·제품 확보 현황·대량 주문·트래픽·본사 출고·노즐/비닐) ON/OFF
+   - 설정: 전체 ON/OFF + 항목별(팀 공지사항·제품 확보 현황·대량 주문·트래픽·본사 출고·노즐/비닐·입고리스트) ON/OFF
    - 최초 기존 데이터 1회 검증: 항목별 최근 기존 건 1개씩 실제 알림으로 발송, 완료 후 다시 실행 안 됨
    - 등록 기기: 사용자·기기/OS·브라우저·상태·등록일, 관리자만 삭제(endpoint·키 값은 표시하지 않음) */
 (function(){
   var $=function(id){return document.getElementById(id)};
-  var ORDER=['notice','todo','bulk','traffic','hq','nozzle'];
-  var LABEL={notice:'팀 공지사항',todo:'제품 확보 현황',bulk:'대량 주문',traffic:'트래픽',hq:'본사 출고',nozzle:'노즐/비닐'};
+  var ORDER=['notice','todo','bulk','traffic','hq','nozzle','inboundList'];
+  var LABEL={notice:'팀 공지사항',todo:'제품 확보 현황',bulk:'대량 주문',traffic:'트래픽',hq:'본사 출고',nozzle:'노즐/비닐',inboundList:'입고리스트'};
   var settings=null;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function when(iso){if(!iso)return'-';var d=new Date(iso);if(isNaN(d))return'-';var p=function(n){return String(n).padStart(2,'0')};return d.getFullYear()+'.'+p(d.getMonth()+1)+'.'+p(d.getDate())+' '+p(d.getHours())+':'+p(d.getMinutes())}

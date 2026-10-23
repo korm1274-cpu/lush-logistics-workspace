@@ -21,8 +21,8 @@ const SENT_PREFIX = 'lush_push_once_v1:';
 const SENT_TTL_SEC = 7 * 24 * 3600;
 const INITIAL_KEY = 'push_initial_existing_test_v1';
 
-const TYPES = { notice: '팀 공지사항', todo: '제품 확보 현황', bulk: '대량 주문', traffic: '트래픽', hq: '본사 출고', nozzle: '노즐/비닐' };
-const DEFAULT_SETTINGS = { enabled: true, types: { notice: true, todo: true, bulk: true, traffic: true, hq: true, nozzle: true } };
+const TYPES = { notice: '팀 공지사항', todo: '제품 확보 현황', bulk: '대량 주문', traffic: '트래픽', hq: '본사 출고', nozzle: '노즐/비닐', inboundList: '입고리스트' };
+const DEFAULT_SETTINGS = { enabled: true, types: { notice: true, todo: true, bulk: true, traffic: true, hq: true, nozzle: true, inboundList: true } };
 
 async function getVapid(store) {
   if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) return W.vapidFromRaw(process.env.VAPID_PUBLIC_KEY, process.env.VAPID_PRIVATE_KEY);
@@ -120,6 +120,8 @@ const plainNote = s => String(s || '').replace(/\[([^\]\n]+)\]\((https?:\/\/[^\s
 // 신규 등록 1건 → 알림 내용(실제 등록 내용 일부를 그대로 사용)
 function messageOf(kind, r) {
   if (kind === 'notice') return { title: '팀 공지사항이 신규 등록되었습니다.', body: clip([r.title, plainNote(r.note)].filter(Boolean).join(' — '), 120) };
+  // 입고리스트: 새 차수 업로드(같은 차수 다시 올려 교체할 때는 보내지 않음)
+  if (kind === 'inboundList') return { title: '입고리스트가 신규 등록되었습니다.', body: clip(`${r.label || r.id}${r.date ? ' · 입고일 ' + r.date : ''} · ${r.rows || 0}건 (담당 ${r.owners || 0}명)`, 140) };
   if (kind === 'todo') return { title: '제품 확보 현황이 신규 등록되었습니다.', body: clip([r.content, r.note].filter(Boolean).join(' — '), 120) };
   const dates = Array.isArray(r.requestDates) ? r.requestDates.join(', ') : '';
   const REQ_TITLE = { bulk: '대량 주문 출고 요청이 신규 등록되었습니다.', traffic: '트래픽 출고 요청이 신규 등록되었습니다.', hq: '본사 출고 요청이 신규 등록되었습니다.', nozzle: '노즐/비닐 출고 요청이 신규 등록되었습니다.' };

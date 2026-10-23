@@ -70,9 +70,8 @@
   #appShell #inboundListView .data-kpis .kpi>small{font-size:11px!important;}
   #appShell #inboundListView .data-kpis .kpi{column-gap:3px!important;padding-left:11px!important;padding-right:9px!important;}
 }
-/* [조회] 전: 담당 칩·요약·목록 숨기고 안내만 */
+/* [조회] 버튼 · 조회 전 빈 표 */
 #inboundListView .il-run{height:40px;padding:0 20px;font-weight:800;}
-#inboundListView .il-hint{display:none;}
-#inboundListView.il-before .il-hint{display:block;}
-#inboundListView.il-before .il-chips,#inboundListView.il-before .il-kpis,#inboundListView.il-before .il-panel{display:none!important;}
+#inboundListView .il-skeleton .il-skel-msg{padding:34px 12px!important;text-align:center!important;color:#8b95a1;font-size:13px;white-space:normal;background:#fffdf9;}
+#inboundListView .il-chip em:empty{display:none;}
 @media (max-width:900px){#inboundListView .il-run{flex:1 1 100%;}}

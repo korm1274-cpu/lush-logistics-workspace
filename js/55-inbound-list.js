@@ -133,11 +133,22 @@
     if(note)note.textContent='EA,G';
     return sum;
   }
+  var DEFAULT_SHEETS=['AMAZON','FURZE','ART','BLUE','VOL','BUS','NEW','TIME','STAR','TAROT','BLACK','SAND','HANAMI','VM','신제품','LIMITED','SPA','BOOK'];
+  var DEFAULT_COLS=['리테일','디지털','디지털-시크릿박스','러쉬_SM','수원스파'];
+  function renderSkeleton(){
+    var sheets=sheetsOf();if(!sheets.length)sheets=DEFAULT_SHEETS;
+    $('ilSheets').innerHTML='<button type="button" class="il-chip on" data-il-sheet="">전체 <em></em></button>'+sheets.map(function(s){return '<button type="button" class="il-chip" data-il-sheet="'+esc(s)+'" title="'+esc(s)+'">'+esc(label(s))+' <em></em></button>'}).join('');
+    $('ilCount').textContent='-';$('ilTotal').textContent='-';$('ilOwners').textContent='-';
+    $('ilTitle').textContent='입고리스트';$('ilMeta').textContent='';$('ilMeta').hidden=true;
+    var cols=DEFAULT_COLS; // 조회 전 빈 표는 기본 매장 열로
+    var msg=batches.length?'입고일·차수를 고른 뒤 [조회]를 눌러 주세요.':(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.');
+    $('ilList').innerHTML='<div class="il-table-wrap"><table class="il-table il-skeleton"><thead><tr><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
+      '<tbody><tr><td class="il-skel-msg" colspan="'+(cols.length+2)+'">'+esc(msg)+'</td></tr></tbody></table></div>';
+  }
   function render(){
     if(!$('ilList'))return;
-    // [조회]를 누르기 전에는 필터만 보이고 담당 칩·요약·목록은 숨김
-    var view=$('inboundListView');if(view)view.classList.toggle('il-before',!searched);
-    if(!searched){$('ilHint').textContent=batches.length?'입고일·차수를 고른 뒤 [조회]를 눌러 주세요.':(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.');return}
+    // [조회] 전: 담당 칩·요약 카드·표 틀은 그대로 보여 주고 숫자만 비워 둠
+    if(!searched){renderSkeleton();return}
     var q=($('ilSearch').value||'').trim().toLowerCase();
     var all=rowsOf(),sheets=sheetsOf();
     if(sheetFilter&&sheets.indexOf(sheetFilter)<0)sheetFilter='';
@@ -231,7 +242,7 @@
   function init(){
     var view=$('inboundListView');if(!view)return;
     $('ilDate').addEventListener('change',function(){renderBatches();render()});
-    $('ilRun').addEventListener('click',function(){searched=true;sheetFilter='';render()});
+    $('ilRun').addEventListener('click',function(){searched=true;render()});
     $('ilSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){searched=true;render()}});
     $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(canEdit()&&current());render()});
     $('ilSearch').addEventListener('input',render);
@@ -239,8 +250,8 @@
     $('ilExport').addEventListener('click',exportExcel);
     // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
-    $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');render()});
-    // 화면이 새로 열릴 때만(안 보이다가 보일 때) 조회 전 상태·전체 날짜로 되돌리고 새로 받기 (il-before 클래스 변경에는 반응하지 않음)
+    $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');searched=true;render()});
+    // 화면이 새로 열릴 때만(안 보이다가 보일 때) 조회 전 상태·전체 날짜로 되돌리고 새로 받기
     var wasActive=false;
     var opened=function(){var on=view.classList.contains('active');if(on&&!wasActive){searched=false;$('ilDate').dataset.init='';load()}wasActive=on};
     new MutationObserver(opened).observe(view,{attributes:true,attributeFilter:['class']});
