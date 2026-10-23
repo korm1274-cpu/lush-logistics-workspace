@@ -32,11 +32,61 @@ async function kvSet(value) {
   return res.ok;
 }
 
+// 입고리스트 저장소(hash): 필드 = 차수 id(예: JP-141) → { id, country, batchNo, label, date, fileName, sheets, cols, rows, uploadedAt, uploadedBy }
+//   GET               차수 전체 목록(행 포함)
+//   POST {action:'save', batch}  같은 차수면 새 파일로 교체
+//   POST {action:'delete', id}
+const LIST_KEY = 'lush_inbound_lists_v1';
+async function inboundLists(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      const arr = await store.cmd(['HGETALL', LIST_KEY]) || [];
+      const batches = [];
+      for (let i = 0; i < arr.length; i += 2) { try { batches.push(JSON.parse(arr[i + 1])); } catch (e) { /* 깨진 항목 무시 */ } }
+      batches.sort((a, b) => String(b.date || '').localeCompare(String(a.date || '')) || (Number(b.batchNo) || 0) - (Number(a.batchNo) || 0));
+      return res.status(200).json({ success: true, batches });
+    }
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    if (body.action === 'delete') {
+      const id = clip(body.id, 20);
+      if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
+      await store.cmd(['HDEL', LIST_KEY, id]);
+      return res.status(200).json({ success: true });
+    }
+    if (body.action === 'save') {
+      const b = body.batch || {};
+      const id = clip(b.id, 20);
+      if (!/^[A-Z]{2,3}-\d{1,4}$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: JP-141)' });
+      const cols = (Array.isArray(b.cols) ? b.cols : []).slice(0, 40).map(c => clip(c, 40));
+      const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 20000).map(r => ({
+        sheet: clip(r.sheet, 40), code: clip(r.code, 40), name: clip(r.name, 200), total: Number(r.total) || 0,
+        values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 40).map(([k, v]) => [clip(k, 40), typeof v === 'number' ? v : clip(v, 100)])),
+      }));
+      const rec = {
+        id, country: clip(b.country, 3), batchNo: clip(b.batchNo, 4), label: clip(b.label, 20), date: clip(b.date, 10), fileName: clip(b.fileName, 200),
+        sheets: (Array.isArray(b.sheets) ? b.sheets : []).slice(0, 60).map(s => clip(s, 40)), cols, rows,
+        uploadedAt: new Date().toISOString(), uploadedBy: user.id,
+      };
+      await store.cmd(['HSET', LIST_KEY, id, JSON.stringify(rec)]);
+      return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length } });
+    }
+    return res.status(200).json({ success: false, error: 'Unsupported action' });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+  }
+}
+
 module.exports = async (req, res) => {
   // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
   const authUser = await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' });
   if (!authUser) return;
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
+  // 입고리스트(엑셀 입고 분배리스트)는 차수별로 따로 보관: /api/team-data?part=inbound-lists (팀 공유 데이터를 무겁게 하지 않도록 분리)
+  if (req.query && req.query.part === 'inbound-lists') return inboundLists(req, res, authUser);
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
     return;

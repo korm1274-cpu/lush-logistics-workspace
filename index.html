@@ -1227,6 +1227,18 @@ window.ensureChart=function(){
   </div>
   <div class="panel mt14"><div class="panel-head"><div><small>DETAIL</small><h3>입고 상세</h3></div></div><div class="data-table-wrap"><table class="data-table"><thead><tr><th>입고일</th><th>차수</th><th class="num">팔렛수</th><th>제품코드</th><th>제품군</th><th>제품명</th><th>단위</th><th class="num">수량</th></tr></thead><tbody id="inAnaBody"></tbody></table></div></div>
 </div></section>
+<section id="inboundListView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">INBOUND LIST</div><h2>입고리스트</h2><p>입고 분배리스트 엑셀을 올리면 담당자(시트)별로 TOTAL 수량이 있는 제품과 매장 구분별 수량을 보여 줍니다.</p></div></div>
+  <div class="il-upload"><div class="il-upload-text"><b>입고 분배리스트 업로드</b><small>파일명의 <em>(JP 141차)</em>처럼 제조국·차수를 읽어 반영합니다. 같은 차수를 다시 올리면 새 파일로 바뀝니다.</small></div><label class="btn primary il-upload-btn">엑셀 파일 선택<input type="file" id="ilFile" accept=".xlsx,.xls" hidden></label></div>
+  <div class="il-toolbar">
+    <div class="field"><label>차수</label><select id="ilBatch"></select></div>
+    <div class="field grow"><label>검색</label><input id="ilSearch" placeholder="담당(아마존·퍼즈…) / 제품코드 / 제품명" autocomplete="off"></div>
+    <button type="button" class="btn il-del" id="ilDelete" hidden>이 차수 삭제</button>
+  </div>
+  <div class="il-chips" id="ilSheets"></div>
+  <div class="kpis data-kpis il-kpis"><div class="kpi"><span>품목</span><b id="ilCount">0</b><small>건</small></div><div class="kpi"><span>총 입고수량</span><b id="ilTotal">0</b><small>EA</small></div><div class="kpi"><span>담당</span><b id="ilOwners">0</b><small>명</small></div></div>
+  <div class="panel il-panel"><div class="panel-head"><div><h3 id="ilTitle">입고리스트</h3></div><span class="badge" id="ilMeta"></span></div><div class="il-list" id="ilList"></div></div>
+</div></section>
 <section id="outboundBasicView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND</div><h2>출고</h2><p>이번 달 기준으로 조회하며, 날짜별 인원·소요시간을 입력하면 생산성이 자동 계산됩니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="obStart"></div><div class="field"><label>종료일</label><input type="date" id="obEnd"></div><div class="field grow"><label>제품 검색</label><input id="obQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="obRun">조회</button><button class="btn" id="obReset">전체</button></div>
@@ -1771,10 +1783,12 @@ window.ensureChart=function(){
 <script src="js/51-todo-tabs.js"></script>
 <script src="js/53-push.js"></script>
 <script src="js/54-push-admin.js"></script>
+<script src="js/55-inbound-list.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">
 <link rel="stylesheet" href="css/37-notice-link.css">
 <link rel="stylesheet" href="css/38-push.css">
+<link rel="stylesheet" href="css/39-inbound-list.css">
 </body>
 </html>

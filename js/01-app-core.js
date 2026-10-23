@@ -50,6 +50,7 @@ const DEFAULT_MENUS=[
  {id:"in-basic",group:"inbound",label:"입고",kind:"view",target:"inboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-month",group:"inbound",label:"월별 입고현황",kind:"inboundMonthly",visible:true,roles:["admin","leader","editor"]},
  {id:"in-analysis",group:"inbound",label:"입고 상세조회",kind:"view",target:"inboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"in-list",group:"inbound",label:"입고리스트",kind:"view",target:"inboundListView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-request",group:"traffic",label:"트래픽 출고 요청",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
  {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-analysis",group:"outbound",label:"출고 상세조회",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
@@ -279,6 +280,11 @@ function normalizeMenus(){
     localStorage.setItem("lush-menu-stock-added-v1","1");
   }
 
+  /* 새 메뉴 '입고리스트'(엑셀 입고 분배리스트): 팀 공유 메뉴 설정에 아직 없어도 항상 입고 상세조회 바로 아래에 두기(숨기려면 Admin에서 메뉴 활성화 OFF) */
+  if(!cleaned.some(m=>m.id==="in-list")){
+    const after=cleaned.findIndex(m=>m.id==="in-analysis");
+    cleaned.splice(after<0?cleaned.length:after+1,0,{id:"in-list",group:"inbound",label:"입고리스트",kind:"view",target:"inboundListView",visible:true,roles:["admin","leader","editor","restricted"]});
+  }
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));
 }
