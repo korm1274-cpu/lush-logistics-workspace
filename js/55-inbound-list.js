@@ -107,15 +107,39 @@
   function scope(){var d=$('ilDate').value;return d?batches.filter(function(b){return (b.date||'')===d}):batches}
   function current(){var v=$('ilBatch').value;return !v||v==='*'?null:scope().find(function(b){return b.id===v})||null}
   function renderDates(keepDate){
-    // 입고일은 달력(날짜 칸): 비우면 전체 날짜, 고르면 그날 들어온 차수만. 달력 범위는 올린 입고일의 처음~끝
+    // 입고일은 자체 달력: 비우면 전체 날짜, 고르면 그날 들어온 차수만. 입고된 날짜에 점 표시
     var inp=$('ilDate'),cur=keepDate!=null?keepDate:inp.value,dates=[];
     batches.forEach(function(b){if(b.date&&dates.indexOf(b.date)<0)dates.push(b.date)});
     dates.sort();
-    inp.min=dates[0]||'';inp.max=dates[dates.length-1]||'';
     var first=inp.dataset.init!=='1'&&!(keepDate!=null&&dates.indexOf(keepDate)>=0);if(batches.length)inp.dataset.init='1';
-    inp.value=first?'':(cur||''); // 처음 열 때는 전체 날짜(빈 칸)
-    var dl=$('ilDates');if(dl)dl.textContent=dates.length?'입고일: '+dates.slice().reverse().slice(0,6).join(', ')+(dates.length>6?' 외 '+(dates.length-6)+'일':''):'';
+    inp.value=first?'':(cur||''); // 처음 열 때는 전체 날짜
+    syncDateBtn();
   }
+  /* ===== 입고일 달력(입고된 날짜만 고를 수 있음, 점·차수 수 표시) ===== */
+  var calMonth='';
+  function pad2(n){return String(n).padStart(2,'0')}
+  function uploadCounts(){var c={};batches.forEach(function(b){if(b.date)c[b.date]=(c[b.date]||0)+1});return c}
+  function syncDateBtn(){var v=$('ilDate').value,t=$('ilDateBtn');if(t)t.querySelector('span').textContent=v?v.replace(/-/g,'.'):'전체 날짜'}
+  function buildCal(){
+    var pop=$('ilCal');if(!pop)return;
+    var counts=uploadCounts(),dates=Object.keys(counts).sort();
+    if(!calMonth)calMonth=($('ilDate').value||dates[dates.length-1]||new Date().toISOString().slice(0,10)).slice(0,7);
+    var y=+calMonth.slice(0,4),m=+calMonth.slice(5,7),startDow=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
+    var sel=$('ilDate').value,today=new Date(),todayKey=today.getFullYear()+'-'+pad2(today.getMonth()+1)+'-'+pad2(today.getDate());
+    var cells='';for(var i=0;i<startDow;i++)cells+='<span class="il-cal-day empty"></span>';
+    for(var d=1;d<=last;d++){
+      var key=y+'-'+pad2(m)+'-'+pad2(d),n=counts[key]||0,dow=(startDow+d-1)%7;
+      cells+='<button type="button" class="il-cal-day'+(n?' has':'')+(key===sel?' on':'')+(key===todayKey?' today':'')+(dow===0?' sun':dow===6?' sat':'')+'"'+(n?' data-cal-day="'+key+'" title="'+key+' · '+n+'개 차수"':' disabled')+'>'+d+(n?'<i>'+(n>1?n:'')+'</i>':'')+'</button>';
+    }
+    var hasPrev=dates.some(function(x){return x.slice(0,7)<calMonth}),hasNext=dates.some(function(x){return x.slice(0,7)>calMonth});
+    pop.innerHTML='<div class="il-cal-head"><button type="button" data-cal-nav="-1" aria-label="이전 달"'+(hasPrev?'':' disabled')+'>‹</button><b>'+y+'년 '+m+'월</b><button type="button" data-cal-nav="1" aria-label="다음 달"'+(hasNext?'':' disabled')+'>›</button></div>'+
+      '<div class="il-cal-week"><span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span></div>'+
+      '<div class="il-cal-grid">'+cells+'</div>'+
+      '<div class="il-cal-foot"><span><i></i>입고된 날</span><button type="button" data-cal-all="1"'+(sel?'':' class="on"')+'>전체 날짜</button></div>';
+  }
+  function openCal(){var pop=$('ilCal');if(!pop)return;calMonth='';buildCal();pop.hidden=false;$('ilDateBtn').setAttribute('aria-expanded','true')}
+  function closeCal(){var pop=$('ilCal');if(pop&&!pop.hidden){pop.hidden=true;$('ilDateBtn').setAttribute('aria-expanded','false')}}
+  function setDate(v){$('ilDate').value=v||'';syncDateBtn();closeCal();renderBatches();render()}
   function renderBatches(keep){
     var sel=$('ilBatch'),cur=keep||sel.value,list=scope();
     sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">'+($('ilDate').value?'이 날짜 입고 없음':'차수 없음')+'</option>';
@@ -271,8 +295,15 @@
 
   function init(){
     var view=$('inboundListView');if(!view)return;
-    $('ilDate').addEventListener('change',function(){renderBatches();render()});
-    $('ilDateClear').addEventListener('click',function(){$('ilDate').value='';renderBatches();render()});
+    $('ilDateBtn').addEventListener('click',function(){var pop=$('ilCal');if(pop.hidden)openCal();else closeCal()});
+    $('ilCal').addEventListener('click',function(e){
+      var nav=e.target.closest('[data-cal-nav]');if(nav){var y=+calMonth.slice(0,4),m=+calMonth.slice(5,7)+Number(nav.getAttribute('data-cal-nav'));if(m<1){m=12;y--}if(m>12){m=1;y++}calMonth=y+'-'+pad2(m);buildCal();return}
+      var day=e.target.closest('[data-cal-day]');if(day){setDate(day.getAttribute('data-cal-day'));return}
+      if(e.target.closest('[data-cal-all]'))setDate('');
+    });
+    document.addEventListener('mousedown',function(e){if(!e.target.closest||!e.target.closest('.il-date-field'))closeCal()});
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')closeCal()});
+    try{if(window.lucide&&lucide.createIcons)lucide.createIcons()}catch(e){}
     $('ilRun').addEventListener('click',function(){searched=true;render()});
     $('ilSearch').addEventListener('keydown',function(e){if(e.key==='Enter'){searched=true;render()}});
     $('ilBatch').addEventListener('change',function(){$('ilDelete').hidden=!(isAdmin()&&current());render()});
