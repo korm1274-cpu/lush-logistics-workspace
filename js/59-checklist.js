@@ -31,15 +31,28 @@
     if(!mgr&&overrides[plu]&&overrides[plu].mgr){mgr=overrides[plu].mgr;manual=true}
     return{code:code,mgr:mgr,manual:manual};
   }
-  // 같은 차수 품질리스트: PLU → [{kind, name, lot, qty}] (단품, GIFT 자체, GIFT 구성품)
-  function qualityMap(batchNo){
-    var b=quality['Q-'+batchNo],m={};if(!b)return null;
-    (b.rows||[]).forEach(function(r){
-      var add=function(plu,x){if(plu)(m[plu]=m[plu]||[]).push(x)};
-      add(r.plu,{kind:r.kind,name:r.name,lot:r.lot,qty:r.qty});
-      (r.items||[]).forEach(function(it){add(it.plu,{kind:'GIFT 구성',name:r.name+' › '+it.name,lot:it.lot,qty:null})});
+  /* 같은 차수 품질리스트와 맞추기: 품질리스트 한 줄(단품 1줄 · 기프트 1개) = 품질 1개
+     입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함. 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
+     → 품질리스트 총 품질 수량 = 입고리스트 품질 합계 + 불일치 수 */
+  function normLot(s){return String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
+  function qualityMatch(batchNo,rows){
+    var qb=quality['Q-'+batchNo];if(!qb)return null;
+    var res={total:0,matched:0,unmatched:[]};
+    rows.forEach(function(r){r.qn=0;r.qEntries=[]});
+    (qb.rows||[]).forEach(function(e){
+      res.total++;
+      var lot=normLot(e.lot),date=e.date||'',cands=rows.filter(function(r){return e.plu&&r.plu===e.plu});
+      var hit=null;
+      cands.some(function(r){if((r.details||[]).some(function(d){return normLot(d.lot)===lot&&d.date===date})){hit=r;return true}return false});
+      if(hit){hit.qn++;hit.qEntries.push(e);res.matched++;return}
+      var det=[];cands.forEach(function(r){det=det.concat(r.details||[])});
+      var lotHit=det.filter(function(d){return normLot(d.lot)===lot}),dateHit=det.filter(function(d){return d.date===date});
+      var reason=!cands.length?'입고리스트에 PLU 없음':!det.length?'입고리스트에 LOT·제조일자 정보 없음':lotHit.length?'제조일자 불일치':dateHit.length?'LOT 불일치':'LOT·제조일자 불일치';
+      res.unmatched.push({kind:e.kind,plu:e.plu,name:e.name,lot:e.lot,date:date,reason:reason,
+        ckLots:uniq((lotHit.length?lotHit:dateHit.length?dateHit:det).map(function(d){return d.lot})).slice(0,4).join(', '),
+        ckDates:uniq((lotHit.length?lotHit:dateHit.length?dateHit:det).map(function(d){return d.date})).slice(0,4).join(', ')});
     });
-    return m;
+    return res;
   }
 
   /* ===== 불러오기 ===== */
@@ -85,10 +98,11 @@
     var b=current();renderInfo(b);
     if(!batches.length){$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 샘플 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트 샘플이 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});return}
     if(!b)return;
-    var qm=qualityMap(b.batchNo);
-    $('ckQualityNote').textContent=qm?'품질리스트 '+b.batchNo+'차와 연결됨':'같은 차수 품질리스트 없음';
     var q=($('ckSearch').value||'').trim().toLowerCase();
-    var all=(b.rows||[]).map(function(r,i){var inf=infoOf(r.plu);return Object.assign({key:b.id+'#'+i,q:qm&&qm[r.plu]||null},r,inf)});
+    var all=(b.rows||[]).map(function(r,i){var inf=infoOf(r.plu);return Object.assign({key:b.id+'#'+i},r,inf)});
+    var qr=qualityMatch(b.batchNo,all);
+    all.forEach(function(r){r.q=r.qn>0});
+    $('ckQualityNote').textContent=qr?'품질리스트 '+b.batchNo+'차와 연결됨':'같은 차수 품질리스트 없음 — 품질리스트가 올라오면 자동으로 맞춥니다';
     var match=function(r){return !q||[r.plu,r.code,r.name,r.mgr,r.sheet,(r.details||[]).map(function(d){return d.lot+' '+d.ref+' '+d.cs}).join(' ')].join(' ').toLowerCase().indexOf(q)>=0};
     var qAll=all.filter(match);
     var sheets=b.sheets||[],sc={};qAll.forEach(function(r){sc[r.sheet]=(sc[r.sheet]||0)+1});
@@ -98,35 +112,48 @@
     var mgrName=function(r){return r.mgr||'담당자 없음'},mc={};inSheet.forEach(function(r){var k=mgrName(r);mc[k]=(mc[k]||0)+1});
     var mk=Object.keys(mc).sort(function(a,c){return (a==='담당자 없음')-(c==='담당자 없음')||mc[c]-mc[a]||a.localeCompare(c)});
     if(mgrFilter&&!mc[mgrFilter])mgrFilter='';
-    var qCount=inSheet.filter(function(r){return r.q}).length;
+    var qCount=inSheet.reduce(function(s,r){return s+(r.qn||0)},0);
     $('ckMgrs').innerHTML='<button type="button" class="ck-chip'+(mgrFilter?'':' on')+'" data-ck-mgr="">전체 담당 <em>'+inSheet.length+'</em></button>'+mk.map(function(k){return '<button type="button" class="ck-chip'+(mgrFilter===k?' on':'')+(k==='담당자 없음'?' none':'')+'" data-ck-mgr="'+esc(k)+'">'+esc(k)+' <em>'+mc[k]+'</em></button>'}).join('')+
       '<button type="button" class="ck-chip ck-qchip'+(qOnly?' on':'')+(qCount?'':' zero')+'" data-ck-qonly>품질 대상만 <em>'+qCount+'</em></button>';
     var list=inSheet.filter(function(r){return (!mgrFilter||mgrName(r)===mgrFilter)&&(!qOnly||r.q)});
     var cols=[];(b.cols||[]).forEach(function(k){if(list.some(function(r){return r.values&&r.values[k]}))cols.push(k)});
     lastView={list:list,batch:b,cols:cols,q:q};
     var qtySum=list.reduce(function(s,r){return s+(Number(r.qty)||0)},0);
-    $('ckCount').textContent=fmt(list.length);$('ckQty').textContent=fmt(qtySum);$('ckQuality').textContent=fmt(list.filter(function(r){return r.q}).length);
+    var qSum=list.reduce(function(s,r){return s+(r.qn||0)},0);
+    $('ckCount').textContent=fmt(list.length);$('ckQty').textContent=fmt(qtySum);
+    // 품질 수량: 입고리스트 품질 합계 / 품질리스트 총 수량 (필터 없이 전체 기준)
+    $('ckQuality').textContent=qr?fmt(qr.matched)+' / '+fmt(qr.total):'-';
+    var kq=$('ckQuality').closest('.kpi');if(kq){kq.classList.toggle('ck-q-ok',!!qr&&!qr.unmatched.length);kq.classList.toggle('ck-q-bad',!!qr&&!!qr.unmatched.length)}
     $('ckTitle').textContent='입고리스트 샘플 · '+b.label+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
-    if(!list.length){$('ckList').innerHTML='<p class="ck-empty">조건에 맞는 제품이 없습니다.</p>';return}
+    // 품질 맞춤 결과: 같으면 한 줄, 다르면 불일치 목록(품질리스트 LOT·제조일자 vs 입고리스트 값, 사유)
+    var qbox='';
+    if(qr){
+      qbox=qr.unmatched.length
+        ?'<div class="ck-qsum bad"><b>품질 수량 불일치</b> 품질리스트 '+b.batchNo+'차 <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개'+
+          '<div class="ck-qmiss-wrap"><table class="ck-qmiss"><thead><tr><th>구분</th><th>PLU</th><th>품명</th><th>품질 LOT</th><th>품질 제조일자</th><th>사유</th><th>입고리스트 LOT</th><th>입고리스트 제조일자</th></tr></thead><tbody>'+
+          qr.unmatched.map(function(u){return '<tr><td>'+esc(u.kind)+'</td><td>'+esc(u.plu||'-')+'</td><td class="n">'+esc(u.name)+'</td><td>'+esc(u.lot||'-')+'</td><td>'+esc(u.date||'-')+'</td><td class="r">'+esc(u.reason)+'</td><td>'+esc(u.ckLots||'-')+'</td><td>'+esc(u.ckDates||'-')+'</td></tr>'}).join('')+'</tbody></table></div></div>'
+        :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+b.batchNo+'차 '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 모두 일치)</div>';
+    }
+    if(!list.length){$('ckList').innerHTML=qbox+'<p class="ck-empty">조건에 맞는 제품이 없습니다.</p>';return}
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
     var sum={};
     var body=list.map(function(r){
       var d=r.details||[],first=d[0]||{},more=d.length>1,isOpen=!!open[r.key];
       var multi=function(k){var u=uniq(d.map(function(x){return x[k]}));return u.length>1?u[0]+' 외 '+(u.length-1):(u[0]||'')};
-      var qcell=r.q?'<td class="ck-q"><span class="ck-qbadge" title="'+esc(r.q.map(function(x){return x.kind+' · '+x.name+(x.lot?' · LOT '+x.lot:'')+(x.qty!=null?' · 입고수량 '+fmt(x.qty):'')}).join('\n'))+'">품질</span></td>':'<td class="ck-q"><span class="ck-dash">-</span></td>';
+      var qcell=r.qn?'<td class="ck-num ck-q"><span class="ck-qbadge" title="'+esc(r.qEntries.map(function(x){return x.kind+' · '+x.name+' · LOT '+(x.lot||'-')+' · 제조 '+(x.date||'-')}).join('\n'))+'">'+r.qn+'</span></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
       var main='<tr class="'+(r.q?'ck-has-q':'')+'">'+td(r.plu,'ck-plu')+td(r.code,'ck-code')+'<td class="ck-name"><b>'+esc(r.name)+'</b>'+(sheets.length>1&&!sheetFilter?'<small>'+esc(r.sheet)+'</small>':'')+'</td>'+
         '<td class="ck-mgr'+(r.mgr?'':' ck-nomgr')+'">'+(r.mgr?esc(r.mgr)+(r.manual?' <span class="ck-manual">수기</span>':''):'<span class="ck-dash">-</span>')+'</td>'+
-        '<td class="ck-num ck-tot">'+fmt(r.qty)+'</td>'+
+        '<td class="ck-num ck-tot">'+fmt(r.qty)+'</td>'+qcell+
         cols.map(function(k){var v=r.values&&r.values[k];if(v){sum[k]=(sum[k]||0)+v;return '<td class="ck-num">'+fmt(v)+'</td>'}return '<td class="ck-num ck-zero">-</td>'}).join('')+
-        qcell+td(multi('date'),'ck-date')+'<td class="ck-lot">'+(first.lot?esc(multi('lot')):'<span class="ck-dash">-</span>')+(more?' <button type="button" class="ck-more" data-ck-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">'+(isOpen?'접기':'+'+(d.length-1))+'</button>':'')+'</td>'+
+        td(multi('date'),'ck-date')+'<td class="ck-lot">'+(first.lot?esc(multi('lot')):'<span class="ck-dash">-</span>')+(more?' <button type="button" class="ck-more" data-ck-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">'+(isOpen?'접기':'+'+(d.length-1))+'</button>':'')+'</td>'+
         td(multi('ref'),'ck-ref')+td(multi('cs'),'ck-case')+'</tr>';
       if(!more||!isOpen)return main;
       // 펼친 줄: 케이스(팔레트)별 수량 · 제조일자 · LOT · REF · 케이스
       var blanks=cols.map(function(){return '<td></td>'}).join('');
-      return main+d.map(function(x){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> 케이스 '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td>'+blanks+'<td></td>'+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+td(x.cs,'ck-case')+'</tr>'}).join('');
+      return main+d.map(function(x){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> 케이스 '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+td(x.cs,'ck-case')+'</tr>'}).join('');
     }).join('');
-    $('ckList').innerHTML='<div class="ck-table-wrap"><table class="ck-table"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">수량</th>'+cols.map(function(k){return '<th class="ck-num">'+esc(k)+'</th>'}).join('')+'<th class="ck-q">품질</th><th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">케이스넘버</th></tr></thead><tbody>'+body+'</tbody>'+
-      '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
+    $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">수량</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">케이스넘버</th></tr></thead><tbody>'+body+'</tbody>'+
+      '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td class="ck-num ck-q">'+(qSum?fmt(qSum):'-')+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
   }
 
   /* ===== 직접 업로드(데이터 › 업로드) ===== */
@@ -150,9 +177,9 @@
 
   /* ===== 복사 · 엑셀 · 삭제 ===== */
   function flat(v){
-    var head=['PLU','제품코드','품명','담당자','수량'].concat(v.cols).concat(['품질','제조일자','LOT넘버','REF넘버','케이스넘버']),out=[head];
+    var head=['PLU','제품코드','품명','담당자','수량','품질'].concat(v.cols).concat(['제조일자','LOT넘버','REF넘버','케이스넘버']),out=[head];
     v.list.forEach(function(r){var d=r.details||[];var j=function(k){return uniq(d.map(function(x){return x[k]})).join(', ')};
-      out.push([r.plu,r.code,r.name,r.mgr,r.qty].concat(v.cols.map(function(k){return (r.values&&r.values[k])||''})).concat([r.q?'품질':'',j('date'),j('lot'),j('ref'),j('cs')]))});
+      out.push([r.plu,r.code,r.name,r.mgr,r.qty,r.qn||''].concat(v.cols.map(function(k){return (r.values&&r.values[k])||''})).concat([j('date'),j('lot'),j('ref'),j('cs')]))});
     return out;
   }
   function copyText(){

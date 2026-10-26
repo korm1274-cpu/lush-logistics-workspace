@@ -93,3 +93,21 @@
   #checklistView .ck-meta{grid-template-columns:1fr;}
   #checklistView .ck-eta>b{font-size:18px;}
 }
+/* 품질 칸(TOTAL 오른쪽, 제품마다 품질 개수) · 품질 수량 맞춤 결과 */
+#appShell #checklistView .ck-table .ck-q{text-align:center!important;min-width:54px;}
+#checklistView .ck-qbadge{min-width:22px;justify-content:center;font-size:12px;}
+#checklistView .kpi.ck-q-ok>b{color:#11795a!important;}
+#checklistView .kpi.ck-q-bad>b{color:#c93838!important;}
+#checklistView .ck-qsum{margin:0 0 10px;padding:10px 12px;border-radius:12px;font-size:13px;color:#4a4a45;}
+#checklistView .ck-qsum b{margin-right:6px;font-weight:900;}
+#checklistView .ck-qsum strong{font-weight:900;color:#1d1d1b;}
+#checklistView .ck-qsum.ok{background:#f1faf5;border:1px solid #d5eee0;}
+#checklistView .ck-qsum.ok b{color:#11795a;}
+#checklistView .ck-qsum.bad{background:#fff5f5;border:1px solid #f1d4d4;}
+#checklistView .ck-qsum.bad b{color:#c93838;}
+#checklistView .ck-qmiss-wrap{margin-top:8px;overflow:auto;border-radius:8px;border:1px solid #f1d4d4;background:#fff;}
+#appShell #checklistView table.ck-qmiss{width:100%;min-width:760px!important;border-collapse:collapse;font-size:12.5px;}
+#appShell #checklistView .ck-qmiss th,#appShell #checklistView .ck-qmiss td{padding:7px 9px;border-bottom:1px solid #f8e4e4;text-align:left!important;white-space:nowrap;background:#fff;}
+#appShell #checklistView .ck-qmiss thead th{background:#fdf0f0!important;color:#7a2d2d;font-weight:800;}
+#checklistView .ck-qmiss td.n{white-space:normal;min-width:160px;font-weight:700;}
+#checklistView .ck-qmiss td.r{color:#c93838;font-weight:800;}
