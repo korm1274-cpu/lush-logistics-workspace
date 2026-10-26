@@ -122,3 +122,8 @@
 #checklistView .ck-th-col:hover{border-color:#11795a;}
 #checklistView .ck-table thead .ck-col-pick{cursor:pointer;}
 #checklistView .ck-table thead .ck-col-pick:hover{color:#11795a;text-decoration:underline;text-underline-offset:3px;}
+/* 불일치 목록 엑셀 버튼(불일치 안내 줄 오른쪽) */
+#checklistView .ck-qsum.bad{position:relative;padding-right:150px;}
+#checklistView .ck-miss-export{position:absolute;top:7px;right:10px;height:28px;padding:0 11px;border:1px solid #c93838;border-radius:999px;background:#fff;color:#c93838;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+#checklistView .ck-miss-export:hover{background:#c93838;color:#fff;}
+@media (max-width:700px){#checklistView .ck-qsum.bad{padding-right:12px;}#checklistView .ck-miss-export{position:static;display:block;margin:0 0 8px;}}
