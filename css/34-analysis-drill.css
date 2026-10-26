@@ -25,13 +25,13 @@
 }
 /* 이슈 > 오출고·파손·제품 불량 요약 카드: 단위(건·원·품목) 작은 글씨를 숫자와 같은 줄 오른쪽 끝으로, 카드 높이 줄임
    (칸이 좁아 한 줄에 안 들어가면 단위만 다음 줄 오른쪽으로) */
-#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi{display:flex!important;flex-wrap:wrap;align-items:flex-end;column-gap:8px;row-gap:6px;padding:14px 18px 14px 20px!important;min-height:0!important;height:auto!important;}
-#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi>span{flex:0 0 100%;margin:0!important;}
-#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi>b{flex:0 0 auto;margin:0!important;line-height:1.1;}
-#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi>small{margin:0 0 3px auto!important;text-align:right;white-space:nowrap;}
+#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi{display:flex!important;flex-wrap:wrap;align-items:flex-end;column-gap:8px;row-gap:6px;padding:14px 18px 14px 20px!important;min-height:0!important;height:auto!important;}
+#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi>span{flex:0 0 100%;margin:0!important;}
+#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi>b{flex:0 0 auto;margin:0!important;line-height:1.1;}
+#appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi>small{margin:0 0 3px auto!important;text-align:right;white-space:nowrap;}
 @media (max-width:900px){
-  #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi{padding:11px 12px 11px 14px!important;row-gap:3px;}
-  #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView,#caseLookupView) .data-kpis .kpi>b{font-size:22px!important;}
+  #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi{padding:11px 12px 11px 14px!important;row-gap:3px;}
+  #appShell :is(#misshipRecordsView,#damageAnalyticsView,#defectView,#inboundListView,#qualityListView,#checklistView) .data-kpis .kpi>b{font-size:22px!important;}
 }
 /* 휴대폰 파손: 건수·금액 숫자 크기를 같게 줄여 큰 금액도 잘리지 않고 한 줄에 */
 @media (max-width:900px){

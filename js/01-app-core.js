@@ -52,7 +52,6 @@ const DEFAULT_MENUS=[
  {id:"in-analysis",group:"inbound",label:"입고 상세조회",kind:"view",target:"inboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-checklist",group:"inbound",label:"입고리스트",kind:"view",target:"checklistView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-quality",group:"inbound",label:"품질리스트",kind:"view",target:"qualityListView",visible:true,roles:["admin","leader","editor","restricted"]},
- {id:"in-case",group:"inbound",label:"Pallet 조회",kind:"view",target:"caseLookupView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-request",group:"traffic",label:"트래픽 출고 요청",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
  {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-analysis",group:"outbound",label:"출고 상세조회",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
@@ -285,9 +284,10 @@ function normalizeMenus(){
   /* 입고 메뉴 정리(팀 공유 메뉴 설정에도 반영)
      - 예전 '입고리스트'(엑셀 입고 분배리스트, in-list) 메뉴 제거
      - 수입팀 체크리스트 메뉴(in-checklist, 예전 이름 '입고리스트 샘플')를 '입고리스트'로 이름 바꿔 입고 상세조회 바로 아래
-     - 그 아래 품질리스트(in-quality) · Pallet 조회(in-case, 예전 이름 '케이스 조회')
+     - 그 아래 품질리스트(in-quality). Pallet 조회는 입고리스트 화면 맨 아래로 옮김
      Admin에서 직접 바꾼 이름은 유지(예전 기본 이름일 때만 바꿈) */
-  cleaned=cleaned.filter(m=>m.id!=="in-list");
+  // Pallet 조회(in-case)는 입고리스트 화면 맨 아래(접었다 폈다)로 합쳐 메뉴에서 뺌
+  cleaned=cleaned.filter(m=>m.id!=="in-list"&&m.id!=="in-case");
   const INBOUND_ROLES=["admin","leader","editor","restricted"];
   const placeAfter=(id,label,oldLabels,target,afterId)=>{
     let m=cleaned.find(x=>x.id===id);
@@ -299,7 +299,6 @@ function normalizeMenus(){
   };
   placeAfter("in-checklist","입고리스트",["입고리스트 샘플"],"checklistView","in-analysis");
   placeAfter("in-quality","품질리스트",[],"qualityListView","in-checklist");
-  placeAfter("in-case","Pallet 조회",["케이스 조회"],"caseLookupView","in-quality");
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));
 }

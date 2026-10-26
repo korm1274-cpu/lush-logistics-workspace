@@ -127,3 +127,53 @@
 #checklistView .ck-miss-export{position:absolute;top:7px;right:10px;height:28px;padding:0 11px;border:1px solid #c93838;border-radius:999px;background:#fff;color:#c93838;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
 #checklistView .ck-miss-export:hover{background:#c93838;color:#fff;}
 @media (max-width:700px){#checklistView .ck-qsum.bad{padding-right:12px;}#checklistView .ck-miss-export{position:static;display:block;margin:0 0 8px;}}
+/* Pallet 조회(입고리스트 맨 아래, 접었다 폈다 — js/59-checklist.js renderPallet): REF → 케이스 → 제품 표 */
+#ckPallet .cs-table-wrap{overflow:auto;max-height:72vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
+#appShell #ckPallet table.cs-table{width:100%;min-width:820px!important;border-collapse:separate;border-spacing:0;font-size:13px;}
+#appShell #ckPallet .cs-table th,#appShell #ckPallet .cs-table td{padding:8px 12px;border-bottom:1px solid #f1ede4;white-space:nowrap;text-align:left!important;background:#fff;color:#1d1d1b;}
+#appShell #ckPallet .cs-table thead th{position:sticky;top:0;z-index:2;background:#f6f4ef!important;color:#4a4a45;font-size:12.5px;font-weight:800;border-bottom:1.5px solid #e4d9c7;}
+#appShell #ckPallet .cs-table .cs-num{text-align:right!important;font-variant-numeric:tabular-nums;font-weight:800;}
+#ckPallet .cs-table .cs-name{white-space:normal;min-width:240px;}
+#ckPallet .cs-table .cs-plu,#ckPallet .cs-table .cs-code,#ckPallet .cs-table .cs-lot,#ckPallet .cs-table .cs-date{font-variant-numeric:tabular-nums;color:#4e5968;}
+#ckPallet .cs-table .cs-mgr{font-weight:800;}
+#ckPallet .cs-dash{color:#cfcac0;font-weight:500;}
+#appShell #ckPallet .cs-table tr.cs-head th{background:#f4f6ff!important;border-top:1.5px solid #dfe4fb;border-bottom:1px solid #dfe4fb;padding:9px 12px;font-weight:700;color:#4e5968;}
+#ckPallet .cs-head span{display:inline-flex;align-items:center;margin-right:10px;}
+#ckPallet .cs-case{height:24px;padding:0 10px;border-radius:999px;background:#4b5bd6;color:#fff;font-size:12.5px;font-weight:900;}
+#ckPallet .cs-ref{font-weight:800;color:#1d1d1b;}
+#ckPallet .cs-batch{height:20px;padding:0 7px;border-radius:999px;background:#fff;border:1px solid #dfe4fb;font-size:11.5px;font-weight:800;color:#4b5bd6;}
+#ckPallet .cs-sum{color:#8b95a1;font-size:12px;}
+#appShell #ckPallet .cs-table tbody.cs-group tr:not(.cs-head):hover td{background:#fffbf3;}
+#checklistView .ck-pallet{padding:0;overflow:hidden;}
+#checklistView .ck-pal-sum{display:flex;align-items:center;flex-wrap:wrap;gap:6px 12px;padding:14px 16px;cursor:pointer;list-style:none;user-select:none;}
+#checklistView .ck-pal-sum::-webkit-details-marker{display:none;}
+#checklistView .ck-pal-sum::after{content:'펼치기 ▾';margin-left:auto;height:28px;display:inline-flex;align-items:center;padding:0 11px;border:1px solid #e4ddd0;border-radius:999px;font-size:12px;font-weight:800;color:#4e5968;background:#fff;}
+#checklistView .ck-pallet[open] .ck-pal-sum::after{content:'접기 ▴';}
+#checklistView .ck-pal-title{display:inline-flex;align-items:center;gap:6px;font-size:16px;font-weight:900;color:#1d1d1b;}
+#checklistView .ck-pal-title svg{width:18px;height:18px;color:#4b5bd6;}
+#checklistView #ckPalSummary{font-size:12.5px;font-weight:800;color:#4b5bd6;}
+#checklistView .ck-pal-hint{font-size:12px;color:#8b95a1;}
+#checklistView .ck-pal-body{padding:0 16px 16px;border-top:1px solid #f1ede4;}
+#checklistView .ck-pal-tools{display:flex;align-items:flex-end;flex-wrap:wrap;gap:10px;padding:12px 0;}
+#checklistView .ck-pal-tools .field{display:flex;flex-direction:column;gap:5px;min-width:180px;}
+#checklistView .ck-pal-tools .field.grow{flex:1 1 240px;}
+#checklistView .ck-pal-tools label{font-size:12px;font-weight:800;color:#4a4a45;}
+#checklistView .ck-pal-tools select,#checklistView .ck-pal-tools input{height:38px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#ckPallet .cs-table-wrap{overflow:auto;max-height:70vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
+@media (max-width:900px){
+  #checklistView .ck-pal-hint{display:none;}
+  #checklistView .ck-pal-tools .field{flex:1 1 100%;min-width:0;}
+  #appShell #ckPallet table.cs-table{font-size:12px;min-width:680px!important;}
+  #appShell #ckPallet .cs-table th,#appShell #ckPallet .cs-table td{padding:7px 9px;}
+}
+/* 담당자 수기 지정: [+ 담당자 지정] / 수기 값(눌러서 변경) / 드롭다운 + 직접 입력 */
+#checklistView .ck-mgr-add{height:26px;padding:0 9px;border:1px dashed #e0b97a;border-radius:999px;background:#fff8ec;color:#a05a00;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+#checklistView .ck-mgr-add:hover{border-style:solid;}
+#checklistView .ck-mgr-edit{height:26px;padding:0 8px 0 0;border:0;background:none;font:inherit;font-size:13px;font-weight:800;color:#1d1d1b;cursor:pointer;white-space:nowrap;}
+#checklistView .ck-mgr-edit:hover{text-decoration:underline;text-underline-offset:3px;}
+#checklistView .ck-mgr-form{display:inline-flex;align-items:center;gap:4px;}
+#appShell #checklistView .ck-mgr-select,#appShell #checklistView .ck-mgr-input{height:28px!important;min-height:0!important;padding:0 6px!important;border:1.5px solid #1d1d1b!important;border-radius:8px!important;font:inherit;font-size:12.5px!important;background:#fff!important;}
+#appShell #checklistView .ck-mgr-select{width:110px!important;}
+#appShell #checklistView .ck-mgr-input{width:96px!important;}
+#checklistView .ck-mgr-save,#checklistView .ck-mgr-cancel{height:28px;padding:0 9px;border:1px solid #1d1d1b;border-radius:8px;background:#1d1d1b;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+#checklistView .ck-mgr-cancel{background:#fff;color:#4e5968;border-color:#e4ddd0;padding:0 7px;}

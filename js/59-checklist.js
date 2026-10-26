@@ -24,6 +24,43 @@
   function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i})}
 
   /* ===== 제품코드·담당자 / 품질 ===== */
+  /* 담당자 수기 지정(품질리스트와 같은 저장소 — PLU별·팀 공유): 마스터에 담당자가 없을 때만
+     [+ 담당자 지정] → 담당자 드롭다운에서 고르거나 직접 입력 → 저장. 수기 값은 '수기' 표시, 눌러서 변경·삭제 */
+  function mgrOptions(){
+    var s={};
+    Object.keys((master&&master.map)||{}).forEach(function(k){master.map[k].forEach(function(x){if(x[1])s[x[1]]=1})});
+    Object.keys(overrides).forEach(function(k){if(overrides[k].mgr)s[overrides[k].mgr]=1});
+    return Object.keys(s).sort(function(a,b){return a.localeCompare(b)});
+  }
+  function mgrCell(r){
+    if(r.mgr&&!r.manual)return '<td class="ck-mgr">'+esc(r.mgr)+'</td>';
+    if(!r.plu||!canEdit())return r.mgr?'<td class="ck-mgr">'+esc(r.mgr)+' <span class="ck-manual">수기</span></td>':'<td class="ck-mgr ck-nomgr"><span class="ck-dash">-</span></td>';
+    return r.mgr?'<td class="ck-mgr"><button type="button" class="ck-mgr-edit" data-ck-mgr-edit="'+esc(r.plu)+'" title="PLU '+esc(r.plu)+' 담당자 변경 (수기 지정)">'+esc(r.mgr)+' <span class="ck-manual">수기</span></button></td>'
+      :'<td class="ck-mgr ck-nomgr"><button type="button" class="ck-mgr-add" data-ck-mgr-edit="'+esc(r.plu)+'" title="PLU '+esc(r.plu)+' 담당자를 직접 지정">+ 담당자 지정</button></td>';
+  }
+  function editMgr(btn){
+    var plu=btn.getAttribute('data-ck-mgr-edit'),td=btn.closest('td'),cur=(overrides[plu]&&overrides[plu].mgr)||'';
+    var opts=mgrOptions();
+    td.innerHTML='<span class="ck-mgr-form"><select class="ck-mgr-select" aria-label="담당자 선택"><option value="">담당자 선택</option>'+opts.map(function(m){return '<option value="'+esc(m)+'"'+(m===cur?' selected':'')+'>'+esc(m)+'</option>'}).join('')+'</select>'+
+      '<input class="ck-mgr-input" value="'+esc(cur)+'" placeholder="직접 입력" aria-label="PLU '+esc(plu)+' 담당자 직접 입력"><button type="button" class="ck-mgr-save">저장</button><button type="button" class="ck-mgr-cancel" title="취소">✕</button></span>';
+    var sel=td.querySelector('select'),inp=td.querySelector('input'),done=false;
+    sel.addEventListener('change',function(){if(sel.value)inp.value=sel.value;inp.focus()});
+    inp.focus();
+    var save=function(){
+      if(done)return;done=true;
+      var v=inp.value.trim().slice(0,40);
+      if(v===cur){render();return}
+      fetch(MASTER_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'override',plu:plu,mgr:v})}).then(function(r){return r.json()}).then(function(j){
+        if(!j||!j.success){toast((j&&j.error)||'저장하지 못했습니다.');render();return}
+        if(v)overrides[plu]={mgr:v,by:(user()||{}).id,at:new Date().toISOString()};else delete overrides[plu];
+        toast(v?'PLU '+plu+' 담당자를 '+v+'(으)로 지정했습니다. (품질리스트에도 같이 적용)':'PLU '+plu+' 수기 담당자를 지웠습니다.');
+        render();
+      }).catch(function(){toast('저장하지 못했습니다.');render()});
+    };
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();save()}else if(e.key==='Escape'){done=true;render()}});
+    td.querySelector('.ck-mgr-save').addEventListener('click',save);
+    td.querySelector('.ck-mgr-cancel').addEventListener('click',function(){done=true;render()});
+  }
   function infoOf(plu,fallbackName){
     var l=(master&&master.map&&master.map[plu])||[];
     var code=uniq(l.map(function(x){return x[0]})).join(' / ');
@@ -135,7 +172,7 @@
     if(!$('ckList'))return;
     var sel=selected(),b=sel.length===1?sel[0]:null,multi=sel.length>1;
     renderInfo(b);
-    if(!batches.length||!sel.length){$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(!batches.length?(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트이 없습니다.'):'이 날짜에 입고 예정인 차수가 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});$('ckQualityNote').textContent='';$('ckTitle').textContent='입고리스트';return}
+    if(!batches.length||!sel.length){renderPallet([],false);$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(!batches.length?(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트이 없습니다.'):'이 날짜에 입고 예정인 차수가 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});$('ckQualityNote').textContent='';$('ckTitle').textContent='입고리스트';return}
     var q=($('ckSearch').value||'').trim().toLowerCase();
     // 차수별로 줄을 만들고 품질은 차수마다 따로 맞춤(같은 차수 품질리스트)
     var all=[],qr=null,linked=[];
@@ -166,6 +203,7 @@
     var list=inSheet.filter(function(r){return (!mgrFilter||mgrName(r)===mgrFilter)&&(!qOnly||r.q)});
     var cols=colFilter?[]:colChoices.filter(function(k){return list.some(function(r){return r.values&&r.values[k]})});
     lastView={list:list,batch:b,batches:sel,cols:cols,q:q,qr:qr,qname:linked.join(' · ')};
+    renderPallet(list,multi);
     var qtySum=list.reduce(function(s,r){return s+qtyOf(r)},0);
     var qSum=list.reduce(function(s,r){return s+(r.qn||0)},0);
     $('ckCount').textContent=fmt(list.length);$('ckQty').textContent=fmt(qtySum);
@@ -191,7 +229,7 @@
       var qcell=r.qn?'<td class="ck-num ck-q"><span class="ck-qbadge" title="'+esc(r.qEntries.map(function(x){return x.kind+' · '+x.name+' · LOT '+(x.lot||'-')+' · 제조 '+(x.date||'-')+(x.noInfo?' (입고리스트에 LOT 정보 없어 PLU로 반영)':'')}).join('\n'))+'">'+r.qn+'</span></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
       var sub=[sheets.length>1&&!sheetFilter?esc(r.sheet):'',multi?esc(r.batch.label):''].filter(Boolean).join(' · ');
       var main='<tr class="'+(r.q?'ck-has-q':'')+'">'+td(r.plu,'ck-plu')+td(r.code,'ck-code')+'<td class="ck-name"><b>'+esc(r.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</td>'+
-        '<td class="ck-mgr'+(r.mgr?'':' ck-nomgr')+'">'+(r.mgr?esc(r.mgr)+(r.manual?' <span class="ck-manual">수기</span>':''):'<span class="ck-dash">-</span>')+'</td>'+
+        mgrCell(r)+
         '<td class="ck-num ck-tot">'+fmt(qtyOf(r))+'</td>'+qcell+
         cols.map(function(k){var v=r.values&&r.values[k];if(v){sum[k]=(sum[k]||0)+v;return '<td class="ck-num">'+fmt(v)+'</td>'}return '<td class="ck-num ck-zero">-</td>'}).join('')+
         td(multiV('date'),'ck-date')+'<td class="ck-lot">'+(first.lot?esc(multiV('lot')):'<span class="ck-dash">-</span>')+(more?' <button type="button" class="ck-more" data-ck-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">'+(isOpen?'접기':'+'+(d.length-1))+'</button>':'')+'</td>'+
@@ -203,6 +241,76 @@
     }).join('');
     $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table'+(colFilter?' ck-one':'')+'"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">'+totalHeadHtml()+'</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num ck-col-pick" data-ck-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">케이스넘버</th></tr></thead><tbody>'+body+'</tbody>'+
       '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td class="ck-num ck-q">'+(qSum?fmt(qSum):'-')+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
+  }
+
+  /* ===== Pallet 조회(입고리스트 맨 아래, 접었다 폈다) =====
+     위에서 고른 입고일·차수와 필터(주문·매장·담당자·품질 대상·검색)가 걸린 제품 목록의 팔렛 상세를
+     REF → 케이스 → 제품(PLU · 제품코드 · 품명 · 담당자 · LOT · 제조일자 · 수량)으로 묶어 보여 줌 */
+  var PALLET_OPEN_KEY='lush_ck_pallet_open_v1',palletView=null;
+  function nat(a,b){return String(a).localeCompare(String(b),'ko',{numeric:true})}
+  function palletItems(list){
+    var out=[],seen={};
+    (list||[]).forEach(function(r){
+      (r.details||[]).forEach(function(d){
+        // 같은 PLU가 여러 주문 시트에 있으면 팔렛 상세가 겹칠 수 있어 한 번만
+        var key=[r.batch.id,d.ref,d.cs,r.plu,d.lot,d.date,d.qty].join('|');if(seen[key])return;seen[key]=1;
+        out.push({batch:r.batch,ref:d.ref||'(REF 없음)',cs:d.cs||'(케이스 없음)',plu:r.plu,code:r.code,name:r.name,mgr:r.mgr,lot:d.lot,date:d.date,qty:Number(d.qty)||0});
+      });
+    });
+    return out;
+  }
+  function renderPallet(list,multi){
+    var box=$('ckPallet');if(!box)return;
+    var all=palletItems(list);
+    var refSel=$('ckPalRef'),cur=refSel.value,refs=uniq(all.map(function(x){return x.ref})).sort(nat);
+    refSel.innerHTML='<option value="">전체 REF ('+refs.length+')</option>'+refs.map(function(r){return '<option value="'+esc(r)+'">'+esc(r)+'</option>'}).join('');
+    refSel.value=refs.indexOf(cur)>=0?cur:'';
+    var ref=refSel.value,q=($('ckPalSearch').value||'').trim().toLowerCase();
+    var items=all.filter(function(x){return (!ref||x.ref===ref)&&(!q||[x.cs,x.ref,x.plu,x.code,x.name,x.mgr,x.lot].join(' ').toLowerCase().indexOf(q)>=0)});
+    // 케이스·REF로 검색하면 그 케이스 전체(위 필터에 맞는 제품 안에서)
+    if(q){var keys={};items.forEach(function(x){keys[x.batch.id+'|'+x.ref+'|'+x.cs]=1});items=all.filter(function(x){return (!ref||x.ref===ref)&&keys[x.batch.id+'|'+x.ref+'|'+x.cs]})}
+    var groups={},order=[];
+    items.forEach(function(x){var k=x.batch.id+'|'+x.ref+'|'+x.cs;if(!groups[k]){groups[k]={batch:x.batch,ref:x.ref,cs:x.cs,items:[]};order.push(k)}groups[k].items.push(x)});
+    order.sort(function(a,b){var A=groups[a],B=groups[b];return String(B.batch.eta||'').localeCompare(String(A.batch.eta||''))||nat(A.ref,B.ref)||nat(A.cs,B.cs)});
+    var refCount=uniq(order.map(function(k){return groups[k].batch.id+'|'+groups[k].ref})).length,qty=items.reduce(function(s,x){return s+x.qty},0);
+    $('ckPalSummary').textContent=order.length?'REF '+fmt(refCount)+'개 · 케이스 '+fmt(order.length)+'개 · 제품 '+fmt(items.length)+'줄 · 수량 '+fmt(qty):'팔렛 상세 없음';
+    palletView={order:order,groups:groups,multi:multi};
+    if(!box.open)return; // 접혀 있으면 표는 그리지 않음(펼칠 때 그림)
+    if(!order.length){$('ckPalList').innerHTML='<p class="ck-empty">'+(all.length?'조건에 맞는 케이스가 없습니다.':'지금 목록의 제품에는 팔렛·케이스 상세(LOT·REF·케이스 칸)가 없습니다.')+'</p>';return}
+    var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
+    var body=order.map(function(k){
+      var g=groups[k],sum=g.items.reduce(function(s,x){return s+x.qty},0);
+      g.items.sort(function(a,b){return nat(a.plu,b.plu)});
+      return '<tbody class="cs-group"><tr class="cs-head"><th colspan="7"><span class="cs-case">케이스 '+esc(g.cs)+'</span><span class="cs-ref">REF '+esc(g.ref)+'</span>'+(multi?'<span class="cs-batch">'+esc(g.batch.label)+'</span>':'')+'<span class="cs-sum">제품 '+g.items.length+'개 · 수량 '+fmt(sum)+'</span></th></tr>'+
+        g.items.map(function(x){return '<tr>'+td(x.plu,'cs-plu')+td(x.code,'cs-code')+'<td class="cs-name">'+esc(x.name)+'</td>'+td(x.mgr,'cs-mgr')+td(x.lot,'cs-lot')+td(x.date,'cs-date')+'<td class="cs-num">'+(x.qty?fmt(x.qty):'<span class="ck-dash">-</span>')+'</td></tr>'}).join('')+'</tbody>';
+    }).join('');
+    $('ckPalList').innerHTML='<div class="cs-table-wrap"><table class="cs-table"><thead><tr><th class="cs-plu">PLU</th><th class="cs-code">제품코드</th><th class="cs-name">품명</th><th class="cs-mgr">담당자</th><th class="cs-lot">LOT넘버</th><th class="cs-date">제조일자</th><th class="cs-num">수량</th></tr></thead>'+body+'</table></div>';
+  }
+  function palletFlat(v){
+    var head=['차수','REF넘버','케이스넘버','PLU','제품코드','품명','담당자','LOT넘버','제조일자','수량'],out=[head];
+    v.order.forEach(function(k){var g=v.groups[k];g.items.forEach(function(x){out.push([g.batch.label,g.ref,g.cs,x.plu,x.code,x.name,x.mgr,x.lot,x.date,x.qty])})});
+    return out;
+  }
+  function palletCopy(){
+    var v=palletView;if(!v||!v.order.length){toast('복사할 팔렛이 없습니다.');return}
+    var clean=function(x){return String(x==null?'':x).replace(/[\t\r\n]+/g,' ').trim()};
+    var text=palletFlat(v).map(function(r){return r.map(clean).join('\t')}).join('\n');
+    var done=function(){toast('케이스 '+fmt(v.order.length)+'개를 복사했습니다.')};
+    var fallback=function(){var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();if(ok)done();else toast('복사하지 못했습니다. 다시 시도해 주세요.')};
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(done,fallback);else fallback();
+  }
+  function palletExport(){
+    var v=palletView;if(!v||!v.order.length){toast('내보낼 팔렛이 없습니다.');return}
+    xlsx().then(function(){
+      var rows=palletFlat(v),title='Pallet 조회 · '+$('ckTitle').textContent.replace(/^입고리스트 · /,'')+($('ckPalRef').value?' · REF '+$('ckPalRef').value:'');
+      var ws=XLSX.utils.aoa_to_sheet([[title]].concat(rows));
+      ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
+      ws['!cols']=[{wch:10},{wch:14},{wch:12},{wch:9},{wch:12},{wch:40},{wch:10},{wch:16},{wch:12},{wch:9}];
+      ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
+      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Pallet 조회');
+      var d=new Date(),b=lastView&&lastView.batch,name='Pallet조회_'+(b?b.label.replace(/\s+/g,''):'전체차수')+(mgrFilter?'_'+mgrFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
+      XLSX.writeFile(wb,name);toast(name+' 저장');
+    }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
   }
 
   /* ===== 직접 업로드(데이터 › 업로드) ===== */
@@ -307,7 +415,17 @@
       if(e.target.closest('[data-ck-qonly]')){qOnly=!qOnly;render();return}
       var c=e.target.closest('[data-ck-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ck-mgr');render();
     });
-    $('ckList').addEventListener('click',function(e){var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
+    $('ckList').addEventListener('click',function(e){var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
+    // Pallet 조회(맨 아래): 펼침 상태는 이 기기에 기억, REF·검색·복사·엑셀
+    var pal=$('ckPallet');
+    if(pal){
+      try{pal.open=localStorage.getItem(PALLET_OPEN_KEY)==='1'}catch(e){}
+      pal.addEventListener('toggle',function(){try{localStorage.setItem(PALLET_OPEN_KEY,pal.open?'1':'0')}catch(e){}if(pal.open&&lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
+      $('ckPalRef').addEventListener('change',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
+      $('ckPalSearch').addEventListener('input',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
+      $('ckPalCopy').addEventListener('click',palletCopy);
+      $('ckPalExport').addEventListener('click',palletExport);
+    }
     var was=false;
     // 화면을 새로 열면 전체 날짜·가장 최근 입고 예정 차수부터
     var opened=function(){var on=view.classList.contains('active');if(on&&!was){$('ckDate').value='';syncDateBtn();colFilter='';load()}was=on};
