@@ -1296,7 +1296,9 @@
     $('mrUpdated').textContent=d.misship?.updatedAt?`마지막 연동: ${new Date(d.misship.updatedAt).toLocaleString('ko-KR')}`:'아직 연동된 데이터가 없습니다. 상단 동기화 버튼을 눌러주세요.';
     /* 접수시각은 날짜(년-월-일)까지만 표시 */
     const mrDateOnly=v=>{const s=String(v??'').trim(),m=s.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/);return m?`${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`:s};
-    const numCell=v=>`<td class="num">${String(v??'')===''?'':fmt(v)}</td>`,rowHtml=r=>`<tr><td style="white-space:nowrap">${esc(mrDateOnly(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>${numCell(r[3])}${numCell(r[4])}${numCell(r[5])}${numCell(r[6])}<td>${esc(r[7])}</td><td>${esc(r[8])}</td><td style="white-space:nowrap">${esc(mrDateOnly(r[9]))}</td><td>${esc(r[10])}</td><td>${esc(r[11])}</td></tr>`;
+    const numCell=v=>`<td class="num">${String(v??'')===''?'':fmt(v)}</td>`,rowHtml=r=>`<tr><td style="white-space:nowrap">${esc(mrDateOnly(r[0]))}</td><td>${esc(r[1])}</td><td>${esc(r[2])}</td>${numCell(r[3])}${numCell(r[4])}${numCell(r[5])}${numCell(r[6])}<td>${esc(r[7])}</td><td>${esc(r[8])}</td><td style="white-space:nowrap">${esc(mrProcDate(r[9]))}</td><td>${esc(r[10])}</td><td>${esc(r[11])}</td></tr>`;
+    /* 처리일은 년도 빼고 월/일(예: 10/23)로 통일: 2026-10-23 · 10-23 · 10.23 · 10월 23일 모두 10/23 */
+    const mrProcDate=v=>{const s=mrDateOnly(v),m=s.match(/^\d{4}-(\d{2})-(\d{2})/)||s.match(/^(\d{1,2})\s*[\/\-.월]\s*(\d{1,2})\s*일?$/);return m?`${m[1].padStart(2,'0')}/${m[2].padStart(2,'0')}`:s};
     // 미완료 카드: 기간·검색과 상관없이 전체 데이터에서 아직 완료되지 않은 건(날짜+매장)을 항상 표시
     const allCases=misshipCases(all),pendingKeys=new Set(allCases.filter(c=>!c.done).map(c=>c.key));
     const pendingRows=all.filter(r=>pendingKeys.has(msCaseKey(r))).sort((a,b)=>String(b[0])>String(a[0])?1:String(b[0])<String(a[0])?-1:0);
