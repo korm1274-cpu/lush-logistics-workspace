@@ -1262,6 +1262,16 @@ window.ensureChart=function(){
   <div class="kpis data-kpis ck-kpis"><div class="kpi"><span>품목</span><b id="ckCount">0</b><small>건</small></div><div class="kpi"><span>입고 수량</span><b id="ckQty">0</b><small>EA</small></div><div class="kpi"><span>품질 수량 (입고리스트 / 품질리스트)</span><b id="ckQuality">0</b><small>개</small></div></div>
   <div class="panel ck-panel"><div class="panel-head"><div><h3 id="ckTitle">입고리스트 샘플</h3><small class="ck-qnote" id="ckQualityNote"></small></div><div class="ck-actions"><button type="button" class="btn ck-copy" id="ckCopy" title="지금 보이는 목록을 표 그대로 텍스트로 복사">텍스트 복사</button><button type="button" class="btn ck-export" id="ckExport" title="지금 보이는 목록을 엑셀로 저장">엑셀 내보내기</button></div></div><div class="ck-list" id="ckList"></div></div>
 </div></section>
+<section id="caseLookupView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">CASE LOOKUP</div><h2>케이스 조회</h2><p>입고리스트 샘플(체크리스트)의 팔렛 상세로 차수별 REF넘버 · 케이스넘버 안에 어떤 제품이 들었는지 보여 줍니다. 케이스·REF·PLU·LOT로 검색하면 그 케이스 전체가 나옵니다.</p></div></div>
+  <div class="cs-toolbar">
+    <div class="field"><label for="csBatch">차수</label><select id="csBatch"></select></div>
+    <div class="field"><label for="csRef">REF넘버</label><select id="csRef"></select></div>
+    <div class="field grow"><label for="csSearch">검색</label><input id="csSearch" placeholder="케이스넘버 / REF / PLU / 제품코드 / 품명 / LOT" autocomplete="off"></div>
+  </div>
+  <div class="kpis data-kpis cs-kpis"><div class="kpi"><span>REF</span><b id="csRefs">0</b><small>개</small></div><div class="kpi"><span>케이스</span><b id="csCases">0</b><small>개</small></div><div class="kpi"><span>제품 줄</span><b id="csItems">0</b><small>건</small></div><div class="kpi"><span>수량</span><b id="csQty">0</b><small>EA</small></div></div>
+  <div class="panel cs-panel"><div class="panel-head"><div><h3 id="csTitle">케이스 조회</h3></div><div class="cs-actions"><button type="button" class="btn cs-copy" id="csCopy" title="지금 보이는 케이스 목록을 텍스트로 복사">텍스트 복사</button><button type="button" class="btn cs-export" id="csExport" title="지금 보이는 케이스 목록을 엑셀로 저장">엑셀 내보내기</button></div></div><div class="cs-list" id="csList"></div></div>
+</div></section>
 <section id="outboundBasicView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND</div><h2>출고</h2><p>이번 달 기준으로 조회하며, 날짜별 인원·소요시간을 입력하면 생산성이 자동 계산됩니다.</p></div></div>
   <div class="data-filter-row"><div class="field"><label>시작일</label><input type="date" id="obStart"></div><div class="field"><label>종료일</label><input type="date" id="obEnd"></div><div class="field grow"><label>제품 검색</label><input id="obQuery" placeholder="제품코드 또는 제품명"></div><button class="btn primary" id="obRun">조회</button><button class="btn" id="obReset">전체</button></div>
@@ -1813,6 +1823,7 @@ window.ensureChart=function(){
 <script src="js/58-quality-list.js"></script>
 <script src="js/checklist-parse.js"></script>
 <script src="js/59-checklist.js"></script>
+<script src="js/60-case-lookup.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">
@@ -1823,5 +1834,6 @@ window.ensureChart=function(){
 <link rel="stylesheet" href="css/41-request-analysis.css">
 <link rel="stylesheet" href="css/42-quality-list.css">
 <link rel="stylesheet" href="css/43-checklist.css">
+<link rel="stylesheet" href="css/44-case-lookup.css">
 </body>
 </html>

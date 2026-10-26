@@ -32,10 +32,10 @@
       var hi=-1,h=null;
       for(var i=0;i<Math.min(15,aoa.length);i++){var x=headOf(aoa[i]);if(x.indexOf('PLU')>=0&&x.indexOf('제품코드')>=0){hi=i;h=x;break}}
       if(hi<0)return;
-      var pi=h.indexOf('PLU'),ci=h.indexOf('제품코드'),ni=h.indexOf('제품명'),mi=h.findIndex(function(k){return /담당/.test(k)});
+      var pi=h.indexOf('PLU'),ci=h.indexOf('제품코드'),ni=h.indexOf('제품명'),mi=h.findIndex(function(k){return /담당/.test(k)}),gi=h.indexOf('제품군'),ui=h.indexOf('단위');
       aoa.slice(hi+1).forEach(function(r){
         var k=normPlu(r[pi]);if(!k)return;
-        var e=[String(r[ci]||'').trim(),mi>=0?String(r[mi]||'').trim():'',ni>=0?String(r[ni]||'').trim():''];
+        var e=[String(r[ci]||'').trim(),mi>=0?String(r[mi]||'').trim():'',ni>=0?String(r[ni]||'').trim():'',gi>=0?String(r[gi]||'').trim():'',ui>=0?String(r[ui]||'').trim():'']; // [제품코드, 담당자, 제품명, 제품군, 단위(EA/G — 입고 화면용)]
         var list=map[k]||(map[k]=[]);
         if(!list.some(function(x){return x[0]===e[0]&&x[1]===e[1]})){list.push(e);count++}
       });

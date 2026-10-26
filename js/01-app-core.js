@@ -53,6 +53,7 @@ const DEFAULT_MENUS=[
  {id:"in-list",group:"inbound",label:"입고리스트",kind:"view",target:"inboundListView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-quality",group:"inbound",label:"품질리스트",kind:"view",target:"qualityListView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"in-checklist",group:"inbound",label:"입고리스트 샘플",kind:"view",target:"checklistView",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"in-case",group:"inbound",label:"케이스 조회",kind:"view",target:"caseLookupView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-request",group:"traffic",label:"트래픽 출고 요청",kind:"requestManager",visible:true,roles:["admin","leader","editor"]},
  {id:"out-daily",group:"outbound",label:"출고",kind:"view",target:"outboundBasicView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"out-analysis",group:"outbound",label:"출고 상세조회",kind:"view",target:"outboundAnalysis",visible:true,roles:["admin","leader","editor","restricted"]},
@@ -296,6 +297,11 @@ function normalizeMenus(){
   if(!cleaned.some(m=>m.id==="in-checklist")){
     const after=cleaned.findIndex(m=>m.id==="in-quality");
     cleaned.splice(after<0?cleaned.length:after+1,0,{id:"in-checklist",group:"inbound",label:"입고리스트 샘플",kind:"view",target:"checklistView",visible:true,roles:["admin","leader","editor","restricted"]});
+  }
+  /* 새 메뉴 '케이스 조회'(차수별 REF·케이스 안 제품): 입고리스트 샘플 바로 아래 */
+  if(!cleaned.some(m=>m.id==="in-case")){
+    const after=cleaned.findIndex(m=>m.id==="in-checklist");
+    cleaned.splice(after<0?cleaned.length:after+1,0,{id:"in-case",group:"inbound",label:"케이스 조회",kind:"view",target:"caseLookupView",visible:true,roles:["admin","leader","editor","restricted"]});
   }
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));

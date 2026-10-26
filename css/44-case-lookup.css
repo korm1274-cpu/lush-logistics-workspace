@@ -1,0 +1,37 @@
+/* ===== 입고 > 케이스 조회 (js/60-case-lookup.js) — 입고리스트 샘플과 같은 모양 ===== */
+#caseLookupView .cs-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;background:#fff;border:1.5px solid #ece6db;border-radius:14px;padding:12px 14px;}
+#caseLookupView .cs-toolbar .field{display:flex;flex-direction:column;gap:5px;min-width:180px;}
+#caseLookupView .cs-toolbar .field.grow{flex:1 1 260px;}
+#caseLookupView .cs-toolbar label{font-size:12px;font-weight:800;color:#4a4a45;}
+#caseLookupView .cs-toolbar select,#caseLookupView .cs-toolbar input{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#caseLookupView .cs-panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#caseLookupView .cs-actions{display:flex;gap:6px;flex:none;}
+#caseLookupView .cs-copy,#caseLookupView .cs-export{height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+#caseLookupView .cs-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
+#caseLookupView .cs-table-wrap{overflow:auto;max-height:72vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
+#appShell #caseLookupView table.cs-table{width:100%;min-width:820px!important;border-collapse:separate;border-spacing:0;font-size:13px;}
+#appShell #caseLookupView .cs-table th,#appShell #caseLookupView .cs-table td{padding:8px 12px;border-bottom:1px solid #f1ede4;white-space:nowrap;text-align:left!important;background:#fff;color:#1d1d1b;}
+#appShell #caseLookupView .cs-table thead th{position:sticky;top:0;z-index:2;background:#f6f4ef!important;color:#4a4a45;font-size:12.5px;font-weight:800;border-bottom:1.5px solid #e4d9c7;}
+#appShell #caseLookupView .cs-table .cs-num{text-align:right!important;font-variant-numeric:tabular-nums;font-weight:800;}
+#caseLookupView .cs-table .cs-name{white-space:normal;min-width:240px;}
+#caseLookupView .cs-table .cs-plu,#caseLookupView .cs-table .cs-code,#caseLookupView .cs-table .cs-lot,#caseLookupView .cs-table .cs-date{font-variant-numeric:tabular-nums;color:#4e5968;}
+#caseLookupView .cs-table .cs-mgr{font-weight:800;}
+#caseLookupView .cs-dash{color:#cfcac0;font-weight:500;}
+/* 케이스 머리줄: 케이스 · REF · (차수) · 제품 수·수량 */
+#appShell #caseLookupView .cs-table tr.cs-head th{background:#f4f6ff!important;border-top:1.5px solid #dfe4fb;border-bottom:1px solid #dfe4fb;padding:9px 12px;font-weight:700;color:#4e5968;}
+#caseLookupView .cs-head span{display:inline-flex;align-items:center;margin-right:10px;}
+#caseLookupView .cs-case{height:24px;padding:0 10px;border-radius:999px;background:#4b5bd6;color:#fff;font-size:12.5px;font-weight:900;}
+#caseLookupView .cs-ref{font-weight:800;color:#1d1d1b;}
+#caseLookupView .cs-batch{height:20px;padding:0 7px;border-radius:999px;background:#fff;border:1px solid #dfe4fb;font-size:11.5px;font-weight:800;color:#4b5bd6;}
+#caseLookupView .cs-sum{color:#8b95a1;font-size:12px;}
+#appShell #caseLookupView .cs-table tbody.cs-group tr:not(.cs-head):hover td{background:#fffbf3;}
+@media (max-width:900px){
+  #caseLookupView .cs-toolbar .field{flex:1 1 100%;min-width:0;}
+  #caseLookupView .cs-panel .panel-head{flex-wrap:wrap;}
+  #caseLookupView .cs-actions{width:100%;}
+  #caseLookupView .cs-copy,#caseLookupView .cs-export{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
+  #appShell #caseLookupView table.cs-table{font-size:12px;min-width:680px!important;}
+  #appShell #caseLookupView .cs-table th,#appShell #caseLookupView .cs-table td{padding:7px 9px;}
+  #caseLookupView .cs-table .cs-name{min-width:170px;}
+  #appShell #caseLookupView .data-kpis .kpi>b{font-size:17px!important;}
+}

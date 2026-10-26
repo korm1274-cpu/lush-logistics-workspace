@@ -155,6 +155,10 @@ async function qualityLists(req, res, user) {
 //   rows: { sheet, plu, name, qty, values:{분배처:수량}, details:[{lot,date,ref,cs,qty}] }
 //   같은 차수를 다시 받으면 교체. 실시간 입고 예정일이 바뀌면 etaHistory에 남김. 더 오래된 파일(modified가 이전)이 늦게 오면 무시
 const CHECKLIST_KEY = 'lush_checklists_v1';
+// 체크리스트가 바뀌면 입고 데이터(팀 공유 inbound)도 다시 만듦 — 실패해도 체크리스트 저장은 그대로(새벽 자동·동기화 버튼으로 보정)
+async function syncInbound(store) {
+  try { await Promise.race([require('./_lib/inbound-checklist').rebuild(store), new Promise(r => setTimeout(r, 8000))]); } catch (e) { console.error('inbound rebuild error', e); }
+}
 async function checklists(req, res, user) {
   const store = require('./_lib/auth').kv();
   const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
@@ -174,6 +178,7 @@ async function checklists(req, res, user) {
       const id = clip(body.id, 60);
       if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
       await store.cmd(['HDEL', CHECKLIST_KEY, id]);
+      await syncInbound(store);
       return res.status(200).json({ success: true });
     }
     let p = null;
@@ -215,6 +220,7 @@ async function checklists(req, res, user) {
       fileName: clip(body.fileName, 300), modified: user.drive || !old || !old.modified || modified > old.modified ? modified : old.modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
     };
     await store.cmd(['HSET', CHECKLIST_KEY, id, JSON.stringify(rec)]);
+    await syncInbound(store); // 입고·월별 입고현황·입고 상세조회 데이터도 체크리스트로 다시 만듦
     return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length, eta, etaChanged: !!(old && old.eta && old.eta !== eta) } });
   } catch (e) {
     return res.status(200).json({ success: false, error: String((e && e.message) || e) });
@@ -254,11 +260,12 @@ async function pluMaster(req, res, user) {
       Object.entries(body.map || {}).slice(0, 20000).forEach(([k, list]) => {
         const key = clip(k, 20).trim();
         if (!key || !Array.isArray(list)) return;
-        map[key] = list.slice(0, 5).map(x => [clip(x && x[0], 40), clip(x && x[1], 40), clip(x && x[2], 120)]);
+        map[key] = list.slice(0, 5).map(x => [clip(x && x[0], 40), clip(x && x[1], 40), clip(x && x[2], 120), clip(x && x[3], 60), clip(x && x[4], 10)]); // 제품코드·담당자·제품명·제품군·단위
       });
       if (!Object.keys(map).length) return res.status(200).json({ success: false, error: 'PLU 정보를 찾지 못했습니다.' });
       const rec = { updatedAt: new Date().toISOString(), updatedBy: user.id, fileName: clip(body.fileName, 200), count: Object.keys(map).length, map };
       await store.cmd(['SET', PLU_KEY, JSON.stringify(rec)]);
+      await syncInbound(store); // 제품코드·제품군·단위가 바뀌었을 수 있으니 입고 데이터도 다시 만듦
       return res.status(200).json({ success: true, count: rec.count });
     }
     return res.status(200).json({ success: false, error: 'Unsupported action' });

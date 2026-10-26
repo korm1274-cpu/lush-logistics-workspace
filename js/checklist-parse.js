@@ -96,7 +96,7 @@
     return{name:name,cols:dist.map(function(x){return x.name}),rows:rows,details:details};
   }
   function parseSheets(sheets,fileName){
-    var meta=parseName(fileName),info={eta:'',orders:'',pallets:'',products:'',changes:''},rows=[],cols=[],sheetNames=[],details={};
+    var meta=parseName(fileName),info={eta:'',orders:'',pallets:'',products:'',changes:''},rows=[],cols=[],sheetNames=[],details={},bySheet={};
     (sheets||[]).forEach(function(sh){
       var aoa=sh.aoa||[];
       if(/checklist/i.test(sh.name)){info=parseInfo(aoa);return}
@@ -105,11 +105,14 @@
       p.cols.forEach(function(k){if(cols.indexOf(k)<0)cols.push(k)});
       rows=rows.concat(p.rows);
       Object.keys(p.details).forEach(function(k){details[k]=(details[k]||[]).concat(p.details[k])});
+      bySheet[sh.name]=p.details;
     });
     // C 상세를 PLU로 붙임(같은 LOT·날짜·REF·케이스는 하나로)
     rows.forEach(function(r){
       var seen={},list=[];
-      (details[r.plu]||[]).forEach(function(x){var key=[x.lot,x.date,x.ref,x.cs].join('|');if(seen[key]){seen[key].qty+=x.qty;return}var y={lot:x.lot,date:x.date,ref:x.ref,cs:x.cs,qty:x.qty};seen[key]=y;list.push(y)});
+      // 같은 시트의 팔렛 상세가 있으면 그것만(다른 주문 시트 것이 섞이지 않게), 없으면 파일 전체에서 PLU로
+      var own=bySheet[r.sheet]&&bySheet[r.sheet][r.plu];
+      (own&&own.length?own:(details[r.plu]||[])).forEach(function(x){var key=[x.lot,x.date,x.ref,x.cs].join('|');if(seen[key]){seen[key].qty+=x.qty;return}var y={lot:x.lot,date:x.date,ref:x.ref,cs:x.cs,qty:x.qty};seen[key]=y;list.push(y)});
       r.details=list.slice(0,60);
     });
     return{batchNo:meta.batchNo,country:meta.country,orders:meta.orders,fileDate:meta.fileDate,eta:info.eta||meta.fileDate,info:info,sheets:sheetNames,cols:cols,rows:rows};
