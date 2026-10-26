@@ -1,6 +1,6 @@
 /* 입고 > 입고리스트 (수입팀 '상품 입고 CHECKLIST' 엑셀 — 구글 드라이브 자동 반영 + 데이터 › 업로드)
    - 해석: js/checklist-parse.js (서버 드라이브 반영과 같은 코드)
-   - 표: PLU | 제품코드 | 품명 | 담당자 | 수량 | 분배처(리테일·디지털…) | 품질 | 제조일자 | LOT넘버 | REF넘버 | 케이스넘버
+   - 표: PLU | 제품코드 | 품명 | 담당자 | 수량 | 분배처(리테일·디지털…) | 품질 | 제조일자 | LOT넘버 | REF넘버 | Pallet
      제조일자·LOT·REF·케이스는 시트 오른쪽 팔레트 상세(C 구역)를 PLU로 붙인 값. 여러 건이면 [+N]으로 펼침
    - 제품코드·담당자: PLU 담당자 정보(+품질리스트에서 수기로 지정한 담당자)
    - 품질: 같은 차수 품질리스트(Q-차수)에 있는 PLU면 '품질' 표시(품질 시료로 빠질 제품)
@@ -237,9 +237,9 @@
       if(!more||!isOpen)return main;
       // 펼친 줄: 케이스(팔레트)별 수량 · 제조일자 · LOT · REF · 케이스
       var blanks=cols.map(function(){return '<td></td>'}).join('');
-      return main+d.map(function(x){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> 케이스 '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+td(x.cs,'ck-case')+'</tr>'}).join('');
+      return main+d.map(function(x){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> Pallet '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+td(x.cs,'ck-case')+'</tr>'}).join('');
     }).join('');
-    $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table'+(colFilter?' ck-one':'')+'"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">'+totalHeadHtml()+'</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num ck-col-pick" data-ck-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">케이스넘버</th></tr></thead><tbody>'+body+'</tbody>'+
+    $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table'+(colFilter?' ck-one':'')+'"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">'+totalHeadHtml()+'</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num ck-col-pick" data-ck-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">Pallet</th></tr></thead><tbody>'+body+'</tbody>'+
       '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td class="ck-num ck-q">'+(qSum?fmt(qSum):'-')+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
   }
 
@@ -254,7 +254,7 @@
       (r.details||[]).forEach(function(d){
         // 같은 PLU가 여러 주문 시트에 있으면 팔렛 상세가 겹칠 수 있어 한 번만
         var key=[r.batch.id,d.ref,d.cs,r.plu,d.lot,d.date,d.qty].join('|');if(seen[key])return;seen[key]=1;
-        out.push({batch:r.batch,ref:d.ref||'(REF 없음)',cs:d.cs||'(케이스 없음)',plu:r.plu,code:r.code,name:r.name,mgr:r.mgr,lot:d.lot,date:d.date,qty:Number(d.qty)||0});
+        out.push({batch:r.batch,ref:d.ref||'(REF 없음)',cs:d.cs||'(Pallet 없음)',plu:r.plu,code:r.code,name:r.name,mgr:r.mgr,lot:d.lot,date:d.date,qty:Number(d.qty)||0});
       });
     });
     return out;
@@ -335,7 +335,7 @@
   /* ===== 복사 · 엑셀 · 삭제 ===== */
   function flat(v){
     var multi=(v.batches||[]).length>1;
-    var head=(multi?['차수']:[]).concat(['PLU','제품코드','품명','담당자',colFilter?colFilter+' 수량':'수량','품질']).concat(v.cols).concat(['제조일자','LOT넘버','REF넘버','케이스넘버']),out=[head];
+    var head=(multi?['차수']:[]).concat(['PLU','제품코드','품명','담당자',colFilter?colFilter+' 수량':'수량','품질']).concat(v.cols).concat(['제조일자','LOT넘버','REF넘버','Pallet']),out=[head];
     v.list.forEach(function(r){var d=r.details||[];var j=function(k){return uniq(d.map(function(x){return x[k]})).join(', ')};
       out.push((multi?[r.batch.label]:[]).concat([r.plu,r.code,r.name,r.mgr,qtyOf(r),r.qn||'']).concat(v.cols.map(function(k){return (r.values&&r.values[k])||''})).concat([j('date'),j('lot'),j('ref'),j('cs')]))});
     return out;
@@ -355,7 +355,7 @@
       var rows=flat(v),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
       var ws=XLSX.utils.aoa_to_sheet([[title]].concat(rows));
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
-      ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'?42:/LOT|REF|제조일자|케이스/.test(h)?16:h==='제품코드'?12:10}});
+      ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'?42:/LOT|REF|제조일자|Pallet/.test(h)?16:h==='제품코드'?12:10}});
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'입고리스트');
       var d=new Date(),name='입고리스트샘플_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수')+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
