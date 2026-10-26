@@ -151,6 +151,74 @@ async function qualityLists(req, res, user) {
   }
 }
 
+// 입고리스트 샘플(수입팀 상품 입고 CHECKLIST) 저장소(hash): 필드 = 차수 id(예: C-142) → { id, batchNo, label, country, orders, eta, info, sheets, cols, rows, etaHistory, fileName, modified, … }
+//   rows: { sheet, plu, name, qty, values:{분배처:수량}, details:[{lot,date,ref,cs,qty}] }
+//   같은 차수를 다시 받으면 교체. 실시간 입고 예정일이 바뀌면 etaHistory에 남김. 더 오래된 파일(modified가 이전)이 늦게 오면 무시
+const CHECKLIST_KEY = 'lush_checklists_v1';
+async function checklists(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      const arr = await store.cmd(['HGETALL', CHECKLIST_KEY]) || [];
+      const batches = [];
+      for (let i = 0; i < arr.length; i += 2) { try { batches.push(JSON.parse(arr[i + 1])); } catch (e) { /* 깨진 항목 무시 */ } }
+      batches.sort((a, b) => String(b.eta || '').localeCompare(String(a.eta || '')) || (Number(b.batchNo) || 0) - (Number(a.batchNo) || 0));
+      return res.status(200).json({ success: true, batches });
+    }
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    if (body.action === 'delete') {
+      if (user.role !== 'admin') return res.status(200).json({ success: false, error: '차수 삭제는 관리자만 할 수 있습니다.' });
+      const id = clip(body.id, 60);
+      if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
+      await store.cmd(['HDEL', CHECKLIST_KEY, id]);
+      return res.status(200).json({ success: true });
+    }
+    let p = null;
+    if (body.action === 'import') {
+      // 구글 드라이브(apps-script/quality-drive-sync.gs) 또는 화면 업로드: 시트 값을 받아 js/checklist-parse.js로 해석
+      const sheets = (Array.isArray(body.sheets) ? body.sheets : []).slice(0, 30).map(s => ({
+        name: clip(s && s.name, 60),
+        aoa: (Array.isArray(s && s.aoa) ? s.aoa : []).slice(0, 4000).map(r => (Array.isArray(r) ? r : []).slice(0, 60).map(v => clip(v, 300))),
+      }));
+      p = require('../js/checklist-parse.js').parseSheets(sheets, clip(body.fileName, 300));
+    } else if (body.action === 'save') {
+      p = body.parsed || null; // 화면 업로드: 브라우저에서 해석한 결과
+    }
+    if (!p) return res.status(200).json({ success: false, error: 'Unsupported action' });
+    if (!p.batchNo) return res.status(200).json({ success: false, error: '파일명에서 차수를 찾지 못했습니다. (예: … - 142차)_….xlsx)' });
+    if (!Array.isArray(p.rows) || !p.rows.length) return res.status(200).json({ success: false, error: '분배 표(PLU · Description · 수량 · 리테일 …)를 찾지 못했습니다.' });
+    const id = 'C-' + clip(p.batchNo, 4);
+    const modified = clip(body.modified, 40);
+    const oldRaw = await store.cmd(['HGET', CHECKLIST_KEY, id]);
+    let old = null; try { old = oldRaw ? JSON.parse(oldRaw) : null; } catch (e) { old = null; }
+    if (old && old.modified && modified && modified < old.modified) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
+    const eta = clip(p.eta, 10);
+    const etaHistory = (old && Array.isArray(old.etaHistory) ? old.etaHistory : []).slice(-20);
+    if (old && old.eta && eta && old.eta !== eta) etaHistory.push({ from: old.eta, to: eta, at: new Date().toISOString(), file: clip(body.fileName, 200) });
+    const num = v => Number(v) || 0;
+    const rows = p.rows.slice(0, 5000).map(r => ({
+      sheet: clip(r.sheet, 60), plu: clip(r.plu, 20), name: clip(r.name, 200), qty: num(r.qty),
+      values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 20).map(([k, v]) => [clip(k, 40), num(v)])),
+      details: (Array.isArray(r.details) ? r.details : []).slice(0, 60).map(d => ({ lot: clip(d.lot, 40), date: clip(d.date, 10), ref: clip(d.ref, 40), cs: clip(d.cs, 20), qty: num(d.qty) })),
+    }));
+    const info = p.info || {};
+    const rec = {
+      id, batchNo: clip(p.batchNo, 4), label: clip(p.batchNo, 4) + '차' + (p.country ? ' ' + clip(p.country, 3) : ''), country: clip(p.country, 3), orders: clip(p.orders, 200),
+      eta, fileDate: clip(p.fileDate, 10), etaHistory,
+      info: { orders: clip(info.orders, 300), pallets: clip(info.pallets, 40), products: clip(info.products, 300), changes: clip(info.changes, 1000) },
+      sheets: (Array.isArray(p.sheets) ? p.sheets : []).slice(0, 30).map(s => clip(s, 60)), cols: (Array.isArray(p.cols) ? p.cols : []).slice(0, 20).map(s => clip(s, 40)), rows,
+      fileName: clip(body.fileName, 300), modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
+    };
+    await store.cmd(['HSET', CHECKLIST_KEY, id, JSON.stringify(rec)]);
+    return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length, eta, etaChanged: !!(old && old.eta && old.eta !== eta) } });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+  }
+}
+
 // PLU별 제품코드·담당자(제품 마스터 엑셀): { updatedAt, updatedBy, fileName, map: { PLU: [[제품코드, 담당자, 제품명], ...] } } 한 덩어리로 보관
 //   GET / POST {action:'save', fileName, map} — 새 파일을 올리면 통째로 교체
 const PLU_KEY = 'lush_plu_master_v1';
@@ -202,7 +270,7 @@ async function pluMaster(req, res, user) {
 function driveSyncUser(req) {
   const expected = process.env.QUALITY_SYNC_SECRET || '';
   const given = String((req.headers && req.headers['x-sync-secret']) || '');
-  if (!expected || expected.length < 16 || !given || req.method !== 'POST' || !req.query || req.query.part !== 'quality-lists') return null;
+  if (!expected || expected.length < 16 || !given || req.method !== 'POST' || !req.query || ['quality-lists', 'checklists'].indexOf(req.query.part) < 0) return null;
   const crypto = require('crypto');
   const a = crypto.createHash('sha256').update(expected).digest(), b = crypto.createHash('sha256').update(given).digest();
   return crypto.timingSafeEqual(a, b) ? { id: 'google-drive', role: 'editor', drive: true } : null;
@@ -215,7 +283,7 @@ module.exports = async (req, res) => {
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     if (!body || body.action !== 'import') return res.status(200).json({ success: false, error: 'import만 허용됩니다.' });
     res.setHeader('Cache-Control', 'no-store');
-    return qualityLists(req, res, drive);
+    return req.query.part === 'checklists' ? checklists(req, res, drive) : qualityLists(req, res, drive);
   }
   // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
   const authUser = await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' });
@@ -226,6 +294,8 @@ module.exports = async (req, res) => {
   // 품질리스트(시험의뢰서) · PLU별 제품코드/담당자
   if (req.query && req.query.part === 'quality-lists') return qualityLists(req, res, authUser);
   if (req.query && req.query.part === 'plu-master') return pluMaster(req, res, authUser);
+  // 입고리스트 샘플(수입팀 상품 입고 CHECKLIST)
+  if (req.query && req.query.part === 'checklists') return checklists(req, res, authUser);
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
     return;
