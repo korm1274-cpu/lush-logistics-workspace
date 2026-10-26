@@ -1,0 +1,62 @@
+/* ===== 트래픽 출고 요청 › 기간별 출고 요청 현황 아래 매장별·구분별 분석 (js/57-request-analysis.js) ===== */
+#reqAnalysis.rqa{margin-top:14px;}
+#reqAnalysis .rqa-grid{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:14px;align-items:start;}
+#reqAnalysis .rqa-card{background:#fff;border:1.5px solid #ece6db;border-radius:14px;padding:14px 16px;min-width:0;}
+#reqAnalysis .rqa-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:10px;}
+#reqAnalysis .rqa-head h4{margin:0;font-size:15px;font-weight:900;color:#1d1d1b;}
+#reqAnalysis .rqa-head small{font-size:12px;color:#8b95a1;font-weight:600;white-space:nowrap;}
+#reqAnalysis .rqa-chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+#reqAnalysis .rqa-chip{height:32px;padding:0 12px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;color:#4e5968;font:inherit;font-size:12.5px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+#reqAnalysis .rqa-chip em{font-style:normal;color:#e87ba4;font-weight:900;}
+#reqAnalysis .rqa-chip.zero{color:#a3a9b0;}
+#reqAnalysis .rqa-chip.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#reqAnalysis .rqa-chip.on em{color:#ffb3cf;}
+#reqAnalysis .rqa-top{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:10px 12px;margin-bottom:10px;border-radius:10px;background:#fdf6ea;font-size:13.5px;color:#4a4a45;}
+#reqAnalysis .rqa-top b{color:#1d1d1b;font-weight:900;}
+#reqAnalysis .rqa-top-badge{display:inline-flex;align-items:center;height:22px;padding:0 8px;border-radius:999px;background:#1d1d1b;color:#fff;font-size:11px;font-weight:900;}
+#reqAnalysis .rqa-top-pct{color:#a05a00;font-weight:800;}
+#reqAnalysis .rqa-muted{background:#f6f4ef;color:#8b95a1;}
+#reqAnalysis .rqa-table-wrap{overflow:auto;max-height:420px;border:1px solid #f1ede4;border-radius:10px;}
+#reqAnalysis .rqa-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px;}
+#appShell #reqAnalysis .rqa-table th,#appShell #reqAnalysis .rqa-table td{padding:8px 10px;border-bottom:1px solid #f4f1ea;white-space:nowrap;text-align:left!important;background:#fff;}
+#appShell #reqAnalysis .rqa-table thead th{position:sticky;top:0;z-index:1;background:#f6f4ef!important;color:#4a4a45;font-size:12px;font-weight:800;}
+#appShell #reqAnalysis .rqa-table .rqa-n{text-align:right!important;font-variant-numeric:tabular-nums;}
+#reqAnalysis .rqa-table td.rqa-n b{font-weight:900;color:#1d1d1b;margin-right:1px;}
+#reqAnalysis .rqa-table .rqa-rank{width:36px;color:#8b95a1;font-weight:800;}
+#reqAnalysis .rqa-table .rqa-store{font-weight:800;color:#1d1d1b;white-space:normal;min-width:90px;}
+#reqAnalysis .rqa-table .rqa-sub{color:#6b7684;font-size:12px;}
+#reqAnalysis .rqa-zero{color:#cfcac0;}
+#appShell #reqAnalysis .rqa-table tr.rqa-first td{background:#fffaf0!important;}
+#reqAnalysis .rqa-bar-td{width:38%;}
+#reqAnalysis .rqa-bar-c{display:flex;align-items:center;gap:8px;}
+#reqAnalysis .rqa-bar{flex:1 1 auto;display:block;height:8px;min-width:60px;border-radius:999px;background:#f1ede4;overflow:hidden;}
+#reqAnalysis .rqa-bar i{display:block;height:100%;border-radius:999px;background:#e87ba4;}
+#reqAnalysis .rqa-pct{flex:none;width:46px;text-align:right;font-weight:800;color:#a05a00;font-variant-numeric:tabular-nums;}
+#reqAnalysis .rqa-more{margin-top:8px;height:32px;padding:0 12px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font:inherit;font-size:12.5px;font-weight:800;color:#4e5968;cursor:pointer;}
+#reqAnalysis .rqa-types{display:grid;gap:10px;}
+#reqAnalysis .rqa-type{border:1px solid #f1ede4;border-radius:12px;padding:10px 12px;}
+#reqAnalysis .rqa-type-head{display:flex;align-items:baseline;justify-content:space-between;gap:8px;margin-bottom:6px;}
+#reqAnalysis .rqa-type-head b{font-size:14px;font-weight:900;color:#1d1d1b;}
+#reqAnalysis .rqa-type-head span{font-size:12.5px;color:#6b7684;font-weight:700;}
+#reqAnalysis .rqa-type-head strong{font-size:16px;font-weight:900;color:#1d1d1b;}
+#reqAnalysis .rqa-type .rqa-bar{width:100%;}
+#reqAnalysis .rqa-bulk .rqa-bar i{background:#1d1d1b;}
+#reqAnalysis .rqa-traffic .rqa-bar i{background:#11795a;}
+#reqAnalysis .rqa-hq .rqa-bar i{background:#e0a100;}
+#reqAnalysis .rqa-nozzle .rqa-bar i{background:#8e6bd6;}
+#reqAnalysis .rqa-type dl{margin:8px 0 0;display:grid;gap:3px;}
+#reqAnalysis .rqa-type dl>div{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;}
+#reqAnalysis .rqa-type dt{color:#8b95a1;font-weight:700;}
+#reqAnalysis .rqa-type dd{margin:0;color:#1d1d1b;font-weight:800;text-align:right;overflow-wrap:anywhere;}
+#reqAnalysis .rqa-empty{padding:18px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:12px;}
+@media (max-width:1100px){#reqAnalysis .rqa-grid{grid-template-columns:1fr;}}
+@media (max-width:700px){
+  #reqAnalysis .rqa-card{padding:12px;}
+  #reqAnalysis .rqa-chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;}
+  #reqAnalysis .rqa-chip{flex:none;}
+  #reqAnalysis .rqa-bar-td{min-width:130px;}
+  #appShell #reqAnalysis .rqa-table th,#appShell #reqAnalysis .rqa-table td{padding:7px 8px;}
+}
+/* 앱 공통 표 최소 너비(920px) 덮어쓰기: 분석 표는 카드 폭에 맞춤 */
+#appShell #reqAnalysis table.rqa-table{min-width:0!important;width:100%!important;}
+@media (max-width:700px){#appShell #reqAnalysis table.rqa-table{min-width:480px!important;}}

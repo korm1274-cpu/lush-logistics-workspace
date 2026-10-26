@@ -44,3 +44,8 @@ input.lc-input::-webkit-calendar-picker-indicator{display:none!important;}
 /* 트래픽 출고 요청 등록: 요청일자 칸을 날짜 길이에 맞게(칸이 길어 달력 아이콘이 멀리 떨어지던 것) */
 #appShell .request-date-entry{grid-template-columns:minmax(0,170px)!important;}
 #appShell #requestDateInput{width:100%!important;max-width:170px!important;min-width:0!important;box-sizing:border-box;}
+/* 트래픽 출고 요청 › 기간별 출고 요청 현황: 시작일·종료일 칸이 좁아(150px) 달력 아이콘 자리 때문에 날짜(년도)가 잘리던 것 → 날짜가 다 보이게 넓힘 */
+#appShell #outboundRequestManager .request-period-controls{grid-template-columns:minmax(210px,max-content) minmax(210px,max-content) auto 1fr!important;}
+#appShell #outboundRequestManager .request-period-control>input{flex:1 1 auto!important;width:auto!important;min-width:120px!important;padding-right:26px!important;background-position:right 2px center!important;}
+@media (max-width:1100px){#appShell #outboundRequestManager .request-period-controls{grid-template-columns:1fr 1fr auto!important;}}
+@media (max-width:700px){#appShell #outboundRequestManager .request-period-controls{grid-template-columns:1fr!important;}}
