@@ -20,12 +20,21 @@
     if((m=s.match(/^(\d{1,2})[-.\/](\d{1,2})[-.\/](\d{4})$/)))return m[3]+'-'+pad(m[2])+'-'+pad(m[1]); // 27-07-2026 (일-월-년)
     if((m=s.match(/^(\d{2})[-.](\d{1,2})[-.](\d{1,2})$/)))return '20'+m[1]+'-'+pad(m[2])+'-'+pad(m[3]); // 26-07-08 (년-월-일)
     if((m=s.match(/^(\d{4})(\d{2})(\d{2})$/)))return m[1]+'-'+m[2]+'-'+m[3];
+    // 손으로 친 오타 보정: 숫자 0 대신 영문 O, 구분자 빠짐(27/082026, 0109/2026) → 숫자 8자리로 일-월-년(또는 년월일)
+    var dg=s.replace(/[oO]/g,'0').replace(/\D/g,'');
+    if(/^\d{8}$/.test(dg)&&!/[a-np-zA-NP-Z]/.test(s)){
+      var y,mo,da;
+      if(/^20\d{2}/.test(dg)){y=dg.slice(0,4);mo=dg.slice(4,6);da=dg.slice(6,8)}else{da=dg.slice(0,2);mo=dg.slice(2,4);y=dg.slice(4,8)}
+      if(/^20\d{2}$/.test(y)&&+mo>=1&&+mo<=12&&+da>=1&&+da<=31)return y+'-'+mo+'-'+da;
+    }
     return s;
   }
   function low(s){return txt(s).toLowerCase().replace(/[:：]$/,'').trim()}
   // 머리글 줄을 빈 칸 기준으로 묶음: [[시작,끝], …]
   function groups(h){var out=[],st=-1;for(var i=0;i<=h.length;i++){var on=i<h.length&&txt(h[i]);if(on&&st<0)st=i;if(!on&&st>=0){out.push([st,i-1]);st=-1}}return out}
   function findIn(h,range,names){for(var n=0;n<names.length;n++)for(var i=range[0];i<=range[1];i++)if(low(h[i])===names[n])return i;return -1}
+  // 정확한 이름이 없으면 비슷한 이름으로(예: 'Date Made', 'Mfg Date', 'Batch No')
+  function findLike(h,range,re,not){for(var i=range[0];i<=range[1];i++){var l=low(h[i]);if(l&&re.test(l)&&!(not&&not.test(l)))return i}return -1}
 
   /* Checklist 시트 → 입고 정보 */
   function parseInfo(aoa){
@@ -55,7 +64,7 @@
     return{batchNo:batchNo,country:country,orders:orders.slice(0,200),fileDate:date};
   }
   /* 주문 시트 → B 줄 + C 상세 */
-  var C_PLU=['結果plu','plu','item code'],C_LOT=['lot no','lot no.','lot/serial','serial','lot'],C_DATE=['manu date','date','manufacture date'],C_GDATE=['gift manu date'],C_REF=['ref no','ref no.','order number','sales order'],C_CASE=['case no','case no.','pallet n.','pallet no','pallet'],C_QTY=['qty','pallet qty (ea)','quantity'];
+  var C_PLU=['結果plu','plu','item code'],C_LOT=['lot no','lot no.','lot/serial','serial','lot'],C_DATE=['manu date','date made','made date','manufacture date','manufacturing date','mfg date','production date','date'],C_GDATE=['gift manu date'],C_REF=['ref no','ref no.','order number','sales order'],C_CASE=['case no','case no.','pallet n.','pallet no','pallet'],C_QTY=['qty','pallet qty (ea)','quantity'];
   function parseOrderSheet(name,aoa){
     var hi=-1;for(var i=0;i<Math.min(10,aoa.length);i++){var g0=groups(aoa[i]||[]);if(g0.length>=2&&/^(plu|item number|item code)$/.test(low((aoa[i]||[])[g0[1][0]])))(hi=i);if(hi>=0)break}
     if(hi<0)return null;
@@ -66,7 +75,7 @@
     var dist=[];for(var d=bQty+1;d<=B[1];d++)dist.push({i:d,name:h[d]});
     // C: B 뒤의 묶음 전부
     var C=gs.length>2?[gs[2][0],gs[gs.length-1][1]]:null,c={};
-    if(C){c.plu=findIn(h,C,C_PLU);c.lot=findIn(h,C,C_LOT);c.date=findIn(h,C,C_DATE);c.gdate=findIn(h,C,C_GDATE);c.ref=findIn(h,C,C_REF);c.cs=findIn(h,C,C_CASE);c.qty=findIn(h,C,C_QTY)}
+    if(C){c.plu=findIn(h,C,C_PLU);c.lot=findIn(h,C,C_LOT);if(c.lot<0)c.lot=findLike(h,C,/lot|serial|batch/);c.date=findIn(h,C,C_DATE);if(c.date<0)c.date=findLike(h,C,/manu|made|mfg|manufactur|production|제조/,/gift/);c.gdate=findIn(h,C,C_GDATE);c.ref=findIn(h,C,C_REF);c.cs=findIn(h,C,C_CASE);c.qty=findIn(h,C,C_QTY)}
     var rows=[],details={};
     aoa.slice(hi+1).forEach(function(r){
       r=r||[];
