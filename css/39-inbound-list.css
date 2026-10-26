@@ -102,3 +102,10 @@
   #inboundListView .il-copy{height:36px;padding:0 12px;font-size:13px;}
   #inboundListView .il-panel .panel-head{flex-wrap:wrap;}
 }
+/* 분배 매장 선택: 표 위 [텍스트 복사] 왼쪽 */
+#inboundListView .il-actions{align-items:center;}
+#inboundListView .il-col{height:38px;box-sizing:border-box;min-width:130px;max-width:200px;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:13.5px;font-weight:800;color:#1d1d1b;background:#fff;cursor:pointer;}
+@media (max-width:900px){
+  #inboundListView .il-actions{width:100%;}
+  #inboundListView .il-col{height:36px;flex:1 1 auto;min-width:0;max-width:none;font-size:13px;}
+}
