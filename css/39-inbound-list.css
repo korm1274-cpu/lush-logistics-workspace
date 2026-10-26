@@ -82,3 +82,23 @@
 #inboundListView .il-date-btn:hover,#inboundListView .il-date-btn[aria-expanded="true"]{border-color:#1d1d1b;}
 #inboundListView .il-date-btn svg{width:16px;height:16px;color:#8b95a1;flex:none;}
 #inboundListView .il-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:30;} /* 모양은 css/40-calendar.css(.lc-cal) */
+/* 제품코드 칸 분리(제품코드 | 제품명 | 수량) · 텍스트 복사 버튼 */
+#inboundListView .il-table .il-code{position:sticky;left:0;z-index:1;background:#fff;width:96px;min-width:96px;max-width:96px;box-sizing:border-box;font-variant-numeric:tabular-nums;font-size:12.5px;font-weight:700;color:#4e5968;white-space:nowrap;}
+#inboundListView .il-table thead .il-code{z-index:3;background:#f6f4ef;color:#4a4a45;}
+#inboundListView .il-table tfoot .il-code{z-index:3;}
+#inboundListView .il-table .il-pname{left:96px;}
+#appShell #inboundListView .il-table .il-code{text-align:left!important;}
+#appShell #inboundListView .il-table tbody .il-code{background:#fff!important;}
+#appShell #inboundListView .il-table tbody tr:hover .il-code{background:#fffbf3!important;}
+#inboundListView .il-table.il-one{width:100%;}
+#inboundListView .il-table.il-one .il-pname{max-width:none;}
+#inboundListView .il-actions{display:flex;gap:6px;flex:none;}
+#inboundListView .il-copy{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+@media (max-width:900px){
+  /* 휴대폰: 제품코드는 고정하지 않고 옆으로 밀면 제품명 뒤로 지나감 */
+  #inboundListView .il-table .il-code{position:static;width:auto;min-width:72px;max-width:none;font-size:11.5px;}
+  #inboundListView .il-table .il-pname{left:0;}
+  #inboundListView .il-table thead .il-code,#inboundListView .il-table tfoot .il-code{position:sticky;left:auto;}
+  #inboundListView .il-copy{height:36px;padding:0 12px;font-size:13px;}
+  #inboundListView .il-panel .panel-head{flex-wrap:wrap;}
+}

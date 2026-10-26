@@ -12,7 +12,7 @@
   var EXCLUDE={'제조':1,'SPA리스트':1};
   var ALIAS={AMAZON:'아마존',FURZE:'퍼즈',ART:'아트',BLUE:'블루',VOL:'볼케이노',BUS:'버스',NEW:'뉴',TIME:'타임',STAR:'스타',TAROT:'타로',BLACK:'블랙',SAND:'샌드',HANAMI:'하나미',VM:'VM',LIMITED:'리미티드',SPA:'스파',BOOK:'북'};
   var $=function(id){return document.getElementById(id)};
-  var batches=[],sheetFilter='',busy=false,searched=false;
+  var batches=[],sheetFilter='',colFilter='',busy=false,searched=false;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
@@ -158,27 +158,35 @@
     (b?[b]:scope()).forEach(function(x){(x.sheets||[]).forEach(function(s){if(list.indexOf(s)<0)list.push(s)})});
     return list;
   }
-  /* 표: 행 = 제품(왼쪽 제품명), 열 = 분배 매장(리테일·디지털…), 칸 = 수량. 지금 보이는 목록에서 전부 0인 매장 열은 숨김 */
-  function tableHtml(list,b){
+  /* 분배 매장 열(리테일·디지털…): 목록에서 수량이 있는 열만, 파일 칸 순서대로 */
+  function colsOf(list,b){
     var cols=[];
     list.forEach(function(r){Object.keys(r.values||{}).forEach(function(k){var v=r.values[k];if(typeof v==='number'&&v>0&&cols.indexOf(k)<0)cols.push(k)})});
     var order=[];(b?[b]:scope()).forEach(function(x){(x.cols||[]).forEach(function(k){if(order.indexOf(k)<0)order.push(k)})});
-    cols.sort(function(a,c){var ia=order.indexOf(a),ic=order.indexOf(c);return (ia<0?999:ia)-(ic<0?999:ic)});
+    return cols.sort(function(a,c){var ia=order.indexOf(a),ic=order.indexOf(c);return (ia<0?999:ia)-(ic<0?999:ic)});
+  }
+  // 수량: 분배 매장을 고르면 그 매장 수량, 아니면 TOTAL
+  function qtyOf(r){if(!colFilter)return Number(r.total)||0;var v=r.values?r.values[colFilter]:0;return typeof v==='number'?v:0}
+  /* 표: 행 = 제품(제품코드 | 제품명), 열 = 분배 매장(리테일·디지털…), 칸 = 수량. 지금 보이는 목록에서 전부 0인 매장 열은 숨김
+     분배 매장을 고르면 제품코드 | 제품명 | 그 매장 수량만 */
+  function tableHtml(list,b){
+    var cols=colFilter?[]:colsOf(list,b);
     var showOwner=!sheetFilter,sum={};
     var body=list.map(function(r){
-      return '<tr><th scope="row" class="il-pname"><b>'+esc(r.name)+'</b><small>'+[r.code?esc(r.code):'',showOwner?'<span class="il-owner-t" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>':'',b?'':esc(r.batch.label)].filter(Boolean).join(' · ')+'</small></th>'+
-        '<td class="il-num il-tot">'+fmt(r.total)+'</td>'+
+      var sub=[showOwner?'<span class="il-owner-t" title="'+esc(r.sheet)+'">'+esc(label(r.sheet))+'</span>':'',b?'':esc(r.batch.label)].filter(Boolean).join(' · ');
+      return '<tr><td class="il-code">'+esc(r.code||'-')+'</td><th scope="row" class="il-pname"><b>'+esc(r.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</th>'+
+        '<td class="il-num il-tot">'+fmt(qtyOf(r))+'</td>'+
         cols.map(function(k){var v=r.values?r.values[k]:0;if(typeof v==='number'&&v>0){sum[k]=(sum[k]||0)+v;return '<td class="il-num">'+fmt(v)+'</td>'}return '<td class="il-num il-zero">-</td>'}).join('')+'</tr>';
     }).join('');
-    return '<div class="il-table-wrap"><table class="il-table"><thead><tr><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
-      '<tbody>'+body+'</tbody><tfoot><tr><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약의 총 입고수량과 같은 합계">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
+    return '<div class="il-table-wrap"><table class="il-table'+(colFilter?' il-one':'')+'"><thead><tr><th scope="col" class="il-code">제품코드</th><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">'+esc(colFilter||'TOTAL')+'</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
+      '<tbody>'+body+'</tbody><tfoot><tr><td class="il-code"></td><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약의 총 입고수량과 같은 합계">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
   }
   /* 총 입고수량: 검색어가 없으면 파일 CHECK 시트 기준(전체·담당별 TOTAL), 검색 중이거나 CHECK가 없으면 보이는 행 합계 */
   function totalOf(list,q){
-    var rowSum=list.reduce(function(s,r){return s+(Number(r.total)||0)},0);
+    var rowSum=list.reduce(function(s,r){return s+qtyOf(r)},0);
     var bs=current()?[current()]:scope();
     var note=$('ilTotalNote');
-    if(q||!bs.length||bs.some(function(b){return !b.check})){if(note)note.textContent='EA,G';return rowSum}
+    if(colFilter||q||!bs.length||bs.some(function(b){return !b.check})){if(note)note.textContent='EA,G';return rowSum}
     var sum=0,ok=true;
     bs.forEach(function(b){
       if(sheetFilter){var v=b.check.bySheet[String(sheetFilter).toUpperCase()];if(typeof v==='number')sum+=v;else if((b.sheets||[]).indexOf(sheetFilter)>=0)ok=false}
@@ -197,8 +205,15 @@
     $('ilTitle').textContent='입고리스트';$('ilMeta').textContent='';$('ilMeta').hidden=true;
     var cols=DEFAULT_COLS; // 조회 전 빈 표는 기본 매장 열로
     var msg=batches.length?'입고일·차수를 고른 뒤 [조회]를 눌러 주세요.':(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.');
-    $('ilList').innerHTML='<div class="il-table-wrap"><table class="il-table il-skeleton"><thead><tr><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
-      '<tbody><tr><td class="il-skel-msg" colspan="'+(cols.length+2)+'">'+esc(msg)+'</td></tr></tbody></table></div>';
+    $('ilList').innerHTML='<div class="il-table-wrap"><table class="il-table il-skeleton"><thead><tr><th scope="col" class="il-code">제품코드</th><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">TOTAL</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
+      '<tbody><tr><td class="il-skel-msg" colspan="'+(cols.length+3)+'">'+esc(msg)+'</td></tr></tbody></table></div>';
+  }
+  /* 분배 매장 선택(전체 매장 / 리테일 / 디지털 …) */
+  function renderCols(cols){
+    var sel=$('ilCol');if(!sel)return;
+    if(colFilter&&cols.indexOf(colFilter)<0)cols=cols.concat([colFilter]);
+    sel.innerHTML='<option value="">전체 매장</option>'+cols.map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+'</option>'}).join('');
+    sel.value=colFilter;
   }
   function render(){
     if(!$('ilList'))return;
@@ -212,13 +227,14 @@
     var qAll=all.filter(match);
     $('ilSheets').innerHTML='<button type="button" class="il-chip'+(sheetFilter?'':' on')+'" data-il-sheet="">전체 <em>'+qAll.length+'</em></button>'+
       sheets.map(function(s){var c=counts[s]||0;return '<button type="button" class="il-chip'+(sheetFilter===s?' on':'')+(c?'':' zero')+'" data-il-sheet="'+esc(s)+'" title="'+esc(s)+'">'+esc(label(s))+' <em>'+c+'</em></button>'}).join('');
-    var list=qAll.filter(function(r){return !sheetFilter||r.sheet===sheetFilter});
     var b=current();
+    renderCols(colsOf(all,b));
+    var list=qAll.filter(function(r){return (!sheetFilter||r.sheet===sheetFilter)&&(!colFilter||qtyOf(r)>0)});
     lastView={list:list,batch:b,q:q};
     $('ilCount').textContent=fmt(list.length);
     $('ilTotal').textContent=fmt(totalOf(list,q));
     $('ilOwners').textContent=fmt(Object.keys(list.reduce(function(o,r){o[r.sheet]=1;return o},{})).length);
-    $('ilTitle').textContent=(sheetFilter?label(sheetFilter)+' ':'')+'입고리스트'+(b?' · '+b.label:batches.length?' · '+($('ilDate').value?$('ilDate').value+' ':'')+'전체 차수':'');
+    $('ilTitle').textContent=(sheetFilter?label(sheetFilter)+' ':'')+'입고리스트'+(b?' · '+b.label:batches.length?' · '+($('ilDate').value?$('ilDate').value+' ':'')+'전체 차수':'')+(colFilter?' · '+colFilter:'');
     $('ilMeta').textContent=b?(b.fileName?b.fileName:'')+(b.uploadedAt?' · '+b.uploadedAt.slice(0,10)+' 업로드':''):'';
     $('ilMeta').hidden=!b;
     if(!batches.length){$('ilList').innerHTML='<p class="il-empty">'+(canEdit()?'데이터 › 업로드의 [입고리스트 Excel]에서 입고 분배리스트를 올려 주세요.':'아직 업로드된 입고리스트가 없습니다.')+'</p>';return}
@@ -247,13 +263,13 @@
   function exportExcel(){
     var v=lastView;if(!v||!v.list.length){toast('내보낼 입고리스트가 없습니다.');return}
     (window.ensureXLSX?window.ensureXLSX():Promise.resolve(window.XLSX)).then(function(){
-      var cols=[];v.list.forEach(function(r){Object.keys(r.values||{}).forEach(function(k){if(cols.indexOf(k)<0)cols.push(k)})});
+      var cols=[];if(!colFilter)v.list.forEach(function(r){Object.keys(r.values||{}).forEach(function(k){if(cols.indexOf(k)<0)cols.push(k)})});
       var multi=!v.batch;
-      var head=(multi?['차수']:[]).concat(['담당','제품코드','제품명','TOTAL']).concat(cols);
-      var title=(v.batch?v.batch.label:'전체 차수')+' 입고리스트'+(sheetFilter?' · '+label(sheetFilter)+' ('+sheetFilter+')':'')+(v.q?' · 검색 "'+v.q+'"':'');
+      var head=(multi?['차수']:[]).concat(['담당','제품코드','제품명',colFilter||'TOTAL']).concat(cols);
+      var title=(v.batch?v.batch.label:'전체 차수')+' 입고리스트'+(sheetFilter?' · '+label(sheetFilter)+' ('+sheetFilter+')':'')+(colFilter?' · '+colFilter:'')+(v.q?' · 검색 "'+v.q+'"':'');
       var info=(v.batch&&v.batch.date?'입고일 '+v.batch.date+' · ':'')+'품목 '+v.list.length+'건 · 총 입고수량 '+fmt(totalOf(v.list,v.q))+' (EA,G)'+' · 출력 '+new Date().toLocaleDateString('ko-KR');
       var aoa=[[title],[info],head];
-      v.list.forEach(function(r){aoa.push((multi?[r.batch.label]:[]).concat([label(r.sheet),r.code,r.name,Number(r.total)||0]).concat(cols.map(function(k){var x=r.values?r.values[k]:'';return typeof x==='number'?(x||''):(x==null?'':x)})))});
+      v.list.forEach(function(r){aoa.push((multi?[r.batch.label]:[]).concat([label(r.sheet),r.code,r.name,qtyOf(r)]).concat(cols.map(function(k){var x=r.values?r.values[k]:'';return typeof x==='number'?(x||''):(x==null?'':x)})))});
       var ws=XLSX.utils.aoa_to_sheet(aoa);
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:head.length-1}},{s:{r:1,c:0},e:{r:1,c:head.length-1}}];
       ws['!cols']=head.map(function(h){return{wch:h==='제품명'?44:h==='제품코드'?12:h==='담당'||h==='차수'?10:Math.max(8,String(h).length*1.6)}});
@@ -264,7 +280,7 @@
       wb.Workbook={Names:[{Name:'_xlnm.Print_Titles',Sheet:0,Ref:"'"+sheetName+"'!$3:$3"}]};
       var out=a4Landscape(XLSX.write(wb,{bookType:'xlsx',type:'array'}));
       var d=new Date(),p=function(n){return String(n).padStart(2,'0')};
-      var name='입고리스트_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수')+(sheetFilter?'_'+label(sheetFilter):'')+'_'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.xlsx';
+      var name='입고리스트_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수')+(sheetFilter?'_'+label(sheetFilter):'')+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+p(d.getMonth()+1)+p(d.getDate())+'.xlsx';
       var blob=new Blob([out],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
       var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();
       setTimeout(function(){URL.revokeObjectURL(a.href);a.remove()},1000);
@@ -284,6 +300,19 @@
       file.content=new TextEncoder().encode(xml);file.size=file.content.length;
       return CFB.write(zip,{fileType:'zip',type:'array'});
     }catch(e){return buf}
+  }
+  /* 텍스트 복사: 지금 보이는 목록을 '제품코드 ⇥ 제품명 ⇥ 수량'(분배 매장을 고르면 그 매장 수량)으로 → 엑셀·메신저에 바로 붙여넣기 */
+  function copyText(){
+    var v=lastView;if(!v||!v.list.length){toast('복사할 입고리스트가 없습니다.');return}
+    var clean=function(x){return String(x==null?'':x).replace(/[\t\r\n]+/g,' ').trim()};
+    var lines=[['제품코드','제품명',(colFilter||'TOTAL')+' 수량'].join('\t')].concat(v.list.map(function(r){return [clean(r.code),clean(r.name),qtyOf(r)].join('\t')}));
+    var text=lines.join('\n'),done=function(){toast(fmt(v.list.length)+'개 제품을 복사했습니다. (제품코드·제품명·'+(colFilter||'TOTAL')+' 수량)')};
+    var fallback=function(){
+      var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-1000px;opacity:0';
+      document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();
+      if(ok)done();else toast('복사하지 못했습니다. 다시 시도해 주세요.');
+    };
+    if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(done,fallback);else fallback();
   }
   function remove(){
     var b=current();if(!b)return;
@@ -313,12 +342,14 @@
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);
     $('ilExport').addEventListener('click',exportExcel);
+    $('ilCopy').addEventListener('click',copyText);
+    $('ilCol').addEventListener('change',function(){colFilter=$('ilCol').value;searched=true;render()});
     // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');searched=true;render()});
     // 화면이 새로 열릴 때만(안 보이다가 보일 때) 조회 전 상태·전체 날짜로 되돌리고 새로 받기
     var wasActive=false;
-    var opened=function(){var on=view.classList.contains('active');if(on&&!wasActive){searched=false;$('ilDate').dataset.init='';load()}wasActive=on};
+    var opened=function(){var on=view.classList.contains('active');if(on&&!wasActive){searched=false;colFilter='';$('ilDate').dataset.init='';load()}wasActive=on};
     new MutationObserver(opened).observe(view,{attributes:true,attributeFilter:['class']});
     opened()
   }
