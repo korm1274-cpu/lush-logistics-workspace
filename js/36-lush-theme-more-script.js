@@ -10,7 +10,7 @@
   });
   try{window.lucide&&lucide.createIcons()}catch(e){}
   /* 러쉬 테마 화면 목록에 재고·생산성·데이터·Admin 추가 */
-  var more=['analysisDrillView','inboundListView','accountsView','stockView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','outboundBasicView','outboundAnalysis','outboundBoxView','sheetView','defectView'];
+  var more=['analysisDrillView','inboundListView','qualityListView','accountsView','stockView','inventoryTotalView','inventoryOwnerView','inventoryOosView','productivityView','upload','dataArchiveView','settings','outboundBasicView','outboundAnalysis','outboundBoxView','sheetView','defectView'];
   function sync(){var a=document.querySelector('.view.active'),sh=document.getElementById('appShell');if(a&&sh&&more.indexOf(a.id)>=0){sh.classList.add('on-lush');sh.classList.remove('on-dashboard')}}
   if(window.MutationObserver)document.querySelectorAll('.view').forEach(function(v){new MutationObserver(function(){if(v.classList.contains('active'))setTimeout(sync,0)}).observe(v,{attributes:true,attributeFilter:['class']})});
   sync();

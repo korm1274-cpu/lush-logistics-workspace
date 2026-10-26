@@ -1,0 +1,61 @@
+/* ===== 입고 > 품질리스트 (js/58-quality-list.js) — 입고리스트와 같은 모양 ===== */
+#qualityListView .ql-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;background:#fff;border:1.5px solid #ece6db;border-radius:14px;padding:12px 14px;}
+#qualityListView .ql-toolbar .field{display:flex;flex-direction:column;gap:5px;min-width:180px;}
+#qualityListView .ql-toolbar .field.grow{flex:1 1 260px;}
+#qualityListView .ql-toolbar label{font-size:12px;font-weight:800;color:#4a4a45;}
+#qualityListView .ql-toolbar select,#qualityListView .ql-toolbar input{height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;font:inherit;font-size:14px;background:#fff;}
+#qualityListView .ql-del{height:40px;color:#c93838!important;border-color:#f1d4d4!important;}
+#qualityListView .ql-del[hidden]{display:none!important;}
+#qualityListView .ql-master{font-size:12.5px;color:#4e5968;background:#f1faf5;border:1px solid #d5eee0;border-radius:10px;padding:8px 12px;}
+#qualityListView .ql-master b{color:#11795a;font-weight:800;}
+#qualityListView .ql-master.warn{background:#fff8ec;border-color:#f3ddb8;color:#7a5200;}
+#qualityListView .ql-master.warn b{color:#a05a00;}
+#qualityListView .ql-chips{display:flex;flex-wrap:wrap;gap:6px;}
+#qualityListView .ql-chip{height:34px;padding:0 13px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;color:#4e5968;font:inherit;font-size:13px;font-weight:800;cursor:pointer;display:inline-flex;align-items:center;gap:5px;}
+#qualityListView .ql-chip em{font-style:normal;font-size:12px;color:#e87ba4;font-weight:900;}
+#qualityListView .ql-chip.zero{color:#a3a9b0;}
+#qualityListView .ql-chip.none{color:#a05a00;border-style:dashed;}
+#qualityListView .ql-chip.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#qualityListView .ql-chip.on em{color:#ffb3cf;}
+#qualityListView .ql-panel .panel-head{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+#qualityListView .ql-meta{display:block;margin-top:3px;font-size:12px;color:#8b95a1;overflow-wrap:anywhere;}
+#qualityListView .ql-meta[hidden]{display:none;}
+#qualityListView .ql-actions{display:flex;gap:6px;flex:none;align-items:center;}
+#qualityListView .ql-copy,#qualityListView .ql-export{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+#qualityListView .ql-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
+#qualityListView .ql-table-wrap{overflow:auto;max-height:72vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
+#appShell #qualityListView table.ql-table{width:100%;min-width:900px!important;border-collapse:separate;border-spacing:0;font-size:13px;}
+#appShell #qualityListView .ql-table th,#appShell #qualityListView .ql-table td{padding:9px 12px;border-bottom:1px solid #f1ede4;white-space:nowrap;text-align:left!important;background:#fff;color:#1d1d1b;}
+#appShell #qualityListView .ql-table thead th{position:sticky;top:0;z-index:2;background:#f6f4ef!important;color:#4a4a45;font-size:12.5px;font-weight:800;border-bottom:1.5px solid #e4d9c7;}
+#appShell #qualityListView .ql-table tfoot th,#appShell #qualityListView .ql-table tfoot td{position:sticky;bottom:0;background:#faf8f4!important;font-weight:900;border-top:1.5px solid #e4d9c7;border-bottom:0;}
+#appShell #qualityListView .ql-table .ql-num{text-align:right!important;font-variant-numeric:tabular-nums;font-weight:800;}
+#qualityListView .ql-table .ql-code{font-weight:700;color:#4e5968;font-variant-numeric:tabular-nums;}
+#qualityListView .ql-table .ql-plu{font-variant-numeric:tabular-nums;color:#4e5968;}
+#qualityListView .ql-table .ql-name{white-space:normal;min-width:240px;}
+#qualityListView .ql-table td.ql-name b{font-weight:800;}
+#qualityListView .ql-table .ql-mgr{font-weight:800;}
+#qualityListView .ql-table .ql-lot,#qualityListView .ql-table .ql-date{font-variant-numeric:tabular-nums;color:#4e5968;}
+#qualityListView .ql-table .ql-batch{color:#8b95a1;font-weight:700;}
+#qualityListView .ql-dash{color:#cfcac0;font-weight:500;}
+#qualityListView .ql-gift{display:inline-flex;align-items:center;height:18px;padding:0 6px;margin-left:4px;border-radius:999px;background:#fde7f0;color:#c2477a;font-size:10.5px;font-weight:900;vertical-align:1px;}
+#qualityListView .ql-toggle{margin-left:6px;height:22px;padding:0 8px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font:inherit;font-size:11.5px;font-weight:800;color:#4e5968;cursor:pointer;}
+#qualityListView .ql-toggle:hover{border-color:#1d1d1b;color:#1d1d1b;}
+#appShell #qualityListView .ql-table tr.ql-giftrow td{background:#fffaf5;}
+#appShell #qualityListView .ql-table tr.ql-sub td{background:#fcfbf8;font-size:12.5px;color:#4e5968;}
+#qualityListView .ql-sub-mark{color:#c3bfb6;margin-right:2px;}
+#appShell #qualityListView .ql-table tbody tr:hover td{background:#fffbf3;}
+@media (max-width:900px){
+  #qualityListView .ql-toolbar .field{flex:1 1 100%;min-width:0;}
+  #qualityListView .ql-del{flex:1 1 100%;}
+  #qualityListView .ql-chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+  #qualityListView .ql-chip{flex:none;}
+  #qualityListView .ql-panel .panel-head{flex-wrap:wrap;}
+  #qualityListView .ql-actions{width:100%;}
+  #qualityListView .ql-copy,#qualityListView .ql-export{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
+  #appShell #qualityListView table.ql-table{font-size:12px;min-width:760px!important;}
+  #appShell #qualityListView .ql-table th,#appShell #qualityListView .ql-table td{padding:8px 9px;}
+  #qualityListView .ql-table .ql-name{min-width:170px;}
+  #qualityListView .ql-table-wrap{max-height:65vh;}
+  #appShell #qualityListView .data-kpis .kpi>b{font-size:17px!important;letter-spacing:-.02em;}
+  #appShell #qualityListView .data-kpis .kpi>small{font-size:11px!important;}
+}

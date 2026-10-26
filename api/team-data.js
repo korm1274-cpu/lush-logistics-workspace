@@ -95,6 +95,84 @@ async function inboundLists(req, res, user) {
   }
 }
 
+// 품질리스트(시험의뢰서 엑셀) 저장소(hash): 필드 = 차수 id(예: Q-142) → { id, batchNo, label, fileName, rows, uploadedAt, uploadedBy }
+//   rows: { kind:'단품'|'GIFT', plu, name, lot, date, qty, code(파일 제품코드), items:[GIFT 구성품 {plu,name,lot,date}] }
+//   GET / POST {action:'save', batch} / POST {action:'delete', id}(관리자만)
+const QUALITY_KEY = 'lush_quality_lists_v1';
+async function qualityLists(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      const arr = await store.cmd(['HGETALL', QUALITY_KEY]) || [];
+      const batches = [];
+      for (let i = 0; i < arr.length; i += 2) { try { batches.push(JSON.parse(arr[i + 1])); } catch (e) { /* 깨진 항목 무시 */ } }
+      batches.sort((a, b) => (Number(b.batchNo) || 0) - (Number(a.batchNo) || 0) || String(b.uploadedAt || '').localeCompare(String(a.uploadedAt || '')));
+      return res.status(200).json({ success: true, batches });
+    }
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    if (body.action === 'delete') {
+      if (user.role !== 'admin') return res.status(200).json({ success: false, error: '차수 삭제는 관리자만 할 수 있습니다.' });
+      const id = clip(body.id, 60);
+      if (!id) return res.status(200).json({ success: false, error: '삭제할 차수를 선택해 주세요.' });
+      await store.cmd(['HDEL', QUALITY_KEY, id]);
+      return res.status(200).json({ success: true });
+    }
+    if (body.action === 'save') {
+      const b = body.batch || {};
+      const id = clip(b.id, 60);
+      if (!/^Q-\d{1,4}(-[0-9A-Za-z가-힣_]{1,20}){0,2}$/.test(id)) return res.status(200).json({ success: false, error: '차수 정보가 올바르지 않습니다. (예: 142차 시험의뢰서.xlsx)' });
+      const item = r => ({ plu: clip(r.plu, 20), name: clip(r.name, 200), lot: clip(r.lot, 40), date: clip(r.date, 10) });
+      const rows = (Array.isArray(b.rows) ? b.rows : []).slice(0, 5000).map(r => ({
+        kind: r.kind === 'GIFT' ? 'GIFT' : '단품', ...item(r), qty: r.qty == null || r.qty === '' ? null : Number(r.qty) || 0, code: clip(r.code, 40),
+        items: r.kind === 'GIFT' ? (Array.isArray(r.items) ? r.items : []).slice(0, 30).map(item) : undefined,
+      }));
+      const rec = { id, batchNo: clip(b.batchNo, 4), label: clip(b.label, 40), fileName: clip(b.fileName, 200), rows, uploadedAt: new Date().toISOString(), uploadedBy: user.id };
+      await store.cmd(['HSET', QUALITY_KEY, id, JSON.stringify(rec)]);
+      return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length } });
+    }
+    return res.status(200).json({ success: false, error: 'Unsupported action' });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+  }
+}
+
+// PLU별 제품코드·담당자(제품 마스터 엑셀): { updatedAt, updatedBy, fileName, map: { PLU: [[제품코드, 담당자, 제품명], ...] } } 한 덩어리로 보관
+//   GET / POST {action:'save', fileName, map} — 새 파일을 올리면 통째로 교체
+const PLU_KEY = 'lush_plu_master_v1';
+async function pluMaster(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      const raw = await store.cmd(['GET', PLU_KEY]);
+      let data = null;
+      try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; }
+      return res.status(200).json({ success: true, master: data });
+    }
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    if (body.action === 'save') {
+      const map = {};
+      Object.entries(body.map || {}).slice(0, 20000).forEach(([k, list]) => {
+        const key = clip(k, 20).trim();
+        if (!key || !Array.isArray(list)) return;
+        map[key] = list.slice(0, 5).map(x => [clip(x && x[0], 40), clip(x && x[1], 40), clip(x && x[2], 120)]);
+      });
+      if (!Object.keys(map).length) return res.status(200).json({ success: false, error: 'PLU 정보를 찾지 못했습니다.' });
+      const rec = { updatedAt: new Date().toISOString(), updatedBy: user.id, fileName: clip(body.fileName, 200), count: Object.keys(map).length, map };
+      await store.cmd(['SET', PLU_KEY, JSON.stringify(rec)]);
+      return res.status(200).json({ success: true, count: rec.count });
+    }
+    return res.status(200).json({ success: false, error: 'Unsupported action' });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+  }
+}
+
 module.exports = async (req, res) => {
   // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
   const authUser = await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' });
@@ -102,6 +180,9 @@ module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
   // 입고리스트(엑셀 입고 분배리스트)는 차수별로 따로 보관: /api/team-data?part=inbound-lists (팀 공유 데이터를 무겁게 하지 않도록 분리)
   if (req.query && req.query.part === 'inbound-lists') return inboundLists(req, res, authUser);
+  // 품질리스트(시험의뢰서) · PLU별 제품코드/담당자
+  if (req.query && req.query.part === 'quality-lists') return qualityLists(req, res, authUser);
+  if (req.query && req.query.part === 'plu-master') return pluMaster(req, res, authUser);
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
     return;
