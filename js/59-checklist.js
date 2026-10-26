@@ -9,7 +9,7 @@
 (function(){
   var API='/api/team-data?part=checklists',MASTER_API='/api/team-data?part=plu-master',QUALITY_API='/api/team-data?part=quality-lists';
   var $=function(id){return document.getElementById(id)};
-  var batches=[],master=null,overrides={},quality={},sheetFilter='',mgrFilter='',colFilter='',qOnly=false,busy=false,open={},lastView=null,colChoices=[];
+  var batches=[],master=null,overrides={},quality={},sheetFilter='',mgrFilter='',colFilter='',qOnly=false,busy=false,open={},qOpen={},lastView=null,colChoices=[];
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
@@ -235,7 +235,8 @@
     var body=list.map(function(r){
       var d=r.details||[],first=d[0]||{},more=d.length>1,isOpen=!!open[r.key];
       var multiV=function(k){var u=uniq(d.map(function(x){return x[k]}));return u.length>1?u[0]+' 외 '+(u.length-1):(u[0]||'')};
-      var qcell=r.qn?'<td class="ck-num ck-q"><span class="ck-qbadge" title="'+esc(r.qEntries.map(function(x){return x.kind+' · '+x.name+' · LOT '+(x.lot||'-')+' · 제조 '+(x.date||'-')+(x.noInfo?' (입고리스트에 LOT 정보 없어 PLU로 반영)':'')}).join('\n'))+'">'+r.qn+'</span></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
+      var qOpenNow=!!qOpen[r.key];
+      var qcell=r.qn?'<td class="ck-num ck-q"><button type="button" class="ck-qbadge'+(qOpenNow?' on':'')+'" data-ck-q="'+esc(r.key)+'" aria-expanded="'+qOpenNow+'" title="눌러서 품질로 뺄 목록 보기">'+r.qn+'</button></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
       var sub=[sheets.length>1&&!sheetFilter?esc(r.sheet):'',multi?esc(r.batch.label):''].filter(Boolean).join(' · ');
       var main='<tr class="'+(r.q?'ck-has-q':'')+'">'+td(r.plu,'ck-plu')+td(r.code,'ck-code')+'<td class="ck-name"><b>'+esc(r.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</td>'+
         mgrCell(r)+
@@ -243,13 +244,24 @@
         cols.map(function(k){var v=r.values&&r.values[k];if(v){sum[k]=(sum[k]||0)+v;return '<td class="ck-num">'+fmt(v)+'</td>'}return '<td class="ck-num ck-zero">-</td>'}).join('')+
         td(multiV('date'),'ck-date')+'<td class="ck-lot">'+(first.lot?esc(multiV('lot')):'<span class="ck-dash">-</span>')+(more?' <button type="button" class="ck-more" data-ck-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">'+(isOpen?'접기':'+'+(d.length-1))+'</button>':'')+'</td>'+
         td(multiV('ref'),'ck-ref')+(d.length?'<td class="ck-case"><button type="button" class="ck-pal-link" data-ck-pal="'+esc(r.key)+'" title="눌러서 아래 Pallet 조회에서 이 제품이 든 Pallet 보기">'+esc(multiV('cs')||'-')+'</button></td>':td('','ck-case'))+'</tr>';
+      // 품질 숫자를 누르면: 이 제품에서 품질로 뺄 목록(품질리스트의 구분 · 품명 · LOT · 제조일자 · 수량 1개씩)
+      if(qOpenNow&&r.qn){
+        main+='<tr class="ck-qsub"><td colspan="'+(10+cols.length)+'"><div class="ck-qlist"><b>품질로 뺄 목록 · '+r.qn+'개</b><table><thead><tr><th>구분</th><th>품명(품질리스트)</th><th>LOT넘버</th><th>제조일자</th><th class="n">빼는 수량</th><th>Pallet</th></tr></thead><tbody>'+
+          r.qEntries.map(function(x){
+            var pals=uniq(d.filter(function(y){return normLot(y.lot)===normLot(x.lot)&&y.date===x.date}).map(function(y){return y.cs}));
+            return '<tr><td>'+esc(x.kind)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.lot||'-')+'</td><td>'+esc(x.date||'-')+'</td><td class="n">1</td><td>'+(x.noInfo?'<span class="ck-qnote2">LOT 정보 없음 · PLU로 반영</span>':esc(pals.join(', ')||'-'))+'</td></tr>'}).join('')+
+          '</tbody></table></div></td></tr>';
+      }
       if(!more||!isOpen)return main;
       // 펼친 줄: 케이스(팔레트)별 수량 · 제조일자 · LOT · REF · 케이스
       var blanks=cols.map(function(){return '<td></td>'}).join('');
       return main+d.map(function(x,i){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> Pallet '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+'<td class="ck-case"><button type="button" class="ck-pal-link" data-ck-pal="'+esc(r.key)+'" data-ck-pal-i="'+i+'" title="눌러서 아래 Pallet 조회에서 이 Pallet 보기">'+esc(x.cs||'-')+'</button></td></tr>'}).join('');
     }).join('');
+    // 다시 그려도 표 안 스크롤 위치 유지('외 N'·품질·담당자 등을 눌렀을 때 맨 위로 튀지 않게)
+    var oldWrap=$('ckList').querySelector('.ck-table-wrap'),keepTop=oldWrap?oldWrap.scrollTop:0,keepLeft=oldWrap?oldWrap.scrollLeft:0;
     $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table'+(colFilter?' ck-one':'')+'"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">'+totalHeadHtml()+'</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num ck-col-pick" data-ck-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">Pallet</th></tr></thead><tbody>'+body+'</tbody>'+
       '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td class="ck-num ck-q">'+(qSum?fmt(qSum):'-')+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
+    var newWrap=$('ckList').querySelector('.ck-table-wrap');if(newWrap&&(keepTop||keepLeft)){newWrap.scrollTop=keepTop;newWrap.scrollLeft=keepLeft}
   }
 
   /* ===== Pallet 조회(입고리스트 맨 아래, 접었다 폈다) =====
@@ -274,11 +286,19 @@
     var keys={},n=0;
     (one?[one]:(r.details||[])).forEach(function(d){var k=r.batch.id+'|'+(d.ref||'(REF 없음)')+'|'+(d.cs||'(Pallet 없음)');if(!keys[k]){keys[k]=1;n++}});
     if(!n)return;
-    palFocus={keys:keys,label:'PLU '+r.plu+' '+r.name+(one?' · Pallet '+(one.cs||'-'):'')+'의 Pallet '+n+'개'};
+    palFocus={keys:keys,label:'PLU '+r.plu+' '+r.name+(one?' · Pallet '+(one.cs||'-'):'')+'의 Pallet '+n+'개',back:r.key};
     $('ckPalRef').value='';$('ckPalSearch').value='';
     var box=$('ckPallet');box.open=true; // toggle 이벤트로도 다시 그림
     renderPallet(lastView.list,(lastView.batches||[]).length>1);
-    setTimeout(function(){box.scrollIntoView({behavior:'smooth',block:'start'})},30);
+    setTimeout(function(){box.scrollIntoView({block:'start'})},30);
+  }
+  // Pallet 보기를 끝낼 때(✕ 해제 · 접기): 누르기 전에 보던 제품 줄로 돌아감
+  function endPalletFocus(){
+    var back=palFocus&&palFocus.back;palFocus=null;
+    if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1);
+    if(!back)return;
+    var el=null;$('ckList').querySelectorAll('[data-ck-pal]').forEach(function(b){if(!el&&b.getAttribute('data-ck-pal')===back)el=b});
+    if(el)setTimeout(function(){el.closest('tr').scrollIntoView({block:'center'})},30);
   }
   function renderPallet(list,multi){
     var box=$('ckPallet');if(!box)return;
@@ -414,7 +434,7 @@
   function init(){
     document.querySelectorAll('.ckUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     var view=$('checklistView');if(!view)return;
-    $('ckBatch').addEventListener('change',function(){sheetFilter='';mgrFilter='';palFocus=null;$('ckDelete').hidden=!(isAdmin()&&current());render()});
+    $('ckBatch').addEventListener('change',function(){sheetFilter='';mgrFilter='';palFocus=null;var w=$('ckList').querySelector('.ck-table-wrap');if(w)w.scrollTop=0;$('ckDelete').hidden=!(isAdmin()&&current());render()});
     // 입고일 달력
     $('ckDateBtn').addEventListener('click',function(){var pop=$('ckCal');if(pop.hidden)openCal();else closeCal()});
     $('ckCal').addEventListener('mouseover',function(e){var d=e.target.closest('[data-cal-day]');var info=$('ckCalInfo');if(info)info.innerHTML=calInfo(d?d.getAttribute('data-cal-day'):$('ckDate').value)});
@@ -437,15 +457,15 @@
       if(e.target.closest('[data-ck-qonly]')){qOnly=!qOnly;render();return}
       var c=e.target.closest('[data-ck-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ck-mgr');render();
     });
-    $('ckList').addEventListener('click',function(e){var pl=e.target.closest('[data-ck-pal]');if(pl){var row=(lastView.list||[]).find(function(x){return x.key===pl.getAttribute('data-ck-pal')});if(row){var i=pl.getAttribute('data-ck-pal-i');focusPallet(row,i!=null?(row.details||[])[+i]:null)}return}var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
+    $('ckList').addEventListener('click',function(e){var qb=e.target.closest('[data-ck-q]');if(qb){var qk=qb.getAttribute('data-ck-q');qOpen[qk]=!qOpen[qk];render();return}var pl=e.target.closest('[data-ck-pal]');if(pl){var row=(lastView.list||[]).find(function(x){return x.key===pl.getAttribute('data-ck-pal')});if(row){var i=pl.getAttribute('data-ck-pal-i');focusPallet(row,i!=null?(row.details||[])[+i]:null)}return}var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
     // Pallet 조회(맨 아래): 펼침 상태는 이 기기에 기억, REF·검색·복사·엑셀
     var pal=$('ckPallet');
     if(pal){
       try{pal.open=localStorage.getItem(PALLET_OPEN_KEY)==='1'}catch(e){}
-      pal.addEventListener('toggle',function(){try{localStorage.setItem(PALLET_OPEN_KEY,pal.open?'1':'0')}catch(e){}if(pal.open&&lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
+      pal.addEventListener('toggle',function(){try{localStorage.setItem(PALLET_OPEN_KEY,pal.open?'1':'0')}catch(e){}if(pal.open&&lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1);else if(!pal.open&&palFocus)endPalletFocus()}); // 접으면 보던 줄로
       $('ckPalRef').addEventListener('change',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
       $('ckPalSearch').addEventListener('input',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
-      pal.addEventListener('click',function(e){if(e.target.closest('[data-ck-pal-clear]')){palFocus=null;renderPallet(lastView.list,(lastView.batches||[]).length>1)}});
+      pal.addEventListener('click',function(e){if(e.target.closest('[data-ck-pal-clear]'))endPalletFocus()});
       $('ckPalCopy').addEventListener('click',palletCopy);
       $('ckPalExport').addEventListener('click',palletExport);
     }
