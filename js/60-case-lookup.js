@@ -1,5 +1,5 @@
-/* 입고 > 케이스 조회: 차수별 REF넘버 · 케이스넘버 안에 어떤 제품이 들었는지
-   - 데이터: 입고리스트 샘플(/api/team-data?part=checklists)의 팔렛 상세(제품 줄의 details: lot·date·ref·cs·qty)
+/* 입고 > Pallet 조회: 차수별 REF넘버 · 케이스넘버 안에 어떤 제품이 들었는지
+   - 데이터: 입고리스트(수입팀 체크리스트, /api/team-data?part=checklists)의 팔렛 상세(제품 줄의 details: lot·date·ref·cs·qty)
    - REF → 케이스 → 제품(PLU · 제품코드 · 품명 · 담당자 · LOT · 제조일자 · 수량) 순으로 묶어 보여 줌
    - 제품코드·담당자: PLU 담당자 정보(+품질리스트에서 수기 지정한 담당자) */
 (function(){
@@ -60,7 +60,7 @@
   function render(){
     if(!$('csList'))return;
     var multi=$('csBatch').value==='*';
-    if(!batches.length){$('csList').innerHTML='<p class="cs-empty">입고리스트 샘플(체크리스트)이 반영되면 차수별 REF · 케이스 안의 제품을 볼 수 있습니다.</p>';['csRefs','csCases','csItems','csQty'].forEach(function(k){$(k).textContent='0'});return}
+    if(!batches.length){$('csList').innerHTML='<p class="cs-empty">입고리스트(수입팀 체크리스트)가 반영되면 차수별 REF · 케이스 안의 제품을 볼 수 있습니다.</p>';['csRefs','csCases','csItems','csQty'].forEach(function(k){$(k).textContent='0'});return}
     var ref=$('csRef').value,q=($('csSearch').value||'').trim().toLowerCase();
     var all=items().map(function(x){return Object.assign(x,infoOf(x.plu))});
     var list=all.filter(function(x){return (!ref||x.ref===ref)&&(!q||[x.cs,x.ref,x.plu,x.code,x.name,x.mgr,x.lot].join(' ').toLowerCase().indexOf(q)>=0)});
@@ -71,7 +71,7 @@
     order.sort(function(a,b){var A=groups[a],B=groups[b];return String(B.batch.eta||'').localeCompare(String(A.batch.eta||''))||nat(A.ref,B.ref)||nat(A.cs,B.cs)});
     var refCount=uniq(order.map(function(k){return groups[k].batch.id+'|'+groups[k].ref})).length,qty=list.reduce(function(s,x){return s+x.qty},0);
     $('csRefs').textContent=fmt(refCount);$('csCases').textContent=fmt(order.length);$('csItems').textContent=fmt(list.length);$('csQty').textContent=fmt(qty);
-    var b1=selected();$('csTitle').textContent='케이스 조회 · '+(multi?'전체 차수':(b1[0]?b1[0].label:''))+(ref?' · REF '+ref:'');
+    var b1=selected();$('csTitle').textContent='Pallet 조회 · '+(multi?'전체 차수':(b1[0]?b1[0].label:''))+(ref?' · REF '+ref:'');
     lastView={order:order,groups:groups,multi:multi,ref:ref};
     if(!order.length){$('csList').innerHTML='<p class="cs-empty">'+(all.length?'조건에 맞는 케이스가 없습니다.':'이 차수에는 팔렛·케이스 상세(LOT·REF·케이스 칸)가 없습니다.')+'</p>';return}
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="cs-dash">-</span>':esc(v))+'</td>'};
@@ -103,8 +103,8 @@
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
       ws['!cols']=[{wch:10},{wch:14},{wch:12},{wch:9},{wch:12},{wch:40},{wch:10},{wch:16},{wch:12},{wch:9}];
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
-      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'케이스 조회');
-      var d=new Date(),b=selected(),name='케이스조회_'+(v.multi?'전체차수':(b[0]?b[0].label.replace(/\s+/g,''):''))+(v.ref?'_'+v.ref:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
+      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'Pallet 조회');
+      var d=new Date(),b=selected(),name='Pallet조회_'+(v.multi?'전체차수':(b[0]?b[0].label.replace(/\s+/g,''):''))+(v.ref?'_'+v.ref:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
       XLSX.writeFile(wb,name);toast(name+' 저장');
     }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
   }

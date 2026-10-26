@@ -1,4 +1,4 @@
-/* 입고리스트 샘플(수입팀 '상품 입고 CHECKLIST' 엑셀) 해석 — 화면(js/59-checklist.js)과 서버(api/team-data.js, 구글 드라이브 자동 반영)가 같이 씀
+/* 입고리스트(예전 이름 입고리스트 샘플, 수입팀 '상품 입고 CHECKLIST' 엑셀) 해석 — 화면(js/59-checklist.js)과 서버(api/team-data.js, 구글 드라이브 자동 반영)가 같이 씀
    입력: sheets = [{ name, aoa }] (aoa = 줄×칸 값. 날짜 칸은 yyyy-mm-dd, 숫자는 그대로/글자), fileName
    파일명: "Check List.10월 27일 입고 (UK Jun-Fragrance …, Spa Sundries - 142차)_20260820.xlsx" → 142차, UK, 주문 구분
    Checklist 시트: 실시간 입고 예정일(입고일) · Order Number · Pallet 수 · 주요 입고 제품 · 현재 수정내역

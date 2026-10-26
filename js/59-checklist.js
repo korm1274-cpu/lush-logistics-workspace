@@ -1,4 +1,4 @@
-/* 입고 > 입고리스트 샘플 (수입팀 '상품 입고 CHECKLIST' 엑셀 — 구글 드라이브 자동 반영 + 데이터 › 업로드)
+/* 입고 > 입고리스트 (수입팀 '상품 입고 CHECKLIST' 엑셀 — 구글 드라이브 자동 반영 + 데이터 › 업로드)
    - 해석: js/checklist-parse.js (서버 드라이브 반영과 같은 코드)
    - 표: PLU | 제품코드 | 품명 | 담당자 | 수량 | 분배처(리테일·디지털…) | 품질 | 제조일자 | LOT넘버 | REF넘버 | 케이스넘버
      제조일자·LOT·REF·케이스는 시트 오른쪽 팔레트 상세(C 구역)를 PLU로 붙인 값. 여러 건이면 [+N]으로 펼침
@@ -67,12 +67,12 @@
       fetch(QUALITY_API).then(function(r){return r.json()}).catch(function(){return null})
     ]).then(function(res){
       var j=res[0],m=res[1],q=res[2];
-      if(!j||!j.success){toast((j&&j.error)||'입고리스트 샘플을 불러오지 못했습니다.');return}
+      if(!j||!j.success){toast((j&&j.error)||'입고리스트을 불러오지 못했습니다.');return}
       batches=j.batches||[];
       master=m&&m.success?m.master:null;overrides=(m&&m.success&&m.overrides)||{};
       quality={};((q&&q.success&&q.batches)||[]).forEach(function(b){quality[b.id]=b});
       renderBatches();render();
-    }).catch(function(){toast('입고리스트 샘플을 불러오지 못했습니다.')});
+    }).catch(function(){toast('입고리스트을 불러오지 못했습니다.')});
   }
   /* 입고일(실시간 입고 예정일) 필터: 비우면 전체 날짜, 고르면 그날 입고 차수만. 같은 날 여러 차수면 '전체 차수'로 함께 보기 */
   function scope(){var d=$('ckDate').value;return d?batches.filter(function(b){return (b.eta||'')===d}):batches}
@@ -135,7 +135,7 @@
     if(!$('ckList'))return;
     var sel=selected(),b=sel.length===1?sel[0]:null,multi=sel.length>1;
     renderInfo(b);
-    if(!batches.length||!sel.length){$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(!batches.length?(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 샘플 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트 샘플이 없습니다.'):'이 날짜에 입고 예정인 차수가 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});$('ckQualityNote').textContent='';$('ckTitle').textContent='입고리스트 샘플';return}
+    if(!batches.length||!sel.length){$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(!batches.length?(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트이 없습니다.'):'이 날짜에 입고 예정인 차수가 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});$('ckQualityNote').textContent='';$('ckTitle').textContent='입고리스트';return}
     var q=($('ckSearch').value||'').trim().toLowerCase();
     // 차수별로 줄을 만들고 품질은 차수마다 따로 맞춤(같은 차수 품질리스트)
     var all=[],qr=null,linked=[];
@@ -172,7 +172,7 @@
     // 품질 수량: 입고리스트 품질 합계 / 품질리스트 총 수량 (필터 없이 고른 차수 전체 기준)
     $('ckQuality').textContent=qr?fmt(qr.matched)+' / '+fmt(qr.total):'-';
     var kq=$('ckQuality').closest('.kpi');if(kq){kq.classList.toggle('ck-q-ok',!!qr&&!qr.unmatched.length);kq.classList.toggle('ck-q-bad',!!qr&&!!qr.unmatched.length)}
-    $('ckTitle').textContent='입고리스트 샘플 · '+(b?b.label:($('ckDate').value?md($('ckDate').value)+' ':'')+'전체 차수')+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
+    $('ckTitle').textContent='입고리스트 · '+(b?b.label:($('ckDate').value?md($('ckDate').value)+' ':'')+'전체 차수')+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
     // 품질 맞춤 결과: 같으면 한 줄, 다르면 불일치 목록(품질리스트 LOT·제조일자 vs 입고리스트 값, 사유)
     var qbox='',qname=linked.join(' · ');
     if(qr){
@@ -218,7 +218,7 @@
       return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',parsed:p,fileName:file.name,modified:modified})}).then(function(r){return r.json()}).then(function(s){
         if(!s||!s.success)throw new Error((s&&s.error)||'저장하지 못했습니다.');
         if(s.skipped){toast(s.reason||'이미 더 최근 파일이 반영되어 있습니다.');return}
-        toast(s.batch.label+' 입고리스트 샘플 반영: '+fmt(s.batch.rows)+'건 · 입고 예정일 '+md(s.batch.eta)+(s.batch.etaChanged?' (변경됨)':''));
+        toast(s.batch.label+' 입고리스트 반영: '+fmt(s.batch.rows)+'건 · 입고 예정일 '+md(s.batch.eta)+(s.batch.etaChanged?' (변경됨)':''));
         return load().then(function(){renderBatches(s.batch.id);render()});
       });
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){busy=false;if(inp)inp.value=''});
@@ -243,13 +243,13 @@
   function exportExcel(){
     var v=lastView;if(!v||!v.list.length){toast('내보낼 목록이 없습니다.');return}
     xlsx().then(function(){
-      var name0=v.batch?v.batch.label+' 입고리스트 샘플 · 입고 예정일 '+v.batch.eta:($('ckDate').value?$('ckDate').value+' ':'')+'전체 차수 입고리스트 샘플';
+      var name0=v.batch?v.batch.label+' 입고리스트 · 입고 예정일 '+v.batch.eta:($('ckDate').value?$('ckDate').value+' ':'')+'전체 차수 입고리스트';
       var rows=flat(v),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
       var ws=XLSX.utils.aoa_to_sheet([[title]].concat(rows));
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
       ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'?42:/LOT|REF|제조일자|케이스/.test(h)?16:h==='제품코드'?12:10}});
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
-      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'입고리스트 샘플');
+      var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'입고리스트');
       var d=new Date(),name='입고리스트샘플_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수')+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
       XLSX.writeFile(wb,name);toast(name+' 저장');
     }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
@@ -274,10 +274,10 @@
   function remove(){
     var b=current();if(!b)return;
     if(!isAdmin()){toast('차수 삭제는 관리자만 할 수 있습니다.');return}
-    if(!confirm(b.label+' 입고리스트 샘플을 삭제할까요? (팀 전체에서 사라집니다. 드라이브 파일이 수정되면 다시 들어올 수 있습니다)'))return;
+    if(!confirm(b.label+' 입고리스트을 삭제할까요? (팀 전체에서 사라집니다. 드라이브 파일이 수정되면 다시 들어올 수 있습니다)'))return;
     fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'delete',id:b.id})}).then(function(r){return r.json()}).then(function(j){
       if(!j||!j.success){toast((j&&j.error)||'삭제하지 못했습니다.');return}
-      toast(b.label+' 입고리스트 샘플을 삭제했습니다.');load();
+      toast(b.label+' 입고리스트을 삭제했습니다.');load();
     });
   }
 

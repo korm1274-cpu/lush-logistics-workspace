@@ -109,8 +109,8 @@ async function rebuild(store) {
     header: ['입고일자', '차수', '팔렛수', '제품코드', '제품군', '제품명', '단위', '수량'],
     rows,
     updatedAt: new Date().toISOString(),
-    sourceFile: '입고리스트 샘플(체크리스트)',
-    mode: '입고리스트 샘플(체크리스트) 자동 반영 — 실시간 입고 예정일 기준'
+    sourceFile: '입고리스트(수입팀 체크리스트)',
+    mode: '입고리스트(수입팀 체크리스트) 자동 반영 — 실시간 입고 예정일 기준'
   };
   await store.cmd(['SET', SHARED_KEY, JSON.stringify(data)]);
   return { batches: batches.length, rows: fresh.length, kept: kept.length, first, noCode: fresh.filter(r => !r[3]).length };

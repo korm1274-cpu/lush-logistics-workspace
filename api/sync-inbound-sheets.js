@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
     const r = await require('./_lib/inbound-checklist').rebuild(store);
     return res.status(200).json({
       success: true,
-      source: '입고리스트 샘플(체크리스트)',
+      source: '입고리스트(수입팀 체크리스트)',
       차수: r.batches,
       최종반영행수: r.rows,
       보존한_이전행수: r.kept,

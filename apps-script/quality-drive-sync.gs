@@ -1,5 +1,5 @@
 /**
- * 구글 드라이브 → 웹앱 자동 반영 (품질리스트 · 입고리스트 샘플)
+ * 구글 드라이브 → 웹앱 자동 반영 (품질리스트 · 입고리스트)
  *
  * 하는 일
  *  - 아래 FOLDERS의 폴더(안의 하위 폴더 포함)를 10분마다 살펴보고, 새로 올라왔거나 수정된 엑셀/구글시트를 찾습니다.
@@ -27,7 +27,7 @@
 var API_BASE = 'https://lush-logistics-workspace.vercel.app/api/team-data?part=';
 var FOLDERS = [
   { id: '1blRex8mwLJt38vNT_q6XaVIjzlkfWpla', part: 'quality-lists', label: '품질리스트' },
-  { id: '1XtEqqHXjKss_NJUc33C7fnRdTaJmfl6C', part: 'checklists', label: '입고리스트 샘플' }
+  { id: '1XtEqqHXjKss_NJUc33C7fnRdTaJmfl6C', part: 'checklists', label: '입고리스트' }
 ];
 var MAX_FILES_PER_RUN = 40;     // 한 번 실행에 보낼 최대 파일 수
 var TIME_BUDGET_MS = 4.5 * 60 * 1000; // 실행 시간 6분 제한 전에 멈추고 나머지는 다음 실행(10분 뒤)에

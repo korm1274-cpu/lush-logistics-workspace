@@ -1,4 +1,4 @@
-/* ===== 입고 > 입고리스트 샘플 (js/59-checklist.js) — 품질리스트와 같은 모양 ===== */
+/* ===== 입고 > 입고리스트(수입팀 체크리스트, js/59-checklist.js) — 품질리스트와 같은 모양 ===== */
 #checklistView .ck-toolbar{display:flex;align-items:flex-end;gap:10px;flex-wrap:wrap;background:#fff;border:1.5px solid #ece6db;border-radius:14px;padding:12px 14px;}
 #checklistView .ck-toolbar .field{display:flex;flex-direction:column;gap:5px;min-width:180px;}
 #checklistView .ck-toolbar .field.grow{flex:1 1 260px;}
