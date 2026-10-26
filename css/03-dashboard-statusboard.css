@@ -3137,3 +3137,6 @@ html,body{max-width:100%;overflow-x:hidden}
   color:#7d715e!important;
 }
 
+/* 팀 공지사항 · 제품 확보 현황: 한쪽 내용이 늘어나면 두 카드가 같은 높이로 함께 늘어남(제품 확보 목록 190px 높이 제한·스크롤 해제 → 잘림 없음) */
+#appShell #dashboard .dashboard-notice-todo-grid{align-items:stretch!important;}
+#appShell #dashboard .dashboard-info-panel .ops-todo-list{max-height:none!important;overflow:visible!important;}
