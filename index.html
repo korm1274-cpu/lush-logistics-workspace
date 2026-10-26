@@ -1252,7 +1252,7 @@ window.ensureChart=function(){
 <section id="checklistView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND CHECKLIST</div><h2>입고리스트 샘플</h2><p>수입팀 상품 입고 체크리스트(구글 드라이브 자동 반영)의 분배 표에 PLU별 제조일자·LOT·REF·케이스, 제품코드·담당자, 같은 차수 품질 대상을 붙여 보여 줍니다.</p></div></div>
   <div class="ck-toolbar">
-    <div class="field"><label for="ckBatch">차수</label><select id="ckBatch"></select></div>
+    <div class="field ck-date-field"><label for="ckDateBtn">입고일</label><input type="hidden" id="ckDate"><button type="button" class="ck-date-btn" id="ckDateBtn" aria-haspopup="dialog" aria-expanded="false"><span>전체 날짜</span><i data-lucide="calendar-days"></i></button><div class="ck-cal lc-cal" id="ckCal" role="dialog" aria-label="입고일 선택" hidden></div></div><div class="field"><label for="ckBatch">차수</label><select id="ckBatch"></select></div>
     <div class="field grow"><label for="ckSearch">검색</label><input id="ckSearch" placeholder="PLU / 제품코드 / 품명 / 담당자 / LOT / REF" autocomplete="off"></div>
     <button type="button" class="btn ck-del" id="ckDelete" hidden>이 차수 삭제</button>
   </div>

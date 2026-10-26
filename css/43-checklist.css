@@ -111,3 +111,14 @@
 #appShell #checklistView .ck-qmiss thead th{background:#fdf0f0!important;color:#7a2d2d;font-weight:800;}
 #checklistView .ck-qmiss td.n{white-space:normal;min-width:160px;font-weight:700;}
 #checklistView .ck-qmiss td.r{color:#c93838;font-weight:800;}
+/* 입고일 달력(입고리스트와 같은 모양: 입고 예정일에 점, 그 날짜만 선택) — 모양은 css/40-calendar.css(.lc-cal) */
+#checklistView .ck-date-field{position:relative;}
+#checklistView .ck-date-btn{display:flex;align-items:center;justify-content:space-between;gap:8px;height:40px;box-sizing:border-box;border:1.5px solid #e4d9c7;border-radius:10px;padding:0 10px;background:#fff;font:inherit;font-size:14px;color:#1d1d1b;cursor:pointer;text-align:left;width:100%;}
+#checklistView .ck-date-btn:hover,#checklistView .ck-date-btn[aria-expanded="true"]{border-color:#1d1d1b;}
+#checklistView .ck-date-btn svg{width:16px;height:16px;color:#8b95a1;flex:none;}
+#checklistView .ck-cal{position:absolute;top:calc(100% + 6px);left:0;z-index:30;}
+/* 수량(TOTAL) 머리글 매장 선택(TOTAL ▾) · 매장 이름 머리글을 누르면 그 매장만 */
+#appShell #checklistView .ck-table .ck-th-col{appearance:auto;width:auto!important;min-width:0!important;max-width:160px!important;height:28px!important;min-height:0!important;border:1.5px solid #bfe3cf;border-radius:8px;padding:0 4px 0 8px;background:#fff;color:#11795a;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer;text-align:left;}
+#checklistView .ck-th-col:hover{border-color:#11795a;}
+#checklistView .ck-table thead .ck-col-pick{cursor:pointer;}
+#checklistView .ck-table thead .ck-col-pick:hover{color:#11795a;text-decoration:underline;text-underline-offset:3px;}
