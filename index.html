@@ -1265,7 +1265,7 @@ window.ensureChart=function(){
 <section id="caseLookupView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">PALLET LOOKUP</div><h2>Pallet 조회</h2><p>입고리스트(수입팀 체크리스트)의 팔렛 상세로 차수별 REF넘버 · 케이스넘버 안에 어떤 제품이 들었는지 보여 줍니다. 케이스·REF·PLU·LOT로 검색하면 그 케이스 전체가 나옵니다.</p></div></div>
   <div class="cs-toolbar">
-    <div class="field"><label for="csBatch">차수</label><select id="csBatch"></select></div>
+    <div class="field cs-no-field"><label for="csNo">차수 번호</label><input id="csNo" inputmode="numeric" placeholder="예: 6" autocomplete="off"></div><div class="field"><label for="csBatch">차수</label><select id="csBatch"></select></div><div class="field"><label for="csMgr">담당자</label><select id="csMgr"><option value="">전체 담당자</option></select></div>
     <div class="field"><label for="csRef">REF넘버</label><select id="csRef"></select></div>
     <div class="field grow"><label for="csSearch">검색</label><input id="csSearch" placeholder="케이스넘버 / REF / PLU / 제품코드 / 품명 / LOT" autocomplete="off"></div>
   </div>

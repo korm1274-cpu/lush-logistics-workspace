@@ -35,3 +35,4 @@
   #caseLookupView .cs-table .cs-name{min-width:170px;}
   #appShell #caseLookupView .data-kpis .kpi>b{font-size:17px!important;}
 }
+#caseLookupView .cs-toolbar .cs-no-field{min-width:110px;flex:0 0 120px;}@media (max-width:900px){#caseLookupView .cs-toolbar .cs-no-field{flex:1 1 100%;}}

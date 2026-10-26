@@ -32,11 +32,27 @@
       renderBatches();renderRefs();render();
     }).catch(function(){toast('케이스 정보를 불러오지 못했습니다.')});
   }
-  function selected(){var v=$('csBatch').value;if(v==='*')return batches;var b=batches.find(function(x){return x.id===v});return b?[b]:[]}
+  // 차수 번호 입력: '6'이면 6으로 시작하는 차수 전부(6차 · 61차 · 62차 … , 국가 상관없이). 정확히 같은 번호가 맨 앞. 비우면 전체 목록
+  function typedNo(){return String($('csNo').value||'').replace(/[^\d]/g,'').replace(/^0+(?=\d)/,'')}
+  function scope(){
+    var n=typedNo();if(!n)return batches;
+    return batches.filter(function(b){return String(Number(b.batchNo)).indexOf(n)===0})
+      .sort(function(a,b){var ea=String(Number(a.batchNo))===n,eb=String(Number(b.batchNo))===n;return (eb-ea)||(Number(a.batchNo)-Number(b.batchNo))||String(b.eta||'').localeCompare(String(a.eta||''))});
+  }
+  function selected(){var v=$('csBatch').value,list=scope();if(v==='*')return list;var b=list.find(function(x){return x.id===v});return b?[b]:[]}
   function renderBatches(){
-    var sel=$('csBatch'),cur=sel.value;
-    sel.innerHTML=batches.length?batches.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+(isDay(b.eta)?md(b.eta)+' 입고':'입고일 미정')+'</option>'}).join('')+(batches.length>1?'<option value="*">전체 차수 ('+batches.length+')</option>':''):'<option value="">차수 없음</option>';
-    if(cur&&(cur==='*'||batches.some(function(b){return b.id===cur})))sel.value=cur;
+    var sel=$('csBatch'),cur=sel.value,list=scope(),typed=!!String($('csNo').value||'').trim();
+    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+(isDay(b.eta)?md(b.eta)+' 입고':'입고일 미정')+'</option>'}).join('')+(list.length>1?'<option value="*">'+(typed?'일치하는 차수 전체':'전체 차수')+' ('+list.length+')</option>':''):'<option value="">'+(typed?'일치하는 차수 없음':'차수 없음')+'</option>';
+    // 번호를 입력하면 목록 맨 앞(정확히 같은 번호 → 없으면 가장 가까운 번호) 차수를 먼저 보여 줌. 목록에서 61차·62차 등을 고르거나 '일치하는 차수 전체'로 함께 보기
+    if(typed)sel.value=list.length?list[0].id:'';
+    else if(cur&&(cur==='*'?list.length>1:list.some(function(b){return b.id===cur})))sel.value=cur;
+  }
+  function renderMgrs(all){
+    var sel=$('csMgr'),cur=sel.value,c={};
+    all.forEach(function(x){var k=x.mgr||'담당자 없음';c[k]=(c[k]||0)+1});
+    var keys=Object.keys(c).sort(function(a,b){return (a==='담당자 없음')-(b==='담당자 없음')||c[b]-c[a]||a.localeCompare(b)});
+    sel.innerHTML='<option value="">전체 담당자</option>'+keys.map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+' ('+c[k]+')</option>'}).join('');
+    sel.value=keys.indexOf(cur)>=0?cur:'';
   }
   // 케이스 줄 만들기: 차수 · REF · 케이스 · 제품
   function items(){
@@ -63,15 +79,17 @@
     if(!batches.length){$('csList').innerHTML='<p class="cs-empty">입고리스트(수입팀 체크리스트)가 반영되면 차수별 REF · 케이스 안의 제품을 볼 수 있습니다.</p>';['csRefs','csCases','csItems','csQty'].forEach(function(k){$(k).textContent='0'});return}
     var ref=$('csRef').value,q=($('csSearch').value||'').trim().toLowerCase();
     var all=items().map(function(x){return Object.assign(x,infoOf(x.plu))});
-    var list=all.filter(function(x){return (!ref||x.ref===ref)&&(!q||[x.cs,x.ref,x.plu,x.code,x.name,x.mgr,x.lot].join(' ').toLowerCase().indexOf(q)>=0)});
-    // 검색어가 케이스·REF와 맞으면 그 케이스 전체를 보여 줌(케이스 안 다른 제품까지)
-    if(q){var keys={};list.forEach(function(x){keys[x.batch.id+'|'+x.ref+'|'+x.cs]=1});list=all.filter(function(x){return (!ref||x.ref===ref)&&keys[x.batch.id+'|'+x.ref+'|'+x.cs]})}
+    renderMgrs(all.filter(function(x){return !ref||x.ref===ref}));
+    var mgr=$('csMgr').value,mgrOk=function(x){return !mgr||(x.mgr||'담당자 없음')===mgr};
+    var list=all.filter(function(x){return (!ref||x.ref===ref)&&mgrOk(x)&&(!q||[x.cs,x.ref,x.plu,x.code,x.name,x.mgr,x.lot].join(' ').toLowerCase().indexOf(q)>=0)});
+    // 검색어가 케이스·REF와 맞으면 그 케이스 전체를 보여 줌(케이스 안 다른 제품까지, 담당자를 골랐으면 그 담당자 제품만)
+    if(q){var keys={};list.forEach(function(x){keys[x.batch.id+'|'+x.ref+'|'+x.cs]=1});list=all.filter(function(x){return (!ref||x.ref===ref)&&mgrOk(x)&&keys[x.batch.id+'|'+x.ref+'|'+x.cs]})}
     var groups={},order=[];
     list.forEach(function(x){var k=x.batch.id+'|'+x.ref+'|'+x.cs;if(!groups[k]){groups[k]={batch:x.batch,ref:x.ref,cs:x.cs,items:[]};order.push(k)}groups[k].items.push(x)});
     order.sort(function(a,b){var A=groups[a],B=groups[b];return String(B.batch.eta||'').localeCompare(String(A.batch.eta||''))||nat(A.ref,B.ref)||nat(A.cs,B.cs)});
     var refCount=uniq(order.map(function(k){return groups[k].batch.id+'|'+groups[k].ref})).length,qty=list.reduce(function(s,x){return s+x.qty},0);
     $('csRefs').textContent=fmt(refCount);$('csCases').textContent=fmt(order.length);$('csItems').textContent=fmt(list.length);$('csQty').textContent=fmt(qty);
-    var b1=selected();$('csTitle').textContent='Pallet 조회 · '+(multi?'전체 차수':(b1[0]?b1[0].label:''))+(ref?' · REF '+ref:'');
+    var b1=selected();$('csTitle').textContent='Pallet 조회 · '+(multi?(String($('csNo').value||'').trim()?b1.map(function(x){return x.label}).join(' · '):'전체 차수'):(b1[0]?b1[0].label:''))+(ref?' · REF '+ref:'')+($('csMgr').value?' · '+$('csMgr').value:'');
     lastView={order:order,groups:groups,multi:multi,ref:ref};
     if(!order.length){$('csList').innerHTML='<p class="cs-empty">'+(all.length?'조건에 맞는 케이스가 없습니다.':'이 차수에는 팔렛·케이스 상세(LOT·REF·케이스 칸)가 없습니다.')+'</p>';return}
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="cs-dash">-</span>':esc(v))+'</td>'};
@@ -112,6 +130,9 @@
     var view=$('caseLookupView');if(!view)return;
     $('csBatch').addEventListener('change',function(){$('csRef').value='';renderRefs();render()});
     $('csRef').addEventListener('change',render);
+    $('csMgr').addEventListener('change',render);
+    // 차수 번호 입력: 칠 때마다 일치하는 차수로 목록을 좁힘
+    $('csNo').addEventListener('input',function(){$('csRef').value='';renderBatches();renderRefs();render()});
     $('csSearch').addEventListener('input',render);
     $('csCopy').addEventListener('click',copyText);
     $('csExport').addEventListener('click',exportExcel);
