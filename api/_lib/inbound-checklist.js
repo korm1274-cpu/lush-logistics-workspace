@@ -2,7 +2,7 @@
 //   - 입고 행: [입고일자(실시간 입고 예정일), 차수(예: 142차), 팔렛수(체크리스트 Pallet 수), 제품코드, 제품군, 제품명, 단위(EA/G), 수량(분배 TOTAL)]
 //     제품코드·제품군·단위는 PLU 담당자 정보(제품 마스터)에서 PLU로 찾음(없으면 제품코드 빈칸 · 단위 EA)
 //   - 팀 공유 데이터(lush_shared_file_data_v1)의 inbound / inboundMonthlySummary를 갱신
-//     체크리스트가 없는 예전 기간(가장 이른 체크리스트 입고일 이전)의 기존 행은 그대로 보존
+//     체크리스트가 있는 달만 교체하고, 체크리스트가 없는 달의 기존 실적(예전 입고량 시트)은 그대로 보존
 //   - 호출: api/sync-inbound-sheets.js(새벽 자동·동기화 버튼), api/team-data.js(체크리스트가 반영·삭제될 때)
 const SHARED_KEY = 'lush_shared_file_data_v1';
 const CHECKLIST_KEY = 'lush_checklists_v1';
@@ -85,21 +85,24 @@ async function rebuild(store) {
   for (let i = 0; i < arr.length; i += 2) { try { batches.push(JSON.parse(arr[i + 1])); } catch (e) { /* 무시 */ } }
   let master = null; try { master = JSON.parse(await store.cmd(['GET', PLU_KEY]) || 'null'); } catch (e) { master = null; }
   let data = {}; try { data = JSON.parse(await store.cmd(['GET', SHARED_KEY]) || '{}') || {}; } catch (e) { data = {}; }
-  const fresh = rowsFromChecklists(batches, master);
+  // 체크리스트에서 만든 행은 9번째 칸에 'ck' 표시(화면은 8칸만 씀)
+  const fresh = rowsFromChecklists(batches, master).map(r => r.concat('ck'));
   const etas = fresh.map(r => r[0]).sort();
   const first = etas[0] || '';
-  // 체크리스트가 시작되기 전(가장 이른 입고 예정일 이전) 기존 행은 보존, 그 이후는 체크리스트로 교체
+  // 체크리스트가 있는 달만 교체: 그 달의 기존 행(예전 입고량 시트 실적)은 체크리스트 행으로 바꾸고,
+  // 체크리스트가 없는 달의 기존 실적은 그대로 보존. 예전에 체크리스트로 만든 행('ck')은 항상 새로 만듦
   const old = (data.inbound && Array.isArray(data.inbound.rows)) ? data.inbound.rows : [];
-  const kept = first ? old.filter(r => r && String(r[0] || '') < first) : old;
+  const months = new Set(fresh.map(r => ym(r[0])));
+  const touched = new Set(months);
+  old.forEach(r => { if (r && r[8] === 'ck') touched.add(ym(r[0])); });
+  const kept = old.filter(r => r && r[8] !== 'ck' && !months.has(ym(r[0])));
   const cutoff = shiftMonth(new Date().toISOString().slice(0, 7), -RETENTION_MONTHS);
   const rows = kept.concat(fresh).filter(r => ym(r[0]) >= cutoff).sort((a, b) => String(a[0]).localeCompare(String(b[0])) || String(a[1]).localeCompare(String(b[1])));
   const priceMap = getPriceMap(data.priceList);
-  const months = new Set(fresh.map(r => ym(r[0])));
-  const summary = computeMonthlySummary(rows.filter(r => months.has(ym(r[0]))), priceMap);
-  // 체크리스트 기간 안에서 체크리스트가 없는 달(예: 차수가 삭제된 달)은 요약에서도 지움
-  const prev = data.inboundMonthlySummary || {};
-  const merged = {};
-  Object.keys(prev).forEach(m => { if (!first || m < first.slice(0, 7)) merged[m] = prev[m]; });
+  // 월별 요약: 바뀐 달(체크리스트가 있는 달 + 예전에 체크리스트 행이 있던 달)만 다시 계산, 나머지는 그대로
+  const summary = computeMonthlySummary(rows.filter(r => touched.has(ym(r[0]))), priceMap);
+  const merged = Object.assign({}, data.inboundMonthlySummary || {});
+  touched.forEach(m => { delete merged[m]; });
   Object.assign(merged, summary);
   data.inboundMonthlySummary = merged;
   data.inbound = {
