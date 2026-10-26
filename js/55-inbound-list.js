@@ -210,13 +210,10 @@
   }
   /* 분배 매장 선택(전체 매장 / 리테일 / 디지털 …) */
   function renderCols(cols){
-    var sel=$('ilCol');if(!sel)return;
     if(colFilter&&cols.indexOf(colFilter)<0)cols=cols.concat([colFilter]);
-    sel.innerHTML='<option value="">전체 매장</option>'+cols.map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+'</option>'}).join('');
-    sel.value=colFilter;
     colChoices=cols;
   }
-  /* 표 TOTAL 칸 머리글에서도 매장 선택(TOTAL ▾ → 리테일·디지털…), 위 [분배 매장] 선택과 같이 움직임 */
+  /* 매장 선택은 표 TOTAL 칸 머리글에서(TOTAL ▾ → 리테일·디지털…) */
   var colChoices=[];
   function totalHeadHtml(){
     if(!colChoices.length)return esc(colFilter||'TOTAL');
@@ -349,9 +346,7 @@
     $('ilSearch').addEventListener('input',render);
     $('ilDelete').addEventListener('click',remove);
     $('ilExport').addEventListener('click',exportExcel);
-    $('ilCopy').addEventListener('click',copyText);
-    $('ilCol').addEventListener('change',function(){colFilter=$('ilCol').value;searched=true;render()});
-    // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
+    $('ilCopy').addEventListener('click',copyText);    // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     // 표 머리글: TOTAL ▾ 선택 / 매장 이름 누르면 그 매장만
     $('ilList').addEventListener('change',function(e){var s=e.target.closest('[data-il-col]');if(!s)return;colFilter=s.value;searched=true;render()});
