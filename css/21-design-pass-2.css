@@ -38,3 +38,6 @@ html.ux-dark body{background:#141414;}
 @media (max-width:900px){#appShell #baseTools .base-tool{white-space:nowrap!important;}#appShell #uxDarkBtn .ux-lbl{display:none;}#appShell #uxDarkBtn{min-width:40px!important;padding:0 10px!important;}}
 @media (prefers-reduced-motion:reduce){html.ux-loading #appShell .kpi b{animation:none;}}
 
+/* 상단 바로가기(뷰러쉬·그룹웨어): 버튼과 같은 모양의 링크 */
+#appShell #baseTools a.ux-link{text-decoration:none!important;white-space:nowrap;gap:4px;}
+@media (max-width:900px){#appShell #baseTools a.ux-link .ux-lbl{display:none;}#appShell #baseTools a.ux-link{min-width:36px!important;padding:0 9px!important;justify-content:center;}}

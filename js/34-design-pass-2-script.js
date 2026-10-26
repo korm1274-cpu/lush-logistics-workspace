@@ -39,6 +39,12 @@
     var label=function(){dm.innerHTML=root.classList.contains('ux-dark')?'☀️<span class="ux-lbl"> 라이트</span>':'🌙<span class="ux-lbl"> 다크</span>';dm.title=root.classList.contains('ux-dark')?'밝은 화면으로':'어두운 화면으로'};
     label();dm.addEventListener('click',function(){var on=root.classList.toggle('ux-dark');try{localStorage.setItem(KEY,on?'1':'0')}catch(e){}label()});
     tools.insertBefore(dm,tools.firstChild);
+    /* 다크 모드 버튼 왼쪽 바로가기: 뷰러쉬(쇼핑몰)·그룹웨어 — 새 창으로 열기 */
+    [['uxLinkShop','https://shop.lush.co.kr/main.mv','🛍️','뷰러쉬','뷰러쉬 바로가기'],['uxLinkGw','https://gwa.lush.co.kr/#/','🏢','그룹웨어','그룹웨어 바로가기']].forEach(function(x){
+      var a=document.createElement('a');a.className='base-tool ux-link';a.id=x[0];a.href=x[1];a.target='_blank';a.rel='noopener noreferrer';a.title=x[4];
+      a.innerHTML=x[2]+'<span class="ux-lbl"> '+x[3]+'</span>';
+      tools.insertBefore(a,dm);
+    });
   }
 })();
 
