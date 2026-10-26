@@ -115,3 +115,12 @@
 #inboundListView .il-table thead .il-col-pick{cursor:pointer;}
 #inboundListView .il-table thead .il-col-pick:hover{color:#11795a;text-decoration:underline;text-underline-offset:3px;}
 #appShell #inboundListView .il-table .il-th-col{width:auto!important;min-width:0!important;max-width:150px!important;height:28px!important;min-height:0!important;}
+/* 매장 하나만 볼 때(리테일·디지털…): 너비 자동 — 표·테두리를 내용(제품명 길이·수량)에 맞춰 줄여 수량이 오른쪽 끝에 붙지 않게 */
+#appShell #inboundListView .il-table-wrap:has(.il-one){width:fit-content!important;max-width:100%!important;}
+#appShell #inboundListView .il-table.il-one{width:auto!important;min-width:0!important;}
+#appShell #inboundListView .il-table.il-one .il-pname{width:auto!important;min-width:200px!important;max-width:none!important;white-space:nowrap!important;}
+#appShell #inboundListView .il-table.il-one .il-tot{width:auto!important;min-width:110px!important;padding-left:24px!important;padding-right:18px!important;}
+@media (max-width:900px){
+  #appShell #inboundListView .il-table.il-one .il-pname{min-width:140px!important;max-width:200px!important;white-space:normal!important;}
+  #appShell #inboundListView .il-table.il-one .il-tot{min-width:90px!important;padding-left:14px!important;padding-right:12px!important;}
+}
