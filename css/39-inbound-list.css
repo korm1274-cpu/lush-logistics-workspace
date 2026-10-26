@@ -109,3 +109,9 @@
   #inboundListView .il-actions{width:100%;}
   #inboundListView .il-col{height:36px;flex:1 1 auto;min-width:0;max-width:none;font-size:13px;}
 }
+/* 표 TOTAL 머리글 매장 선택(TOTAL ▾) · 매장 이름 머리글 누르면 그 매장만 */
+#inboundListView .il-th-col{appearance:auto;height:28px;max-width:150px;border:1.5px solid #bfe3cf;border-radius:8px;padding:0 4px 0 8px;background:#fff;color:#11795a;font:inherit;font-size:12.5px;font-weight:900;cursor:pointer;text-align:left;}
+#inboundListView .il-th-col:hover{border-color:#11795a;}
+#inboundListView .il-table thead .il-col-pick{cursor:pointer;}
+#inboundListView .il-table thead .il-col-pick:hover{color:#11795a;text-decoration:underline;text-underline-offset:3px;}
+#appShell #inboundListView .il-table .il-th-col{width:auto!important;min-width:0!important;max-width:150px!important;height:28px!important;min-height:0!important;}

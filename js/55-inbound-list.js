@@ -178,7 +178,7 @@
         '<td class="il-num il-tot">'+fmt(qtyOf(r))+'</td>'+
         cols.map(function(k){var v=r.values?r.values[k]:0;if(typeof v==='number'&&v>0){sum[k]=(sum[k]||0)+v;return '<td class="il-num">'+fmt(v)+'</td>'}return '<td class="il-num il-zero">-</td>'}).join('')+'</tr>';
     }).join('');
-    return '<div class="il-table-wrap"><table class="il-table'+(colFilter?' il-one':'')+'"><thead><tr><th scope="col" class="il-code">제품코드</th><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">'+esc(colFilter||'TOTAL')+'</th>'+cols.map(function(k){return '<th scope="col" class="il-num">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
+    return '<div class="il-table-wrap"><table class="il-table'+(colFilter?' il-one':'')+'"><thead><tr><th scope="col" class="il-code">제품코드</th><th scope="col" class="il-pname">제품명</th><th scope="col" class="il-num il-tot">'+totalHeadHtml()+'</th>'+cols.map(function(k){return '<th scope="col" class="il-num il-col-pick" data-il-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'</tr></thead>'+
       '<tbody>'+body+'</tbody><tfoot><tr><td class="il-code"></td><th scope="row" class="il-pname">합계 <small>'+fmt(list.length)+'개 제품</small></th><td class="il-num il-tot" title="위 요약의 총 입고수량과 같은 합계">'+fmt(totalOf(list,lastView&&lastView.q||''))+'</td>'+cols.map(function(k){return '<td class="il-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'</tr></tfoot></table></div>';
   }
   /* 총 입고수량: 검색어가 없으면 파일 CHECK 시트 기준(전체·담당별 TOTAL), 검색 중이거나 CHECK가 없으면 보이는 행 합계 */
@@ -214,6 +214,13 @@
     if(colFilter&&cols.indexOf(colFilter)<0)cols=cols.concat([colFilter]);
     sel.innerHTML='<option value="">전체 매장</option>'+cols.map(function(k){return '<option value="'+esc(k)+'">'+esc(k)+'</option>'}).join('');
     sel.value=colFilter;
+    colChoices=cols;
+  }
+  /* 표 TOTAL 칸 머리글에서도 매장 선택(TOTAL ▾ → 리테일·디지털…), 위 [분배 매장] 선택과 같이 움직임 */
+  var colChoices=[];
+  function totalHeadHtml(){
+    if(!colChoices.length)return esc(colFilter||'TOTAL');
+    return '<select class="il-th-col" data-il-col aria-label="TOTAL 칸에 표시할 분배 매장"><option value="">TOTAL</option>'+colChoices.map(function(k){return '<option value="'+esc(k)+'"'+(k===colFilter?' selected':'')+'>'+esc(k)+'</option>'}).join('')+'</select>';
   }
   function render(){
     if(!$('ilList'))return;
@@ -346,6 +353,9 @@
     $('ilCol').addEventListener('change',function(){colFilter=$('ilCol').value;searched=true;render()});
     // 업로드는 데이터 › 업로드 화면의 '입고리스트 Excel' 카드에서만(입고리스트 화면에는 업로드 칸 없음)
     document.querySelectorAll('.ilUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
+    // 표 머리글: TOTAL ▾ 선택 / 매장 이름 누르면 그 매장만
+    $('ilList').addEventListener('change',function(e){var s=e.target.closest('[data-il-col]');if(!s)return;colFilter=s.value;searched=true;render()});
+    $('ilList').addEventListener('click',function(e){var th=e.target.closest('[data-il-col-pick]');if(!th)return;colFilter=th.getAttribute('data-il-col-pick');searched=true;render()});
     $('ilSheets').addEventListener('click',function(e){var c=e.target.closest('[data-il-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-il-sheet');searched=true;render()});
     // 화면이 새로 열릴 때만(안 보이다가 보일 때) 조회 전 상태·전체 날짜로 되돌리고 새로 받기
     var wasActive=false;
