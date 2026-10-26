@@ -61,6 +61,14 @@
     td.querySelector('.ck-mgr-save').addEventListener('click',save);
     td.querySelector('.ck-mgr-cancel').addEventListener('click',function(){done=true;render()});
   }
+  // Pallet 번호가 REF와 이어진 긴 번호면 끝 숫자만: REF SAL-ORD-2026-17685 · PLT-SO-2026-17685-03 → 3
+  // (REF의 3자리 이상 숫자(17685)가 Pallet 번호 안에도 있을 때만. 1·2·17 같은 짧은 번호는 그대로)
+  function palletNo(cs,ref){
+    var s=String(cs==null?'':cs).trim(),m=s.match(/[-_\s](\d+)$/);
+    if(!m||!/[A-Za-z]/.test(s))return s;
+    var inPal=s.match(/\d+/g)||[],inRef=String(ref||'').match(/\d+/g)||[];
+    return inRef.some(function(n){return n.length>=3&&inPal.indexOf(n)>=0})?String(Number(m[1])):s;
+  }
   function infoOf(plu,fallbackName){
     var l=(master&&master.map&&master.map[plu])||[];
     var code=uniq(l.map(function(x){return x[0]})).join(' / ');
@@ -106,6 +114,7 @@
       var j=res[0],m=res[1],q=res[2];
       if(!j||!j.success){toast((j&&j.error)||'입고리스트을 불러오지 못했습니다.');return}
       batches=j.batches||[];
+      batches.forEach(function(b){(b.rows||[]).forEach(function(r){(r.details||[]).forEach(function(d){d.cs=palletNo(d.cs,d.ref)})})});
       master=m&&m.success?m.master:null;overrides=(m&&m.success&&m.overrides)||{};
       quality={};((q&&q.success&&q.batches)||[]).forEach(function(b){quality[b.id]=b});
       renderBatches();render();
