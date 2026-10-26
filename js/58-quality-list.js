@@ -4,7 +4,7 @@
    - 차수: 차수 칸 → '해 당 차 수' 칸 → 파일명 "142차" 순서로 읽음 (같은 차수를 다시 올리면 교체)
    - PLU: 뒤에 붙은 KR은 빼고 숫자만(앞의 0도 뺌: 09214KR → 9214). GIFT는 GIFT LOT 앞자리(65565260914I2401 → 65565)가 기프트 PLU, 그다음 6자리가 제조일자
    - 제품코드·담당자: 데이터 › 업로드의 'PLU 담당자 정보'(제품 마스터 엑셀)에서 PLU로 찾음. 마스터에 없으면 파일의 제품코드(#N/A 제외)
-   - 표: 제품코드 | PLU | 제품명 | 담당자 | LOT넘버 | 제조일자 | 입고수량 | 차수 (GIFT는 한 줄, 누르면 구성품 펼침)
+   - 표: PLU | 제품코드 | 제품명 | 담당자 | LOT넘버 | 제조일자 | 입고수량 | 차수 (GIFT는 한 줄, 누르면 구성품 펼침)
    - 저장: /api/team-data?part=quality-lists (차수별), /api/team-data?part=plu-master (마스터 통째로) */
 (function(){
   var API='/api/team-data?part=quality-lists',MASTER_API='/api/team-data?part=plu-master';
@@ -17,59 +17,12 @@
   function isAdmin(){var u=user();return !!(u&&u.role==='admin')}
   function canEdit(){var u=user();return !!(u&&u.role!=='guest')}
   function xlsx(){return window.ensureXLSX?window.ensureXLSX():Promise.resolve(window.XLSX)}
-  // PLU: 뒤 KR 빼고, 숫자면 앞의 0도 뺌 (09214KR → 9214). K61107·T0000168 같은 값은 그대로
-  function normPlu(v){var s=String(v==null?'':v).trim().replace(/\s+/g,'').replace(/KR$/i,'');return /^\d+$/.test(s)?String(Number(s)):s.toUpperCase()}
-  function num(v){if(typeof v==='number')return isFinite(v)?v:0;var n=parseFloat(String(v==null?'':v).replace(/,/g,'').trim());return isFinite(n)?n:null}
-  function pad(n){return String(n).padStart(2,'0')}
-  function normDate(v){
-    var s=String(v==null?'':v).trim(),m;
-    if((m=s.match(/^(\d{4})\D+(\d{1,2})\D+(\d{1,2})/)))return m[1]+'-'+pad(m[2])+'-'+pad(m[3]);
-    if((m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})$/)))return (m[3].length===2?'20'+m[3]:m[3])+'-'+pad(m[1])+'-'+pad(m[2]); // 엑셀 미국식 m/d/yy
-    if((m=s.match(/^(\d{4})(\d{2})(\d{2})$/)))return m[1]+'-'+m[2]+'-'+m[3];
-    return s;
-  }
-  // GIFT LOT(65565260914I2401): 끝의 영문+숫자 앞 6자리가 제조일자(YYMMDD), 그 앞이 기프트 PLU
-  function giftLot(lot){var m=String(lot||'').trim().match(/^(\d+)(\d{2})(\d{2})(\d{2})[A-Za-z]/);if(!m)return null;var mm=+m[3],dd=+m[4];if(mm<1||mm>12||dd<1||dd>31)return null;return{plu:String(Number(m[1])),date:'20'+m[2]+'-'+m[3]+'-'+m[4]}}
-
-  /* ===== 엑셀 → 품질리스트 ===== */
-  function cell(h,names){for(var i=0;i<names.length;i++){var k=h.indexOf(names[i]);if(k>=0)return k}return -1}
+  // 해석 규칙(PLU 정리·날짜·GIFT LOT·차수)은 js/quality-parse.js — 구글 드라이브 자동 반영(서버)과 같은 코드
+  var QP=window.QualityParse,normPlu=QP.normPlu,pad=function(n){return String(n).padStart(2,'0')};
   function headOf(r){return (r||[]).map(function(x){return String(x==null?'':x).replace(/\s+/g,' ').trim()})}
+  /* ===== 엑셀 → 품질리스트 ===== */
   function parseQuality(wb,fileName){
-    var rows=[],batchNo='';
-    wb.SheetNames.forEach(function(sn){
-      var aoa=XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:'',raw:false});
-      var hi=-1;for(var i=0;i<Math.min(30,aoa.length);i++){if(headOf(aoa[i]).indexOf('(PLU)')>=0){hi=i;break}}
-      if(hi<0)return; // 목록 시트가 아님(Category·POS 정보 등)
-      // '해 당 차 수' 칸(제목 아래 정보 영역)
-      if(!batchNo)for(var j=0;j<hi;j++){var r0=headOf(aoa[j]);var t=r0.findIndex(function(x){return x.replace(/\s/g,'')==='해당차수'});if(t>=0){var v=r0.slice(t+1).find(function(x){return x});var m0=v&&v.match(/(\d{1,4})/);if(m0){batchNo=String(Number(m0[1]));break}}}
-      var h=headOf(aoa[hi]);
-      var c={plu:cell(h,['(PLU)']),lot:cell(h,['Lot No.','LOT No.','Lot No','LOT NO.']),date:cell(h,['제조일자']),name:cell(h,['품명/용량(g)','품명/용량','품명','제품명']),qty:cell(h,['입고수량']),code:cell(h,['제품코드']),no:cell(h,['차수']),gift:cell(h,['기프트명']),glot:cell(h,['GIFT LOT No.','GIFT LOT No','GIFT LOT NO.'])};
-      var isGift=c.gift>=0;
-      var get=function(r,k){return k>=0?String(r[k]==null?'':r[k]).trim():''};
-      var cur=null;
-      aoa.slice(hi+1).forEach(function(r){
-        var plu=get(r,c.plu),no=get(r,c.no);
-        if(no&&!batchNo){var mn=no.match(/(\d{1,4})/);if(mn)batchNo=String(Number(mn[1]))}
-        var item={plu:normPlu(plu),name:get(r,c.name),lot:get(r,c.lot),date:normDate(get(r,c.date))};
-        if(isGift){
-          var gname=get(r,c.gift);
-          if(gname){
-            var glot=get(r,c.glot),gl=giftLot(glot);
-            cur={kind:'GIFT',plu:gl?gl.plu:'',name:gname,lot:glot,date:gl?gl.date:item.date,qty:c.qty>=0?num(get(r,c.qty)):null,code:'',items:[]};
-            rows.push(cur);
-          }
-          if(cur&&plu)cur.items.push(item);
-          return;
-        }
-        if(!plu)return;
-        var code=get(r,c.code);
-        rows.push({kind:'단품',plu:item.plu,name:item.name,lot:item.lot,date:item.date,qty:c.qty>=0?num(get(r,c.qty)):null,code:/^#|^N\/A$/i.test(code)?'':code});
-      });
-    });
-    // GIFT 날짜를 LOT에서 못 읽으면 구성품 중 가장 늦은 제조일자
-    rows.forEach(function(r){if(r.kind==='GIFT'&&!/^\d{4}-/.test(r.date||'')){var ds=r.items.map(function(x){return x.date}).filter(function(d){return /^\d{4}-/.test(d)}).sort();r.date=ds[ds.length-1]||''}});
-    if(!batchNo){var fm=String(fileName).match(/(\d{1,4})\s*차/);if(fm)batchNo=String(Number(fm[1]))}
-    return{batchNo:batchNo,rows:rows};
+    return QP.parseSheets(wb.SheetNames.map(function(sn){return{name:sn,aoa:XLSX.utils.sheet_to_json(wb.Sheets[sn],{header:1,defval:'',raw:false})}}),fileName);
   }
   /* ===== 엑셀 → PLU 마스터 (PLU | 제품코드 | … | 제품명 | 물류 담당자 …) ===== */
   function parseMaster(wb){
@@ -91,11 +44,50 @@
   }
   function look(plu){var l=master&&master.map&&master.map[plu];return Array.isArray(l)?l:[]}
   function uniq(a){return a.filter(function(x,i){return x&&a.indexOf(x)===i})}
+  // 담당자: 마스터 값이 우선, 마스터에 담당자가 없으면 화면에서 수기로 지정한 값(overrides, PLU별·팀 공유)
+  var overrides={};
   function infoOf(r){
     var l=look(r.plu);
     var code=uniq(l.map(function(x){return x[0]})).join(' / ')||r.code||'';
-    var mgr=uniq(l.map(function(x){return x[1]})).join(' / ');
-    return{code:code,mgr:mgr};
+    var mgr=uniq(l.map(function(x){return x[1]})).join(' / '),manual=false;
+    if(!mgr&&r.plu&&overrides[r.plu]&&overrides[r.plu].mgr){mgr=overrides[r.plu].mgr;manual=true}
+    return{code:code,mgr:mgr,manual:manual};
+  }
+  function mgrOptions(){
+    var s={};
+    Object.keys((master&&master.map)||{}).forEach(function(k){master.map[k].forEach(function(x){if(x[1])s[x[1]]=1})});
+    Object.keys(overrides).forEach(function(k){if(overrides[k].mgr)s[overrides[k].mgr]=1});
+    return Object.keys(s).sort();
+  }
+  // 담당자 칸: 마스터 값은 그대로, 비어 있으면 [+ 담당자 지정], 수기로 정한 값은 '수기' 표시 + 눌러서 변경
+  function mgrCell(plu,inf){
+    if(inf.mgr&&!inf.manual)return '<td class="ql-mgr">'+esc(inf.mgr)+'</td>';
+    if(!plu)return '<td class="ql-mgr ql-nomgr"><span class="ql-dash">-</span></td>';
+    if(!canEdit())return inf.mgr?'<td class="ql-mgr">'+esc(inf.mgr)+' <span class="ql-manual">수기</span></td>':'<td class="ql-mgr ql-nomgr"><span class="ql-dash">-</span></td>';
+    return inf.mgr?'<td class="ql-mgr"><button type="button" class="ql-mgr-edit" data-ql-mgr-edit="'+esc(plu)+'" title="PLU '+esc(plu)+' 담당자 변경 (수기 지정)">'+esc(inf.mgr)+' <span class="ql-manual">수기</span></button></td>'
+      :'<td class="ql-mgr ql-nomgr"><button type="button" class="ql-mgr-add" data-ql-mgr-edit="'+esc(plu)+'" title="PLU '+esc(plu)+' 담당자를 직접 지정">+ 담당자 지정</button></td>';
+  }
+  function editMgr(btn){
+    var plu=btn.getAttribute('data-ql-mgr-edit'),td=btn.closest('td'),cur=(overrides[plu]&&overrides[plu].mgr)||'';
+    td.innerHTML='<span class="ql-mgr-form"><input class="ql-mgr-input" list="qlMgrOptions" value="'+esc(cur)+'" placeholder="담당자" aria-label="PLU '+esc(plu)+' 담당자"><button type="button" class="ql-mgr-save">저장</button><button type="button" class="ql-mgr-cancel" title="취소">✕</button></span>';
+    var dl=$('qlMgrOptions');if(!dl){dl=document.createElement('datalist');dl.id='qlMgrOptions';document.body.appendChild(dl)}
+    dl.innerHTML=mgrOptions().map(function(m){return '<option value="'+esc(m)+'">'}).join('');
+    var inp=td.querySelector('input');inp.focus();inp.select();
+    var done=false;
+    var save=function(){
+      if(done)return;done=true;
+      var v=inp.value.trim().slice(0,40);
+      if(v===cur){render();return}
+      fetch(MASTER_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'override',plu:plu,mgr:v})}).then(function(r){return r.json()}).then(function(j){
+        if(!j||!j.success){toast((j&&j.error)||'저장하지 못했습니다.');render();return}
+        if(v)overrides[plu]={mgr:v,by:(user()||{}).id,at:new Date().toISOString()};else delete overrides[plu];
+        toast(v?'PLU '+plu+' 담당자를 '+v+'(으)로 지정했습니다.':'PLU '+plu+' 수기 담당자를 지웠습니다.');
+        render();
+      }).catch(function(){toast('저장하지 못했습니다.');render()});
+    };
+    inp.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();save()}else if(e.key==='Escape'){done=true;render()}});
+    td.querySelector('.ql-mgr-save').addEventListener('click',save);
+    td.querySelector('.ql-mgr-cancel').addEventListener('click',function(){done=true;render()});
   }
 
   /* ===== 불러오기 ===== */
@@ -106,7 +98,7 @@
     ]).then(function(res){
       var j=res[0],m=res[1];
       if(!j||!j.success){toast((j&&j.error)||'품질리스트를 불러오지 못했습니다.');return}
-      batches=j.batches||[];master=m&&m.success?m.master:null;
+      batches=j.batches||[];master=m&&m.success?m.master:null;overrides=(m&&m.success&&m.overrides)||{};
       renderBatches();render();
     }).catch(function(){toast('품질리스트를 불러오지 못했습니다.')});
   }
@@ -157,12 +149,12 @@
     var body=list.map(function(r){
       var gift=r.kind==='GIFT',isOpen=!!open[r.key];
       var name='<b>'+esc(r.name)+'</b>'+(gift?' <span class="ql-gift">GIFT</span><button type="button" class="ql-toggle" data-ql-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">구성 '+(r.items||[]).length+'개 '+(isOpen?'▲':'▼')+'</button>':'');
-      var main='<tr class="'+(gift?'ql-giftrow':'')+'">'+td(r.code,'ql-code')+td(r.plu,'ql-plu')+'<td class="ql-name">'+name+'</td>'+td(r.mgr,'ql-mgr'+(r.mgr?'':' ql-nomgr'))+td(r.lot,'ql-lot')+td(r.date,'ql-date')+'<td class="ql-num">'+(r.qty==null?'<span class="ql-dash">-</span>':fmt(r.qty))+'</td>'+td(r.batch.label,'ql-batch')+'</tr>';
+      var main='<tr class="'+(gift?'ql-giftrow':'')+'">'+td(r.plu,'ql-plu')+td(r.code,'ql-code')+'<td class="ql-name">'+name+'</td>'+mgrCell(r.plu,r)+td(r.lot,'ql-lot')+td(r.date,'ql-date')+'<td class="ql-num">'+(r.qty==null?'<span class="ql-dash">-</span>':fmt(r.qty))+'</td>'+td(r.batch.label,'ql-batch')+'</tr>';
       if(!gift||!isOpen)return main;
-      return main+(r.items||[]).map(function(x){var inf=infoOf(x);return '<tr class="ql-sub">'+td(inf.code,'ql-code')+td(x.plu,'ql-plu')+'<td class="ql-name"><span class="ql-sub-mark">└</span> '+esc(x.name)+'</td>'+td(inf.mgr,'ql-mgr'+(inf.mgr?'':' ql-nomgr'))+td(x.lot,'ql-lot')+td(x.date,'ql-date')+'<td class="ql-num"><span class="ql-dash">-</span></td>'+td(r.batch.label,'ql-batch')+'</tr>'}).join('');
+      return main+(r.items||[]).map(function(x){var inf=infoOf(x);return '<tr class="ql-sub">'+td(x.plu,'ql-plu')+td(inf.code,'ql-code')+'<td class="ql-name"><span class="ql-sub-mark">└</span> '+esc(x.name)+'</td>'+mgrCell(x.plu,inf)+td(x.lot,'ql-lot')+td(x.date,'ql-date')+'<td class="ql-num"><span class="ql-dash">-</span></td>'+td(r.batch.label,'ql-batch')+'</tr>'}).join('');
     }).join('');
-    $('qlList').innerHTML='<div class="ql-table-wrap"><table class="ql-table"><thead><tr><th class="ql-code">제품코드</th><th class="ql-plu">PLU</th><th class="ql-name">제품명</th><th class="ql-mgr">담당자</th><th class="ql-lot">LOT넘버</th><th class="ql-date">제조일자</th><th class="ql-num">입고수량</th><th class="ql-batch">차수</th></tr></thead><tbody>'+body+'</tbody>'+
-      '<tfoot><tr><td class="ql-code"></td><td class="ql-plu"></td><th class="ql-name">합계 <small>'+fmt(list.length)+'개</small></th><td></td><td></td><td></td><td class="ql-num">'+fmt(qtySum)+'</td><td></td></tr></tfoot></table></div>';
+    $('qlList').innerHTML='<div class="ql-table-wrap"><table class="ql-table"><thead><tr><th class="ql-plu">PLU</th><th class="ql-code">제품코드</th><th class="ql-name">제품명</th><th class="ql-mgr">담당자</th><th class="ql-lot">LOT넘버</th><th class="ql-date">제조일자</th><th class="ql-num">입고수량</th><th class="ql-batch">차수</th></tr></thead><tbody>'+body+'</tbody>'+
+      '<tfoot><tr><td class="ql-plu"></td><td class="ql-code"></td><th class="ql-name">합계 <small>'+fmt(list.length)+'개</small></th><td></td><td></td><td></td><td class="ql-num">'+fmt(qtySum)+'</td><td></td></tr></tfoot></table></div>';
   }
 
   /* ===== 업로드 ===== */
@@ -202,10 +194,10 @@
   }
 
   /* ===== 복사 · 엑셀 · 삭제 ===== */
-  var HEAD=['제품코드','PLU','제품명','담당자','LOT넘버','제조일자','입고수량','차수'];
+  var HEAD=['PLU','제품코드','제품명','담당자','LOT넘버','제조일자','입고수량','차수'];
   function flat(v){var out=[];v.list.forEach(function(r){
-    out.push([r.code,r.plu,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.mgr,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
-    if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([inf.code,x.plu,'└ '+x.name,inf.mgr,x.lot,x.date,'',r.batch.label])});
+    out.push([r.plu,r.code,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.mgr,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
+    if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([x.plu,inf.code,'└ '+x.name,inf.mgr,x.lot,x.date,'',r.batch.label])});
   });return out}
   function copyText(){
     var v=lastView;if(!v||!v.list.length){toast('복사할 품질리스트가 없습니다.');return}
@@ -222,7 +214,7 @@
       var aoa=[[title],HEAD].concat(flat(v).map(function(r){return r.map(function(x,i){return i===6&&x!==''?Number(x):x})}));
       var ws=XLSX.utils.aoa_to_sheet(aoa);
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:HEAD.length-1}}];
-      ws['!cols']=[{wch:12},{wch:9},{wch:44},{wch:12},{wch:18},{wch:12},{wch:10},{wch:8}];
+      ws['!cols']=[{wch:9},{wch:12},{wch:44},{wch:12},{wch:18},{wch:12},{wch:10},{wch:8}];
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:aoa.length-1,c:HEAD.length-1}})};
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'품질리스트');
       var d=new Date(),name='품질리스트_'+(v.batch?v.batch.label:'전체차수')+(mgrFilter?'_'+mgrFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
@@ -251,7 +243,7 @@
     $('qlExport').addEventListener('click',exportExcel);
     $('qlKinds').addEventListener('click',function(e){var c=e.target.closest('[data-ql-kind]');if(!c)return;kindFilter=c.getAttribute('data-ql-kind');mgrFilter='';render()});
     $('qlMgrs').addEventListener('click',function(e){var c=e.target.closest('[data-ql-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ql-mgr');render()});
-    $('qlList').addEventListener('click',function(e){var t=e.target.closest('[data-ql-open]');if(!t)return;var k=t.getAttribute('data-ql-open');open[k]=!open[k];render()});
+    $('qlList').addEventListener('click',function(e){var ed=e.target.closest('[data-ql-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ql-open]');if(!t)return;var k=t.getAttribute('data-ql-open');open[k]=!open[k];render()});
     // 화면이 새로 열릴 때마다 새로 받기
     var was=false;
     var opened=function(){var on=view.classList.contains('active');if(on&&!was)load();was=on};

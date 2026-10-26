@@ -120,6 +120,18 @@ async function qualityLists(req, res, user) {
       await store.cmd(['HDEL', QUALITY_KEY, id]);
       return res.status(200).json({ success: true });
     }
+    // 구글 드라이브 자동 반영(apps-script/quality-drive-sync.gs): 시트 글자 값을 받아 화면 업로드와 같은 규칙(js/quality-parse.js)으로 해석
+    if (body.action === 'import') {
+      const sheets = (Array.isArray(body.sheets) ? body.sheets : []).slice(0, 20).map(s => ({
+        name: clip(s && s.name, 60),
+        aoa: (Array.isArray(s && s.aoa) ? s.aoa : []).slice(0, 6000).map(r => (Array.isArray(r) ? r : []).slice(0, 40).map(v => clip(v, 200))),
+      }));
+      const fileName = clip(body.fileName, 200);
+      const p = require('../js/quality-parse.js').parseSheets(sheets, fileName);
+      if (!p.rows.length) return res.status(200).json({ success: false, error: '목록 시트((PLU) 칸이 있는 단품·GIFT 시트)를 찾지 못했습니다.' });
+      if (!p.batchNo) return res.status(200).json({ success: false, error: '차수를 찾지 못했습니다. 파일명에 "142차"처럼 차수를 넣어 주세요.' });
+      body = { action: 'save', batch: { id: 'Q-' + p.batchNo, batchNo: p.batchNo, label: p.batchNo + '차', fileName, rows: p.rows, source: 'drive' } };
+    }
     if (body.action === 'save') {
       const b = body.batch || {};
       const id = clip(b.id, 60);
@@ -129,7 +141,7 @@ async function qualityLists(req, res, user) {
         kind: r.kind === 'GIFT' ? 'GIFT' : '단품', ...item(r), qty: r.qty == null || r.qty === '' ? null : Number(r.qty) || 0, code: clip(r.code, 40),
         items: r.kind === 'GIFT' ? (Array.isArray(r.items) ? r.items : []).slice(0, 30).map(item) : undefined,
       }));
-      const rec = { id, batchNo: clip(b.batchNo, 4), label: clip(b.label, 40), fileName: clip(b.fileName, 200), rows, uploadedAt: new Date().toISOString(), uploadedBy: user.id };
+      const rec = { id, batchNo: clip(b.batchNo, 4), label: clip(b.label, 40), fileName: clip(b.fileName, 200), rows, source: b.source === 'drive' ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id };
       await store.cmd(['HSET', QUALITY_KEY, id, JSON.stringify(rec)]);
       return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length } });
     }
@@ -142,6 +154,7 @@ async function qualityLists(req, res, user) {
 // PLU별 제품코드·담당자(제품 마스터 엑셀): { updatedAt, updatedBy, fileName, map: { PLU: [[제품코드, 담당자, 제품명], ...] } } 한 덩어리로 보관
 //   GET / POST {action:'save', fileName, map} — 새 파일을 올리면 통째로 교체
 const PLU_KEY = 'lush_plu_master_v1';
+const PLU_OVERRIDE_KEY = 'lush_plu_override_v1'; // hash: PLU → { mgr, by, at }
 async function pluMaster(req, res, user) {
   const store = require('./_lib/auth').kv();
   const clip = (v, n) => String(v == null ? '' : v).slice(0, n);
@@ -150,11 +163,22 @@ async function pluMaster(req, res, user) {
       const raw = await store.cmd(['GET', PLU_KEY]);
       let data = null;
       try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; }
-      return res.status(200).json({ success: true, master: data });
+      // 화면에서 수기로 지정한 담당자(PLU별) — 마스터에 담당자가 없을 때 사용
+      const arr = await store.cmd(['HGETALL', PLU_OVERRIDE_KEY]) || [];
+      const overrides = {};
+      for (let i = 0; i < arr.length; i += 2) { try { overrides[arr[i]] = JSON.parse(arr[i + 1]); } catch (e) { /* 무시 */ } }
+      return res.status(200).json({ success: true, master: data, overrides });
     }
     let body = req.body;
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
+    if (body.action === 'override') {
+      const plu = clip(body.plu, 20).trim(), mgr = clip(body.mgr, 40).trim();
+      if (!plu) return res.status(200).json({ success: false, error: 'PLU가 없습니다.' });
+      if (!mgr) await store.cmd(['HDEL', PLU_OVERRIDE_KEY, plu]);
+      else await store.cmd(['HSET', PLU_OVERRIDE_KEY, plu, JSON.stringify({ mgr, by: user.id, at: new Date().toISOString() })]);
+      return res.status(200).json({ success: true });
+    }
     if (body.action === 'save') {
       const map = {};
       Object.entries(body.map || {}).slice(0, 20000).forEach(([k, list]) => {
@@ -173,7 +197,26 @@ async function pluMaster(req, res, user) {
   }
 }
 
+// 구글 드라이브 자동 반영: Apps Script가 x-sync-secret 머리글로 보낸 품질리스트 'import'만 로그인 없이 허용
+// (비밀값은 Vercel 환경변수 QUALITY_SYNC_SECRET과 Apps Script 스크립트 속성에 같은 값으로 넣음, 코드에는 두지 않음)
+function driveSyncUser(req) {
+  const expected = process.env.QUALITY_SYNC_SECRET || '';
+  const given = String((req.headers && req.headers['x-sync-secret']) || '');
+  if (!expected || expected.length < 16 || !given || req.method !== 'POST' || !req.query || req.query.part !== 'quality-lists') return null;
+  const crypto = require('crypto');
+  const a = crypto.createHash('sha256').update(expected).digest(), b = crypto.createHash('sha256').update(given).digest();
+  return crypto.timingSafeEqual(a, b) ? { id: 'google-drive', role: 'editor', drive: true } : null;
+}
+
 module.exports = async (req, res) => {
+  const drive = driveSyncUser(req);
+  if (drive) {
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    if (!body || body.action !== 'import') return res.status(200).json({ success: false, error: 'import만 허용됩니다.' });
+    res.setHeader('Cache-Control', 'no-store');
+    return qualityLists(req, res, drive);
+  }
   // 로그인한 사람만(api/_lib/auth.js). 게스트는 보기만, 새벽 자동 동기화(Vercel cron)는 허용
   const authUser = await require('./_lib/auth').guard(req, res, { write: r => r.method !== 'GET' });
   if (!authUser) return;

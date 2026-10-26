@@ -59,3 +59,13 @@
   #appShell #qualityListView .data-kpis .kpi>b{font-size:17px!important;letter-spacing:-.02em;}
   #appShell #qualityListView .data-kpis .kpi>small{font-size:11px!important;}
 }
+/* 담당자 수기 지정: [+ 담당자 지정] / 수기 값(누르면 변경) / 입력칸 */
+#qualityListView .ql-mgr-add{height:26px;padding:0 9px;border:1px dashed #e0b97a;border-radius:999px;background:#fff8ec;color:#a05a00;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+#qualityListView .ql-mgr-add:hover{border-style:solid;}
+#qualityListView .ql-mgr-edit{height:26px;padding:0 8px 0 0;border:0;background:none;font:inherit;font-size:13px;font-weight:800;color:#1d1d1b;cursor:pointer;white-space:nowrap;}
+#qualityListView .ql-mgr-edit:hover{text-decoration:underline;text-underline-offset:3px;}
+#qualityListView .ql-manual{display:inline-flex;align-items:center;height:17px;padding:0 5px;border-radius:999px;background:#eef2ff;color:#4b5bd6;font-size:10px;font-weight:900;vertical-align:1px;}
+#qualityListView .ql-mgr-form{display:inline-flex;align-items:center;gap:4px;}
+#appShell #qualityListView .ql-mgr-input{width:110px!important;height:28px!important;min-height:0!important;padding:0 8px!important;border:1.5px solid #1d1d1b!important;border-radius:8px!important;font:inherit;font-size:12.5px!important;background:#fff!important;}
+#qualityListView .ql-mgr-save,#qualityListView .ql-mgr-cancel{height:28px;padding:0 9px;border:1px solid #1d1d1b;border-radius:8px;background:#1d1d1b;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+#qualityListView .ql-mgr-cancel{background:#fff;color:#4e5968;border-color:#e4ddd0;padding:0 7px;}
