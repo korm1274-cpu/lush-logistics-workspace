@@ -177,3 +177,10 @@
 #appShell #checklistView .ck-mgr-input{width:96px!important;}
 #checklistView .ck-mgr-save,#checklistView .ck-mgr-cancel{height:28px;padding:0 9px;border:1px solid #1d1d1b;border-radius:8px;background:#1d1d1b;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
 #checklistView .ck-mgr-cancel{background:#fff;color:#4e5968;border-color:#e4ddd0;padding:0 7px;}
+/* 표의 Pallet 번호(누르면 아래 Pallet 조회에서 그 Pallet만) · 보는 중 표시 */
+#checklistView .ck-pal-link{padding:0;border:0;background:none;font:inherit;font-size:inherit;font-weight:800;color:#4b5bd6;cursor:pointer;text-decoration:underline;text-underline-offset:3px;white-space:nowrap;}
+#checklistView .ck-pal-link:hover{color:#1d1d1b;}
+#checklistView .ck-pal-focus{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px;padding:9px 12px;border-radius:10px;background:#eef2ff;border:1px solid #dfe4fb;font-size:13px;font-weight:800;color:#4b5bd6;}
+#checklistView .ck-pal-focus[hidden]{display:none;}
+#checklistView .ck-pal-focus button{flex:none;height:28px;padding:0 11px;border:1px solid #4b5bd6;border-radius:999px;background:#fff;color:#4b5bd6;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
+#checklistView .ck-pal-focus button:hover{background:#4b5bd6;color:#fff;}

@@ -154,7 +154,7 @@
   }
   function openCal(){var pop=$('ckCal');if(!pop)return;calMonth='';buildCal();pop.hidden=false;$('ckDateBtn').setAttribute('aria-expanded','true')}
   function closeCal(){var pop=$('ckCal');if(pop&&!pop.hidden){pop.hidden=true;$('ckDateBtn').setAttribute('aria-expanded','false')}}
-  function setDate(v){$('ckDate').value=v||'';syncDateBtn();closeCal();sheetFilter='';mgrFilter='';renderBatches(v&&scope().length>1?'*':'');render()}
+  function setDate(v){palFocus=null;$('ckDate').value=v||'';syncDateBtn();closeCal();sheetFilter='';mgrFilter='';renderBatches(v&&scope().length>1?'*':'');render()}
   // 매장(분배처) 선택: 수량(TOTAL) 머리글 'TOTAL ▾' 또는 매장 이름 머리글 클릭 → 그 매장 수량만
   function qtyOf(r){if(!colFilter)return Number(r.qty)||0;var v=r.values&&r.values[colFilter];return Number(v)||0}
   function totalHeadHtml(){
@@ -211,7 +211,7 @@
       '<button type="button" class="ck-chip ck-qchip'+(qOnly?' on':'')+(qCount?'':' zero')+'" data-ck-qonly>품질 대상만 <em>'+qCount+'</em></button>';
     var list=inSheet.filter(function(r){return (!mgrFilter||mgrName(r)===mgrFilter)&&(!qOnly||r.q)});
     var cols=colFilter?[]:colChoices.filter(function(k){return list.some(function(r){return r.values&&r.values[k]})});
-    lastView={list:list,batch:b,batches:sel,cols:cols,q:q,qr:qr,qname:linked.join(' · ')};
+    lastView={list:list,all:all,batch:b,batches:sel,cols:cols,q:q,qr:qr,qname:linked.join(' · ')};
     renderPallet(list,multi);
     var qtySum=list.reduce(function(s,r){return s+qtyOf(r)},0);
     var qSum=list.reduce(function(s,r){return s+(r.qn||0)},0);
@@ -242,11 +242,11 @@
         '<td class="ck-num ck-tot">'+fmt(qtyOf(r))+'</td>'+qcell+
         cols.map(function(k){var v=r.values&&r.values[k];if(v){sum[k]=(sum[k]||0)+v;return '<td class="ck-num">'+fmt(v)+'</td>'}return '<td class="ck-num ck-zero">-</td>'}).join('')+
         td(multiV('date'),'ck-date')+'<td class="ck-lot">'+(first.lot?esc(multiV('lot')):'<span class="ck-dash">-</span>')+(more?' <button type="button" class="ck-more" data-ck-open="'+esc(r.key)+'" aria-expanded="'+isOpen+'">'+(isOpen?'접기':'+'+(d.length-1))+'</button>':'')+'</td>'+
-        td(multiV('ref'),'ck-ref')+td(multiV('cs'),'ck-case')+'</tr>';
+        td(multiV('ref'),'ck-ref')+(d.length?'<td class="ck-case"><button type="button" class="ck-pal-link" data-ck-pal="'+esc(r.key)+'" title="눌러서 아래 Pallet 조회에서 이 제품이 든 Pallet 보기">'+esc(multiV('cs')||'-')+'</button></td>':td('','ck-case'))+'</tr>';
       if(!more||!isOpen)return main;
       // 펼친 줄: 케이스(팔레트)별 수량 · 제조일자 · LOT · REF · 케이스
       var blanks=cols.map(function(){return '<td></td>'}).join('');
-      return main+d.map(function(x){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> Pallet '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+td(x.cs,'ck-case')+'</tr>'}).join('');
+      return main+d.map(function(x,i){return '<tr class="ck-sub"><td></td><td></td><td class="ck-name"><span class="ck-sub-mark">└</span> Pallet '+esc(x.cs||'-')+' · '+fmt(x.qty)+'개</td><td></td><td class="ck-num">'+(x.qty?fmt(x.qty):'')+'</td><td></td>'+blanks+td(x.date,'ck-date')+td(x.lot,'ck-lot')+td(x.ref,'ck-ref')+'<td class="ck-case"><button type="button" class="ck-pal-link" data-ck-pal="'+esc(r.key)+'" data-ck-pal-i="'+i+'" title="눌러서 아래 Pallet 조회에서 이 Pallet 보기">'+esc(x.cs||'-')+'</button></td></tr>'}).join('');
     }).join('');
     $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table'+(colFilter?' ck-one':'')+'"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-mgr">담당자</th><th class="ck-num ck-tot">'+totalHeadHtml()+'</th><th class="ck-num ck-q">품질</th>'+cols.map(function(k){return '<th class="ck-num ck-col-pick" data-ck-col-pick="'+esc(k)+'" title="눌러서 '+esc(k)+' 수량만 보기">'+esc(k)+'</th>'}).join('')+'<th class="ck-date">제조일자</th><th class="ck-lot">LOT넘버</th><th class="ck-ref">REF넘버</th><th class="ck-case">Pallet</th></tr></thead><tbody>'+body+'</tbody>'+
       '<tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(list.length)+'개 제품</small></th><td></td><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td class="ck-num ck-q">'+(qSum?fmt(qSum):'-')+'</td>'+cols.map(function(k){return '<td class="ck-num">'+fmt(sum[k]||0)+'</td>'}).join('')+'<td></td><td></td><td></td><td></td></tr></tfoot></table></div>';
@@ -268,9 +268,22 @@
     });
     return out;
   }
+  // 표에서 Pallet 번호를 누르면: 그 Pallet들만(안에 든 다른 제품까지 — 위 필터와 상관없이 고른 차수 전체에서)
+  var palFocus=null; // {keys:{'차수id|REF|Pallet':1}, label}
+  function focusPallet(r,one){
+    var keys={},n=0;
+    (one?[one]:(r.details||[])).forEach(function(d){var k=r.batch.id+'|'+(d.ref||'(REF 없음)')+'|'+(d.cs||'(Pallet 없음)');if(!keys[k]){keys[k]=1;n++}});
+    if(!n)return;
+    palFocus={keys:keys,label:'PLU '+r.plu+' '+r.name+(one?' · Pallet '+(one.cs||'-'):'')+'의 Pallet '+n+'개'};
+    $('ckPalRef').value='';$('ckPalSearch').value='';
+    var box=$('ckPallet');box.open=true; // toggle 이벤트로도 다시 그림
+    renderPallet(lastView.list,(lastView.batches||[]).length>1);
+    setTimeout(function(){box.scrollIntoView({behavior:'smooth',block:'start'})},30);
+  }
   function renderPallet(list,multi){
     var box=$('ckPallet');if(!box)return;
-    var all=palletItems(list);
+    var all=palFocus?palletItems(lastView&&lastView.all||list).filter(function(x){return palFocus.keys[x.batch.id+'|'+x.ref+'|'+x.cs]}):palletItems(list);
+    var fb=$('ckPalFocus');if(fb){fb.hidden=!palFocus;fb.innerHTML=palFocus?'<span>'+esc(palFocus.label)+'만 보는 중</span><button type="button" data-ck-pal-clear title="원래 목록으로">✕ 해제</button>':''}
     var refSel=$('ckPalRef'),cur=refSel.value,refs=uniq(all.map(function(x){return x.ref})).sort(nat);
     refSel.innerHTML='<option value="">전체 REF ('+refs.length+')</option>'+refs.map(function(r){return '<option value="'+esc(r)+'">'+esc(r)+'</option>'}).join('');
     refSel.value=refs.indexOf(cur)>=0?cur:'';
@@ -401,7 +414,7 @@
   function init(){
     document.querySelectorAll('.ckUploadFile').forEach(function(inp){inp.addEventListener('change',function(){var f=inp.files&&inp.files[0];if(!f)return;if(!canEdit()){toast('게스트는 업로드할 수 없습니다.');inp.value='';return}upload(f,inp)})});
     var view=$('checklistView');if(!view)return;
-    $('ckBatch').addEventListener('change',function(){sheetFilter='';mgrFilter='';$('ckDelete').hidden=!(isAdmin()&&current());render()});
+    $('ckBatch').addEventListener('change',function(){sheetFilter='';mgrFilter='';palFocus=null;$('ckDelete').hidden=!(isAdmin()&&current());render()});
     // 입고일 달력
     $('ckDateBtn').addEventListener('click',function(){var pop=$('ckCal');if(pop.hidden)openCal();else closeCal()});
     $('ckCal').addEventListener('mouseover',function(e){var d=e.target.closest('[data-cal-day]');var info=$('ckCalInfo');if(info)info.innerHTML=calInfo(d?d.getAttribute('data-cal-day'):$('ckDate').value)});
@@ -424,7 +437,7 @@
       if(e.target.closest('[data-ck-qonly]')){qOnly=!qOnly;render();return}
       var c=e.target.closest('[data-ck-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ck-mgr');render();
     });
-    $('ckList').addEventListener('click',function(e){var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
+    $('ckList').addEventListener('click',function(e){var pl=e.target.closest('[data-ck-pal]');if(pl){var row=(lastView.list||[]).find(function(x){return x.key===pl.getAttribute('data-ck-pal')});if(row){var i=pl.getAttribute('data-ck-pal-i');focusPallet(row,i!=null?(row.details||[])[+i]:null)}return}var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
     // Pallet 조회(맨 아래): 펼침 상태는 이 기기에 기억, REF·검색·복사·엑셀
     var pal=$('ckPallet');
     if(pal){
@@ -432,6 +445,7 @@
       pal.addEventListener('toggle',function(){try{localStorage.setItem(PALLET_OPEN_KEY,pal.open?'1':'0')}catch(e){}if(pal.open&&lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
       $('ckPalRef').addEventListener('change',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
       $('ckPalSearch').addEventListener('input',function(){if(lastView)renderPallet(lastView.list,(lastView.batches||[]).length>1)});
+      pal.addEventListener('click',function(e){if(e.target.closest('[data-ck-pal-clear]')){palFocus=null;renderPallet(lastView.list,(lastView.batches||[]).length>1)}});
       $('ckPalCopy').addEventListener('click',palletCopy);
       $('ckPalExport').addEventListener('click',palletExport);
     }
