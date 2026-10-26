@@ -44,13 +44,15 @@
       (r||[]).forEach(function(c,i){
         var t=txt(c),k=t.replace(/\s/g,'');
         if(!t)return;
-        if(k==='실시간입고예정일'&&!info.eta)info.eta=normDate(after(r,i));
+        // 입고일: '실시간 입고 예정일' 우선, 날짜가 아니면(예전 양식은 'SEA' 등) '물류센터 입고 예정일'
+        if(/^(실시간|물류센터)?입고예정일$/.test(k)){var dv=normDate(after(r,i));if(/^\d{4}-\d{2}-\d{2}$/.test(dv)){if(/^실시간/.test(k))info.eta=dv;else if(!info.etaAlt)info.etaAlt=dv}}
         else if(/^ordernumber$/i.test(k)&&!info.orders)info.orders=after(r,i);
         else if(k==='Pallet수'&&!info.pallets)info.pallets=after(r,i);
         else if(k==='주요입고제품'&&!info.products)info.products=String(after(r,i)).replace(/^-\s*/,'').split(/\s*-\s+/).join(' · ');
         else if(/현재\s*수정내역/.test(t)&&!info.changes){var m=String(c).split(/현재\s*수정내역\s*[:：]?/)[1];info.changes=String(m||'').replace(/\r/g,'').trim().slice(0,1000)}
       });
     });
+    if(!info.eta)info.eta=info.etaAlt||'';delete info.etaAlt;
     return info;
   }
   function parseName(fileName){
@@ -64,7 +66,7 @@
     return{batchNo:batchNo,country:country,orders:orders.slice(0,200),fileDate:date};
   }
   /* 주문 시트 → B 줄 + C 상세 */
-  var C_PLU=['結果plu','plu','item code'],C_LOT=['lot no','lot no.','lot/serial','serial','lot'],C_DATE=['manu date','date made','made date','manufacture date','manufacturing date','mfg date','production date','date'],C_GDATE=['gift manu date'],C_REF=['ref no','ref no.','order number','sales order'],C_CASE=['case no','case no.','pallet n.','pallet no','pallet'],C_QTY=['qty','pallet qty (ea)','quantity'];
+  var C_PLU=['結果plu','plu','item code','item number'],C_LOT=['lot no','lot no.','lot/serial','serial','lot'],C_DATE=['manu date','date made','made date','manufacture date','manufacturing date','mfg date','production date','date'],C_GDATE=['gift manu date'],C_REF=['ref no','ref no.','order number','sales order'],C_CASE=['case no','case no.','pallet n.','pallet no','pallet number','pallet','master pack'],C_QTY=['qty','pallet qty (ea)','quantity'];
   function parseOrderSheet(name,aoa){
     var hi=-1;for(var i=0;i<Math.min(10,aoa.length);i++){var g0=groups(aoa[i]||[]);if(g0.length>=2&&/^(plu|item number|item code)$/.test(low((aoa[i]||[])[g0[1][0]])))(hi=i);if(hi>=0)break}
     if(hi<0)return null;
