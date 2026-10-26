@@ -194,7 +194,8 @@ async function checklists(req, res, user) {
     const modified = clip(body.modified, 40);
     const oldRaw = await store.cmd(['HGET', CHECKLIST_KEY, id]);
     let old = null; try { old = oldRaw ? JSON.parse(oldRaw) : null; } catch (e) { old = null; }
-    if (old && old.modified && modified && modified < old.modified) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
+    // 드라이브 자동 반영만: 더 오래된 파일이 늦게 와도 덮어쓰지 않음. 화면에서 직접 올린 파일은 항상 반영
+    if (user.drive && old && old.modified && modified && modified < old.modified) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
     const eta = clip(p.eta, 10);
     const etaHistory = (old && Array.isArray(old.etaHistory) ? old.etaHistory : []).slice(-20);
     if (old && old.eta && eta && old.eta !== eta) etaHistory.push({ from: old.eta, to: eta, at: new Date().toISOString(), file: clip(body.fileName, 200) });
@@ -210,7 +211,7 @@ async function checklists(req, res, user) {
       eta, fileDate: clip(p.fileDate, 10), etaHistory,
       info: { orders: clip(info.orders, 300), pallets: clip(info.pallets, 40), products: clip(info.products, 300), changes: clip(info.changes, 1000) },
       sheets: (Array.isArray(p.sheets) ? p.sheets : []).slice(0, 30).map(s => clip(s, 60)), cols: (Array.isArray(p.cols) ? p.cols : []).slice(0, 20).map(s => clip(s, 40)), rows,
-      fileName: clip(body.fileName, 300), modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
+      fileName: clip(body.fileName, 300), modified: user.drive || !old || !old.modified || modified > old.modified ? modified : old.modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
     };
     await store.cmd(['HSET', CHECKLIST_KEY, id, JSON.stringify(rec)]);
     return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length, eta, etaChanged: !!(old && old.eta && old.eta !== eta) } });
