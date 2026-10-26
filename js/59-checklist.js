@@ -273,21 +273,21 @@
     items.forEach(function(x){var k=x.batch.id+'|'+x.ref+'|'+x.cs;if(!groups[k]){groups[k]={batch:x.batch,ref:x.ref,cs:x.cs,items:[]};order.push(k)}groups[k].items.push(x)});
     order.sort(function(a,b){var A=groups[a],B=groups[b];return String(B.batch.eta||'').localeCompare(String(A.batch.eta||''))||nat(A.ref,B.ref)||nat(A.cs,B.cs)});
     var refCount=uniq(order.map(function(k){return groups[k].batch.id+'|'+groups[k].ref})).length,qty=items.reduce(function(s,x){return s+x.qty},0);
-    $('ckPalSummary').textContent=order.length?'REF '+fmt(refCount)+'개 · 케이스 '+fmt(order.length)+'개 · 제품 '+fmt(items.length)+'줄 · 수량 '+fmt(qty):'팔렛 상세 없음';
+    $('ckPalSummary').textContent=order.length?'REF '+fmt(refCount)+'개 · Pallet '+fmt(order.length)+'개 · 제품 '+fmt(items.length)+'줄 · 수량 '+fmt(qty):'팔렛 상세 없음';
     palletView={order:order,groups:groups,multi:multi};
     if(!box.open)return; // 접혀 있으면 표는 그리지 않음(펼칠 때 그림)
-    if(!order.length){$('ckPalList').innerHTML='<p class="ck-empty">'+(all.length?'조건에 맞는 케이스가 없습니다.':'지금 목록의 제품에는 팔렛·케이스 상세(LOT·REF·케이스 칸)가 없습니다.')+'</p>';return}
+    if(!order.length){$('ckPalList').innerHTML='<p class="ck-empty">'+(all.length?'조건에 맞는 Pallet이 없습니다.':'지금 목록의 제품에는 팔렛 상세(LOT·REF·케이스 칸)가 없습니다.')+'</p>';return}
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
     var body=order.map(function(k){
       var g=groups[k],sum=g.items.reduce(function(s,x){return s+x.qty},0);
       g.items.sort(function(a,b){return nat(a.plu,b.plu)});
-      return '<tbody class="cs-group"><tr class="cs-head"><th colspan="7"><span class="cs-case">케이스 '+esc(g.cs)+'</span><span class="cs-ref">REF '+esc(g.ref)+'</span>'+(multi?'<span class="cs-batch">'+esc(g.batch.label)+'</span>':'')+'<span class="cs-sum">제품 '+g.items.length+'개 · 수량 '+fmt(sum)+'</span></th></tr>'+
+      return '<tbody class="cs-group"><tr class="cs-head"><th colspan="7"><span class="cs-case">Pallet '+esc(g.cs)+'</span><span class="cs-ref">'+esc(g.ref)+'</span>'+(multi?'<span class="cs-batch">'+esc(g.batch.label)+'</span>':'')+'<span class="cs-sum">제품 '+g.items.length+'개 · 수량 '+fmt(sum)+'</span></th></tr>'+
         g.items.map(function(x){return '<tr>'+td(x.plu,'cs-plu')+td(x.code,'cs-code')+'<td class="cs-name">'+esc(x.name)+'</td>'+td(x.mgr,'cs-mgr')+td(x.lot,'cs-lot')+td(x.date,'cs-date')+'<td class="cs-num">'+(x.qty?fmt(x.qty):'<span class="ck-dash">-</span>')+'</td></tr>'}).join('')+'</tbody>';
     }).join('');
     $('ckPalList').innerHTML='<div class="cs-table-wrap"><table class="cs-table"><thead><tr><th class="cs-plu">PLU</th><th class="cs-code">제품코드</th><th class="cs-name">품명</th><th class="cs-mgr">담당자</th><th class="cs-lot">LOT넘버</th><th class="cs-date">제조일자</th><th class="cs-num">수량</th></tr></thead>'+body+'</table></div>';
   }
   function palletFlat(v){
-    var head=['차수','REF넘버','케이스넘버','PLU','제품코드','품명','담당자','LOT넘버','제조일자','수량'],out=[head];
+    var head=['차수','REF넘버','Pallet','PLU','제품코드','품명','담당자','LOT넘버','제조일자','수량'],out=[head];
     v.order.forEach(function(k){var g=v.groups[k];g.items.forEach(function(x){out.push([g.batch.label,g.ref,g.cs,x.plu,x.code,x.name,x.mgr,x.lot,x.date,x.qty])})});
     return out;
   }
@@ -295,7 +295,7 @@
     var v=palletView;if(!v||!v.order.length){toast('복사할 팔렛이 없습니다.');return}
     var clean=function(x){return String(x==null?'':x).replace(/[\t\r\n]+/g,' ').trim()};
     var text=palletFlat(v).map(function(r){return r.map(clean).join('\t')}).join('\n');
-    var done=function(){toast('케이스 '+fmt(v.order.length)+'개를 복사했습니다.')};
+    var done=function(){toast('Pallet '+fmt(v.order.length)+'개를 복사했습니다.')};
     var fallback=function(){var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();if(ok)done();else toast('복사하지 못했습니다. 다시 시도해 주세요.')};
     if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(done,fallback);else fallback();
   }
