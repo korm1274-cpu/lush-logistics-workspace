@@ -195,7 +195,8 @@ async function checklists(req, res, user) {
     const oldRaw = await store.cmd(['HGET', CHECKLIST_KEY, id]);
     let old = null; try { old = oldRaw ? JSON.parse(oldRaw) : null; } catch (e) { old = null; }
     // 드라이브 자동 반영만: 더 오래된 파일이 늦게 와도 덮어쓰지 않음. 화면에서 직접 올린 파일은 항상 반영
-    if (user.drive && old && old.modified && modified && modified < old.modified) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
+    // (같은 파일명을 다시 보낸 경우는 해석 규칙이 바뀌었을 수 있으니 항상 반영)
+    if (user.drive && old && old.modified && modified && modified < old.modified && old.fileName !== clip(body.fileName, 300)) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
     const eta = clip(p.eta, 10);
     const etaHistory = (old && Array.isArray(old.etaHistory) ? old.etaHistory : []).slice(-20);
     if (old && old.eta && eta && old.eta !== eta) etaHistory.push({ from: old.eta, to: eta, at: new Date().toISOString(), file: clip(body.fileName, 200) });

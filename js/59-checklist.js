@@ -34,7 +34,9 @@
   /* 같은 차수 품질리스트와 맞추기: 품질리스트 한 줄(단품 1줄 · 기프트 1개) = 품질 1개
      입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함(그 제품에 LOT·제조일자 정보가 아예 없으면 PLU만으로 더함). 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
      → 품질리스트 총 품질 수량 = 입고리스트 품질 합계 + 불일치 수 */
+  // LOT 비교: 기호·대소문자만 무시(UK-144024-1 = uk-144024-1). 앞 영문(LS 등)이 다르면 불일치 — 수입팀 리스트 수정 대상
   function normLot(s){return String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
+  function isDay(s){return /^\d{4}-\d{2}-\d{2}$/.test(String(s||''))}
   function qualityMatch(batchNo,rows){
     var qb=quality['Q-'+batchNo];if(!qb)return null;
     var res={total:0,matched:0,unmatched:[]};
@@ -78,13 +80,13 @@
   function selected(){var b=current();return b?[b]:($('ckBatch').value==='*'?scope():[])}
   function renderBatches(keep){
     var sel=$('ckBatch'),cur=keep||sel.value,list=scope();
-    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+esc(md(b.eta)||'-')+' 입고</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">'+($('ckDate').value?'이 날짜 입고 없음':'차수 없음')+'</option>';
+    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+(isDay(b.eta)?esc(md(b.eta))+' 입고':'입고일 미정')+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">'+($('ckDate').value?'이 날짜 입고 없음':'차수 없음')+'</option>';
     if(cur&&(cur==='*'?list.length>1:list.some(function(b){return b.id===cur})))sel.value=cur;
     $('ckDelete').hidden=!(isAdmin()&&current());
   }
   /* ===== 입고일 달력(입고리스트와 같은 모양: 입고 예정일에 점, 마우스를 올리면 그날 차수) ===== */
   var calMonth='';
-  function etaLabels(){var c={};batches.forEach(function(b){if(b.eta)(c[b.eta]=c[b.eta]||[]).push(b.label)});return c}
+  function etaLabels(){var c={};batches.forEach(function(b){if(isDay(b.eta))(c[b.eta]=c[b.eta]||[]).push(b.label)});return c}
   function syncDateBtn(){var v=$('ckDate').value,t=$('ckDateBtn');if(t)t.querySelector('span').textContent=v?v.replace(/-/g,'.'):'전체 날짜'}
   function calInfo(key){var l=key&&etaLabels()[key];return l?'<b>'+esc(key.slice(5).replace('-','/'))+'</b> '+esc(l.join(' · ')):'<i></i>입고 예정일'}
   function buildCal(){
