@@ -32,7 +32,7 @@
     return{code:code,mgr:mgr,manual:manual};
   }
   /* 같은 차수 품질리스트와 맞추기: 품질리스트 한 줄(단품 1줄 · 기프트 1개) = 품질 1개
-     입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함. 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
+     입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함(그 제품에 LOT·제조일자 정보가 아예 없으면 PLU만으로 더함). 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
      → 품질리스트 총 품질 수량 = 입고리스트 품질 합계 + 불일치 수 */
   function normLot(s){return String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
   function qualityMatch(batchNo,rows){
@@ -46,6 +46,8 @@
       cands.some(function(r){if((r.details||[]).some(function(d){return normLot(d.lot)===lot&&d.date===date})){hit=r;return true}return false});
       if(hit){hit.qn++;hit.qEntries.push(e);res.matched++;return}
       var det=[];cands.forEach(function(r){det=det.concat(r.details||[])});
+      // 입고리스트에 그 제품의 LOT·제조일자 정보 자체가 없으면(예: Whoosh DP 시트) 맞출 수 없으니 PLU만으로 반영
+      if(cands.length&&!det.length){var h0=cands[0];h0.qn++;h0.qEntries.push(Object.assign({noInfo:true},e));res.matched++;return}
       var lotHit=det.filter(function(d){return normLot(d.lot)===lot}),dateHit=det.filter(function(d){return d.date===date});
       var reason=!cands.length?'입고리스트에 PLU 없음':!det.length?'입고리스트에 LOT·제조일자 정보 없음':lotHit.length?'제조일자 불일치':dateHit.length?'LOT 불일치':'LOT·제조일자 불일치';
       res.unmatched.push({kind:e.kind,plu:e.plu,name:e.name,lot:e.lot,date:date,reason:reason,
@@ -132,7 +134,7 @@
         ?'<div class="ck-qsum bad"><b>품질 수량 불일치</b> 품질리스트 '+b.batchNo+'차 <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개'+
           '<div class="ck-qmiss-wrap"><table class="ck-qmiss"><thead><tr><th>구분</th><th>PLU</th><th>품명</th><th>품질 LOT</th><th>품질 제조일자</th><th>사유</th><th>입고리스트 LOT</th><th>입고리스트 제조일자</th></tr></thead><tbody>'+
           qr.unmatched.map(function(u){return '<tr><td>'+esc(u.kind)+'</td><td>'+esc(u.plu||'-')+'</td><td class="n">'+esc(u.name)+'</td><td>'+esc(u.lot||'-')+'</td><td>'+esc(u.date||'-')+'</td><td class="r">'+esc(u.reason)+'</td><td>'+esc(u.ckLots||'-')+'</td><td>'+esc(u.ckDates||'-')+'</td></tr>'}).join('')+'</tbody></table></div></div>'
-        :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+b.batchNo+'차 '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 모두 일치)</div>';
+        :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+b.batchNo+'차 '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 기준)</div>';
     }
     if(!list.length){$('ckList').innerHTML=qbox+'<p class="ck-empty">조건에 맞는 제품이 없습니다.</p>';return}
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
@@ -140,7 +142,7 @@
     var body=list.map(function(r){
       var d=r.details||[],first=d[0]||{},more=d.length>1,isOpen=!!open[r.key];
       var multi=function(k){var u=uniq(d.map(function(x){return x[k]}));return u.length>1?u[0]+' 외 '+(u.length-1):(u[0]||'')};
-      var qcell=r.qn?'<td class="ck-num ck-q"><span class="ck-qbadge" title="'+esc(r.qEntries.map(function(x){return x.kind+' · '+x.name+' · LOT '+(x.lot||'-')+' · 제조 '+(x.date||'-')}).join('\n'))+'">'+r.qn+'</span></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
+      var qcell=r.qn?'<td class="ck-num ck-q"><span class="ck-qbadge" title="'+esc(r.qEntries.map(function(x){return x.kind+' · '+x.name+' · LOT '+(x.lot||'-')+' · 제조 '+(x.date||'-')+(x.noInfo?' (입고리스트에 LOT 정보 없어 PLU로 반영)':'')}).join('\n'))+'">'+r.qn+'</span></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
       var main='<tr class="'+(r.q?'ck-has-q':'')+'">'+td(r.plu,'ck-plu')+td(r.code,'ck-code')+'<td class="ck-name"><b>'+esc(r.name)+'</b>'+(sheets.length>1&&!sheetFilter?'<small>'+esc(r.sheet)+'</small>':'')+'</td>'+
         '<td class="ck-mgr'+(r.mgr?'':' ck-nomgr')+'">'+(r.mgr?esc(r.mgr)+(r.manual?' <span class="ck-manual">수기</span>':''):'<span class="ck-dash">-</span>')+'</td>'+
         '<td class="ck-num ck-tot">'+fmt(r.qty)+'</td>'+qcell+
