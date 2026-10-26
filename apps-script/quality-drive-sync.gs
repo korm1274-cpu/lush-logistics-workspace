@@ -16,6 +16,7 @@
  *       이름: QUALITY_SYNC_SECRET   값: Vercel 환경변수 QUALITY_SYNC_SECRET과 같은 값(16자 이상 임의 문자열)
  *  4) 함수 선택에서 previewFiles 실행 → 권한 허용 → 실행 로그에 보낼 파일 목록이 나오는지 확인(실제 전송 없음)
  *  5) syncQualityFolder 실행 → 실행 로그에 '반영' 결과 확인 → 웹앱 입고 › 품질리스트 확인
+ *     (파일별 상태·건너뛴 이유·차수 겹침은 showStatus 실행 → 실행 로그)
  *  6) installTrigger 실행 → 이후 10분마다 자동 실행 (끄려면 removeTriggers)
  *
  * 처음부터 다시 보내려면 resetSent 실행(보낸 기록 지움) → syncQualityFolder
@@ -24,22 +25,27 @@
 // ─── 설정 ───────────────────────────────────────────────
 var FOLDER_ID = '1blRex8mwLJt38vNT_q6XaVIjzlkfWpla';
 var API_URL = 'https://lush-logistics-workspace.vercel.app/api/team-data?part=quality-lists';
-var MAX_FILES_PER_RUN = 5;      // 한 번 실행에 보낼 최대 파일 수(실행 시간 6분 제한)
+var MAX_FILES_PER_RUN = 40;     // 한 번 실행에 보낼 최대 파일 수
+var TIME_BUDGET_MS = 4.5 * 60 * 1000; // 실행 시간 6분 제한 전에 멈추고 나머지는 다음 실행(10분 뒤)에
 var MAX_ROWS = 6000, MAX_COLS = 40;
 
 // ─── 실행 ───────────────────────────────────────────────
 function syncQualityFolder() {
   var lock = LockService.getScriptLock();
   if (!lock.tryLock(1000)) { Logger.log('이미 실행 중이라 건너뜀'); return; }
+  var started = Date.now(), sent = 0;
   try {
     var secret = PropertiesService.getScriptProperties().getProperty('QUALITY_SYNC_SECRET');
     if (!secret) throw new Error('스크립트 속성 QUALITY_SYNC_SECRET을 먼저 넣어 주세요.');
     var todo = pendingFiles_();
     if (!todo.length) { Logger.log('새로 보낼 파일 없음'); return; }
-    todo.slice(0, MAX_FILES_PER_RUN).forEach(function (f) {
+    Logger.log('보낼 파일 ' + todo.length + '개');
+    for (var i = 0; i < todo.length && i < MAX_FILES_PER_RUN; i++) {
+      if (Date.now() - started > TIME_BUDGET_MS) { Logger.log('시간 제한으로 여기서 멈춤 — 남은 ' + (todo.length - i) + '개는 다음 실행 때 보냄'); break; }
+      var f = todo[i];
       try {
         var sheets = readSheets_(f);
-        if (!sheets.length) { markSent_(f, 'skip'); Logger.log('건너뜀(목록 시트 없음): ' + f.getName()); return; }
+        if (!sheets.length) { markSent_(f, 'skip', '목록 시트((PLU) 칸) 없음'); Logger.log('건너뜀(목록 시트 없음): ' + f.getName()); continue; }
         var res = UrlFetchApp.fetch(API_URL, {
           method: 'post', contentType: 'application/json', muteHttpExceptions: true,
           headers: { 'x-sync-secret': secret },
@@ -47,10 +53,11 @@ function syncQualityFolder() {
         });
         var j = {}; try { j = JSON.parse(res.getContentText()); } catch (e) { j = {}; }
         if (res.getResponseCode() === 200 && j.success) {
-          markSent_(f, 'ok');
+          sent++;
+          markSent_(f, 'ok', (j.batch && j.batch.label) + ' ' + (j.batch && j.batch.rows) + '건');
           Logger.log('반영: ' + f.getName() + ' → ' + (j.batch && j.batch.label) + ' ' + (j.batch && j.batch.rows) + '건');
         } else if (res.getResponseCode() === 200) {
-          markSent_(f, 'skip'); // 형식이 다른 파일 등: 파일이 수정될 때까지 다시 보내지 않음
+          markSent_(f, 'skip', j.error || '형식 다름'); // 형식이 다른 파일 등: 파일이 수정될 때까지 다시 보내지 않음
           Logger.log('반영 안 됨: ' + f.getName() + ' — ' + (j.error || res.getContentText().slice(0, 200)));
         } else {
           Logger.log('서버 오류(다음 실행 때 다시 시도): ' + f.getName() + ' — HTTP ' + res.getResponseCode() + ' ' + res.getContentText().slice(0, 200));
@@ -58,7 +65,8 @@ function syncQualityFolder() {
       } catch (e) {
         Logger.log('실패(다음 실행 때 다시 시도): ' + f.getName() + ' — ' + e);
       }
-    });
+    }
+    Logger.log('이번 실행에서 반영 ' + sent + '개');
   } finally {
     lock.releaseLock();
   }
@@ -69,6 +77,23 @@ function previewFiles() {
   var list = pendingFiles_();
   Logger.log('보낼 파일 ' + list.length + '개');
   list.forEach(function (f) { Logger.log('- ' + f.getName() + ' (' + f.getLastUpdated() + ')'); });
+}
+
+// 폴더 안 모든 파일의 상태: 반영됨(어느 차수로) / 건너뜀(이유) / 대기(아직 안 보냄 또는 수정됨)
+// 같은 차수로 반영된 파일이 여러 개면 '차수 겹침'으로 표시 — 마지막에 보낸 파일 내용만 남습니다
+function showStatus() {
+  var props = PropertiesService.getScriptProperties(), rows = [], byBatch = {};
+  allFiles_().forEach(function (f) {
+    var s = props.getProperty(sentKey_(f)) || '', parts = s.split(':'), how = parts[1] || '', note = parts.slice(2).join(':');
+    var fresh = parts[0] === String(f.getLastUpdated().getTime());
+    var state = !s ? '대기(아직 안 보냄)' : !fresh ? '대기(파일 수정됨)' : how === 'ok' ? '반영됨 → ' + note : '건너뜀 — ' + (note || '형식 다름');
+    if (fresh && how === 'ok') { var b = note.split(' ')[0]; (byBatch[b] = byBatch[b] || []).push(f.getName()); }
+    rows.push([f.getName(), state]);
+  });
+  rows.sort(function (a, b) { return a[0].localeCompare(b[0]); });
+  Logger.log('파일 ' + rows.length + '개');
+  rows.forEach(function (r) { Logger.log('- ' + r[0] + ' : ' + r[1]); });
+  Object.keys(byBatch).forEach(function (b) { if (byBatch[b].length > 1) Logger.log('※ 차수 겹침 ' + b + ': ' + byBatch[b].join(', ') + ' (마지막에 보낸 파일만 남음)'); });
 }
 
 function installTrigger() {
@@ -92,21 +117,29 @@ function isTarget_(f) {
   return t === MimeType.GOOGLE_SHEETS || XLSX_TYPES.indexOf(t) >= 0 || /\.xlsx?$/i.test(f.getName());
 }
 function sentKey_(f) { return 'sent_' + f.getId(); }
-function markSent_(f, how) { PropertiesService.getScriptProperties().setProperty(sentKey_(f), String(f.getLastUpdated().getTime()) + ':' + how); }
-function pendingFiles_() {
-  var props = PropertiesService.getScriptProperties(), out = [];
+function markSent_(f, how, note) { PropertiesService.getScriptProperties().setProperty(sentKey_(f), String(f.getLastUpdated().getTime()) + ':' + how + ':' + String(note || '').replace(/\s+/g, ' ').slice(0, 200)); }
+// 폴더(하위 폴더 포함)의 대상 파일 전부. 바로가기(단축키)로 넣은 파일은 원본 파일로 따라감
+function allFiles_() {
+  var out = [], seen = {};
   (function walk(folder) {
     var files = folder.getFiles();
     while (files.hasNext()) {
       var f = files.next();
-      if (!isTarget_(f)) continue;
-      var sent = props.getProperty(sentKey_(f));
-      if (sent && sent.split(':')[0] === String(f.getLastUpdated().getTime())) continue;
-      out.push(f);
+      if (f.getMimeType() === MimeType.SHORTCUT) { try { f = DriveApp.getFileById(f.getTargetId()); } catch (e) { continue; } }
+      if (!isTarget_(f) || seen[f.getId()]) continue;
+      seen[f.getId()] = 1; out.push(f);
     }
     var subs = folder.getFolders();
     while (subs.hasNext()) walk(subs.next());
   })(DriveApp.getFolderById(FOLDER_ID));
+  return out;
+}
+function pendingFiles_() {
+  var props = PropertiesService.getScriptProperties();
+  var out = allFiles_().filter(function (f) {
+    var sent = props.getProperty(sentKey_(f));
+    return !(sent && sent.split(':')[0] === String(f.getLastUpdated().getTime()));
+  });
   out.sort(function (a, b) { return a.getLastUpdated() - b.getLastUpdated(); }); // 오래된 것부터
   return out;
 }
