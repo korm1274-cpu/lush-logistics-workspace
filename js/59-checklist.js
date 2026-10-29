@@ -9,7 +9,7 @@
 (function(){
   var API='/api/team-data?part=checklists',MASTER_API='/api/team-data?part=plu-master',QUALITY_API='/api/team-data?part=quality-lists';
   var $=function(id){return document.getElementById(id)};
-  var batches=[],master=null,overrides={},quality={},sheetFilter='',mgrFilter='',colFilter='',qOnly=false,busy=false,open={},qOpen={},lastView=null,colChoices=[];
+  var batches=[],master=null,overrides={},quality={},sheetFilter='',mgrFilter='',colFilter='',qOnly=false,busy=false,open={},qOpen={},missOpen=false,lastView=null,colChoices=[];
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
@@ -224,9 +224,9 @@
     var qbox='',qname=linked.join(' · ');
     if(qr){
       qbox=qr.unmatched.length
-        ?'<div class="ck-qsum bad"><button type="button" class="ck-miss-export" data-ck-miss-export title="수입팀 수정 요청용으로 불일치 목록을 엑셀로 저장">불일치 목록 엑셀</button><b>품질 수량 불일치</b> 품질리스트 '+esc(qname)+' <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개'+
-          '<div class="ck-qmiss-wrap"><table class="ck-qmiss"><thead><tr>'+(multi?'<th>차수</th>':'')+'<th>구분</th><th>PLU</th><th>품명</th><th>품질 LOT</th><th>품질 제조일자</th><th>사유</th><th>입고리스트 LOT</th><th>입고리스트 제조일자</th></tr></thead><tbody>'+
-          qr.unmatched.map(function(u){return '<tr>'+(multi?'<td>'+esc(u.batch)+'</td>':'')+'<td>'+esc(u.kind)+'</td><td>'+esc(u.plu||'-')+'</td><td class="n">'+esc(u.name)+'</td><td>'+esc(u.lot||'-')+'</td><td>'+esc(u.date||'-')+'</td><td class="r">'+esc(u.reason)+'</td><td>'+esc(u.ckLots||'-')+'</td><td>'+esc(u.ckDates||'-')+'</td></tr>'}).join('')+'</tbody></table></div></div>'
+        ?'<div class="ck-qsum bad"><button type="button" class="ck-miss-export" data-ck-miss-export title="수입팀 수정 요청용으로 불일치 목록을 엑셀로 저장">불일치 목록 엑셀</button><button type="button" class="ck-miss-toggle" data-ck-miss-toggle aria-expanded="'+missOpen+'">'+(missOpen?'목록 접기 ▴':'목록 펼치기 ▾')+'</button><b>품질 수량 불일치</b> 품질리스트 '+esc(qname)+' <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개'+
+          (missOpen?'<div class="ck-qmiss-wrap"><table class="ck-qmiss"><thead><tr>'+(multi?'<th>차수</th>':'')+'<th>구분</th><th>PLU</th><th>품명</th><th>품질 LOT</th><th>품질 제조일자</th><th>사유</th><th>입고리스트 LOT</th><th>입고리스트 제조일자</th></tr></thead><tbody>'+
+          qr.unmatched.map(function(u){return '<tr>'+(multi?'<td>'+esc(u.batch)+'</td>':'')+'<td>'+esc(u.kind)+'</td><td>'+esc(u.plu||'-')+'</td><td class="n">'+esc(u.name)+'</td><td>'+esc(u.lot||'-')+'</td><td>'+esc(u.date||'-')+'</td><td class="r">'+esc(u.reason)+'</td><td>'+esc(u.ckLots||'-')+'</td><td>'+esc(u.ckDates||'-')+'</td></tr>'}).join('')+'</tbody></table></div>':'')+'</div>'
         :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+esc(qname)+' '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 기준)</div>';
     }
     if(!list.length){$('ckList').innerHTML=qbox+'<p class="ck-empty">조건에 맞는 제품이 없습니다.</p>';return}
@@ -457,7 +457,7 @@
       if(e.target.closest('[data-ck-qonly]')){qOnly=!qOnly;render();return}
       var c=e.target.closest('[data-ck-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ck-mgr');render();
     });
-    $('ckList').addEventListener('click',function(e){var qb=e.target.closest('[data-ck-q]');if(qb){var qk=qb.getAttribute('data-ck-q');qOpen[qk]=!qOpen[qk];render();return}var pl=e.target.closest('[data-ck-pal]');if(pl){var row=(lastView.list||[]).find(function(x){return x.key===pl.getAttribute('data-ck-pal')});if(row){var i=pl.getAttribute('data-ck-pal-i');focusPallet(row,i!=null?(row.details||[])[+i]:null)}return}var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
+    $('ckList').addEventListener('click',function(e){if(e.target.closest('[data-ck-miss-toggle]')){missOpen=!missOpen;render();return}var qb=e.target.closest('[data-ck-q]');if(qb){var qk=qb.getAttribute('data-ck-q');qOpen[qk]=!qOpen[qk];render();return}var pl=e.target.closest('[data-ck-pal]');if(pl){var row=(lastView.list||[]).find(function(x){return x.key===pl.getAttribute('data-ck-pal')});if(row){var i=pl.getAttribute('data-ck-pal-i');focusPallet(row,i!=null?(row.details||[])[+i]:null)}return}var ed=e.target.closest('[data-ck-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ck-open]');if(!t)return;var k=t.getAttribute('data-ck-open');open[k]=!open[k];render()});
     // Pallet 조회(맨 아래): 펼침 상태는 이 기기에 기억, REF·검색·복사·엑셀
     var pal=$('ckPallet');
     if(pal){

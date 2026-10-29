@@ -195,3 +195,8 @@
 #appShell #checklistView .ck-qlist thead th{background:#fdf0f5!important;color:#7a2d4f;font-weight:800;}
 #appShell #checklistView .ck-qlist .n{text-align:right!important;font-weight:900;color:#c2477a;}
 #checklistView .ck-qnote2{color:#a05a00;font-weight:700;}
+/* 품질 불일치 목록: [목록 펼치기 ▾]를 눌러야 표가 보임 */
+#checklistView .ck-qsum.bad{padding-right:290px;}
+#checklistView .ck-miss-toggle{position:absolute;top:7px;right:146px;height:28px;padding:0 11px;border:1px solid #c93838;border-radius:999px;background:#c93838;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
+#checklistView .ck-miss-toggle:hover{background:#a82a2a;}
+@media (max-width:700px){#checklistView .ck-qsum.bad{padding-right:12px;}#checklistView .ck-miss-toggle{position:static;display:inline-block;margin:0 6px 8px 0;}#checklistView .ck-miss-export{display:inline-block;}}
