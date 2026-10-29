@@ -9,8 +9,9 @@
   function readMenuCfg(){const v=readLocalObj(MENU_CFG_KEY,null);return v&&Array.isArray(v.menus)?v:null}
   function writeMenuCfgFromLocal(){
     let ms=[],gs=null;try{ms=JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]')}catch(e){}try{gs=JSON.parse(localStorage.getItem(GROUP_KEY_LOCAL)||'null')}catch(e){}
-    const u=window.LUSH_AUTH&&window.LUSH_AUTH.user();
-    localStorage.setItem(MENU_CFG_KEY,JSON.stringify({menus:ms,groups:gs,updatedAt:new Date().toISOString(),by:u&&u.id||''}));
+    const u=window.LUSH_AUTH&&window.LUSH_AUTH.user(),prev=readMenuCfg();
+    // 한 번만 적용하는 정리 기록(migrations)은 유지 — 관리자가 다시 바꾼 메뉴 표시를 덮어쓰지 않게
+    localStorage.setItem(MENU_CFG_KEY,JSON.stringify({menus:ms,groups:gs,updatedAt:new Date().toISOString(),by:u&&u.id||'',migrations:(prev&&prev.migrations)||[]}));
   }
   /* 처음 공유할 때 지금 보이는 메뉴가 그대로 유지되도록 권한 칸을 옮겨 담음:
      관리자(leader) = Admin 외 전체, 팀원(editor) = 관리자가 보는 메뉴 전체, 게스트(restricted) = 메인·현황판만 */
@@ -32,6 +33,34 @@
       try{if(typeof normalizeMenus==='function')normalizeMenus()}catch(e){}
       try{if(typeof renderNav==='function')renderNav()}catch(e){}
       try{const s=document.getElementById('settings');if(s&&s.classList.contains('active')&&typeof renderAdmin==='function')renderAdmin()}catch(e){}
+    }catch(e){}
+  }
+  /* 팀 공유 메뉴 설정에 한 번만 적용하는 정리(적용한 이름을 cfg.migrations에 남겨, 이후 Admin에서 다시 바꾼 설정은 그대로 둠)
+     - issues-defect-only-v1: 대분류 '이슈'는 보이게, 그 안의 오출고·파손·오출고 분석·파손 분석은 숨기고 제품 불량만 보이게
+     관리자가 열면 적용 후 서버로 공유, 팀원은 관리자가 공유하기 전까지 이 기기에서만 같은 모양으로 보이게 */
+  const MENU_MIGRATIONS=[{id:'issues-defect-only-v1',run:function(cfg){
+    (cfg.groups||[]).forEach(function(g){if(g&&g.id==='issues')g.visible=true});
+    var hide={'issue-wrong':1,'issue-damage':1,'issue-misship-analysis':1,'issue-damage-insight':1};
+    (cfg.menus||[]).forEach(function(m){if(!m)return;if(hide[m.id])m.visible=false;if(m.id==='issue-defect')m.visible=true});
+  }}];
+  function applyMenuMigrations(){
+    try{
+      var cfg=readMenuCfg(),local=false;
+      if(!cfg){local=true;var ms=[],gs=null;try{ms=JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]')}catch(e){}try{gs=JSON.parse(localStorage.getItem(GROUP_KEY_LOCAL)||'null')}catch(e){}cfg={menus:ms,groups:gs,migrations:JSON.parse(localStorage.getItem('lush-menu-migrations-local')||'[]')}}
+      var done=Array.isArray(cfg.migrations)?cfg.migrations:[],todo=MENU_MIGRATIONS.filter(function(x){return done.indexOf(x.id)<0});
+      if(!todo.length)return;
+      todo.forEach(function(x){x.run(cfg)});
+      var ids=done.concat(todo.map(function(x){return x.id}));
+      if(local){origSetItem('lush-menu-migrations-local',JSON.stringify(ids));origSetItem(MENU_KEY_LOCAL,JSON.stringify(cfg.menus));if(cfg.groups)origSetItem(GROUP_KEY_LOCAL,JSON.stringify(cfg.groups));try{menus=cfg.menus;if(cfg.groups)GROUPS=cfg.groups;if(typeof renderNav==='function')renderNav()}catch(e){}return}
+      if(isAdminUser()){
+        // 관리자: 표시를 남기고 최신 시각으로 저장 → localStorage 저장이 서버 공유(pushTeamData)로 이어짐
+        var u=window.LUSH_AUTH&&window.LUSH_AUTH.user();
+        cfg.migrations=ids;cfg.updatedAt=new Date().toISOString();cfg.by=u&&u.id||cfg.by||'';
+        applyMenuCfg(cfg);localStorage.setItem(MENU_CFG_KEY,JSON.stringify(cfg));
+      }else{
+        // 팀원: 이 기기에서만 같은 모양으로(공유 설정 시각은 그대로 두어, 관리자가 공유한 설정이 오면 그걸 따름)
+        applyMenuCfg(cfg);
+      }
     }catch(e){}
   }
   const MERGE_LISTS=[['requests','requestsDeleted'],['notices','noticesDeleted'],['todos','todosDeleted']];
@@ -128,7 +157,8 @@
         else if(isAdminUser()){
           try{const ms=migrateRoles(JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]'));origSetItem(MENU_KEY_LOCAL,JSON.stringify(ms));try{menus=ms}catch(e){}}catch(e){}
           writeMenuCfgFromLocal();try{if(typeof renderNav==='function')renderNav()}catch(e){}
-        }}
+        }
+        applyMenuMigrations();}
       const cur=JSON.stringify(snapshot());
       const incoming=JSON.stringify({notices:sd.notices||[],todos:sd.todos||[],requests:sd.requests||[],productivity:serverProd,defects:sd.defects||[],stock:sd.stock||[],requestsDeleted:sd.requestsDeleted||[],noticesDeleted:sd.noticesDeleted||[],todosDeleted:sd.todosDeleted||[]});
       if(cur!==incoming){
