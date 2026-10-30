@@ -79,8 +79,10 @@
   /* 같은 차수 품질리스트와 맞추기: 품질리스트 한 줄(단품 1줄 · 기프트 1개) = 품질 1개
      입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함(그 제품에 LOT·제조일자 정보가 아예 없으면 PLU만으로 더함). 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
      → 품질리스트 총 품질 수량 = 입고리스트 품질 합계 + 불일치 수 */
-  // LOT 비교: 기호·대소문자만 무시(UK-144024-1 = uk-144024-1). 앞 영문(LS 등)이 다르면 불일치 — 수입팀 리스트 수정 대상
-  function normLot(s){return String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
+  // LOT 비교: 기호·대소문자 무시(UK-144024-1 = uk-144024-1), 숫자로만 된 LOT은 앞의 0도 무시
+  //   (엑셀에서 숫자로 저장되면 앞 0이 빠짐: AU 0701401092651 = 701401092651, JP 3자리 PLU로 시작하는 020226090741 = 20226090741)
+  //   앞 영문(LS 등)이 다르면 불일치 — 수입팀 리스트 수정 대상
+  function normLot(s){var v=String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase();return /^\d+$/.test(v)?(v.replace(/^0+(?=\d)/,'')):v}
   function isDay(s){return /^\d{4}-\d{2}-\d{2}$/.test(String(s||''))}
   function qualityMatch(batchNo,rows){
     var qb=quality['Q-'+batchNo];if(!qb)return null;
