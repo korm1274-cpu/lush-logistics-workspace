@@ -53,7 +53,7 @@
     newyear:{tag:'HAPPY NEW YEAR',title:'새해에도<br>안전하게, 정확하게',cargo:'☀️',deco:['✨','✦','✨','✦','✨','✦']},
     default:{tag:'LUSH LOGISTICS',title:'오늘의 물류를<br>신선하게 연결합니다',cargo:'📦',deco:[]}
   };
-  var LOGO='<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M4.6 9h14.8l-1.2 10.4a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z" fill="currentColor"/><path d="M4.6 9c0-2 1.4-3.2 3.2-3.2 1-1.8 2.6-2.6 4.2-2.6s3.2.8 4.2 2.6c1.8 0 3.2 1.2 3.2 3.2z" fill="#4bbf83" stroke="currentColor" stroke-width="1"/><circle cx="9.4" cy="6.4" r=".6" fill="#fff"/><circle cx="14.2" cy="5.4" r=".5" fill="#fff"/><rect x="8" y="12.4" width="8" height="4.6" rx=".5" fill="#fff"/><path d="M9.4 14.7h5.2" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg>';
+  var LOGO='<svg viewBox="2.5 2.3 19 19" width="18" height="18" aria-hidden="true"><path d="M4.6 9h14.8l-1.2 10.4a2 2 0 0 1-2 1.8H7.8a2 2 0 0 1-2-1.8z" fill="currentColor"/><path d="M4.6 9c0-2 1.4-3.2 3.2-3.2 1-1.8 2.6-2.6 4.2-2.6s3.2.8 4.2 2.6c1.8 0 3.2 1.2 3.2 3.2z" fill="#4bbf83" stroke="currentColor" stroke-width="1"/><circle cx="9.4" cy="6.4" r=".6" fill="#fff"/><circle cx="14.2" cy="5.4" r=".5" fill="#fff"/><rect x="8" y="12.4" width="8" height="4.6" rx=".5" fill="#fff"/><path d="M9.4 14.7h5.2" stroke="currentColor" stroke-width=".9" stroke-linecap="round"/></svg>';
 
   var screen=null;
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
