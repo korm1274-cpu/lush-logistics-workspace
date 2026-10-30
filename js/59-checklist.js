@@ -79,10 +79,17 @@
   /* 같은 차수 품질리스트와 맞추기: 품질리스트 한 줄(단품 1줄 · 기프트 1개) = 품질 1개
      입고리스트에서 PLU + LOT번호 + 제조일자가 모두 맞는 줄에 1씩 더함(그 제품에 LOT·제조일자 정보가 아예 없으면 PLU만으로 더함). 하나라도 안 맞으면 '불일치'로 따로 모음(사유 포함)
      → 품질리스트 총 품질 수량 = 입고리스트 품질 합계 + 불일치 수 */
-  // LOT 비교: 기호·대소문자 무시(UK-144024-1 = uk-144024-1), 숫자로만 된 LOT은 앞의 0도 무시
-  //   (엑셀에서 숫자로 저장되면 앞 0이 빠짐: AU 0701401092651 = 701401092651, JP 3자리 PLU로 시작하는 020226090741 = 20226090741)
-  //   앞 영문(LS 등)이 다르면 불일치 — 수입팀 리스트 수정 대상
-  function normLot(s){var v=String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase();return /^\d+$/.test(v)?(v.replace(/^0+(?=\d)/,'')):v}
+  // LOT 비교: 기호·대소문자만 무시(UK-144024-1 = uk-144024-1). 앞 영문(LS 등)이 다르면 불일치 — 수입팀 리스트 수정 대상
+  function normLot(s){return String(s==null?'':s).replace(/[^0-9A-Za-z]/g,'').toUpperCase()}
+  // 앞의 0만 다른 LOT을 같다고 보는 경우(엑셀에서 숫자로 저장되면 앞 0이 빠짐) — 이 두 경우만, 나머지(UK 등·JP 4자리 PLU)는 그대로 불일치
+  //   - 제조국 AU: 숫자 LOT 앞 0 무시(0701401092651 = 701401092651)
+  //   - 제조국 JP + PLU 3자리: 숫자 LOT 앞 0 무시(020226090741 = 20226090741)
+  function lotEq(a,b,country,plu){
+    var x=normLot(a),y=normLot(b);if(x===y)return true;
+    if(!/^\d+$/.test(x)||!/^\d+$/.test(y))return false;
+    var c=String(country||'').toUpperCase(),ok=c==='AU'||(c==='JP'&&/^\d{3}$/.test(String(plu||'')));
+    return ok&&x.replace(/^0+/,'')===y.replace(/^0+/,'');
+  }
   function isDay(s){return /^\d{4}-\d{2}-\d{2}$/.test(String(s||''))}
   function qualityMatch(batchNo,rows){
     var qb=quality['Q-'+batchNo];if(!qb)return null;
@@ -92,12 +99,12 @@
       res.total++;
       var lot=normLot(e.lot),date=e.date||'',cands=rows.filter(function(r){return e.plu&&r.plu===e.plu});
       var hit=null;
-      cands.some(function(r){if((r.details||[]).some(function(d){return normLot(d.lot)===lot&&d.date===date})){hit=r;return true}return false});
+      cands.some(function(r){if((r.details||[]).some(function(d){return lotEq(d.lot,e.lot,r.batch&&r.batch.country,e.plu)&&d.date===date})){hit=r;return true}return false});
       if(hit){hit.qn++;hit.qEntries.push(e);res.matched++;return}
       var det=[];cands.forEach(function(r){det=det.concat(r.details||[])});
       // 입고리스트에 그 제품의 LOT·제조일자 정보 자체가 없으면(예: Whoosh DP 시트) 맞출 수 없으니 PLU만으로 반영
       if(cands.length&&!det.length){var h0=cands[0];h0.qn++;h0.qEntries.push(Object.assign({noInfo:true},e));res.matched++;return}
-      var lotHit=det.filter(function(d){return normLot(d.lot)===lot}),dateHit=det.filter(function(d){return d.date===date});
+      var ctry=cands[0]&&cands[0].batch&&cands[0].batch.country,lotHit=det.filter(function(d){return lotEq(d.lot,e.lot,ctry,e.plu)}),dateHit=det.filter(function(d){return d.date===date});
       var reason=!cands.length?'입고리스트에 PLU 없음':!det.length?'입고리스트에 LOT·제조일자 정보 없음':lotHit.length?'제조일자 불일치':dateHit.length?'LOT 불일치':'LOT·제조일자 불일치';
       res.unmatched.push({kind:e.kind,plu:e.plu,name:e.name,lot:e.lot,date:date,reason:reason,
         ckLots:uniq((lotHit.length?lotHit:dateHit.length?dateHit:det).map(function(d){return d.lot})).slice(0,4).join(', '),
@@ -253,7 +260,7 @@
       if(qOpenNow&&r.qn){
         main+='<tr class="ck-qsub"><td colspan="'+(10+cols.length)+'"><div class="ck-qlist"><b>품질로 뺄 목록 · '+r.qn+'개</b><table><thead><tr><th>구분</th><th>품명(품질리스트)</th><th>LOT넘버</th><th>제조일자</th><th class="n">빼는 수량</th><th>Pallet</th></tr></thead><tbody>'+
           r.qEntries.map(function(x){
-            var pals=uniq(d.filter(function(y){return normLot(y.lot)===normLot(x.lot)&&y.date===x.date}).map(function(y){return y.cs}));
+            var pals=uniq(d.filter(function(y){return lotEq(y.lot,x.lot,r.batch&&r.batch.country,r.plu)&&y.date===x.date}).map(function(y){return y.cs}));
             return '<tr><td>'+esc(x.kind)+'</td><td>'+esc(x.name)+'</td><td>'+esc(x.lot||'-')+'</td><td>'+esc(x.date||'-')+'</td><td class="n">1</td><td>'+(x.noInfo?'<span class="ck-qnote2">LOT 정보 없음 · PLU로 반영</span>':esc(pals.join(', ')||'-'))+'</td></tr>'}).join('')+
           '</tbody></table></div></td></tr>';
       }
