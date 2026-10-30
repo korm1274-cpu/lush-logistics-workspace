@@ -1,8 +1,8 @@
 /* ===== <style id="bento-all-views"> ===== */
-/* 메인 화면 벤토 스타일을 전체 메뉴로: 연한 웜그레이 바탕 + 검정 제목 타일(핑크 원 포인트) + 테두리·색 띠 없는 둥근 흰 타일 + 노랑·핑크·민트·흰색 숫자 타일
-   글자는 현황판 기준(굵은 800 + 좁은 자간의 큰 제목·큰 숫자, 작은 굵은 라벨). 메인(.on-dashboard)은 css/44-bento-dashboard.css
+/* 메인 화면 벤토 스타일을 전체 메뉴로: 연한 웜그레이 바탕 + 검정 제목 타일(핑크 원 포인트) + 테두리·색 띠 없는 둥근 흰 타일
+   글자는 현황판 기준(굵은 800 + 좁은 자간의 제목·표 머리글). 메인(.on-dashboard)은 css/44-bento-dashboard.css
    현장 대시보드(floor-board, TV 화면)는 그대로 둠 */
-#appShell{--bt-bg:#f1f1ee;--bt-ink:#111;--bt-radius:22px;--bt-gap:12px;--bt-yellow:#ffd23f;--bt-pink:#ffd3e3;--bt-mint:#c4ecd9;--bt-accent:#ff5d9e;}
+#appShell{--bt-bg:#f1f1ee;--bt-ink:#111;--bt-radius:22px;--bt-gap:12px;--bt-accent:#ff5d9e;}
 #appShell .main,#appShell.on-lush .main{background-color:var(--bt-bg)!important;background-image:none!important;}
 
 /* ----- 화면 제목 배너 → 검정 타일 + 오른쪽 위 핑크 원 ----- */
@@ -21,22 +21,6 @@
 #appShell.app:not(.on-dashboard) .main .view.active .data-workbench>.data-filter-row{background:#fff!important;border:0!important;border-radius:18px!important;box-shadow:none!important;}
 #appShell.app:not(.on-dashboard) .main .view.active .data-filter-row::before{display:none!important;}
 
-/* ----- 숫자 카드(kpi) → 색 타일, 숫자는 현황판처럼 크고 굵게 ----- */
-#appShell.app:not(.on-dashboard) .main .view.active .kpis{gap:var(--bt-gap)!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi{border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;padding:18px 20px!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi::before{display:none!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi>span{font-size:13px!important;font-weight:800!important;letter-spacing:-.01em!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi b{font-size:34px!important;font-weight:800!important;letter-spacing:-.03em!important;line-height:1.1!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi div div div b{font-size:22px!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi small{font-weight:700!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+1){background:var(--bt-yellow)!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+1) *{color:#3d2c00!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+2){background:var(--bt-pink)!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+2) *{color:#5c1031!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+3){background:var(--bt-mint)!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n+3) *{color:#06352a!important;}
-#appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n){background:#fff!important;}
-
 /* ----- 패널 제목·표: 현황판 글자 기준 ----- */
 #appShell.app:not(.on-dashboard) .main .view.active .panel-head h3,#appShell.app:not(.on-dashboard) .main .view.active .panel>h3{font-size:20px!important;font-weight:800!important;letter-spacing:-.02em!important;color:var(--bt-ink)!important;}
 #appShell.app:not(.on-dashboard) .main .view.active :is(h3,h4){font-weight:800!important;letter-spacing:-.02em!important;}
@@ -46,13 +30,7 @@
 @media(max-width:900px){
   #appShell{--bt-radius:18px;--bt-gap:10px;}
   #appShell.app .main .view.active :is(.data-workbench-head,.status-board-top,.schedule-head,.request-manager-top,.inventory-head,.lush-page-head,.sheet-title) :is(h1,h2){font-size:23px!important;}
-  #appShell.app:not(.on-dashboard) .main .view.active .kpi{padding:14px 16px!important;}
-  #appShell.app:not(.on-dashboard) .main .view.active .kpi b{font-size:28px!important;}
 }
-
-/* ----- 다크 모드(본문 반전): 색 숫자 타일은 다시 뒤집어 원래 색으로, 흰 타일은 짙은 회색 그대로 ----- */
-html.ux-dark #appShell.app:not(.on-dashboard) .main .view.active .kpi:not(:nth-child(4n)){filter:invert(1) hue-rotate(180deg);}
-html.ux-dark #appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(4n){background:#e6e4df!important;}
 
 /* ----- 화면 id로 지정된 기존 테마 규칙(id 2개)보다 우선하도록 따로 지정 ----- */
 #appShell.app #outboundRequestManager.view.active .request-manager-top{border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;
@@ -60,18 +38,6 @@ html.ux-dark #appShell.app:not(.on-dashboard) .main .view.active .kpi:nth-child(
 #appShell.app #upload.view.active .upload-card,#appShell.app #settings.view.active .admin-card{background:#fff!important;border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;}
 #appShell.app #upload.view.active .upload-card::before,#appShell.app #settings.view.active .admin-card::before{display:none!important;}
 
-/* ----- 재고 화면 요약 숫자(inventory-metric)도 숫자 카드처럼 색 타일 ----- */
-#appShell.app .main .view.active .inventory-metric{border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;padding:18px 20px!important;}
-#appShell.app .main .view.active .inventory-metric::before{display:none!important;}
-#appShell.app .main .view.active .inventory-metric b,#appShell.app .main .view.active .inventory-metric strong{font-size:32px!important;font-weight:800!important;letter-spacing:-.03em!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+1){background:var(--bt-yellow)!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+1) *{color:#3d2c00!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+2){background:var(--bt-pink)!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+2) *{color:#5c1031!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+3){background:var(--bt-mint)!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n+3) *{color:#06352a!important;}
-#appShell.app .main .view.active .inventory-metric:nth-child(4n){background:#fff!important;}
-html.ux-dark #appShell.app .main .view.active .inventory-metric:not(:nth-child(4n)){filter:invert(1) hue-rotate(180deg);}
 @media(max-width:900px){
   #appShell.app .main .view.active :is(.data-workbench-head,.status-board-top,.schedule-head,.request-manager-top,.inventory-head,.lush-page-head,.sheet-title),
   #appShell.app #outboundRequestManager.view.active .request-manager-top{background-image:radial-gradient(circle at calc(100% - 14px) 0,var(--bt-accent) 0 38px,transparent 39px)!important;}
