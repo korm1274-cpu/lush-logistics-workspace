@@ -1,0 +1,61 @@
+/* ===== <style id="bento-dashboard"> ===== */
+/* 메인 화면 벤토 그리드: 인사 배너를 타일로 나눔(왼쪽 큰 검정 인사 타일 + 오른쪽 2x2 숫자 타일), 아래 섹션은 테두리 없는 둥근 흰 타일
+   메인 화면(.on-dashboard)에만 적용, 마지막에 불러와 이전 테마 규칙보다 우선 */
+#appShell.on-dashboard{--bt-bg:#f1f1ee;--bt-ink:#111;--bt-radius:22px;--bt-gap:12px;}
+#appShell.on-dashboard .main{background-color:var(--bt-bg)!important;background-image:none!important;}
+
+/* ----- 인사 배너 → 타일 묶음 ----- */
+#appShell.on-dashboard #dashboard .lush-hero{display:grid!important;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;gap:var(--bt-gap);
+  padding:0!important;margin:8px 0 var(--bt-gap)!important;background:transparent!important;background-image:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible!important;}
+/* 배너 장식(거품·트럭·도로·시즌 눈송이)은 타일 사이로 흩어지므로 숨김 */
+#appShell.on-dashboard #dashboard .lush-hero>.hero-bubble,#appShell.on-dashboard #dashboard .lush-hero>.hero-fizz,#appShell.on-dashboard #dashboard .lush-hero>.hero-road,
+#appShell.on-dashboard #dashboard .lush-hero>.hero-truck,#appShell.on-dashboard #dashboard .lush-hero .season-flake{display:none!important;}
+#appShell.on-dashboard #dashboard .lush-hero-text{grid-row:1 / span 2;display:flex;flex-direction:column;justify-content:flex-end;min-height:216px;padding:56px 28px 26px;border-radius:var(--bt-radius);background:var(--bt-ink);color:#fff;position:relative;overflow:hidden;}
+#appShell.on-dashboard #dashboard .lush-hero-text::before{content:"LUSH";position:absolute;top:20px;left:28px;font-size:13px;font-weight:900;letter-spacing:.18em;color:#fff;}
+#appShell.on-dashboard #dashboard .lush-hero-text::after{content:"";position:absolute;right:-46px;top:-46px;width:170px;height:170px;border-radius:50%;background:#ff5d9e;opacity:.9;}
+#appShell.on-dashboard #dashboard .lush-hero .lush-hero-date{position:relative;z-index:1;font-size:13px!important;color:#a9a9a4!important;margin-bottom:8px!important;}
+#appShell.on-dashboard #dashboard .lush-hero .lush-hero-hello{position:relative;z-index:1;font-size:30px!important;line-height:1.25!important;font-weight:800!important;letter-spacing:-.02em!important;color:#fff!important;}
+#appShell.on-dashboard #dashboard .lush-hero .lush-hero-sub{position:relative;z-index:1;font-size:14px!important;font-weight:600!important;color:#a9a9a4!important;margin-top:8px!important;}
+
+/* 숫자 4칸: 각자 색이 다른 타일(노랑·핑크·민트·흰색) */
+#appShell.on-dashboard #dashboard .lush-hero-stats{display:contents!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat{display:grid!important;grid-template-columns:auto 1fr;align-content:space-between;align-items:baseline;min-width:0!important;min-height:102px;margin:0!important;padding:16px 18px!important;
+  border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;transition:transform .18s ease;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:hover{transform:translateY(-2px);}
+#appShell.on-dashboard #dashboard .lush-hero-stat small{display:block;grid-column:1 / -1;font-size:13px!important;font-weight:700!important;margin:0 0 8px!important;letter-spacing:0!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat b{font-size:34px!important;font-weight:800!important;line-height:1!important;letter-spacing:-.02em;}
+#appShell.on-dashboard #dashboard .lush-hero-stat span{font-size:13px!important;font-weight:600!important;margin-left:4px!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(1){background:#ffd23f!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(1) small,#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(1) span{color:#6b4e00!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(1) b{color:#2e2200!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(2){background:#ffd3e3!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(2) small,#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(2) span{color:#9b2d5a!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(2) b{color:#5c1031!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(3){background:#c4ecd9!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(3) small,#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(3) span{color:#17694a!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(3) b{color:#06352a!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(4){background:#fff!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(4) small,#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(4) span{color:#77776f!important;}
+#appShell.on-dashboard #dashboard .lush-hero-stat:nth-child(4) b{color:var(--bt-ink)!important;}
+
+/* ----- 아래 섹션: 굵은 테두리·색 띠 없이 둥근 흰 타일 ----- */
+#appShell.on-dashboard #dashboard .dash-section{margin-top:var(--bt-gap)!important;padding:20px!important;background:#fff!important;border:0!important;border-radius:var(--bt-radius)!important;box-shadow:none!important;}
+#appShell.on-dashboard #dashboard .dash-section::before{display:none!important;}
+#appShell.on-dashboard #dashboard .dashboard-info-panel{background:#f7f7f4!important;border:0!important;border-radius:16px!important;box-shadow:none!important;}
+#appShell.on-dashboard #dashboard .dashboard-notice-todo-grid{gap:var(--bt-gap)!important;}
+
+@media(max-width:1100px){
+  #appShell.on-dashboard #dashboard .lush-hero{grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
+  #appShell.on-dashboard #dashboard .lush-hero-text{grid-row:auto;grid-column:1 / -1;min-height:170px;}
+}
+@media(max-width:900px){
+  #appShell.on-dashboard{--bt-radius:18px;--bt-gap:10px;}
+  #appShell.on-dashboard #dashboard .lush-hero-text{min-height:150px;padding:46px 20px 20px!important;}
+  #appShell.on-dashboard #dashboard .lush-hero-text::before{top:16px;left:20px;}
+  #appShell.on-dashboard #dashboard .lush-hero-text::after{width:120px;height:120px;right:-34px;top:-34px;}
+  #appShell.on-dashboard #dashboard .lush-hero .lush-hero-hello{font-size:22px!important;}
+  #appShell.on-dashboard #dashboard .lush-hero-stat{min-height:88px;padding:14px!important;}
+  #appShell.on-dashboard #dashboard .lush-hero-stat b{font-size:28px!important;}
+  #appShell.on-dashboard #dashboard .dash-section{padding:14px!important;}
+}
+@media (prefers-reduced-motion:reduce){#appShell.on-dashboard #dashboard .lush-hero-stat{transition:none!important;}}
