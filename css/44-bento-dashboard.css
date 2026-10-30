@@ -58,3 +58,12 @@
   #appShell.on-dashboard #dashboard .dash-section{padding:14px!important;}
 }
 @media (prefers-reduced-motion:reduce){#appShell.on-dashboard #dashboard .lush-hero-stat{transition:none!important;}}
+
+/* ----- 제품 확보 현황: 팀 공지사항과 같은 모양(제목 옆 건수 칩 + 흰 둥근 카드) ----- */
+#appShell #dashboard .todo-panel .todo-cheer,
+#appShell #dashboard .todo-panel .ops-todo-item{background:#fff!important;border:1px solid #eef0f2!important;border-radius:20px!important;box-shadow:0 2px 12px rgba(25,31,40,.04)!important;padding:20px!important;}
+#appShell #dashboard .todo-panel .todo-cheer{display:flex!important;align-items:flex-start!important;justify-content:flex-start!important;gap:11px!important;text-align:left!important;}
+#appShell #dashboard .todo-panel .todo-cheer b{font-size:15px!important;font-weight:800!important;color:#191f28!important;}
+#appShell #dashboard .todo-panel .todo-cheer small{display:block;margin-top:4px;font-size:12px!important;color:#6b7684!important;}
+#appShell #dashboard .todo-panel .ops-todo-item{margin-bottom:8px!important;padding:14px 18px!important;}
+#appShell #dashboard .todo-panel .ops-todo-item:last-child{margin-bottom:0!important;}
