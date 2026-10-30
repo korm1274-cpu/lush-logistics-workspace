@@ -200,3 +200,9 @@
 #checklistView .ck-miss-toggle{position:absolute;top:7px;right:146px;height:28px;padding:0 11px;border:1px solid #c93838;border-radius:999px;background:#c93838;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;white-space:nowrap;}
 #checklistView .ck-miss-toggle:hover{background:#a82a2a;}
 @media (max-width:700px){#checklistView .ck-qsum.bad{padding-right:12px;}#checklistView .ck-miss-toggle{position:static;display:inline-block;margin:0 6px 8px 0;}#checklistView .ck-miss-export{display:inline-block;}}
+/* 품질 불일치 안내 줄: 글자(왼쪽)와 [목록 펼치기]·[불일치 목록 엑셀](오른쪽)을 같은 줄 가운데 높이로 — 예전 절대 위치 배치 대신 */
+#checklistView .ck-qsum.bad{padding-right:12px!important;}
+#checklistView .ck-qsum-head{display:flex;align-items:center;justify-content:space-between;gap:8px 12px;flex-wrap:wrap;}
+#checklistView .ck-qsum-text{min-width:0;line-height:1.5;}
+#checklistView .ck-qsum-btns{display:flex;align-items:center;gap:6px;flex:none;}
+#checklistView .ck-qsum-btns .ck-miss-toggle,#checklistView .ck-qsum-btns .ck-miss-export{position:static!important;margin:0!important;display:inline-flex;align-items:center;}

@@ -197,7 +197,9 @@
     var qAll=all.filter(match);
     // 매장 목록(수량이 있는 매장만, 파일 칸 순서)
     var order=[];sel.forEach(function(x){(x.cols||[]).forEach(function(k){if(order.indexOf(k)<0)order.push(k)})});
-    colChoices=order.filter(function(k){return all.some(function(r){return r.values&&r.values[k]})});
+    // TOTAL ▾ 매장 목록: 주문·담당자·품질 대상·검색 필터가 걸린 제품에 수량이 있는 매장만(담당자를 고르면 그 담당자가 보낼 매장만)
+    var choiceBase=qAll.filter(function(r){return (!sheetFilter||r.sheet===sheetFilter)&&(!mgrFilter||(r.mgr||'담당자 없음')===mgrFilter)&&(!qOnly||r.q)});
+    colChoices=order.filter(function(k){return choiceBase.some(function(r){return r.values&&r.values[k]})});
     if(colFilter&&colChoices.indexOf(colFilter)<0)colFilter='';
     var sheets=multi?[]:(b.sheets||[]),sc={};qAll.forEach(function(r){sc[r.sheet]=(sc[r.sheet]||0)+1});
     if(sheetFilter&&sheets.indexOf(sheetFilter)<0)sheetFilter='';
@@ -224,7 +226,8 @@
     var qbox='',qname=linked.join(' · ');
     if(qr){
       qbox=qr.unmatched.length
-        ?'<div class="ck-qsum bad"><button type="button" class="ck-miss-export" data-ck-miss-export title="수입팀 수정 요청용으로 불일치 목록을 엑셀로 저장">불일치 목록 엑셀</button><button type="button" class="ck-miss-toggle" data-ck-miss-toggle aria-expanded="'+missOpen+'">'+(missOpen?'목록 접기 ▴':'목록 펼치기 ▾')+'</button><b>품질 수량 불일치</b> 품질리스트 '+esc(qname)+' <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개'+
+        ?'<div class="ck-qsum bad"><div class="ck-qsum-head"><span class="ck-qsum-text"><b>품질 수량 불일치</b> 품질리스트 '+esc(qname)+' <strong>'+fmt(qr.total)+'</strong>개 · 입고리스트 반영 <strong>'+fmt(qr.matched)+'</strong>개 · 따로 확인 <strong>'+fmt(qr.unmatched.length)+'</strong>개</span>'+
+          '<span class="ck-qsum-btns"><button type="button" class="ck-miss-toggle" data-ck-miss-toggle aria-expanded="'+missOpen+'">'+(missOpen?'목록 접기 ▴':'목록 펼치기 ▾')+'</button><button type="button" class="ck-miss-export" data-ck-miss-export title="수입팀 수정 요청용으로 불일치 목록을 엑셀로 저장">불일치 목록 엑셀</button></span></div>'+
           (missOpen?'<div class="ck-qmiss-wrap"><table class="ck-qmiss"><thead><tr>'+(multi?'<th>차수</th>':'')+'<th>구분</th><th>PLU</th><th>품명</th><th>품질 LOT</th><th>품질 제조일자</th><th>사유</th><th>입고리스트 LOT</th><th>입고리스트 제조일자</th></tr></thead><tbody>'+
           qr.unmatched.map(function(u){return '<tr>'+(multi?'<td>'+esc(u.batch)+'</td>':'')+'<td>'+esc(u.kind)+'</td><td>'+esc(u.plu||'-')+'</td><td class="n">'+esc(u.name)+'</td><td>'+esc(u.lot||'-')+'</td><td>'+esc(u.date||'-')+'</td><td class="r">'+esc(u.reason)+'</td><td>'+esc(u.ckLots||'-')+'</td><td>'+esc(u.ckDates||'-')+'</td></tr>'}).join('')+'</tbody></table></div>':'')+'</div>'
         :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+esc(qname)+' '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 기준)</div>';
