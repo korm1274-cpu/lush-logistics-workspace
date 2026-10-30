@@ -4,14 +4,15 @@
   const KEYS={notices:'lush-v51-notices',todos:'lush-v51-todos',requests:'lush_outbound_requests_v1',productivity:'lush-logistics-productivity-v1',defects:'lush-product-defects-v1',stock:'lush-stock-items-v1',requestsDeleted:'lush_outbound_requests_deleted_v1',noticesDeleted:'lush-v51-notices-deleted',todosDeleted:'lush-v51-todos-deleted'};
   /* 건(id)별로 합치는 목록과 그 '지운 id' 기록 키: 출고 요청·공지·제품 확보 */
   /* 메뉴 설정(Admin > 메뉴 관리) 팀 공유: { menus, groups, updatedAt, by } — 관리자만 바꿀 수 있음(서버에서도 확인) */
-  const MENU_CFG_KEY='lush-menu-config-v1',MENU_KEY_LOCAL='lush-logistics-v4-menus',GROUP_KEY_LOCAL='lush-logistics-v4-groups';
+  const MENU_CFG_KEY='lush-menu-config-v1',MENU_KEY_LOCAL='lush-logistics-v4-menus',GROUP_KEY_LOCAL='lush-logistics-v4-groups',DELETED_MENU_KEY_LOCAL='lush-menu-deleted-v1';
   function isAdminUser(){try{const u=window.LUSH_AUTH&&window.LUSH_AUTH.user();return !!u&&u.role==='admin'}catch(e){return false}}
   function readMenuCfg(){const v=readLocalObj(MENU_CFG_KEY,null);return v&&Array.isArray(v.menus)?v:null}
   function writeMenuCfgFromLocal(){
-    let ms=[],gs=null;try{ms=JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]')}catch(e){}try{gs=JSON.parse(localStorage.getItem(GROUP_KEY_LOCAL)||'null')}catch(e){}
+    let ms=[],gs=null,del=[];try{ms=JSON.parse(localStorage.getItem(MENU_KEY_LOCAL)||'[]')}catch(e){}try{gs=JSON.parse(localStorage.getItem(GROUP_KEY_LOCAL)||'null')}catch(e){}try{del=JSON.parse(localStorage.getItem(DELETED_MENU_KEY_LOCAL)||'[]');if(!Array.isArray(del))del=[]}catch(e){}
     const u=window.LUSH_AUTH&&window.LUSH_AUTH.user(),prev=readMenuCfg();
     // 한 번만 적용하는 정리 기록(migrations)은 유지 — 관리자가 다시 바꾼 메뉴 표시를 덮어쓰지 않게
-    localStorage.setItem(MENU_CFG_KEY,JSON.stringify({menus:ms,groups:gs,updatedAt:new Date().toISOString(),by:u&&u.id||'',migrations:(prev&&prev.migrations)||[]}));
+    // 삭제한 메뉴 id(deletedMenus)도 함께 공유 — 다른 기기에서 기본 메뉴로 다시 생기지 않게
+    localStorage.setItem(MENU_CFG_KEY,JSON.stringify({menus:ms,groups:gs,deletedMenus:del,updatedAt:new Date().toISOString(),by:u&&u.id||'',migrations:(prev&&prev.migrations)||[]}));
   }
   /* 처음 공유할 때 지금 보이는 메뉴가 그대로 유지되도록 권한 칸을 옮겨 담음:
      관리자(leader) = Admin 외 전체, 팀원(editor) = 관리자가 보는 메뉴 전체, 게스트(restricted) = 메인·현황판만 */
@@ -28,6 +29,7 @@
       origSetItem(MENU_CFG_KEY,JSON.stringify(cfg));
       origSetItem(MENU_KEY_LOCAL,JSON.stringify(cfg.menus));
       if(cfg.groups)origSetItem(GROUP_KEY_LOCAL,JSON.stringify(cfg.groups));
+      if(Array.isArray(cfg.deletedMenus))origSetItem(DELETED_MENU_KEY_LOCAL,JSON.stringify(cfg.deletedMenus.filter(x=>typeof x==='string')));
       try{menus=cfg.menus}catch(e){}
       try{if(cfg.groups)GROUPS=cfg.groups}catch(e){}
       try{if(typeof normalizeMenus==='function')normalizeMenus()}catch(e){}

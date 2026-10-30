@@ -140,6 +140,9 @@ const DEFAULT_DATA={
 let db=JSON.parse(localStorage.getItem(DATA_KEY)||"null")||structuredClone(DEFAULT_DATA);
 if(db&&db.inventory){delete db.inventory.SAND; const total=db.inventory["총 재고파일"]; if(total&&Array.isArray(total.rows)) total.rows=total.rows.filter(r=>String(r?.[0]||"").toUpperCase()!=="SAND"); localStorage.setItem(DATA_KEY,JSON.stringify(db));}
 let menus=JSON.parse(localStorage.getItem(MENU_KEY)||"null")||structuredClone(DEFAULT_MENUS);
+/* Admin > 메뉴 관리에서 삭제한 메뉴 id 목록(기본 메뉴가 자동으로 다시 추가되지 않게) */
+const DELETED_MENU_KEY="lush-menu-deleted-v1";
+function readDeletedMenuIds(){try{const v=JSON.parse(localStorage.getItem(DELETED_MENU_KEY)||"[]");return Array.isArray(v)?v.filter(x=>typeof x==="string"):[]}catch(e){return[]}}
 function normalizeMenus(){
   let cleaned=[]; let totalSeen=false;
   for(const raw of menus){
@@ -299,6 +302,10 @@ function normalizeMenus(){
   };
   placeAfter("in-checklist","입고리스트",["입고리스트 샘플"],"checklistView","in-analysis");
   placeAfter("in-quality","품질리스트",[],"qualityListView","in-checklist");
+  /* Admin에서 삭제한 메뉴는 위의 기본 메뉴 자동 추가(V35·입고 정리 등)로 다시 생기지 않게 마지막에 빼기
+     (지운 id 기록은 팀 공유 메뉴 설정 deletedMenus로도 공유 — js/15-v75-team-data-sync.js) */
+  const deletedMenuIds=new Set(readDeletedMenuIds());
+  if(deletedMenuIds.size)cleaned=cleaned.filter(m=>!deletedMenuIds.has(m.id));
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));
 }
@@ -692,6 +699,7 @@ function renderMenusTable(){
   });
   menuRows.querySelectorAll("[data-menu-del]").forEach(b=>b.onclick=()=>{
     const i=menus.findIndex(v=>v.id===b.dataset.menuDel);if(i<0)return;if(!confirm(menus[i].label+" 메뉴를 삭제할까요?"))return;
+    const delIds=readDeletedMenuIds();if(delIds.indexOf(menus[i].id)<0){delIds.push(menus[i].id);localStorage.setItem(DELETED_MENU_KEY,JSON.stringify(delIds))}
     menus.splice(i,1);saveMenus();renderNav();renderGroupsTable();renderMenusTable();renderPermissions();toastMsg("메뉴를 삭제했습니다.");
   });
   menuRows.querySelectorAll("[data-menu-up]").forEach(b=>b.onclick=()=>moveMenuWithinGroup(b.dataset.menuUp,-1));
