@@ -34,4 +34,19 @@ function httpUrl(u) {
   return /^https?:\/\//i.test(s) ? s.slice(0, 2000) : '';
 }
 
-module.exports = { checkTopLevel, httpUrl };
+// 게스트 응답에서 담당자(직원 이름) 숨김: { header:[...], rows:[[...]] } 형태 항목에서 머리글에 '담당'이 들어간 열 값을 빈칸으로
+// (열 자체는 남겨 화면 구조는 그대로). 원본(data)은 바꾸지 않고 복사본을 돌려줌
+function hideManagersForGuest(data) {
+  if (!data || typeof data !== 'object' || Array.isArray(data)) return data;
+  const out = { ...data };
+  Object.keys(out).forEach(k => {
+    const t = out[k];
+    if (!t || typeof t !== 'object' || !Array.isArray(t.header) || !Array.isArray(t.rows)) return;
+    const idx = t.header.map((h, i) => (/담당/.test(String(h || '')) ? i : -1)).filter(i => i >= 0);
+    if (!idx.length) return;
+    out[k] = { ...t, rows: t.rows.map(r => { if (!Array.isArray(r)) return r; const c = r.slice(); idx.forEach(i => { if (i < c.length) c[i] = ''; }); return c; }) };
+  });
+  return out;
+}
+
+module.exports = { checkTopLevel, httpUrl, hideManagersForGuest };

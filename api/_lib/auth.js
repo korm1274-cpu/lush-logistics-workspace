@@ -18,6 +18,7 @@ const ACCOUNTS_KEY = 'lush_accounts_v1';
 const SESSION_PREFIX = 'lush_session_v1:';
 const LOG_KEY = 'lush_auth_log_v1';
 const LOG_MAX = 5000;
+const LOG_KEEP_MS = 90 * 24 * 3600 * 1000; // 로그인 기록 보관 90일
 const TIMEOUT_MS = 8000;
 
 const ROLES = { admin: '관리자', member: '팀원', guest: '게스트' };
@@ -97,11 +98,23 @@ async function addLog(store, entry) {
   try {
     await store.cmd(['LPUSH', LOG_KEY, JSON.stringify({ at: new Date().toISOString(), ...entry })]);
     await store.cmd(['LTRIM', LOG_KEY, '0', String(LOG_MAX - 1)]);
+    // 90일 지난 기록은 가장 오래된 쪽(목록 끝)부터 정리. 한 번에 최대 200건(읽기 1번 + 자르기 1번)
+    const cutoff = Date.now() - LOG_KEEP_MS;
+    const tail = (await store.cmd(['LRANGE', LOG_KEY, '-200', '-1'])) || [];
+    let old = 0;
+    for (let i = tail.length - 1; i >= 0; i--) {
+      let at = NaN;
+      try { at = Date.parse(JSON.parse(tail[i]).at); } catch (e) { /* 깨진 기록은 정리 대상 */ }
+      if (Number.isFinite(at) && at >= cutoff) break;
+      old++;
+    }
+    if (old) await store.cmd(['LTRIM', LOG_KEY, '0', String(-(old + 1))]);
   } catch (e) { /* 기록 실패는 로그인 자체를 막지 않음 */ }
 }
 async function readLogs(store, limit) {
   const arr = await store.cmd(['LRANGE', LOG_KEY, '0', String(Math.max(0, (limit || 300) - 1))]);
-  return (arr || []).map(s => { try { return JSON.parse(s); } catch { return null; } }).filter(Boolean);
+  const cutoff = Date.now() - LOG_KEEP_MS; // 화면에도 90일 이내만
+  return (arr || []).map(s => { try { return JSON.parse(s); } catch { return null; } }).filter(l => l && Date.parse(l.at) >= cutoff);
 }
 
 async function createSession(store, user) {

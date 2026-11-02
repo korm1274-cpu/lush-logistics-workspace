@@ -249,6 +249,18 @@ async function pluMaster(req, res, user) {
       const arr = await store.cmd(['HGETALL', PLU_OVERRIDE_KEY]) || [];
       const overrides = {};
       for (let i = 0; i < arr.length; i += 2) { try { overrides[arr[i]] = JSON.parse(arr[i + 1]); } catch (e) { /* 무시 */ } }
+      // 게스트에게는 PLU별 담당자(직원 이름)·올린 사람을 빈칸으로, 수기 지정 담당자는 보내지 않음
+      if (user.role === 'guest') {
+        if (data && data.map && typeof data.map === 'object') {
+          const map = {};
+          Object.keys(data.map).forEach(k => {
+            const v = data.map[k];
+            map[k] = Array.isArray(v) ? v.map(e => (Array.isArray(e) ? [e[0], ''].concat(e.slice(2)) : e)) : v;
+          });
+          data = { ...data, map, updatedBy: '' };
+        }
+        return res.status(200).json({ success: true, master: data, overrides: {} });
+      }
       return res.status(200).json({ success: true, master: data, overrides });
     }
     let body = req.body;
