@@ -3,7 +3,7 @@
 //
 // 저장 키
 //   lush_accounts_v1            → { users: { [아이디]: { id, name, role, salt, hash, mustChange, active, fails, lockUntil, createdAt, updatedAt, lastLoginAt } } }
-//   lush_session_v1:<토큰해시>   → { id, role, exp }  (KV 만료시간 EX로 자동 삭제)
+//   lush_session_v1:<토큰해시>   → { id, role, exp, iat, loginAt }  (KV 만료시간 EX로 자동 삭제. iat=세션 폐기 비교용, loginAt=최대 90일 계산용)
 //   lush_auth_log_v1            → 리스트(최신이 앞). { at, id, action, result, device, by? }
 //
 // 보안 기준
@@ -23,7 +23,9 @@ const TIMEOUT_MS = 8000;
 const ROLES = { admin: '관리자', member: '팀원', guest: '게스트' };
 const TEMP_PASSWORD_TTL_MS = 24 * 3600 * 1000; // 관리자가 발급한 임시 비밀번호 유효 시간(첫 로그인 시 변경 필수)
 const TEMP_PW_CHARS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'; // 헷갈리는 0·O·1·l·I 제외
-const MEMBER_SESSION_SEC = 365 * 24 * 3600; // 관리자·팀원: 사실상 제한 없음(사용할 때마다 연장)
+const MEMBER_IDLE_SEC = 30 * 24 * 3600;       // 관리자·팀원: 30일 동안 쓰지 않으면 만료(쓸 때마다 30일로 연장)
+const MEMBER_MAX_MS = 90 * 24 * 3600 * 1000;  // 관리자·팀원: 로그인 후 최대 90일(계속 써도 그 뒤에는 다시 로그인)
+const EXTEND_STEP_MS = 24 * 3600 * 1000;      // 연장 저장은 하루에 한 번 정도만(KV 쓰기 절약)
 const GUEST_SESSION_SEC = 3600;             // 게스트: 로그인 후 1시간
 const MAX_FAILS = 10, LOCK_MS = 10 * 60 * 1000;
 
@@ -104,9 +106,9 @@ async function readLogs(store, limit) {
 
 async function createSession(store, user) {
   const token = crypto.randomBytes(32).toString('hex');
-  const ttl = user.role === 'guest' ? GUEST_SESSION_SEC : MEMBER_SESSION_SEC;
-  const exp = Date.now() + ttl * 1000;
-  await store.setJSON(SESSION_PREFIX + sha256(token), { id: user.id, role: user.role, exp, iat: Date.now() }, ttl);
+  const ttl = user.role === 'guest' ? GUEST_SESSION_SEC : MEMBER_IDLE_SEC;
+  const now = Date.now(), exp = now + ttl * 1000;
+  await store.setJSON(SESSION_PREFIX + sha256(token), { id: user.id, role: user.role, exp, iat: now, loginAt: now }, ttl);
   return { token, exp };
 }
 function tokenOf(req) {
@@ -114,7 +116,7 @@ function tokenOf(req) {
   const m = h.match(/^Bearer\s+([a-f0-9]{64})$/i);
   return m ? m[1] : '';
 }
-// 요청의 로그인 사용자 확인. 없거나 만료면 null. 관리자·팀원 세션은 쓸 때마다 만료를 연장(사실상 제한 없음)
+// 요청의 로그인 사용자 확인. 없거나 만료면 null. 관리자·팀원 세션은 쓸 때마다 30일로 연장, 로그인 후 최대 90일
 async function getSessionUser(req, store) {
   const token = tokenOf(req); if (!token) return null;
   store = store || kv();
@@ -126,9 +128,18 @@ async function getSessionUser(req, store) {
   if (!u || u.active === false) { await store.del(key); return null; }
   // 비밀번호 초기화·변경, 사용 중지 때 끊은 세션(그 이전에 만든 로그인)은 무효
   if (u.sessionsRevokedAt && (Number(s.iat) || 0) < u.sessionsRevokedAt) { await store.del(key); return null; }
-  if (u.role !== 'guest' && s.exp - Date.now() < 300 * 24 * 3600 * 1000) {
-    s.exp = Date.now() + MEMBER_SESSION_SEC * 1000; s.role = u.role;
-    await store.setJSON(key, s, MEMBER_SESSION_SEC);
+  if (u.role !== 'guest') {
+    const now = Date.now();
+    // 예전(365일) 세션은 loginAt이 없으므로 처음 쓰는 시점부터 90일을 셈(배포 때 한꺼번에 로그아웃되지 않도록)
+    const fresh = !s.loginAt;
+    if (fresh) s.loginAt = now;
+    const hardExp = Number(s.loginAt) + MEMBER_MAX_MS;
+    if (now >= hardExp) { await store.del(key); return null; }
+    const nextExp = Math.min(now + MEMBER_IDLE_SEC * 1000, hardExp);
+    if (fresh || s.exp > nextExp || nextExp - s.exp >= EXTEND_STEP_MS) {
+      s.exp = nextExp; s.role = u.role;
+      await store.setJSON(key, s, Math.max(1, Math.ceil((nextExp - now) / 1000)));
+    }
   }
   return { ...publicUser(u), exp: s.exp, tokenKey: key };
 }
