@@ -152,7 +152,16 @@ async function revokeSessions(store, u, keepKey) {
     if (s && s.exp > now) { s.iat = now; await store.setJSON(keepKey, s, Math.max(1, Math.ceil((s.exp - now) / 1000))); }
   }
 }
-const isCron = req => /vercel-cron/i.test(String((req.headers && req.headers['user-agent']) || ''));
+// Vercel 예약 실행(Cron) 확인: Vercel이 자동으로 보내는 Authorization: Bearer <CRON_SECRET>을 비교
+// (User-Agent는 누구나 바꿔 보낼 수 있어 쓰지 않음). CRON_SECRET이 없거나 16자 미만이면 Cron으로 인정하지 않음
+function isCron(req) {
+  const secret = String(process.env.CRON_SECRET || '');
+  if (secret.length < 16) return false;
+  const got = String((req.headers && (req.headers.authorization || req.headers.Authorization)) || '');
+  const a = crypto.createHash('sha256').update(got).digest();
+  const b = crypto.createHash('sha256').update('Bearer ' + secret).digest();
+  return crypto.timingSafeEqual(a, b);
+}
 
 // 데이터 API 공통 문지기: 로그인 필요. write=true면 관리자·팀원만(게스트는 보기만), 비밀번호 변경 전 계정은 거부
 async function guard(req, res, opts = {}) {

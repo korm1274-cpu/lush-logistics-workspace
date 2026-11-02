@@ -148,7 +148,6 @@ module.exports = async (req, res) => {
       열_위치: columnIndex,
       최종반영행수: rows.length,
       보관되는최근행수: recentRows.length,
-      진단_변환후첫행: recentRows[0] || null,
       실행시각: new Date().toISOString()
     });
   } catch (err) {
