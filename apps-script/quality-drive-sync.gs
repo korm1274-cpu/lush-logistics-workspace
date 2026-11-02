@@ -15,6 +15,8 @@
  *  2) 왼쪽 '서비스' + → 'Drive API' 추가 (엑셀 → 구글시트 변환에 필요)
  *  3) 왼쪽 '프로젝트 설정'(톱니) → 스크립트 속성 → 속성 추가
  *       이름: QUALITY_SYNC_SECRET   값: Vercel 환경변수 QUALITY_SYNC_SECRET과 같은 값(16자 이상 임의 문자열)
+ *       이름: QUALITY_FOLDER_ID     값: 품질리스트 드라이브 폴더 ID(폴더 주소 folders/ 뒤 문자열)
+ *       이름: CHECKLIST_FOLDER_ID   값: 입고리스트 드라이브 폴더 ID
  *  4) 함수 선택에서 previewFiles 실행 → 권한 허용 → 실행 로그에 보낼 파일 목록이 나오는지 확인(실제 전송 없음)
  *  5) syncQualityFolder 실행 → 실행 로그에 '반영' 결과 확인 → 웹앱 확인
  *     (파일별 상태·건너뛴 이유·차수 겹침은 showStatus 실행 → 실행 로그)
@@ -26,9 +28,15 @@
 // ─── 설정 ───────────────────────────────────────────────
 var API_BASE = 'https://lush-logistics-workspace.vercel.app/api/team-data?part=';
 var FOLDERS = [
-  { id: '1blRex8mwLJt38vNT_q6XaVIjzlkfWpla', part: 'quality-lists', label: '품질리스트' },
-  { id: '1XtEqqHXjKss_NJUc33C7fnRdTaJmfl6C', part: 'checklists', label: '입고리스트' }
+  { idProp: 'QUALITY_FOLDER_ID', part: 'quality-lists', label: '품질리스트' },
+  { idProp: 'CHECKLIST_FOLDER_ID', part: 'checklists', label: '입고리스트' }
 ];
+// 폴더 ID는 코드(GitHub)에 두지 않고 스크립트 속성에서 읽음(QUALITY_FOLDER_ID, CHECKLIST_FOLDER_ID)
+function folderId_(fd) {
+  var id = PropertiesService.getScriptProperties().getProperty(fd.idProp);
+  if (!id) throw new Error('스크립트 속성 ' + fd.idProp + '가 없습니다(설치 방법 3단계).');
+  return id;
+}
 var MAX_FILES_PER_RUN = 40;     // 한 번 실행에 보낼 최대 파일 수
 var TIME_BUDGET_MS = 4.5 * 60 * 1000; // 실행 시간 6분 제한 전에 멈추고 나머지는 다음 실행(10분 뒤)에
 var MAX_ROWS = 6000, MAX_COLS = 60;
@@ -140,7 +148,7 @@ function allFiles_(fd) {
     }
     var subs = folder.getFolders();
     while (subs.hasNext()) walk(subs.next());
-  })(DriveApp.getFolderById(fd.id));
+  })(DriveApp.getFolderById(folderId_(fd)));
   return out;
 }
 function pendingFiles_() {
