@@ -6,9 +6,9 @@
 //   logout          POST  (로그인 필요)
 //   change-password POST  (로그인 필요) { current, next }
 //   users           GET   (관리자) 계정 목록
-//   create          POST  (관리자) { id, name, role } 초기 비밀번호 1111, 첫 로그인 시 변경 필수
+//   create          POST  (관리자) { id, name, role } → 무작위 임시 비밀번호(tempPassword, 응답에 1번만), 24시간 안에 첫 로그인·변경 필수
 //   update          POST  (관리자) { id, name?, role?, active? }
-//   reset           POST  (관리자) { id } 비밀번호를 1111로 초기화(다음 로그인 시 변경 필수)
+//   reset           POST  (관리자) { id } 무작위 임시 비밀번호로 초기화(응답에 1번만) + 그 사용자의 모든 기기 로그아웃
 //   remove          POST  (관리자) { id }
 //   logs            GET   (관리자) ?id=&limit= 로그인 기록
 const A = require('./_lib/auth');
@@ -64,6 +64,7 @@ module.exports = async (req, res) => {
         await A.saveAccounts(store, acc);
         return fail('아이디 또는 비밀번호가 맞지 않습니다.');
       }
+      if (A.tempExpired(u)) return fail('임시 비밀번호가 만료되었습니다. 관리자에게 비밀번호 초기화를 요청해 주세요.', 'expired');
       u.fails = 0; u.lockUntil = 0; u.lastLoginAt = new Date().toISOString();
       await A.saveAccounts(store, acc);
       const s = await A.createSession(store, u);
@@ -88,7 +89,8 @@ module.exports = async (req, res) => {
       if (!A.checkPassword(String(b.current || ''), u)) return res.status(400).json({ success: false, error: '현재 비밀번호가 맞지 않습니다.' });
       const p = A.passwordProblem(b.next, me.id); if (p) return res.status(400).json({ success: false, error: p });
       if (String(b.next) === String(b.current)) return res.status(400).json({ success: false, error: '현재 비밀번호와 다른 비밀번호를 입력해 주세요.' });
-      Object.assign(u, A.hashPassword(b.next), { mustChange: false, updatedAt: new Date().toISOString() });
+      Object.assign(u, A.hashPassword(b.next), { mustChange: false, tempExpiresAt: 0, updatedAt: new Date().toISOString() });
+      await A.revokeSessions(store, u, me.tokenKey); // 다른 기기 로그인은 끊고 지금 기기만 유지
       await A.saveAccounts(store, acc);
       await A.addLog(store, { id: me.id, action: 'change-password', result: 'success', device });
       return res.status(200).json({ success: true, user: A.publicUser(u) });
@@ -113,10 +115,11 @@ module.exports = async (req, res) => {
       if (!A.validId(id)) return res.status(400).json({ success: false, error: '아이디는 영문·숫자·._- 2~30자로 입력해 주세요.' });
       if (acc.users[id]) return res.status(400).json({ success: false, error: '이미 있는 아이디입니다.' });
       const role = A.ROLES[b.role] ? b.role : 'member';
-      acc.users[id] = { id, name: String(b.name || '').trim() || id, role, ...A.hashPassword(A.INITIAL_PASSWORD), mustChange: true, active: true, fails: 0, createdAt: now, updatedAt: now };
+      const temp = A.newTempPassword();
+      acc.users[id] = { id, name: String(b.name || '').trim() || id, role, ...A.hashPassword(temp), mustChange: true, tempExpiresAt: Date.now() + A.TEMP_PASSWORD_TTL_MS, active: true, fails: 0, createdAt: now, updatedAt: now };
       await A.saveAccounts(store, acc);
       await A.addLog(store, { id, action: 'create', result: 'success', device, by: me.id, role });
-      return res.status(200).json({ success: true, user: A.publicUser(acc.users[id]) });
+      return res.status(200).json({ success: true, user: A.publicUser(acc.users[id]), tempPassword: temp });
     }
     const u = acc.users[id];
     if (!u) return res.status(404).json({ success: false, error: '없는 계정입니다.' });
@@ -125,16 +128,18 @@ module.exports = async (req, res) => {
     if (action === 'update' && req.method === 'POST') {
       if (b.role && A.ROLES[b.role]) { if (u.role === 'admin' && b.role !== 'admin' && !adminsLeft(id)) return res.status(400).json({ success: false, error: '관리자가 최소 1명은 있어야 합니다.' }); u.role = b.role; }
       if (typeof b.name === 'string' && b.name.trim()) u.name = b.name.trim();
-      if (typeof b.active === 'boolean') { if (!b.active && u.role === 'admin' && !adminsLeft(id)) return res.status(400).json({ success: false, error: '관리자가 최소 1명은 있어야 합니다.' }); u.active = b.active; }
+      if (typeof b.active === 'boolean') { if (!b.active && u.role === 'admin' && !adminsLeft(id)) return res.status(400).json({ success: false, error: '관리자가 최소 1명은 있어야 합니다.' }); u.active = b.active; if (!b.active) await A.revokeSessions(store, u); }
       u.updatedAt = now; await A.saveAccounts(store, acc);
       await A.addLog(store, { id, action: 'update', result: 'success', device, by: me.id, role: u.role });
       return res.status(200).json({ success: true, user: A.publicUser(u) });
     }
     if (action === 'reset' && req.method === 'POST') {
-      Object.assign(u, A.hashPassword(A.INITIAL_PASSWORD), { mustChange: true, fails: 0, lockUntil: 0, updatedAt: now });
+      const temp = A.newTempPassword();
+      Object.assign(u, A.hashPassword(temp), { mustChange: true, tempExpiresAt: Date.now() + A.TEMP_PASSWORD_TTL_MS, fails: 0, lockUntil: 0, updatedAt: now });
+      await A.revokeSessions(store, u); // 이 사용자의 모든 기기 로그아웃
       await A.saveAccounts(store, acc);
       await A.addLog(store, { id, action: 'reset-password', result: 'success', device, by: me.id });
-      return res.status(200).json({ success: true, user: A.publicUser(u) });
+      return res.status(200).json({ success: true, user: A.publicUser(u), tempPassword: temp });
     }
     if (action === 'remove' && req.method === 'POST') {
       if (id === me.id) return res.status(400).json({ success: false, error: '본인 계정은 삭제할 수 없습니다.' });

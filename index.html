@@ -1598,7 +1598,7 @@ window.ensureChart=function(){
       <div id="admin-users" class="admin-section active">
         <div class="us-tabs" role="tablist"><button type="button" class="us-tab on" data-us="list">사용자 목록 <em id="acCount"></em></button><button type="button" class="us-tab" data-us="add">사용자 추가</button><button type="button" class="us-tab" data-us="logs">로그인 기록</button><button type="button" class="btn us-refresh" id="acRefresh">새로고침</button></div>
         <div class="us-pane" data-us-pane="list">
-          <div class="admin-card us-card"><div class="us-card-head"><div><h3>사용자 목록</h3><p>역할 변경 · 사용 중지 · 비밀번호 초기화(1111) · 삭제를 할 수 있습니다.</p></div><input id="acSearch" class="us-search" placeholder="아이디 · 이름 검색"></div>
+          <div class="admin-card us-card"><div class="us-card-head"><div><h3>사용자 목록</h3><p>역할 변경 · 사용 중지 · 비밀번호 초기화(무작위 임시 비밀번호) · 삭제를 할 수 있습니다.</p></div><input id="acSearch" class="us-search" placeholder="아이디 · 이름 검색"></div>
             <div class="ac-scroll"><table class="ac-table"><thead><tr><th>아이디</th><th>이름</th><th>역할</th><th>상태</th><th>앱 설치</th><th>알림</th><th>마지막 앱 접속</th><th>관리</th></tr></thead><tbody id="acBody"></tbody></table></div>
           </div>
         </div>
@@ -1610,7 +1610,7 @@ window.ensureChart=function(){
               <div class="field"><label for="acNewRole">역할</label><select id="acNewRole"><option value="member">팀원 — Admin 제외 전체</option><option value="guest">게스트 — 메인·현황판만 (1시간)</option><option value="admin">관리자 — 전체</option></select></div>
               <button class="btn primary" id="acCreate" type="button">+ 사용자 추가</button>
             </div>
-            <div class="us-rules"><div><b>초기 비밀번호</b><span>1111 — 첫 로그인 때 새 비밀번호(8자 이상)로 변경해야 이용할 수 있습니다.</span></div><div><b>로그인 유지</b><span>관리자·팀원은 계속 유지, 게스트는 로그인 1시간 뒤 다시 로그인</span></div></div>
+            <div class="us-rules"><div><b>임시 비밀번호</b><span>사용자 추가·초기화 때 무작위로 만들어 1번만 보여 줍니다(24시간 유효). 첫 로그인 때 새 비밀번호(8자 이상)로 변경해야 이용할 수 있습니다.</span></div><div><b>로그인 유지</b><span>관리자·팀원은 계속 유지, 게스트는 로그인 1시간 뒤 다시 로그인</span></div></div>
             <div class="us-created" id="acCreated" hidden></div>
           </div>
         </div>

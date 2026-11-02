@@ -1,6 +1,6 @@
 /* Admin > 사용자 관리 (관리자 전용) — [사용자 목록] [사용자 추가] [로그인 기록]
-   - 사용자 추가: 아이디·이름·역할 → 초기 비밀번호 1111(첫 로그인 시 변경 필수)
-   - 사용자 목록: 역할 변경, 사용 중지/다시 사용, 비밀번호 초기화(1111), 삭제
+   - 사용자 추가: 아이디·이름·역할 → 무작위 임시 비밀번호(화면에 1번만 표시, 24시간 유효, 첫 로그인 시 변경 필수)
+   - 사용자 목록: 역할 변경, 사용 중지/다시 사용, 비밀번호 초기화(새 무작위 임시 비밀번호 + 모든 기기 로그아웃), 삭제
    - 로그인 기록: 계정별 로그인 성공·실패·잠김·로그아웃·비밀번호 변경 등 */
 (function(){
   var $=function(id){return document.getElementById(id)};
@@ -36,7 +36,7 @@
         '<td class="ac-id"><b>'+esc(u.id)+'</b>'+(u.id===me?'<span class="ac-me">나</span>':'')+'</td>'+
         '<td>'+esc(u.name)+'</td>'+
         '<td><select data-act="role"'+(u.id===me?' disabled title="본인 역할은 바꿀 수 없습니다"':'')+'>'+['admin','member','guest'].map(function(r){return '<option value="'+r+'"'+(u.role===r?' selected':'')+'>'+ROLE_NAME[r]+'</option>'}).join('')+'</select></td>'+
-        '<td>'+(u.active?'<span class="ac-badge on">사용 중</span>':'<span class="ac-badge off">중지</span>')+(u.mustChange?' <span class="ac-badge temp">임시 비밀번호</span>':'')+'</td>'+
+        '<td>'+(u.active?'<span class="ac-badge on">사용 중</span>':'<span class="ac-badge off">중지</span>')+(u.mustChange?' <span class="ac-badge temp">'+(u.tempExpired?'임시 비밀번호 만료 · 초기화 필요':'임시 비밀번호')+'</span>':'')+'</td>'+
         pushCells(u.id)+
         '<td class="ac-manage">'+(u.id===me?'<span class="ac-self">본인 비밀번호는 오른쪽 위 프로필에서 변경</span>':'<button type="button" data-act="reset">비밀번호 초기화</button><button type="button" data-act="active">'+(u.active?'사용 중지':'다시 사용')+'</button><button type="button" data-act="remove" class="del">삭제</button>')+'</td>'+
       '</tr>';
@@ -75,7 +75,7 @@
       if(!j||!j.success){toast((j&&j.error)||'추가하지 못했습니다.');return}
       $('acNewId').value='';$('acNewName').value='';
       var c=$('acCreated');c.hidden=false;
-      c.innerHTML='<b>✓ 사용자를 추가했습니다</b><div class="us-created-grid"><span>아이디</span><code>'+esc(j.user.id)+'</code><span>이름</span><em>'+esc(j.user.name)+'</em><span>역할</span><em>'+esc(ROLE_NAME[j.user.role]||j.user.role)+'</em><span>초기 비밀번호</span><code>1111</code></div><small>본인에게 아이디와 초기 비밀번호를 전달해 주세요. 첫 로그인 때 비밀번호를 변경하게 됩니다.</small><button type="button" class="btn" id="acGoList">사용자 목록 보기</button>';
+      c.innerHTML='<b>✓ 사용자를 추가했습니다</b><div class="us-created-grid"><span>아이디</span><code>'+esc(j.user.id)+'</code><span>이름</span><em>'+esc(j.user.name)+'</em><span>역할</span><em>'+esc(ROLE_NAME[j.user.role]||j.user.role)+'</em><span>임시 비밀번호</span><code>'+esc(j.tempPassword||'')+'</code></div><small>본인에게 아이디와 임시 비밀번호를 전달해 주세요(24시간 유효). 이 화면을 벗어나면 다시 볼 수 없습니다. 첫 로그인 때 비밀번호를 변경하게 됩니다.</small><button type="button" class="btn" id="acGoList">사용자 목록 보기</button>';
       $('acGoList').onclick=function(){showTab('list')};
       loadUsers();
     });
@@ -84,10 +84,10 @@
     var tr=e.target.closest('tr[data-id]');if(!tr)return;var id=tr.getAttribute('data-id'),u=users.find(function(x){return x.id===id});if(!u)return;
     var b=e.target.closest('button[data-act]');if(!b)return;
     var act=b.dataset.act,req=null;
-    if(act==='reset'){if(!confirm('['+id+'] 비밀번호를 1111로 초기화할까요?\n다음 로그인 때 새 비밀번호로 변경해야 합니다.'))return;req=api('reset',{body:{id:id}})}
+    if(act==='reset'){if(!confirm('['+id+'] 비밀번호를 초기화할까요?\n새 임시 비밀번호(24시간 유효)가 만들어지고, 이 사용자의 모든 기기가 로그아웃됩니다.'))return;req=api('reset',{body:{id:id}})}
     else if(act==='active'){if(!confirm('['+id+'] 계정을 '+(u.active?'사용 중지':'다시 사용')+'할까요?'))return;req=api('update',{body:{id:id,active:!u.active}})}
     else if(act==='remove'){if(!confirm('['+id+'] 사용자를 삭제할까요? 되돌릴 수 없습니다.'))return;req=api('remove',{body:{id:id}})}
-    if(req)req.then(function(j){if(!j||!j.success){toast((j&&j.error)||'처리하지 못했습니다.');return}toast(act==='reset'?'['+id+'] 비밀번호를 1111로 초기화했습니다.':'처리했습니다.');loadUsers()});
+    if(req)req.then(function(j){if(!j||!j.success){toast((j&&j.error)||'처리하지 못했습니다.');return}if(act==='reset'&&j.tempPassword)window.prompt('['+id+'] 새 임시 비밀번호입니다(24시간 유효). 지금 복사해서 본인에게 전달해 주세요. 창을 닫으면 다시 볼 수 없습니다.',j.tempPassword);else toast('처리했습니다.');loadUsers()});
   }
   function onRole(e){
     var s=e.target.closest('select[data-act="role"]');if(!s)return;
