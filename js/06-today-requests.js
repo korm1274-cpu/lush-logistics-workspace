@@ -21,7 +21,7 @@
     if(typeof window.refreshOutboundRequestManager==="function")window.refreshOutboundRequestManager();
     if(typeof toastMsg==="function")toastMsg("처리완료로 변경했습니다.");
   }
-  function openOriginal(r){if(r?.url)window.open(r.url,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
+  function openOriginal(r){const u=String(r?.url||"").trim();if(/^https?:\/\//i.test(u))window.open(u,"_blank","noopener");else if(typeof toastMsg==="function")toastMsg("등록된 원본 URL이 없습니다.")}
   function renderType(type){
     const{start,end}=thisWeekRange();
     const all=getRequests().filter(r=>r&&r.type===type&&!["처리완료","완료"].includes(r.status||"미처리"))

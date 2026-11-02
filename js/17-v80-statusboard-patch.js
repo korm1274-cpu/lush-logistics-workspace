@@ -1298,7 +1298,7 @@
       var list=q('[data-request-list="'+type+'"]'),count=q('[data-request-count="'+type+'"]');if(count)count.textContent=rows.length+'건';if(!list)return;
       if(!rows.length){list.innerHTML='<button type="button" class="request-empty-card" disabled>미처리 요청이 없습니다.</button>';return}
       list.innerHTML=rows.map(function(r){var done=r.status==='처리완료'||r.status==='완료';return '<div class="request-row"><button type="button" class="request-link-cell store-name" data-v80-open="'+esc(r.id)+'">'+esc(r.storeName||'-')+'</button><span class="doc-no">'+esc(String(r.__weekDate||'').slice(5).replace('-','/'))+'</span><span class="status-cell"><button type="button" class="request-state-btn '+(done?'done':'')+'" data-v80-state="'+esc(r.id)+'">'+(done?'완료':'미완료')+'</button></span></div>'}).join('');
-      qa('[data-v80-open]',list).forEach(function(b){b.onclick=function(){var r=rows.find(function(x){return String(x.id)===String(b.dataset.v80Open)});if(r&&r.url)window.open(r.url,'_blank','noopener');else if(typeof toastMsg==='function')toastMsg('등록된 원본 URL이 없습니다.')}});
+      qa('[data-v80-open]',list).forEach(function(b){b.onclick=function(){var r=rows.find(function(x){return String(x.id)===String(b.dataset.v80Open)});var u=r?String(r.url||'').trim():'';if(/^https?:\/\//i.test(u))window.open(u,'_blank','noopener');else if(typeof toastMsg==='function')toastMsg('등록된 원본 URL이 없습니다.')}});
       qa('[data-v80-state]',list).forEach(function(b){b.onclick=function(){
         var data=getRequests(),idx=data.findIndex(function(x){return String(x.id)===String(b.dataset.v80State)});if(idx<0)return;var done=data[idx].status==='처리완료'||data[idx].status==='완료';
         var ok=confirm(done?'해당 요청을 미완료 상태로 되돌리시겠습니까?':'해당 요청을 완료 처리하시겠습니까?');if(!ok)return;

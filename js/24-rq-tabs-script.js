@@ -32,7 +32,8 @@
       var rows=byType[t[0]];
       return '<div class="rq-col"><div class="rq-col-head '+t[0]+'">'+t[1]+'<span>'+rows.length+'</span></div>'+(rows.length?rows.map(function(r){
         var ds=(r.requestDates||[]).slice().sort(),late=ds.length&&ds[ds.length-1]<today;
-        var name=r.url?'<a class="rq-store" href="'+esc(r.url)+'" target="_blank" rel="noopener">'+esc(r.storeName||'-')+'</a>':'<span class="rq-store">'+esc(r.storeName||'-')+'</span>';
+        var link=/^https?:\/\//i.test(String(r.url||'').trim())?String(r.url).trim():'';
+        var name=link?'<a class="rq-store" href="'+esc(link)+'" target="_blank" rel="noopener">'+esc(r.storeName||'-')+'</a>':'<span class="rq-store">'+esc(r.storeName||'-')+'</span>';
         return '<div class="rq-item">'+name+'<button type="button" class="rq-done" data-rq-done="'+esc(r.id)+'">완료 처리</button><span class="rq-dates'+(late?' late':'')+'">'+(late?'지연 · ':'')+'요청일 '+(ds.map(md).join(', ')||'-')+'</span>'+(r.note?'<span class="rq-note">'+esc(r.note)+'</span>':'')+'</div>';
       }).join(''):'<div class="rq-empty">미처리 요청이 없습니다.</div>')+'</div>';
     }).join('');
