@@ -78,7 +78,7 @@ async function upsertSub(store, req, user, subscription, standalone, deviceId) {
   const appDeviceId=safeDeviceId(deviceId);
   const endpoint = String((subscription && subscription.endpoint) || '');
   const keys = (subscription && subscription.keys) || {};
-  if (!/^https:\/\//.test(endpoint) || !keys.p256dh || !keys.auth) throw new Error('구독 정보가 올바르지 않습니다.');
+  if (!W.allowedEndpoint(endpoint) || !keys.p256dh || !keys.auth) throw new Error('구독 정보가 올바르지 않습니다.');
   const sid = sidOf(endpoint);
   const all = await listSubs(store);
   const prev = all.find(s => s.sid === sid);

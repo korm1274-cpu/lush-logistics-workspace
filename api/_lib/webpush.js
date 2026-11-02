@@ -85,8 +85,21 @@ async function vapidAuthorization(endpoint, vapid, subject) {
   return `vapid t=${header}.${claims}.${b64u(sig)}, k=${vapid.publicKey}`;
 }
 
+// Push 주소(endpoint)는 브라우저 공식 Push 서비스만 허용(서버가 임의 주소로 요청을 보내지 않도록)
+//   FCM(Chrome·삼성 인터넷·Edge Android), Apple(iPhone·iPad·Mac Safari), Mozilla(Firefox), Windows(WNS)
+const PUSH_HOSTS = [/^fcm\.googleapis\.com$/, /^([a-z0-9-]+\.)*push\.apple\.com$/, /^([a-z0-9-]+\.)*push\.services\.mozilla\.com$/, /^([a-z0-9-]+\.)*notify\.windows\.com$/];
+function allowedEndpoint(endpoint) {
+  let u;
+  try { u = new URL(String(endpoint || '')); } catch (e) { return false; }
+  if (u.protocol !== 'https:' || u.port || u.username || u.password) return false;
+  const host = u.hostname.toLowerCase();
+  return PUSH_HOSTS.some(re => re.test(host));
+}
+
 // 구독 1건에 발송 → { status, ok, gone }  gone=true(404/410)면 만료된 구독이므로 지워야 함
 async function sendPush(subscription, payloadObj, vapid, opts = {}) {
+  // 허용 목록 밖 주소는 보내지 않고 gone 처리(구독 목록에서 지워짐)
+  if (!allowedEndpoint(subscription && subscription.endpoint)) return { status: 0, ok: false, gone: true, error: '허용되지 않은 Push 주소' };
   const body = await encrypt(subscription.keys, JSON.stringify(payloadObj));
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), opts.timeoutMs || 8000);
@@ -109,4 +122,4 @@ async function sendPush(subscription, payloadObj, vapid, opts = {}) {
   } finally { clearTimeout(timer); }
 }
 
-module.exports = { b64u, unb64u, encrypt, generateVapidKeys, vapidFromRaw, vapidAuthorization, sendPush };
+module.exports = { b64u, unb64u, encrypt, generateVapidKeys, vapidFromRaw, vapidAuthorization, sendPush, allowedEndpoint };
