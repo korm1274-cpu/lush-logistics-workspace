@@ -38,7 +38,10 @@ module.exports = async (req, res) => {
       if (typeof body === 'string') {
         try { body = JSON.parse(body); } catch {}
       }
-      body = body && typeof body === 'object' ? body : {};
+      // 빈 값·배열·문자열 본문으로 공유 데이터 전체가 지워지지 않도록 객체만 허용
+      if (!body || typeof body !== 'object' || Array.isArray(body)) {
+        return res.status(400).json({ success: false, error: '잘못된 요청 본문입니다.' });
+      }
       // 출고 상세는 달별로 따로 저장합니다(api/outbound.js). 달별 저장소가 생긴 뒤에는
       // 화면이 보낸 출고를 한 덩어리에 다시 넣지 않아 크기 한도(약 4.5MB)를 넘지 않게 합니다.
       if (body.outbound) {
@@ -53,6 +56,9 @@ module.exports = async (req, res) => {
         const cr = await fetchWithTimeout(`${KV_URL}/get/${KEY}`, { headers: { Authorization: `Bearer ${KV_TOKEN}` } });
         const cj = await cr.json();
         const current = cj && cj.result ? JSON.parse(cj.result) : null;
+        // 저장 전 형식 검사(api/_lib/payload.js)
+        const bad = require('./_lib/payload').checkTopLevel(body, current);
+        if (bad) return res.status(400).json({ success: false, error: bad });
         if (current && typeof current === 'object') {
           const SHEET_KEYS = ['misship', 'damage', 'inbound', 'outbound', 'inboundMonthlySummary', 'outboundMonthlySummary'];
           SHEET_KEYS.filter(k => k in body).forEach(k => {
@@ -85,7 +91,11 @@ module.exports = async (req, res) => {
             keepServerMonths('outboundMonthlySummary', new Set(Object.keys(oidx.months || {})));
           } catch (e) { /* 확인 실패 시 받은 그대로 */ }
         }
-      } catch (e) { /* 비교 실패 시에는 받은 그대로 저장 */ }
+      } catch (e) {
+        // 비교 실패(서버 데이터 읽기 실패 등) 시 받은 그대로 저장하면 더 최신 데이터가 지워질 수 있어 저장하지 않음
+        console.error('shared-data merge error:', String((e && e.message) || e).slice(0, 200));
+        return res.status(503).json({ success: false, error: '서버 데이터와 합치지 못해 저장하지 않았습니다. 잠시 후 다시 시도해 주세요.' });
+      }
       const value = JSON.stringify(body);
       const r = await fetchWithTimeout(`${KV_URL}/set/${KEY}`, {
         method: 'POST',
@@ -96,8 +106,7 @@ module.exports = async (req, res) => {
         body: value
       });
       if (!r.ok) {
-        const t = await r.text();
-        throw new Error(`KV 저장 실패: ${t}`);
+        throw new Error(`KV 저장 실패(HTTP ${r.status})`);
       }
       return res.status(200).json({ success: true });
     }
@@ -105,6 +114,7 @@ module.exports = async (req, res) => {
     res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   } catch (err) {
-    return res.status(500).json({ success: false, error: String(err.message || err) });
+    console.error('shared-data error:', String((err && err.message) || err).slice(0, 200));
+    return res.status(500).json({ success: false, error: '서버 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.' });
   }
 };

@@ -32,6 +32,12 @@ async function kvSet(value) {
   return res.ok;
 }
 
+// 오류 상세(KV 응답 등)는 화면에 보내지 않고 서버 로그에만 남김(요청 본문·개인정보는 남기지 않음)
+function failMsg(where, e) {
+  console.error(`team-data ${where} error:`, String((e && e.message) || e).slice(0, 200));
+  return '서버 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.';
+}
+
 // 입고리스트 저장소(hash): 필드 = 차수 id(예: JP-141) → { id, country, batchNo, label, date, fileName, sheets, cols, rows, uploadedAt, uploadedBy }
 //   GET               차수 전체 목록(행 포함)
 //   POST {action:'save', batch}  같은 차수면 새 파일로 교체
@@ -91,7 +97,7 @@ async function inboundLists(req, res, user) {
     }
     return res.status(200).json({ success: false, error: 'Unsupported action' });
   } catch (e) {
-    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+    return res.status(200).json({ success: false, error: failMsg('inbound-lists', e) });
   }
 }
 
@@ -147,7 +153,7 @@ async function qualityLists(req, res, user) {
     }
     return res.status(200).json({ success: false, error: 'Unsupported action' });
   } catch (e) {
-    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+    return res.status(200).json({ success: false, error: failMsg('quality-lists', e) });
   }
 }
 
@@ -223,7 +229,7 @@ async function checklists(req, res, user) {
     await syncInbound(store); // 입고·월별 입고현황·입고 상세조회 데이터도 체크리스트로 다시 만듦
     return res.status(200).json({ success: true, batch: { id, label: rec.label, rows: rows.length, eta, etaChanged: !!(old && old.eta && old.eta !== eta) } });
   } catch (e) {
-    return res.status(200).json({ success: false, error: String((e && e.message) || e) });
+    return res.status(200).json({ success: false, error: failMsg('checklists', e) });
   }
 }
 
@@ -329,6 +335,9 @@ module.exports = async (req, res) => {
       const freshItems = []; // 모바일 Push: 서버에 없던 신규 id만(수정·상태 변경·삭제·재저장은 제외)
       try {
         const current = await kvGet();
+        // 저장 전 형식 검사(api/_lib/payload.js): 객체가 아니면 저장하지 않고, 서버 항목과 종류가 다른 항목은 서버 값 유지
+        const bad = require('./_lib/payload').checkTopLevel(body, current);
+        if (bad) { res.status(200).json({ success: false, error: bad }); return; }
         if (current && typeof current === 'object' && body && typeof body === 'object') {
           try {
             const recent = r => { const t = Date.parse(r.createdAt || r.date || ''); return isNaN(t) || Date.now() - t < 3 * 24 * 3600 * 1000; };
@@ -395,7 +404,16 @@ module.exports = async (req, res) => {
             body.defects = Array.from(byId.values());
           }
         }
-      } catch (e) { /* 병합 실패 시 받은 그대로 저장 */ }
+      } catch (e) {
+        // 병합 실패(서버 데이터 읽기 실패 등) 시 받은 그대로 저장하면 다른 기기의 데이터가 지워질 수 있어 저장하지 않음
+        res.status(200).json({ success: false, error: failMsg('merge', e) });
+        return;
+      }
+      // 출고 요청 링크는 http(s)만 저장(javascript: 등은 빈칸)
+      if (Array.isArray(body.requests)) {
+        const { httpUrl } = require('./_lib/payload');
+        body.requests.forEach(r => { if (r && typeof r === 'object' && r.url) r.url = httpUrl(r.url); });
+      }
       const ok = await kvSet(body);
       // 저장이 끝난 신규 건만 자동 Push(관리자 설정·중복 확인은 api/_lib/push.js). 실패해도 저장 결과는 그대로
       if (ok && freshItems.length) {
@@ -409,6 +427,6 @@ module.exports = async (req, res) => {
     }
     res.status(200).json({ success: false, error: 'Unsupported method' });
   } catch (e) {
-    res.status(200).json({ success: false, error: String((e && e.message) || e) });
+    res.status(200).json({ success: false, error: failMsg('team-data', e) });
   }
 };

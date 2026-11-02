@@ -34,7 +34,9 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       let body = req.body;
       if (typeof body === 'string') { try { body = JSON.parse(body); } catch { body = null; } }
-      if (!body || !store.isMonth(body.month) || !Array.isArray(body.rows)) {
+      // 행은 배열만, 메타는 객체만 허용(엉뚱한 값으로 달 데이터를 덮어쓰지 않도록)
+      if (!body || !store.isMonth(body.month) || !Array.isArray(body.rows) || body.rows.length > 100000 || !body.rows.every(Array.isArray)
+        || (body.meta != null && (typeof body.meta !== 'object' || Array.isArray(body.meta)))) {
         return res.status(400).json({ success: false, error: '{ month: "YYYY-MM", rows: [...] } 형식으로 보내주세요.' });
       }
       const result = await store.writeMonths(kv, { [body.month]: body.rows }, body.meta || null);
@@ -44,6 +46,7 @@ module.exports = async (req, res) => {
     res.setHeader('Allow', 'GET, POST');
     return res.status(405).json({ success: false, error: 'Method not allowed' });
   } catch (err) {
-    return res.status(500).json({ success: false, error: String(err.message || err) });
+    console.error('outbound error:', String((err && err.message) || err).slice(0, 200));
+    return res.status(500).json({ success: false, error: '서버 처리 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.' });
   }
 };
