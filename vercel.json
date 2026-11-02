@@ -5,5 +5,16 @@
     { "path": "/api/sync-outbound-summary-sheet", "schedule": "20 19 * * *" },
     { "path": "/api/sync-misship-sheet", "schedule": "30 19 * * *" },
     { "path": "/api/sync-damage-sheet", "schedule": "40 19 * * *" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=(), payment=(), usb=()" }
+      ]
+    }
   ]
 }
