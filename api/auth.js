@@ -33,6 +33,8 @@ module.exports = async (req, res) => {
     }
 
     if (action === 'setup' && req.method === 'POST') {
+      // 최초 관리자 만들기는 Vercel 환경변수 ALLOW_SETUP=1일 때만(계정 데이터가 사라졌을 때 아무나 관리자가 되지 않도록). 평소에는 설정하지 않음
+      if (process.env.ALLOW_SETUP !== '1') return res.status(403).json({ success: false, error: '최초 관리자 설정이 잠겨 있습니다. 관리자에게 문의해 주세요.' });
       const acc = await A.loadAccounts(store);
       if (Object.keys(acc.users).length) return res.status(403).json({ success: false, error: '이미 관리자 계정이 있습니다.' });
       const b = body(req), id = A.normId(b.id), name = String(b.name || '').trim() || id;
@@ -51,8 +53,9 @@ module.exports = async (req, res) => {
       const b = body(req), id = A.normId(b.id), pw = String(b.password || '');
       const acc = await A.loadAccounts(store);
       const u = acc.users[id];
-      const fail = async (msg, result) => { await A.addLog(store, { id: id || '(빈 아이디)', action: 'login', result: result || 'fail', device }); return res.status(401).json({ success: false, error: msg }); };
-      if (!u) return fail('아이디 또는 비밀번호가 맞지 않습니다.');
+      // 기록용 아이디: 없는 계정이면 입력값을 남기지 않음(비밀번호를 아이디 칸에 잘못 입력한 경우 원문이 기록되지 않도록)
+      const fail = async (msg, result, logId) => { await A.addLog(store, { id: logId || id || '(빈 아이디)', action: 'login', result: result || 'fail', device }); return res.status(401).json({ success: false, error: msg }); };
+      if (!u) return fail('아이디 또는 비밀번호가 맞지 않습니다.', 'fail', id ? '(unknown)' : '(빈 아이디)');
       if (u.active === false) return fail('사용이 중지된 계정입니다. 관리자에게 문의해 주세요.', 'inactive');
       if (u.lockUntil && u.lockUntil > Date.now()) return fail(`비밀번호를 여러 번 틀려 잠시 잠겼습니다. ${Math.ceil((u.lockUntil - Date.now()) / 60000)}분 뒤 다시 시도해 주세요.`, 'locked');
       if (!A.checkPassword(pw, u)) {
