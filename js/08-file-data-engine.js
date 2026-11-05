@@ -329,7 +329,13 @@
     const inQ=sum(inCur,eaEquivQty),inPQ=sum(inPrev,eaEquivQty),outQ=sum(outCur,outQty),outPQ=sum(outPrev,outQty);
     $('fileInboundQty').textContent=fmt(Math.round(inQ));
     $('fileOutboundQty').textContent=fmt(Math.round(outQ));
-    const delta=(el,a,b)=>{if(!el)return;if(!b){el.textContent='';el.className='mio-delta';return}const p=Math.round((a-b)/b*100);el.textContent=(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'% 전월';el.className='mio-delta '+(p>0?'up':p<0?'down':'')};
+    /* 입고는 차수 단위로 몰려 들어와 월초 며칠만 비교하면 전월 동기간이 거의 0이라 수백~수만 %가 나옴.
+       증감율이 ±300%를 넘거나 전월 동기간 기록이 없으면 % 대신 전월 같은 기간 수량을 그대로 보여줌 */
+    const delta=(el,a,b)=>{if(!el)return;
+      if(!b){el.textContent=a?'전월 동기간 기록 없음':'';el.className='mio-delta';return}
+      const p=Math.round((a-b)/b*100);
+      if(Math.abs(p)>300){el.textContent='전월 동기간 '+fmt(Math.round(b))+' EA';el.className='mio-delta';return}
+      el.textContent=(p>0?'▲ ':p<0?'▼ ':'')+Math.abs(p)+'% 전월';el.className='mio-delta '+(p>0?'up':p<0?'down':'')};
     delta($('mioInDelta'),inQ,inPQ);delta($('mioOutDelta'),outQ,outPQ);
     const chip=a=>a.filter(x=>x[1]).map(x=>`<span>${esc(x[0])} ${esc(x[1])}</span>`).join('');
     const batches=new Map();inCur.forEach(r=>{if(r[1])batches.set(String(r[1]),r[2]!==''&&r[2]!=null?num(r[2]):(batches.get(String(r[1]))||0))});
