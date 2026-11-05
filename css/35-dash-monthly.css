@@ -16,6 +16,12 @@
 #dashboard .mio-delta:empty{display:none;}
 #dashboard .mio-delta.up{background:#e3f5ec;color:#11795a;}
 #dashboard .mio-delta.down{background:#fdecec;color:#c93838;}
+/* % 배지 + 그 아래 전월 동기간 수량(두 줄) */
+#dashboard .mio-delta.two{display:inline-flex;flex-direction:column;align-items:flex-end;gap:3px;padding:0;border-radius:0;background:none;color:inherit;}
+#dashboard .mio-delta.two .p{padding:3px 9px;border-radius:999px;background:#f1efe8;color:#5f5e5a;}
+#dashboard .mio-delta.two.up .p{background:#e3f5ec;color:#11795a;}
+#dashboard .mio-delta.two.down .p{background:#fdecec;color:#c93838;}
+#dashboard .mio-delta.two .q{padding-right:4px;font-size:11px;font-weight:700;color:#8b95a1;}
 #dashboard .mio-chips{display:flex;flex-wrap:wrap;gap:6px;}
 #dashboard .mio-chips span{font-size:12px;font-weight:700;color:#4e5968;padding:3px 9px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;white-space:nowrap;}
 #dashboard .mio-chips .mio-empty{border:0;background:none;padding:3px 0;color:#a3a9b0;font-weight:600;}
