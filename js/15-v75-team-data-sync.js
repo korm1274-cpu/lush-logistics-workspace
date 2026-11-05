@@ -71,6 +71,16 @@
   function normalizeProd(v){const d={people:[],entries:{}};if(!v||typeof v!=='object')return d;return{people:Array.isArray(v.people)?v.people:[],entries:(v.entries&&typeof v.entries==='object')?v.entries:{}}}
   function snapshot(){return {notices:readLocal(KEYS.notices),todos:readLocal(KEYS.todos),requests:readLocal(KEYS.requests),productivity:normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}})),defects:readLocal(KEYS.defects),stock:readLocal(KEYS.stock),menuConfig:readMenuCfg()||undefined,requestsDeleted:readLocal(KEYS.requestsDeleted),noticesDeleted:readLocal(KEYS.noticesDeleted),todosDeleted:readLocal(KEYS.todosDeleted)}}
   const LAST_SAVE_KEY='__team_data_last_local_save__';
+  /* 서버에 아직 못 올린 변경 표시(새로고침·앱 종료에도 남도록 localStorage에 시각 기록).
+     새로고침 후 이 표시가 있으면 서버 내용으로 덮어쓰기 전에 먼저 올림. 10분 넘은 표시는 무시(예전처럼 서버 내용 우선) */
+  const PENDING_KEY='lush_team_push_pending_v1',PENDING_MAX_MS=10*60*1000;
+  function pendingSince(){try{return Number(localStorage.getItem(PENDING_KEY)||0)}catch(e){return 0}}
+  function markPending(){try{origSetItem(PENDING_KEY,String(Date.now()))}catch(e){}}
+  // since: 올리기 시작할 때의 표시 시각. 그 뒤에 또 바뀐 게 있으면(표시가 더 최근) 지우지 않음
+  function clearPending(since){try{if(!since||pendingSince()<=since)localStorage.removeItem(PENDING_KEY)}catch(e){}}
+  function hasFreshPending(){const t=pendingSince();return t>0&&Date.now()-t<PENDING_MAX_MS}
+  // 저장 권한이 없어 다시 시도해도 안 되는 경우(게스트·임시 비밀번호 변경 전)
+  function noPermission(j){return !!j&&(j.code==='FORBIDDEN'||j.code==='MUST_CHANGE')}
   let pushTimer=null,pulling=false,applyingServer=false;
   function markLocalSave(){try{sessionStorage.setItem(LAST_SAVE_KEY,String(Date.now()))}catch(e){}}
   function recentlySavedLocally(){
@@ -82,6 +92,7 @@
   function pushTeamData(){
     clearTimeout(pushTimer);
     markLocalSave();
+    markPending();
     pushTimer=setTimeout(()=>{pushTimer=null;attemptPush(0)},900);
   }
   /* 저장 직후 앱을 내리거나 화면을 끄면(특히 휴대폰) 0.9초 뒤 올리기 전에 멈춰 저장이 사라질 수 있어,
@@ -89,35 +100,45 @@
   function flushPendingPush(){
     if(!pushTimer)return;
     clearTimeout(pushTimer);pushTimer=null;
-    const body=JSON.stringify(snapshot());
+    const body=JSON.stringify(snapshot()),since=pendingSince();
     if(body.length<60000){
-      try{fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body,keepalive:true}).then(r=>r.json()).then(j=>{if(j&&j.success){markLocalSave();window.__teamPushFailed=false}}).catch(()=>attemptPush(1));return}catch(e){}
+      try{fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body,keepalive:true}).then(r=>r.json()).then(j=>{if(j&&j.success){markLocalSave();window.__teamPushFailed=false;clearPending(since)}}).catch(()=>attemptPush(1));return}catch(e){}
     }
     attemptPush(0);
   }
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='hidden')flushPendingPush()});
   window.addEventListener('pagehide',flushPendingPush);
-  function attemptPush(attempt){
+  // after: 성공(또는 권한 없음으로 포기)한 뒤 할 일(새로고침 후 먼저 올리기 → 끝나면 서버 내용 다시 받기)
+  function attemptPush(attempt,after){
+    const since=pendingSince();
     fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())})
       .then(r=>r.json()).then(j=>{
         if(!j||!j.success){
           console.error('team-data 저장 실패:',j&&j.error);
-          retryPush(attempt);
+          if(noPermission(j)){
+            clearPending();window.__teamPushFailed=false;
+            if(typeof window.toastMsg==='function')window.toastMsg('저장 권한이 없어 서버에 반영되지 않았습니다.');
+            if(after)after();
+            return;
+          }
+          retryPush(attempt,after);
         }else{
           markLocalSave();
           window.__teamPushFailed=false;
+          clearPending(since);
+          if(after)after();
         }
       })
       .catch(err=>{
         console.error('team-data 저장 실패:',err);
-        retryPush(attempt);
+        retryPush(attempt,after);
       });
   }
-  function retryPush(attempt){
+  function retryPush(attempt,after){
     const delays=[3000,8000,20000];
     if(attempt<delays.length){
       window.__teamPushFailed=true;
-      setTimeout(()=>attemptPush(attempt+1),delays[attempt]);
+      setTimeout(()=>attemptPush(attempt+1,after),delays[attempt]);
     }else{
       window.__teamPushFailed=true;
       if(typeof window.toastMsg==='function')window.toastMsg('공지·할 일·출고 요청 서버 동기화에 실패했습니다. 잠시 후 다시 저장해주세요.');
@@ -125,6 +146,9 @@
   }
   async function pullTeamData(silent){
     if(pulling)return;
+    /* 새로고침·앱 종료 전에 못 올린 변경이 있으면, 서버 내용으로 덮어쓰기 전에 먼저 올리고 끝나면 다시 받기 */
+    if(!pushTimer&&!window.__teamPushFailed&&hasFreshPending()){attemptPush(0,()=>pullTeamData(silent));return}
+    if(pendingSince()&&!hasFreshPending())clearPending();
     if(recentlySavedLocally()){setTimeout(()=>pullTeamData(silent),2000);return}
     if(window.__teamPushFailed){return}
     pulling=true;
@@ -210,7 +234,8 @@
       }catch(e){}
     }
     origSetItem(k,v);
-    if(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects||k===KEYS.stock||k===MENU_CFG_KEY)pushTeamData();
+    // 서버에서 받은 내용을 적용하는 중(applyingServer)에는 다시 올리지 않음(이 기기에만 있던 건은 needPush로 따로 올림)
+    if(!applyingServer&&(k===KEYS.notices||k===KEYS.todos||k===KEYS.requests||k===KEYS.productivity||k===KEYS.defects||k===KEYS.stock||k===MENU_CFG_KEY))pushTeamData();
   };
   window.pullTeamData=pullTeamData;
   /* 관리자가 메뉴 관리에서 저장(saveMenus·saveGroups)하면 공유 메뉴 설정도 갱신 → 서버로 */
