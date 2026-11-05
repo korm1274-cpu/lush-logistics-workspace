@@ -67,3 +67,19 @@
 #appShell #dashboard .todo-panel .todo-cheer small{display:block;margin-top:4px;font-size:12px!important;color:#6b7684!important;}
 #appShell #dashboard .todo-panel .ops-todo-item{margin-bottom:8px!important;padding:14px 18px!important;}
 #appShell #dashboard .todo-panel .ops-todo-item:last-child{margin-bottom:0!important;}
+
+/* 메인 출고 요청: 노트북 화면 폭(약 1180~1600px)에서 4칸 카드가 좁아져 매장명 칸이 0px이 되던 문제
+   (요청일자·처리 칸이 72px씩 고정이라 매장명만 줄어듦 → 이름이 안 보이고 눌러서 원본 링크로 갈 수도 없었음)
+   - 1181~1600px은 2칸×2줄, 요청일자·처리 칸을 줄이고 매장명은 최소 72px 확보, 긴 이름은 두 줄로
+   - 900px 이하(휴대폰)는 11-lush-main-theme.css 규칙 그대로 */
+@media (min-width:1181px) and (max-width:1600px){
+  #appShell #dashboard .request-card-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important;}
+}
+@media (min-width:901px){
+  #appShell #dashboard .request-mini-header,
+  #appShell #dashboard .request-row{grid-template-columns:minmax(72px,1fr) 46px 64px!important;column-gap:6px!important;}
+}
+@media (min-width:901px){
+  /* 긴 매장명은 …로 자르지 않고 두 줄로(휴대폰과 같은 방식) */
+  #appShell #dashboard .request-row .store-name{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;word-break:keep-all!important;overflow-wrap:anywhere!important;line-height:1.35!important;}
+}
