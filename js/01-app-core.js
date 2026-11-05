@@ -731,5 +731,5 @@ document.addEventListener("click",e=>{
   if(navContainer.contains(e.target)||desktopSidebarBtn.contains(e.target))return;
   closeMobileNav();
 },true);
-window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item"))closeMobileNav()})}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
+window.addEventListener("resize",()=>{if(!isMobile())closeMobileNav()});navContainer.addEventListener("click",e=>{if(isMobile()&&e.target.closest(".nav-item,.nav-group-direct>.nav-root"))closeMobileNav()})/* 메인처럼 하위 메뉴 없이 바로 이동하는 버튼도 누르면 휴대폰 메뉴 닫기 */}initResponsiveNav();renderNav();renderHistory();renderAdmin();if(window.lucide)lucide.createIcons();
 
