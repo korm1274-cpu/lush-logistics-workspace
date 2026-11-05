@@ -42,3 +42,12 @@
   #appShell.app .main .view.active :is(.data-workbench-head,.status-board-top,.schedule-head,.request-manager-top,.inventory-head,.lush-page-head,.sheet-title),
   #appShell.app #outboundRequestManager.view.active .request-manager-top{background-image:radial-gradient(circle at calc(100% - 14px) 0,var(--bt-accent) 0 38px,transparent 39px)!important;}
 }
+
+/* 휴대폰(900px 이하) 상단: 동기화 버튼은 검은 상단바의 햄버거(☰) 바로 왼쪽에 고정(모든 화면),
+   뷰러쉬·그룹웨어·다크모드·앱 설치·알림 활성화·알림은 메인 화면에서만 표시해 다른 화면의 자리 차지를 줄임.
+   (display는 건드리지 않아 게스트의 동기화 숨김 등 기존 규칙은 그대로) */
+@media (max-width:900px){
+  #appShell .topbar #baseTools #baseSyncBtn{position:fixed!important;top:11px!important;right:56px!important;left:auto!important;z-index:10000!important;height:34px!important;min-height:34px!important;margin:0!important;padding:0 10px!important;border:1px solid #383c42!important;border-radius:8px!important;background:#0e1013!important;color:#fff!important;font-size:12.5px!important;font-weight:800!important;box-shadow:none!important;white-space:nowrap!important;}
+  #appShell .topbar #baseTools #baseSyncBtn:disabled{opacity:.75!important;}
+  #appShell .main:not(:has(#dashboard.active)) #baseTools>:not(#baseSyncBtn){display:none!important;}
+}
