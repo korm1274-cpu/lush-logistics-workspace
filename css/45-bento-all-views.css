@@ -51,3 +51,10 @@
   #appShell .topbar #baseTools #baseSyncBtn:disabled{opacity:.75!important;}
   #appShell .main:not(:has(#dashboard.active)) #baseTools>:not(#baseSyncBtn){display:none!important;}
 }
+
+/* 휴대폰(900px 이하) 메인 스케줄 카드: 제목 영역 안쪽 여백(위 18·좌우 20px)이 한 번 더 들어가 다른 카드보다
+   제목이 아래·안쪽으로 밀려 있던 것을 다른 카드와 같은 위치(위 18px·왼쪽 16px)로 맞춤 */
+@media (max-width:900px){
+  #appShell #dashboard .schedule-card .schedule-unified-head{padding:4px 2px 14px!important;}
+  #appShell #dashboard .schedule-card .schedule-title-line{margin-top:0!important;}
+}
