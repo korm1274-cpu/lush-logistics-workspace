@@ -123,9 +123,11 @@ function messageOf(kind, r) {
   // 입고리스트: 새 차수 업로드(같은 차수 다시 올려 교체할 때는 보내지 않음)
   if (kind === 'inboundList') return { title: '입고리스트가 신규 등록되었습니다.', body: clip(`${r.label || r.id}${r.date ? ' · 입고일 ' + r.date : ''} · ${r.rows || 0}건 (담당 ${r.owners || 0}명)`, 140) };
   if (kind === 'todo') return { title: '제품 확보 현황이 신규 등록되었습니다.', body: clip([r.content, r.note].filter(Boolean).join(' — '), 120) };
+  // 출고 요청: 제목 = '매장명 구분 출고 요청이 신규 등록되었습니다.'(매장명 없으면 구분만, 길면 30자에서 줄임), 내용 = 요청일자(처리 상태는 넣지 않음)
   const dates = Array.isArray(r.requestDates) ? r.requestDates.join(', ') : '';
-  const REQ_TITLE = { bulk: '대량 주문 출고 요청이 신규 등록되었습니다.', traffic: '트래픽 출고 요청이 신규 등록되었습니다.', hq: '본사 출고 요청이 신규 등록되었습니다.', nozzle: '노즐/비닐 출고 요청이 신규 등록되었습니다.' };
-  return { title: REQ_TITLE[kind], body: clip(`매장명 ${r.storeName || '-'} · 요청일자 ${dates || '-'} · 처리 ${r.status || '미처리'}`, 140) };
+  const REQ_KIND = { bulk: '대량', traffic: '트래픽', hq: '본사', nozzle: '노즐/비닐' };
+  const store = clip(r.storeName, 30);
+  return { title: `${store ? store + ' ' : ''}${REQ_KIND[kind]} 출고 요청이 신규 등록되었습니다.`, body: clip(`요청일자 ${dates || '-'}`, 140) };
 }
 
 // team-data 저장 직후 호출: 서버에 없던 id만 받아 설정 확인 → 중복 확인 → 발송
