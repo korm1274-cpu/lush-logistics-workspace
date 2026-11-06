@@ -10,6 +10,7 @@
   var API='/api/team-data?part=checklists',MASTER_API='/api/team-data?part=plu-master',QUALITY_API='/api/team-data?part=quality-lists';
   var $=function(id){return document.getElementById(id)};
   var batches=[],master=null,overrides={},quality={},sheetFilter='',mgrFilter='',colFilter='',qOnly=false,busy=false,open={},qOpen={},missOpen=false,lastView=null,colChoices=[];
+  var sumMode=false; // 여러 차수를 볼 때 [제품별 합계]: 제품 한 줄에 합계 수량·입고 횟수·입고일
   function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
   function fmt(n){return (Number(n)||0).toLocaleString('ko-KR')}
   function toast(m){if(typeof window.toastMsg==='function')window.toastMsg(m);else alert(m)}
@@ -129,41 +130,58 @@
       renderBatches();render();
     }).catch(function(){toast('입고리스트을 불러오지 못했습니다.')});
   }
-  /* 입고일(실시간 입고 예정일) 필터: 비우면 전체 날짜, 고르면 그날 입고 차수만. 같은 날 여러 차수면 '전체 차수'로 함께 보기 */
-  function scope(){var d=$('ckDate').value;return d?batches.filter(function(b){return (b.eta||'')===d}):batches}
+  /* 입고일(실시간 입고 예정일) 필터: 비우면 전체 날짜, 하루 또는 기간(시작~종료)을 고르면 그 사이 입고 차수만.
+     ckDate 값: '' / 'YYYY-MM-DD' / 'YYYY-MM-DD~YYYY-MM-DD'. 여러 차수면 '전체 차수'로 함께 보기 */
+  function dateRange(){var v=$('ckDate').value;if(!v)return null;var p=v.split('~');return{s:p[0],e:p[1]||p[0]}}
+  // 제목·파일 이름용: '10/21 ' / '10/01~10/31 ' / ''
+  function rangeText(full){var r=dateRange();if(!r)return '';var f=full?function(x){return x}:md;return (r.s===r.e?f(r.s):f(r.s)+'~'+f(r.e))+' '}
+  function scope(){var r=dateRange();return r?batches.filter(function(b){return isDay(b.eta)&&b.eta>=r.s&&b.eta<=r.e}):batches}
   function current(){var v=$('ckBatch').value;return !v||v==='*'?null:scope().find(function(b){return b.id===v})||null}
   function selected(){var b=current();return b?[b]:($('ckBatch').value==='*'?scope():[])}
   function renderBatches(keep){
     var sel=$('ckBatch'),cur=keep||sel.value,list=scope();
-    sel.innerHTML=list.length?list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+(isDay(b.eta)?esc(md(b.eta))+' 입고':'입고일 미정')+'</option>'}).join('')+(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':''):'<option value="">'+($('ckDate').value?'이 날짜 입고 없음':'차수 없음')+'</option>';
+    // '전체 차수'는 맨 위(눈에 잘 띄게). 따로 고른 게 없으면 지금처럼 첫 차수(가장 최근)부터
+    sel.innerHTML=list.length?(list.length>1?'<option value="*">전체 차수 ('+list.length+')</option>':'')+list.map(function(b){return '<option value="'+esc(b.id)+'">'+esc(b.label)+' · '+(isDay(b.eta)?esc(md(b.eta))+' 입고':'입고일 미정')+'</option>'}).join(''):'<option value="">'+($('ckDate').value?'이 기간 입고 없음':'차수 없음')+'</option>';
     if(cur&&(cur==='*'?list.length>1:list.some(function(b){return b.id===cur})))sel.value=cur;
+    else if(list.length)sel.value=list[0].id;
     $('ckDelete').hidden=!(isAdmin()&&current());
   }
   /* ===== 입고일 달력(입고리스트와 같은 모양: 입고 예정일에 점, 마우스를 올리면 그날 차수) ===== */
   var calMonth='';
   function etaLabels(){var c={};batches.forEach(function(b){if(isDay(b.eta))(c[b.eta]=c[b.eta]||[]).push(b.label)});return c}
-  function syncDateBtn(){var v=$('ckDate').value,t=$('ckDateBtn');if(t)t.querySelector('span').textContent=v?v.replace(/-/g,'.'):'전체 날짜'}
-  function calInfo(key){var l=key&&etaLabels()[key];return l?'<b>'+esc(key.slice(5).replace('-','/'))+'</b> '+esc(l.join(' · ')):'<i></i>입고 예정일'}
+  function syncDateBtn(){var r=dateRange(),t=$('ckDateBtn');if(t)t.querySelector('span').textContent=!r?'전체 날짜':r.s===r.e?r.s.replace(/-/g,'.'):r.s.replace(/-/g,'.')+' ~ '+r.e.replace(/-/g,'.')}
+  // 기간 고르기: 한 번 누르면 그날 하루(달력은 열린 채), 이어서 다른 날을 누르면 두 날 사이 기간으로 정하고 닫힘
+  var calStart='';
+  function calInfo(key){
+    if(calStart&&!key)return '<b>'+esc(md(calStart))+'</b> 부터 · 기간으로 보려면 종료일을 누르세요';
+    var l=key&&etaLabels()[key];return l?'<b>'+esc(key.slice(5).replace('-','/'))+'</b> '+esc(l.join(' · ')):(key?'<b>'+esc(md(key))+'</b> 입고 예정 없음':'<i></i>입고 예정일 · 두 날을 누르면 기간')}
   function buildCal(){
     var pop=$('ckCal');if(!pop)return;
-    var labels=etaLabels(),dates=Object.keys(labels).sort();
-    if(!calMonth)calMonth=($('ckDate').value||dates[dates.length-1]||new Date().toISOString().slice(0,10)).slice(0,7);
+    var labels=etaLabels(),dates=Object.keys(labels).sort(),r=dateRange();
+    if(!calMonth)calMonth=((r&&r.e)||dates[dates.length-1]||new Date().toISOString().slice(0,10)).slice(0,7);
     var y=+calMonth.slice(0,4),m=+calMonth.slice(5,7),startDow=new Date(y,m-1,1).getDay(),last=new Date(y,m,0).getDate();
-    var sel=$('ckDate').value,t=new Date(),todayKey=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
+    var t=new Date(),todayKey=t.getFullYear()+'-'+pad(t.getMonth()+1)+'-'+pad(t.getDate());
     var cells='';for(var i=0;i<startDow;i++)cells+='<span class="lc-day empty"></span>';
     for(var d=1;d<=last;d++){
       var key=y+'-'+pad(m)+'-'+pad(d),l=labels[key],dow=(startDow+d-1)%7;
-      cells+='<button type="button" class="lc-day'+(l?' has':'')+(key===sel?' on':'')+(key===todayKey?' today':'')+(dow===0?' sun':dow===6?' sat':'')+'"'+(l?' data-cal-day="'+key+'" title="'+esc(l.join(' · '))+'"':' disabled')+'>'+d+(l?'<i></i>':'')+'</button>';
+      var on=r&&(key===r.s||key===r.e),inR=r&&r.s!==r.e&&key>r.s&&key<r.e;
+      // 기간의 시작·끝은 입고 예정이 없는 날도 고를 수 있음(점은 입고 예정일만)
+      cells+='<button type="button" class="lc-day'+(l?' has':'')+(on?' on':'')+(inR?' in-range':'')+(key===todayKey?' today':'')+(dow===0?' sun':dow===6?' sat':'')+'" data-cal-day="'+key+'"'+(l?' title="'+esc(l.join(' · '))+'"':'')+'>'+d+(l?'<i></i>':'')+'</button>';
     }
-    var hasPrev=dates.some(function(x){return x.slice(0,7)<calMonth}),hasNext=dates.some(function(x){return x.slice(0,7)>calMonth});
+    var hasPrev=true,hasNext=true; // 기간은 어느 달이든 고를 수 있게 앞뒤 달 이동 허용
     pop.innerHTML='<div class="lc-head"><button type="button" data-cal-nav="-1" aria-label="이전 달"'+(hasPrev?'':' disabled')+'>‹</button><b>'+y+'년 '+m+'월</b><button type="button" data-cal-nav="1" aria-label="다음 달"'+(hasNext?'':' disabled')+'>›</button></div>'+
       '<div class="lc-week"><span class="sun">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="sat">토</span></div>'+
       '<div class="lc-grid">'+cells+'</div>'+
-      '<div class="lc-foot"><span class="lc-info" id="ckCalInfo">'+calInfo(sel)+'</span><span class="lc-btns"><button type="button" data-cal-all="1"'+(sel?'':' class="on"')+'>전체 날짜</button></span></div>';
+      '<div class="lc-foot"><span class="lc-info" id="ckCalInfo">'+calInfo(calStart?'':(r&&r.s===r.e?r.s:''))+'</span><span class="lc-btns"><button type="button" data-cal-all="1"'+(r?'':' class="on"')+'>전체 날짜</button></span></div>';
   }
-  function openCal(){var pop=$('ckCal');if(!pop)return;calMonth='';buildCal();pop.hidden=false;$('ckDateBtn').setAttribute('aria-expanded','true')}
-  function closeCal(){var pop=$('ckCal');if(pop&&!pop.hidden){pop.hidden=true;$('ckDateBtn').setAttribute('aria-expanded','false')}}
-  function setDate(v){palFocus=null;$('ckDate').value=v||'';syncDateBtn();closeCal();sheetFilter='';mgrFilter='';renderBatches(v&&scope().length>1?'*':'');render()}
+  function openCal(){var pop=$('ckCal');if(!pop)return;calMonth='';calStart='';buildCal();pop.hidden=false;$('ckDateBtn').setAttribute('aria-expanded','true')}
+  function closeCal(){calStart='';var pop=$('ckCal');if(pop&&!pop.hidden){pop.hidden=true;$('ckDateBtn').setAttribute('aria-expanded','false')}}
+  function setDate(v,keepOpen){palFocus=null;$('ckDate').value=v||'';syncDateBtn();if(keepOpen)buildCal();else closeCal();sheetFilter='';mgrFilter='';renderBatches(v&&scope().length>1?'*':'');render()}
+  function pickDay(key){
+    if(!calStart){calStart=key;setDate(key,true);return} // 첫 번째: 그날 하루, 달력은 열어 둠
+    var a=calStart<key?calStart:key,b=calStart<key?key:calStart;
+    calStart='';setDate(a===b?a:a+'~'+b);
+  }
   // 매장(분배처) 선택: 수량(TOTAL) 머리글 'TOTAL ▾' 또는 매장 이름 머리글 클릭 → 그 매장 수량만
   function qtyOf(r){if(!colFilter)return Number(r.qty)||0;var v=r.values&&r.values[colFilter];return Number(v)||0}
   function totalHeadHtml(){
@@ -190,6 +208,7 @@
     if(!$('ckList'))return;
     var sel=selected(),b=sel.length===1?sel[0]:null,multi=sel.length>1;
     renderInfo(b);
+    var sb=$('ckSumBtn');if(sb){sb.hidden=!multi;sb.classList.toggle('on',multi&&sumMode);sb.setAttribute('aria-pressed',String(multi&&sumMode))}
     if(!batches.length||!sel.length){renderPallet([],false);$('ckSheets').innerHTML='';$('ckMgrs').innerHTML='';$('ckList').innerHTML='<p class="ck-empty">'+(!batches.length?(canEdit()?'구글 드라이브 폴더에 체크리스트를 올리면 자동으로 반영됩니다. (데이터 › 업로드의 [입고리스트 Excel]로 직접 올릴 수도 있습니다.)':'아직 반영된 입고리스트이 없습니다.'):'이 날짜에 입고 예정인 차수가 없습니다.')+'</p>';['ckCount','ckQty','ckQuality'].forEach(function(k){$(k).textContent='0'});$('ckQualityNote').textContent='';$('ckTitle').textContent='입고리스트';return}
     var q=($('ckSearch').value||'').trim().toLowerCase();
     // 차수별로 줄을 만들고 품질은 차수마다 따로 맞춤(같은 차수 품질리스트)
@@ -201,6 +220,8 @@
       all=all.concat(rows);
     });
     all.forEach(function(r){r.q=r.qn>0});
+    // 여러 차수: 입고일 최신순(같은 날은 차수 순서 그대로) → 제품을 검색하면 언제 들어왔는지 위에서부터
+    if(multi){var ord={};sel.forEach(function(x,i){ord[x.id]=i});all.sort(function(a,c){var ea=isDay(a.batch.eta)?a.batch.eta:'',ec=isDay(c.batch.eta)?c.batch.eta:'';return ec<ea?-1:ec>ea?1:ord[a.batch.id]-ord[c.batch.id]})}
     $('ckQualityNote').textContent=linked.length?'품질리스트 '+linked.join(' · ')+'와 연결됨':'같은 차수 품질리스트 없음 — 품질리스트가 올라오면 자동으로 맞춥니다';
     var match=function(r){return !q||[r.plu,r.code,r.name,r.mgr,r.sheet,(r.details||[]).map(function(d){return d.lot+' '+d.ref+' '+d.cs}).join(' ')].join(' ').toLowerCase().indexOf(q)>=0};
     var qAll=all.filter(match);
@@ -230,7 +251,7 @@
     // 품질 수량: 입고리스트 품질 합계 / 품질리스트 총 수량 (필터 없이 고른 차수 전체 기준)
     $('ckQuality').textContent=qr?fmt(qr.matched)+' / '+fmt(qr.total):'-';
     var kq=$('ckQuality').closest('.kpi');if(kq){kq.classList.toggle('ck-q-ok',!!qr&&!qr.unmatched.length);kq.classList.toggle('ck-q-bad',!!qr&&!!qr.unmatched.length)}
-    $('ckTitle').textContent='입고리스트 · '+(b?b.label:($('ckDate').value?md($('ckDate').value)+' ':'')+'전체 차수')+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
+    $('ckTitle').textContent='입고리스트 · '+(b?b.label:rangeText()+'전체 차수')+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'')+(multi&&sumMode?' · 제품별 합계':'');
     // 품질 맞춤 결과: 같으면 한 줄, 다르면 불일치 목록(품질리스트 LOT·제조일자 vs 입고리스트 값, 사유)
     var qbox='',qname=linked.join(' · ');
     if(qr){
@@ -242,6 +263,22 @@
         :'<div class="ck-qsum ok"><b>✓ 품질 수량 일치</b> 품질리스트 '+esc(qname)+' '+fmt(qr.total)+'개 = 입고리스트 '+fmt(qr.matched)+'개 (PLU · LOT · 제조일자 기준)</div>';
     }
     if(!list.length){$('ckList').innerHTML=qbox+'<p class="ck-empty">조건에 맞는 제품이 없습니다.</p>';return}
+    // [제품별 합계](여러 차수일 때): 제품 한 줄 = 합계 수량 · 입고 횟수(차수 수) · 입고일 목록. 담당자 열은 넣지 않음
+    if(multi&&sumMode){
+      var g={},gk=[],td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
+      list.forEach(function(r){
+        var k=r.plu||((r.code||'')+'|'+r.name);
+        if(!g[k]){g[k]={plu:r.plu,code:r.code,name:r.name,qty:0,ids:{},n:0,dates:[]};gk.push(k)}
+        var x=g[k];x.qty+=qtyOf(r);
+        if(!x.ids[r.batch.id]){x.ids[r.batch.id]=1;x.n++;x.dates.push(isDay(r.batch.eta)?r.batch.eta:'')}
+      });
+      var rowsS=gk.map(function(k){var x=g[k];x.dates=uniq(x.dates.filter(Boolean)).sort();x.undated=x.dates.length<x.n;return x}).sort(function(a,c){return c.qty-a.qty||String(a.name).localeCompare(String(c.name))});
+      lastView.summary=rowsS;
+      $('ckList').innerHTML=qbox+'<div class="ck-table-wrap"><table class="ck-table ck-sum-table"><thead><tr><th class="ck-plu">PLU</th><th class="ck-code">제품코드</th><th class="ck-name">품명</th><th class="ck-num ck-tot">'+esc(colFilter?colFilter+' 합계':'합계 수량')+'</th><th class="ck-num">입고 횟수</th><th class="ck-sum-dates">입고일</th></tr></thead><tbody>'+
+        rowsS.map(function(x){return '<tr>'+td(x.plu,'ck-plu')+td(x.code,'ck-code')+'<td class="ck-name"><b>'+esc(x.name)+'</b></td><td class="ck-num ck-tot">'+fmt(x.qty)+'</td><td class="ck-num">'+fmt(x.n)+'회</td><td class="ck-sum-dates">'+esc(x.dates.map(md).join(', ')+(x.undated?(x.dates.length?', ':'')+'입고일 미정':''))+'</td></tr>'}).join('')+
+        '</tbody><tfoot><tr><td></td><td></td><th class="ck-name">합계 <small>'+fmt(rowsS.length)+'개 제품</small></th><td class="ck-num ck-tot">'+fmt(qtySum)+'</td><td></td><td></td></tr></tfoot></table></div>';
+      return;
+    }
     var td=function(v,cls){return '<td'+(cls?' class="'+cls+'"':'')+'>'+(v===''||v==null?'<span class="ck-dash">-</span>':esc(v))+'</td>'};
     var sum={};
     var body=list.map(function(r){
@@ -249,7 +286,7 @@
       var multiV=function(k){var u=uniq(d.map(function(x){return x[k]}));return u.length>1?u[0]+' 외 '+(u.length-1):(u[0]||'')};
       var qOpenNow=!!qOpen[r.key];
       var qcell=r.qn?'<td class="ck-num ck-q"><button type="button" class="ck-qbadge'+(qOpenNow?' on':'')+'" data-ck-q="'+esc(r.key)+'" aria-expanded="'+qOpenNow+'" title="눌러서 품질로 뺄 목록 보기">'+r.qn+'</button></td>':'<td class="ck-num ck-q"><span class="ck-dash">-</span></td>';
-      var sub=[sheets.length>1&&!sheetFilter?esc(r.sheet):'',multi?esc(r.batch.label):''].filter(Boolean).join(' · ');
+      var sub=[sheets.length>1&&!sheetFilter?esc(r.sheet):'',multi?esc(r.batch.label)+' · '+(isDay(r.batch.eta)?esc(md(r.batch.eta))+' 입고':'입고일 미정'):''].filter(Boolean).join(' · ');
       var main='<tr class="'+(r.q?'ck-has-q':'')+'">'+td(r.plu,'ck-plu')+td(r.code,'ck-code')+'<td class="ck-name"><b>'+esc(r.name)+'</b>'+(sub?'<small>'+sub+'</small>':'')+'</td>'+
         mgrCell(r)+
         '<td class="ck-num ck-tot">'+fmt(qtyOf(r))+'</td>'+qcell+
@@ -389,6 +426,10 @@
   /* ===== 복사 · 엑셀 · 삭제 ===== */
   function flat(v){
     var multi=(v.batches||[]).length>1;
+    // 제품별 합계 화면이면 합계표 그대로(담당자 열 없음)
+    if(multi&&sumMode&&v.summary){
+      return [['PLU','제품코드','품명',colFilter?colFilter+' 합계':'합계 수량','입고 횟수','입고일']].concat(v.summary.map(function(x){return [x.plu,x.code,x.name,x.qty,x.n,x.dates.join(', ')+(x.undated?(x.dates.length?', ':'')+'입고일 미정':'')]}));
+    }
     var head=(multi?['차수']:[]).concat(['PLU','제품코드','품명','담당자',colFilter?colFilter+' 수량':'수량','품질']).concat(v.cols).concat(['제조일자','LOT넘버','REF넘버','Pallet']),out=[head];
     v.list.forEach(function(r){var d=r.details||[];var j=function(k){return uniq(d.map(function(x){return x[k]})).join(', ')};
       out.push((multi?[r.batch.label]:[]).concat([r.plu,r.code,r.name,r.mgr,qtyOf(r),r.qn||'']).concat(v.cols.map(function(k){return (r.values&&r.values[k])||''})).concat([j('date'),j('lot'),j('ref'),j('cs')]))});
@@ -397,22 +438,23 @@
   function copyText(){
     var v=lastView;if(!v||!v.list.length){toast('복사할 목록이 없습니다.');return}
     var clean=function(x){return String(x==null?'':x).replace(/[\t\r\n]+/g,' ').trim()};
-    var text=flat(v).map(function(r){return r.map(clean).join('\t')}).join('\n');
-    var done=function(){toast(fmt(v.list.length)+'개 제품을 복사했습니다.')};
+    var rowsT=flat(v),text=rowsT.map(function(r){return r.map(clean).join('\t')}).join('\n');
+    var done=function(){toast(fmt(rowsT.length-1)+'개 제품을 복사했습니다.')};
     var fallback=function(){var ta=document.createElement('textarea');ta.value=text;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:-1000px;opacity:0';document.body.appendChild(ta);ta.select();var ok=false;try{ok=document.execCommand('copy')}catch(e){}ta.remove();if(ok)done();else toast('복사하지 못했습니다. 다시 시도해 주세요.')};
     if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(text).then(done,fallback);else fallback();
   }
   function exportExcel(){
     var v=lastView;if(!v||!v.list.length){toast('내보낼 목록이 없습니다.');return}
     xlsx().then(function(){
-      var name0=v.batch?v.batch.label+' 입고리스트 · 입고 예정일 '+v.batch.eta:($('ckDate').value?$('ckDate').value+' ':'')+'전체 차수 입고리스트';
-      var rows=flat(v),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'');
+      var isSum=(v.batches||[]).length>1&&sumMode&&v.summary;
+      var name0=v.batch?v.batch.label+' 입고리스트 · 입고 예정일 '+v.batch.eta:rangeText(true)+'전체 차수 입고리스트'+(isSum?' · 제품별 합계':'');
+      var rows=flat(v),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'')+(v.q?' · 검색 "'+v.q+'"':'');
       var ws=XLSX.utils.aoa_to_sheet([[title]].concat(rows));
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
       ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'?42:/LOT|REF|제조일자|Pallet/.test(h)?16:h==='제품코드'?12:10}});
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'입고리스트');
-      var d=new Date(),name='입고리스트샘플_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수')+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
+      var d=new Date(),name='입고리스트샘플_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수'+(dateRange()?'_'+rangeText(true).trim().replace(/-/g,''):'')+(isSum?'_제품별합계':''))+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
       XLSX.writeFile(wb,name);toast(name+' 저장');
     }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
   }
@@ -449,10 +491,10 @@
     $('ckBatch').addEventListener('change',function(){sheetFilter='';mgrFilter='';palFocus=null;var w=$('ckList').querySelector('.ck-table-wrap');if(w)w.scrollTop=0;$('ckDelete').hidden=!(isAdmin()&&current());render()});
     // 입고일 달력
     $('ckDateBtn').addEventListener('click',function(){var pop=$('ckCal');if(pop.hidden)openCal();else closeCal()});
-    $('ckCal').addEventListener('mouseover',function(e){var d=e.target.closest('[data-cal-day]');var info=$('ckCalInfo');if(info)info.innerHTML=calInfo(d?d.getAttribute('data-cal-day'):$('ckDate').value)});
+    $('ckCal').addEventListener('mouseover',function(e){var d=e.target.closest('[data-cal-day]');var info=$('ckCalInfo'),r=dateRange();if(info)info.innerHTML=calInfo(d?d.getAttribute('data-cal-day'):(calStart?'':(r&&r.s===r.e?r.s:'')))});
     $('ckCal').addEventListener('click',function(e){
       var nav=e.target.closest('[data-cal-nav]');if(nav){var y=+calMonth.slice(0,4),m=+calMonth.slice(5,7)+Number(nav.getAttribute('data-cal-nav'));if(m<1){m=12;y--}if(m>12){m=1;y++}calMonth=y+'-'+pad(m);buildCal();return}
-      var day=e.target.closest('[data-cal-day]');if(day){setDate(day.getAttribute('data-cal-day'));return}
+      var day=e.target.closest('[data-cal-day]');if(day){pickDay(day.getAttribute('data-cal-day'));return}
       if(e.target.closest('[data-cal-all]'))setDate('');
     });
     document.addEventListener('mousedown',function(e){if(!e.target.closest||!e.target.closest('.ck-date-field'))closeCal()});
@@ -463,6 +505,7 @@
     $('ckSearch').addEventListener('input',render);
     $('ckDelete').addEventListener('click',remove);
     $('ckCopy').addEventListener('click',copyText);
+    if($('ckSumBtn'))$('ckSumBtn').addEventListener('click',function(){sumMode=!sumMode;render()});
     $('ckExport').addEventListener('click',exportExcel);
     $('ckSheets').addEventListener('click',function(e){var c=e.target.closest('[data-ck-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-ck-sheet');render()});
     $('ckMgrs').addEventListener('click',function(e){

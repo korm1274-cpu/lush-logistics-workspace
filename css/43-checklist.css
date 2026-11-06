@@ -206,3 +206,15 @@
 #checklistView .ck-qsum-text{min-width:0;line-height:1.5;}
 #checklistView .ck-qsum-btns{display:flex;align-items:center;gap:6px;flex:none;}
 #checklistView .ck-qsum-btns .ck-miss-toggle,#checklistView .ck-qsum-btns .ck-miss-export{position:static!important;margin:0!important;display:inline-flex;align-items:center;}
+
+/* 입고일 기간 선택(시작~종료): 사이 날짜 연한 색. 입고 예정이 없는 날도 기간 끝으로 고를 수 있음 */
+#checklistView .ck-cal .lc-day.in-range{background:#efe9df!important;color:#1d1d1b;border-radius:0;}
+#checklistView .ck-cal .lc-day.in-range.has{background:#f6dbe6!important;}
+#checklistView .ck-date-btn span{white-space:nowrap;}
+/* 제품별 합계 버튼·표 */
+#checklistView .ck-sum-btn{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+#checklistView .ck-sum-btn.on{background:#1d1d1b!important;border-color:#1d1d1b!important;color:#fff!important;}
+#checklistView .ck-sum-table .ck-sum-dates{min-width:180px;white-space:normal;font-size:12.5px;color:#4e5968;line-height:1.45;}
+@media (max-width:900px){
+  #checklistView .ck-sum-btn{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
+}
