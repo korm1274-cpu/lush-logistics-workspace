@@ -21,7 +21,7 @@
 #checklistView .ck-meta{display:block;margin-top:3px;font-size:12px;color:#8b95a1;overflow-wrap:anywhere;}
 #checklistView .ck-meta[hidden]{display:none;}
 #checklistView .ck-actions{display:flex;gap:6px;flex:none;align-items:center;}
-#checklistView .ck-copy,#checklistView .ck-export{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+#checklistView .ck-copy,#checklistView .ck-export,#checklistView .ck-print{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
 #checklistView .ck-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
 #checklistView .ck-table-wrap{overflow:auto;max-height:72vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
 #appShell #checklistView table.ck-table{width:100%;min-width:900px!important;border-collapse:separate;border-spacing:0;font-size:13px;}
@@ -51,7 +51,7 @@
   #checklistView .ck-chip{flex:none;}
   #checklistView .ck-panel .panel-head{flex-wrap:wrap;}
   #checklistView .ck-actions{width:100%;}
-  #checklistView .ck-copy,#checklistView .ck-export{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
+  #checklistView .ck-copy,#checklistView .ck-export,#checklistView .ck-print{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
   #appShell #checklistView table.ck-table{font-size:12px;min-width:760px!important;}
   #appShell #checklistView .ck-table th,#appShell #checklistView .ck-table td{padding:8px 9px;}
   #checklistView .ck-table .ck-name{min-width:170px;}
