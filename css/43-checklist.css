@@ -288,3 +288,20 @@ html.role-guest #appShell .po-open{display:none!important;}
 @media (max-width:900px){
   #productOrderView .mo-add input,#productOrderView #moAddBtn{flex:1 1 100%!important;}
 }
+/* 정렬 순서 끌어 옮기기 */
+#productOrderView .mo-handle{flex:none;width:16px;color:#b8b0a2;font-size:15px;line-height:1;cursor:grab;user-select:none;}
+#productOrderView .mo-ol li.mo-draggable{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;}
+#productOrderView .mo-ol li.mo-dragging{position:relative;z-index:5;background:#fff;box-shadow:0 8px 22px rgba(0,0,0,.16);border-radius:10px;opacity:.96;}
+#productOrderView .mo-ol li.mo-drop-before{box-shadow:inset 0 3px 0 #1d1d1b;}
+#productOrderView .mo-ol li.mo-drop-after{box-shadow:inset 0 -3px 0 #1d1d1b;}
+body.mo-drag-on,body.mo-drag-on *{cursor:grabbing!important;}
+/* 담당 바꾸기 입력: 저장·취소 버튼이 잘리지 않게(칸 폭 고정 해제) / ↑↓✕ 글자 가운데 */
+#productOrderView .mo-mgr.mo-mgr-form{flex:0 0 auto!important;max-width:none;white-space:nowrap;}
+#productOrderView .mo-mgr-form button{flex:none;min-width:42px;white-space:nowrap;display:inline-flex;align-items:center;justify-content:center;line-height:1;}
+#productOrderView .mo-btns button{display:inline-flex;align-items:center;justify-content:center;padding:0!important;line-height:1;text-align:center;}
+@media (max-width:900px){
+  /* 휴대폰: 1줄 ⠿·순번·코드·제품명 / 2줄 담당(왼쪽) + ↑↓✕(오른쪽) */
+  #productOrderView .mo-ol li[data-k] .mo-mgr{order:5;flex:0 1 auto;padding-left:0;margin-left:54px;}
+  #productOrderView .mo-ol li[data-k] .mo-btns{order:6;margin-left:auto;}
+  #productOrderView .mo-ol li[data-k] .mo-pname{flex:1 1 40%;}
+}

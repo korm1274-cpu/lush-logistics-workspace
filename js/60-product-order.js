@@ -135,11 +135,77 @@
     var html='<li class="mo-group"><b>'+esc(picked)+'</b> <span>'+idx.length+'개</span></li>';
     idx.forEach(function(k,n){
       var r=infoOf(draft[k]);
-      html+='<li><span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(r.name?esc(r.name):'<span class="mo-dash">-</span>')+'</span>'+
+      html+='<li data-k="'+k+'"'+(edit?' class="mo-draggable"':'')+'>'+(edit?'<span class="mo-handle" aria-hidden="true" title="눌러서 끌어 옮기기">⠿</span>':'')+'<span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(r.name?esc(r.name):'<span class="mo-dash">-</span>')+'</span>'+
         (edit?'<button type="button" class="mo-mgr mo-mgr-edit" data-mo-setmgr="'+esc(draft[k])+'" title="이 제품 담당 바꾸기">'+(r.mgr?esc(r.mgr):'담당 지정')+(r.extra?' <small>지정</small>':'')+'</button>':'<span class="mo-mgr">'+(r.mgr?esc(r.mgr):'<span class="mo-dash">-</span>')+'</span>')+
         (edit?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(n?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(n<idx.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
     });
     box.innerHTML='<ol class="mo-ol">'+html+'</ol>';
+  }
+  /* ===== 끌어 옮기기 =====
+     PC: 줄을 누른 채 5px 이상 움직이면 시작 / 휴대폰: 0.3초 꾹 누르면 시작(그 전에 움직이면 그냥 스크롤)
+     보이는 목록(고른 담당 제품) 안에서만 옮기고, 놓으면 그 담당 제품들이 있던 자리에 새 순서로 넣음(다른 담당 자리는 그대로) → 자동 저장
+     ↑↓·✕·담당 칸 버튼에서는 시작하지 않음. 화면 위·아래 끝에서는 자동 스크롤 */
+  var drag=null;
+  function rowsInList(){return Array.prototype.slice.call(document.querySelectorAll('#moList li[data-k]'))}
+  function dragStart(li,y){
+    var rows=rowsInList();
+    drag={li:li,rows:rows,from:rows.indexOf(li),to:rows.indexOf(li),startY:y,y:y,scroll0:window.scrollY,timer:null,raf:0};
+    li.classList.add('mo-dragging');document.body.classList.add('mo-drag-on');
+    if(navigator.vibrate)try{navigator.vibrate(15)}catch(e){}
+    var loop=function(){if(!drag)return;var edge=60,v=drag.y<edge+56?-14:drag.y>window.innerHeight-edge?14:0;if(v){window.scrollBy(0,v);dragMove(drag.y)}drag.raf=requestAnimationFrame(loop)};
+    drag.raf=requestAnimationFrame(loop);
+  }
+  function dragMove(y){
+    if(!drag)return;drag.y=y;
+    var dy=y-drag.startY+(window.scrollY-drag.scroll0);
+    drag.li.style.transform='translateY('+dy+'px)';
+    // 놓을 자리: 끄는 줄을 뺀 나머지 줄들의 가운데선 기준
+    var to=drag.rows.length-1;
+    for(var i=0;i<drag.rows.length;i++){
+      if(drag.rows[i]===drag.li)continue;
+      var b=drag.rows[i].getBoundingClientRect();
+      if(y<b.top+b.height/2){to=i>drag.from?i-1:i;break}
+    }
+    drag.to=to;
+    drag.rows.forEach(function(r,i){r.classList.toggle('mo-drop-before',i===to&&to<drag.from);r.classList.toggle('mo-drop-after',i===to&&to>drag.from)});
+  }
+  function dragEnd(cancel){
+    if(!drag)return;var d=drag;drag=null;
+    cancelAnimationFrame(d.raf);document.body.classList.remove('mo-drag-on');
+    d.rows.forEach(function(r){r.classList.remove('mo-dragging','mo-drop-before','mo-drop-after');r.style.transform=''});
+    if(cancel||d.to===d.from||d.to<0)return;
+    var slots=d.rows.map(function(r){return +r.getAttribute('data-k')}),codes=slots.map(function(k){return draft[k]});
+    var moved=codes.splice(d.from,1)[0];codes.splice(d.to,0,moved);
+    slots.forEach(function(k,i){draft[k]=codes[i]});
+    renderView();saveSoon();
+  }
+  function bindDrag(list){
+    var pend=null; // 시작 전(누름) 상태
+    function startable(e){var li=e.target.closest('li[data-k]');return li&&canEditOrder()&&!e.target.closest('button,input,a')?li:null}
+    // PC 마우스
+    list.addEventListener('mousedown',function(e){
+      if(e.button!==0)return;var li=startable(e);if(!li)return;
+      pend={li:li,x:e.clientX,y:e.clientY};
+    });
+    document.addEventListener('mousemove',function(e){
+      if(drag){e.preventDefault();dragMove(e.clientY);return}
+      if(pend&&Math.abs(e.clientY-pend.y)+Math.abs(e.clientX-pend.x)>5){e.preventDefault();var p=pend;pend=null;dragStart(p.li,p.y);dragMove(e.clientY)}
+    });
+    document.addEventListener('mouseup',function(){pend=null;if(drag)dragEnd(false)});
+    // 휴대폰 터치: 0.3초 꾹 누르면 시작, 그 전에 8px 넘게 움직이면 스크롤로 보고 취소
+    list.addEventListener('touchstart',function(e){
+      if(e.touches.length!==1)return;var li=startable(e);if(!li)return;
+      var t=e.touches[0];pend={li:li,x:t.clientX,y:t.clientY,timer:setTimeout(function(){if(pend){var p=pend;pend=null;dragStart(p.li,p.y)}},300)};
+    },{passive:true});
+    list.addEventListener('touchmove',function(e){
+      var t=e.touches[0];
+      if(drag){e.preventDefault();dragMove(t.clientY);return}
+      if(pend&&Math.abs(t.clientY-pend.y)+Math.abs(t.clientX-pend.x)>8){clearTimeout(pend.timer);pend=null}
+    },{passive:false});
+    list.addEventListener('touchend',function(){if(pend){clearTimeout(pend.timer);pend=null}if(drag)dragEnd(false)});
+    list.addEventListener('touchcancel',function(){if(pend){clearTimeout(pend.timer);pend=null}dragEnd(true)});
+    list.addEventListener('contextmenu',function(e){if(drag||e.target.closest('li[data-k]'))e.preventDefault()}); // 꾹 누를 때 메뉴 안 뜨게
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')dragEnd(true)});
   }
   // 같은 담당 안에서 위·아래로 가장 가까운 제품의 자리
   function sameNeighbor(k,dir){var m=mgrKey(draft[k]);for(var t=k+dir;t>=0&&t<draft.length;t+=dir)if(mgrKey(draft[t])===m)return t;return -1}
@@ -235,6 +301,7 @@
       }else if(del!=null){draft.splice(+del,1)}
       renderView();saveSoon();
     });
+    bindDrag($('moList'));
     // 맨 위 담당 목록: 누르면 그 담당 제품만 나열(다시 누르면 접기)
     var mg=$('moMgrs');
     if(mg)mg.addEventListener('click',function(e){
