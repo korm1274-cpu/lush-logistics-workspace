@@ -151,9 +151,24 @@
   function renderView(){
     var box=$('moList');if(!box)return;
     var edit=canEditOrder();
+    if($('productOrderView').classList.contains('active'))remember(); // 고른 담당까지 새로고침 대비 기억
     $('moUpload').hidden=!edit;var add=$('moAdd');if(add)add.hidden=!edit;var xu=$('moXUpload');if(xu)xu.hidden=!edit;
     renderStatus();renderMgrs();renderDatalist();
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
+    // 검색 중: 담당과 상관없이 맞는 제품 모두(숨긴 제품 포함, 회색). ↑↓·끌기는 끄고, 담당 바꾸기·✕·[이 담당에서 보기]만
+    var q=(($('moSearch')||{}).value||'').trim().toLowerCase();
+    if(q){
+      var hits=[];draft.forEach(function(c,k){var r=infoOf(c);if([c,r.name,r.mgr].join(' ').toLowerCase().indexOf(q)>=0)hits.push(k)});
+      if(!hits.length){box.innerHTML='<p class="mo-empty">"'+esc(q)+'"에 맞는 제품이 없습니다.</p>';return}
+      var sh='<li class="mo-group"><b>검색 결과</b> <span>'+hits.length+'개'+(hits.length>300?' (앞 300개만 표시)':'')+'</span></li>';
+      hits.slice(0,300).forEach(function(k){
+        var r=infoOf(draft[k]),off=!isSeen(draft[k]),m=mgrKey(draft[k]);
+        sh+='<li data-k-search="'+k+'" class="mo-search-row'+(off?' mo-unseen':'')+'"><span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(r.name?esc(r.name):'<span class="mo-dash">-</span>')+(off?' <small class="mo-unseen-tag">입고 이력 없음</small>':'')+'</span>'+
+          (edit?'<button type="button" class="mo-mgr mo-mgr-edit" data-mo-setmgr="'+esc(draft[k])+'" title="이 제품 담당 바꾸기">'+(r.mgr?esc(r.mgr):'담당 지정')+(r.extra?' <small>지정</small>':'')+'</button>':'<span class="mo-mgr">'+(r.mgr?esc(r.mgr):'<span class="mo-dash">-</span>')+'</span>')+
+          '<span class="mo-btns"><button type="button" class="mo-goto" data-mo-goto="'+k+'" data-mo-goto-mgr="'+esc(m)+'">이 담당에서 보기</button>'+(edit?'<button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button>':'')+'</span></li>';
+      });
+      box.innerHTML='<ol class="mo-ol">'+sh+'</ol>';return;
+    }
     if(!picked){box.innerHTML='<p class="mo-empty">위에서 담당을 고르면 그 담당 제품이 정렬 순서대로 나옵니다.</p>';return}
     var idx=[];draft.forEach(function(c,k){if(mgrKey(c)===picked&&visible(c))idx.push(k)});
     var html='<li class="mo-group"><b>'+esc(picked)+'</b> <span>'+idx.length+'개</span></li>';
@@ -351,18 +366,33 @@
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){var inp=$('moFile');if(inp)inp.value=''});
   }
   // 입고리스트·품질리스트의 [정렬 순서] 버튼 → 이 화면, [← 돌아가기] → 보던 화면
-  function openView(){
+  /* 새로고침해도 이 화면 유지: 이 창(sessionStorage)에 '정렬 순서 화면 · 들어온 메뉴 · 고른 담당'을 기억
+     (js/26-keep-view-on-reload.js가 '__order'를 보면 들어온 메뉴를 연 뒤 LushProductOrder.restore로 이 화면을 다시 엶) */
+  var LAST_MENU_KEY='lush_last_menu_v1',STATE_KEY='lush_order_view_v1';
+  function remember(){try{sessionStorage.setItem(LAST_MENU_KEY,'__order');sessionStorage.setItem(STATE_KEY,JSON.stringify({menu:back&&back.menu||'',view:back&&back.id||'',title:back&&back.title||'',picked:picked||''}))}catch(e){}}
+  function forget(){try{sessionStorage.removeItem(STATE_KEY);if(back&&back.menu)sessionStorage.setItem(LAST_MENU_KEY,back.menu)}catch(e){}}
+  function openView(state){
     if(role()==='guest'){toast('게스트는 볼 수 없습니다.');return}
-    var cur=document.querySelector('.view.active');
-    back={id:cur&&cur.id,title:($('pageTitle')||{}).textContent||'',el:document.querySelector('#navContainer .nav-item.active')};
+    var cur=document.querySelector('.view.active'),nav=document.querySelector('#navContainer .nav-item.active');
+    back=state&&state.view?{id:state.view,title:state.title||'',el:nav,menu:state.menu||''}:{id:cur&&cur.id,title:($('pageTitle')||{}).textContent||'',el:nav,menu:nav&&nav.getAttribute('data-menu-id')||''};
     if(typeof showView==='function')showView('productOrderView','제품 정렬 순서',null);
-    window.scrollTo(0,0);status={kind:'',msg:''};picked=null;
-    showHidden=false;
+    window.scrollTo(0,0);status={kind:'',msg:''};picked=state&&state.picked||null;
+    showHidden=false;if($('moSearch'))$('moSearch').value='';
+    remember();
     Promise.all([P.load(),loadInfo(),loadLists()]).then(function(){buildSeen();if(!saveTimer&&!saving){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
   }
+  P.restore=function(state){openView(state||{})};
+  P.savedState=function(){try{return JSON.parse(sessionStorage.getItem(STATE_KEY)||'null')}catch(e){return null}};
   function goBack(){
     if(saveTimer)save(); // 남은 저장을 바로
+    forget();
     if(back&&back.id&&typeof showView==='function'){showView(back.id,back.title,back.el||null)}
+  }
+  // [이 담당에서 보기]: 검색을 지우고 그 담당 목록으로, 그 제품 줄로 이동해 잠깐 강조(숨긴 제품이면 숨긴 제품도 보이게)
+  function gotoRow(k,m){
+    $('moSearch').value='';picked=m;if(!isSeen(draft[k]))showHidden=true;remember();renderView();
+    var li=document.querySelector('#moList li[data-k="'+k+'"]');
+    if(li){li.scrollIntoView({block:'center'});li.classList.add('mo-flash');setTimeout(function(){li.classList.remove('mo-flash')},1600)}
   }
   function init(){
     document.addEventListener('click',function(e){if(e.target.closest('[data-product-order-open]'))openView()});
@@ -373,6 +403,7 @@
     if($('moAddBtn'))$('moAddBtn').addEventListener('click',addProduct);
     ['moAddCode','moAddPlu','moAddName','moAddMgr'].forEach(function(id){var el=$(id);if(el)el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addProduct()}})});
     $('moList').addEventListener('click',function(e){
+      var gt=e.target.closest('[data-mo-goto]');if(gt){gotoRow(+gt.getAttribute('data-mo-goto'),gt.getAttribute('data-mo-goto-mgr'));return}
       var sm=e.target.closest('[data-mo-setmgr]');if(sm&&canEditOrder()){editMgr(sm);return}
       var b=e.target.closest('[data-mo-up],[data-mo-down],[data-mo-del]');if(!b||!canEditOrder())return;
       var up=b.getAttribute('data-mo-up'),dn=b.getAttribute('data-mo-down'),del=b.getAttribute('data-mo-del');
@@ -388,8 +419,10 @@
     if(mg)mg.addEventListener('click',function(e){
       if(e.target.closest('[data-mo-hidden]')){showHidden=!showHidden;renderView();return}
       var c=e.target.closest('[data-mo-pick]');if(!c)return;
-      var m=c.getAttribute('data-mo-pick');picked=picked===m?null:m;renderView();
+      var m=c.getAttribute('data-mo-pick');picked=picked===m?null:m;if($('moSearch'))$('moSearch').value='';remember();renderView();
     });
+    // 검색: 입력할 때마다(0.2초 쉬면) 다시 그림
+    var st=null;if($('moSearch'))$('moSearch').addEventListener('input',function(){clearTimeout(st);st=setTimeout(renderView,200)});
     // 메뉴로 다른 화면에 가도 남은 저장은 바로 보냄
     new MutationObserver(function(){if(!view.classList.contains('active')&&saveTimer)save()}).observe(view,{attributes:true,attributeFilter:['class']});
     window.addEventListener('pagehide',function(){if(saveTimer)save()});

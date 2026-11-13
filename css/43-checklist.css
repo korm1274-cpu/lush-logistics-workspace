@@ -311,3 +311,9 @@ body.mo-drag-on,body.mo-drag-on *{cursor:grabbing!important;}
 #productOrderView .mo-ol li.mo-unseen{background:#f7f6f2;}
 #productOrderView .mo-ol li.mo-unseen .mo-code,#productOrderView .mo-ol li.mo-unseen .mo-pname{color:#9aa1a9;}
 #productOrderView .mo-unseen-tag{font-size:10.5px;font-weight:800;color:#b08a4a;margin-left:4px;}
+/* 정렬 순서: 제품 검색 */
+#productOrderView .mo-search{margin:0 0 12px;}
+#productOrderView .mo-search input{width:100%;max-width:420px;height:38px;padding:0 12px;border:1px solid #d8e0e4;border-radius:10px;font-size:14px;background:#fff;box-sizing:border-box;}
+#productOrderView .mo-goto{width:auto!important;padding:0 10px!important;font-size:12px;font-weight:800;white-space:nowrap;}
+#productOrderView .mo-ol li.mo-flash{animation:moFlash 1.6s ease-out;}
+@keyframes moFlash{0%,40%{background:#fff3c4;}100%{background:transparent;}}

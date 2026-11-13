@@ -19,6 +19,16 @@
     var id;try{id=sessionStorage.getItem(KEY)}catch(e){}
     wrap();
     if(!id||id==='__dashboard')return;
+    /* 제품 정렬 순서 화면(메뉴가 아닌 화면): 들어온 메뉴(입고리스트·품질리스트)를 먼저 연 뒤 정렬 순서 화면을 고른 담당까지 다시 엶 */
+    if(id==='__order'){
+      var P=window.LushProductOrder,st=P&&P.savedState&&P.savedState();
+      if(!P||!st)return;
+      var ms=(typeof menus!=='undefined'&&Array.isArray(menus))?menus:[];
+      var bm=st.menu&&ms.find(function(x){return x&&x.id===st.menu});
+      if(bm){try{window.activateMenu(bm,document.querySelector('#navContainer [data-menu-id="'+st.menu+'"]')||undefined)}catch(e){}}
+      try{P.restore(st)}catch(e){}
+      return;
+    }
     /* 현황판은 탭(출고 현황·생산성·매장별 처리이력·제품별 출고현황)까지 복원 */
     if(id.indexOf('__status:')===0){
       try{window.showView('statusBoardView')}catch(e){}
