@@ -322,6 +322,45 @@ async function productOrder(req, res, user) {
   }
 }
 
+// 제품코드별 담당 지정(신규 제품 추가 포함): hash 필드 = 제품코드(대문자) → { code, plu, name, mgr, by, at }
+//   입고리스트·품질리스트·정렬 순서에서 PLU 담당자 정보보다 먼저 씀. 담당은 구역 이름(뉴·볼케이노·하나미 등) 전제
+//   GET: 관리자·팀원 전체, 게스트는 담당 값 빈칸 / POST {action:'set', code, plu, name, mgr} · {action:'delete', code}: 관리자·팀원
+const PRODUCT_EXTRA_KEY = 'lush_product_extra_v1';
+async function productExtra(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      const arr = await store.cmd(['HGETALL', PRODUCT_EXTRA_KEY]) || [];
+      const items = [];
+      for (let i = 0; i < arr.length; i += 2) { try { const x = JSON.parse(arr[i + 1]); if (user.role === 'guest') x.mgr = ''; delete x.by; items.push(x); } catch (e) { /* 깨진 항목 무시 */ } }
+      return res.status(200).json({ success: true, items });
+    }
+    if (user.role !== 'admin' && user.role !== 'member') return res.status(200).json({ success: false, error: '담당을 지정할 권한이 없습니다.' });
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    const code = clip(body.code, 40);
+    if (!/^[A-Za-z0-9][A-Za-z0-9\-_.]{0,39}$/.test(code)) return res.status(200).json({ success: false, error: '제품코드를 확인해 주세요. (영문·숫자, 40자 이내)' });
+    const field = code.toUpperCase();
+    if (body.action === 'delete') { await store.cmd(['HDEL', PRODUCT_EXTRA_KEY, field]); return res.status(200).json({ success: true }); }
+    if (body.action !== 'set') return res.status(200).json({ success: false, error: 'Unsupported action' });
+    const plu = clip(body.plu, 20), name = clip(body.name, 120), mgr = clip(body.mgr, 40);
+    if (plu && !/^\d{1,20}$/.test(plu)) return res.status(200).json({ success: false, error: 'PLU는 숫자만 넣어 주세요.' });
+    const oldRaw = await store.cmd(['HGET', PRODUCT_EXTRA_KEY, field]);
+    let old = null; try { old = oldRaw ? JSON.parse(oldRaw) : null; } catch (e) { old = null; }
+    // 담당은 비워도 됨(신제품 PLU ↔ 제품코드만 먼저 등록). 단 PLU도 담당도 없으면 저장할 게 없음
+    const keepPlu = plu || (old && old.plu) || '', keepMgr = mgr || (old && old.mgr) || '';
+    if (!keepMgr && !keepPlu) return res.status(200).json({ success: false, error: '담당 또는 PLU를 넣어 주세요.' });
+    // 비워 보낸 PLU·제품명·담당은 이전 값 유지
+    const rec = { code, plu: keepPlu, name: name || (old && old.name) || '', mgr: keepMgr, by: user.id, at: new Date().toISOString() };
+    await store.cmd(['HSET', PRODUCT_EXTRA_KEY, field, JSON.stringify(rec)]);
+    return res.status(200).json({ success: true, item: { code: rec.code, plu: rec.plu, name: rec.name, mgr: rec.mgr, at: rec.at } });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: failMsg('product-extra', e) });
+  }
+}
+
 // 구글 드라이브 자동 반영: Apps Script가 x-sync-secret 머리글로 보낸 품질리스트 'import'만 로그인 없이 허용
 // (비밀값은 Vercel 환경변수 QUALITY_SYNC_SECRET과 Apps Script 스크립트 속성에 같은 값으로 넣음, 코드에는 두지 않음)
 function driveSyncUser(req) {
@@ -355,6 +394,8 @@ module.exports = async (req, res) => {
   if (req.query && req.query.part === 'checklists') return checklists(req, res, authUser);
   // 제품 정렬 순서(입고리스트·품질리스트, 제품코드 순서)
   if (req.query && req.query.part === 'product-order') return productOrder(req, res, authUser);
+  // 제품코드별 담당 지정(신규 제품 추가)
+  if (req.query && req.query.part === 'product-extra') return productExtra(req, res, authUser);
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
     return;

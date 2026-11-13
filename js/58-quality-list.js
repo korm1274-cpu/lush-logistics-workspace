@@ -49,6 +49,9 @@
   function infoOf(r){
     var l=look(r.plu);
     var code=uniq(l.map(function(x){return x[0]})).join(' / ')||r.code||'';
+    // 정렬 순서 화면에서 제품코드(신규 제품은 PLU)로 지정한 담당이 있으면 그것을 먼저(js/60-product-order.js)
+    var PO=window.LushProductOrder,ex=PO&&(PO.extraByCode(code)||PO.extraByCode(r.code)||PO.extraByPlu(r.plu));
+    if(ex){if(!code)code=ex.code;if(ex.mgr)return{code:code,mgr:ex.mgr,manual:false}}
     var mgr=uniq(l.map(function(x){return x[1]})).join(' / '),manual=false;
     if(!mgr&&r.plu&&overrides[r.plu]&&overrides[r.plu].mgr){mgr=overrides[r.plu].mgr;manual=true}
     return{code:code,mgr:mgr,manual:manual};
