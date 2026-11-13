@@ -65,10 +65,11 @@
   function loadInfo(){
     return fetch('/api/team-data?part=plu-master').then(function(r){return r.json()}).then(function(j){
       info={};if(!j||!j.success||!j.master||!j.master.map)return;
-      var ov=j.overrides||{};
+      var ov=j.overrides||{};pluCodes={};
       Object.keys(j.master.map).forEach(function(plu){
         (j.master.map[plu]||[]).forEach(function(x){
           var k=norm(x&&x[0]);if(!k)return;
+          (pluCodes[plu]=pluCodes[plu]||[]).push(k);
           var mgr=String((x&&x[1])||'').trim()||(ov[plu]&&ov[plu].mgr)||'',o=info[k]||(info[k]={name:'',mgrs:[]});
           if(!o.name&&x[2])o.name=String(x[2]);
           if(mgr&&o.mgrs.indexOf(mgr)<0)o.mgrs.push(mgr);
@@ -76,6 +77,28 @@
       });
     }).catch(function(){info={}});
   }
+  /* 입고 이력 있는 제품만 보기: 입고리스트(모든 차수)·품질리스트(모든 차수)에 한 번이라도 나온 제품코드만 화면에 표시.
+     나머지는 순서표에는 그대로 두고 화면에서만 숨김([숨긴 제품 N개 보기]). 이 화면에서 [추가]로 넣은 제품은 바로 보이게 예외.
+     불러오기에 실패하면(seen=null) 예전처럼 모두 표시 */
+  var pluCodes={},lists=null,seen=null,addedNow={},showHidden=false;
+  function loadLists(){
+    return Promise.all([
+      fetch('/api/team-data?part=checklists').then(function(r){return r.json()}),
+      fetch('/api/team-data?part=quality-lists').then(function(r){return r.json()})
+    ]).then(function(res){
+      if(!res[0]||!res[0].success||!res[1]||!res[1].success){lists=null;return}
+      lists={ck:res[0].batches||[],ql:res[1].batches||[]};
+    }).catch(function(){lists=null});
+  }
+  function buildSeen(){
+    if(!lists){seen=null;return}
+    seen={};
+    var addPlu=function(plu){plu=String(plu==null?'':plu).trim();if(!plu)return;(pluCodes[plu]||[]).forEach(function(k){seen[k]=1});var x=P.xPlu[plu];if(x)seen[norm(x.code)]=1};
+    lists.ck.forEach(function(b){(b.rows||[]).forEach(function(r){addPlu(r.plu)})});
+    lists.ql.forEach(function(b){(b.rows||[]).forEach(function(r){addPlu(r.plu);if(r.code)seen[norm(r.code)]=1;(r.items||[]).forEach(function(it){addPlu(it.plu)})})});
+  }
+  function isSeen(code){return !seen||!!seen[norm(code)]||!!addedNow[norm(code)]}
+  function visible(code){return showHidden||isSeen(code)}
   function infoOf(code){
     var o=info[norm(code)],x=P.xCode[norm(code)];
     return{name:(x&&x.name)||(o&&o.name)||'',mgr:(x&&x.mgr)||(o?o.mgrs.join(' / '):''),extra:!!x};
@@ -113,12 +136,13 @@
   // 맨 위 담당 목록: 순서표에서 처음 나오는 순서대로 '담당 N개'. 누르면 그 담당 제품만 아래에 나열
   function renderMgrs(){
     var el=$('moMgrs');if(!el)return;
-    var order=[],cnt={};
-    draft.forEach(function(c){var m=mgrKey(c);if(!(m in cnt)){cnt[m]=0;order.push(m)}cnt[m]++});
+    var order=[],cnt={},hidden=0;
+    draft.forEach(function(c){if(!isSeen(c))hidden++;if(!visible(c))return;var m=mgrKey(c);if(!(m in cnt)){cnt[m]=0;order.push(m)}cnt[m]++});
     order.sort(function(a,b){return (a===NOINFO)-(b===NOINFO)});
     if(picked&&!(picked in cnt))picked=null;
-    el.hidden=!order.length;
-    el.innerHTML='<span class="mo-mgrs-label">담당 '+order.length+'개</span>'+order.map(function(m){return '<button type="button" class="mo-mgr-chip'+(m===NOINFO?' none':'')+(m===picked?' on':'')+'" data-mo-pick="'+esc(m)+'">'+esc(m)+' <em>'+cnt[m]+'</em></button>'}).join('');
+    el.hidden=!order.length&&!hidden;
+    el.innerHTML='<span class="mo-mgrs-label">담당 '+order.length+'개</span>'+order.map(function(m){return '<button type="button" class="mo-mgr-chip'+(m===NOINFO?' none':'')+(m===picked?' on':'')+'" data-mo-pick="'+esc(m)+'">'+esc(m)+' <em>'+cnt[m]+'</em></button>'}).join('')+
+      (hidden?'<button type="button" class="mo-hidden-toggle'+(showHidden?' on':'')+'" data-mo-hidden title="입고리스트·품질리스트에 한 번도 나오지 않은 제품(순서표에는 그대로 있음)">'+(showHidden?'입고 이력 없는 제품 숨기기':'숨긴 제품 '+hidden+'개 보기')+'</button>':'');
   }
   function renderDatalist(){
     var dl=$('moMgrOptions');if(!dl)return;
@@ -131,11 +155,11 @@
     renderStatus();renderMgrs();renderDatalist();
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     if(!picked){box.innerHTML='<p class="mo-empty">위에서 담당을 고르면 그 담당 제품이 정렬 순서대로 나옵니다.</p>';return}
-    var idx=[];draft.forEach(function(c,k){if(mgrKey(c)===picked)idx.push(k)});
+    var idx=[];draft.forEach(function(c,k){if(mgrKey(c)===picked&&visible(c))idx.push(k)});
     var html='<li class="mo-group"><b>'+esc(picked)+'</b> <span>'+idx.length+'개</span></li>';
     idx.forEach(function(k,n){
-      var r=infoOf(draft[k]);
-      html+='<li data-k="'+k+'"'+(edit?' class="mo-draggable"':'')+'>'+(edit?'<span class="mo-handle" aria-hidden="true" title="눌러서 끌어 옮기기">⠿</span>':'')+'<span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(r.name?esc(r.name):'<span class="mo-dash">-</span>')+'</span>'+
+      var r=infoOf(draft[k]),off=!isSeen(draft[k]);
+      html+='<li data-k="'+k+'" class="'+(edit?'mo-draggable':'')+(off?' mo-unseen':'')+'">'+(edit?'<span class="mo-handle" aria-hidden="true" title="눌러서 끌어 옮기기">⠿</span>':'')+'<span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(r.name?esc(r.name):'<span class="mo-dash">-</span>')+(off?' <small class="mo-unseen-tag">입고 이력 없음</small>':'')+'</span>'+
         (edit?'<button type="button" class="mo-mgr mo-mgr-edit" data-mo-setmgr="'+esc(draft[k])+'" title="이 제품 담당 바꾸기">'+(r.mgr?esc(r.mgr):'담당 지정')+(r.extra?' <small>지정</small>':'')+'</button>':'<span class="mo-mgr">'+(r.mgr?esc(r.mgr):'<span class="mo-dash">-</span>')+'</span>')+
         (edit?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(n?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(n<idx.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
     });
@@ -208,7 +232,8 @@
     document.addEventListener('keydown',function(e){if(e.key==='Escape')dragEnd(true)});
   }
   // 같은 담당 안에서 위·아래로 가장 가까운 제품의 자리
-  function sameNeighbor(k,dir){var m=mgrKey(draft[k]);for(var t=k+dir;t>=0&&t<draft.length;t+=dir)if(mgrKey(draft[t])===m)return t;return -1}
+  // (보이는 제품끼리만 — 숨긴 제품 자리는 그대로)
+  function sameNeighbor(k,dir){var m=mgrKey(draft[k]);for(var t=k+dir;t>=0&&t<draft.length;t+=dir)if(mgrKey(draft[t])===m&&visible(draft[t]))return t;return -1}
   /* 제품코드별 담당 지정 저장(신규 추가·담당 변경 공통) */
   function setExtra(code,plu,name,mgr){
     return fetch(XAPI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'set',code:code,plu:plu,name:name,mgr:mgr})}).then(function(r){return r.json()}).then(function(j){
@@ -228,6 +253,7 @@
         var last=-1;draft.forEach(function(c,k){if(mgrKey(c)===m)last=k});
         draft.splice(last<0?draft.length:last+1,0,code);
       }
+      addedNow[norm(code)]=1; // 막 추가한 제품은 입고 이력이 없어도 보이게
       picked=m;['moAddCode','moAddPlu','moAddName'].forEach(function(id){$(id).value=''});
       renderView();
       toast((plu?'PLU '+plu+' → 제품코드 '+code+' 등록. ':'')+(mgr?(exists?code+' 담당을 '+mgr+'(으)로 바꿨습니다.':code+'을(를) '+mgr+' 담당에 추가했습니다.'):'담당은 나중에 지정할 수 있습니다.'));
@@ -273,7 +299,7 @@
       if(!confirm(msg))return;
       return fetch(XAPI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'bulkSet',items:items})}).then(function(r){return r.json()}).then(function(j){
         if(!j||!j.success)throw new Error((j&&j.error)||'반영하지 못했습니다.');
-        (j.items||[]).forEach(putExtra);
+        (j.items||[]).forEach(putExtra);buildSeen(); // 새로 이은 PLU가 입고리스트에 있으면 바로 보이게
         var added=0;
         (j.items||[]).forEach(function(x){
           if(draft.some(function(c){return norm(c)===norm(x.code)}))return;
@@ -331,7 +357,8 @@
     back={id:cur&&cur.id,title:($('pageTitle')||{}).textContent||'',el:document.querySelector('#navContainer .nav-item.active')};
     if(typeof showView==='function')showView('productOrderView','제품 정렬 순서',null);
     window.scrollTo(0,0);status={kind:'',msg:''};picked=null;
-    Promise.all([P.load(),loadInfo()]).then(function(){if(!saveTimer&&!saving){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
+    showHidden=false;
+    Promise.all([P.load(),loadInfo(),loadLists()]).then(function(){buildSeen();if(!saveTimer&&!saving){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
   }
   function goBack(){
     if(saveTimer)save(); // 남은 저장을 바로
@@ -359,6 +386,7 @@
     // 맨 위 담당 목록: 누르면 그 담당 제품만 나열(다시 누르면 접기)
     var mg=$('moMgrs');
     if(mg)mg.addEventListener('click',function(e){
+      if(e.target.closest('[data-mo-hidden]')){showHidden=!showHidden;renderView();return}
       var c=e.target.closest('[data-mo-pick]');if(!c)return;
       var m=c.getAttribute('data-mo-pick');picked=picked===m?null:m;renderView();
     });
