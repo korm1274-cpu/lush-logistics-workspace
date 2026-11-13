@@ -48,6 +48,24 @@
 
   /* ===== 정렬 순서 화면 ===== */
   var draft=[],dirty=false,back=null,fileName='';
+  /* 화면 표시용 제품명·담당자: 서버의 PLU 담당자 정보(/api/team-data?part=plu-master)에서 제품코드로 찾아 붙임(저장하지 않음).
+     정책 재설정(2026-11-13): 입고·품질리스트 담당자 순서의 편집 화면 표시 허용 범위 */
+  var info={};
+  function loadInfo(){
+    return fetch('/api/team-data?part=plu-master').then(function(r){return r.json()}).then(function(j){
+      info={};if(!j||!j.success||!j.master||!j.master.map)return;
+      var ov=j.overrides||{};
+      Object.keys(j.master.map).forEach(function(plu){
+        (j.master.map[plu]||[]).forEach(function(x){
+          var k=norm(x&&x[0]);if(!k)return;
+          var mgr=String((x&&x[1])||'').trim()||(ov[plu]&&ov[plu].mgr)||'',o=info[k]||(info[k]={name:'',mgrs:[]});
+          if(!o.name&&x[2])o.name=String(x[2]);
+          if(mgr&&o.mgrs.indexOf(mgr)<0)o.mgrs.push(mgr);
+        });
+      });
+    }).catch(function(){info={}});
+  }
+  function infoOf(code){var o=info[norm(code)];return{name:o&&o.name||'',mgr:o?o.mgrs.join(' / '):''}}
   function isAdmin(){return role()==='admin'}
   function renderView(){
     var box=$('moList');if(!box)return;
@@ -57,9 +75,18 @@
     var meta=P.meta&&P.meta.updatedAt?'저장된 순서: 제품 '+P.codes.length+'개 · '+String(P.meta.updatedAt).slice(0,10)+' 저장'+(P.meta.fileName?' · '+P.meta.fileName:''):'아직 저장된 순서가 없습니다.';
     $('moInfo').textContent=(dirty?'저장하지 않은 변경이 있습니다 (제품 '+draft.length+'개). · ':'')+meta+(admin?'':' · 순서 변경은 관리자만 할 수 있습니다.');
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(admin?'[엑셀 올리기]로 순서 파일을 올려 주세요. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
-    box.innerHTML='<ol class="mo-ol">'+draft.map(function(c,i){
-      return '<li><span class="mo-no">'+(i+1)+'</span><span class="mo-name">'+esc(c)+'</span>'+(admin?'<span class="mo-btns"><button type="button" data-mo-up="'+i+'"'+(i?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+i+'"'+(i<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+i+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
-    }).join('')+'</ol>';
+    // 담당자가 바뀌는 줄마다 '담당자 · N개' 소제목(연속된 묶음 기준)
+    var rows=draft.map(function(c){return infoOf(c)}),html='',i=0;
+    while(i<draft.length){
+      var m=rows[i].mgr,j=i;while(j<draft.length&&rows[j].mgr===m)j++;
+      html+='<li class="mo-group"><b>'+esc(m||'담당자 정보 없음')+'</b> <span>'+(j-i)+'개</span></li>';
+      for(var k=i;k<j;k++){
+        html+='<li><span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(rows[k].name?esc(rows[k].name):'<span class="mo-dash">-</span>')+'</span><span class="mo-mgr">'+(rows[k].mgr?esc(rows[k].mgr):'<span class="mo-dash">-</span>')+'</span>'+
+          (admin?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(k?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(k<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
+      }
+      i=j;
+    }
+    box.innerHTML='<ol class="mo-ol">'+html+'</ol>';
   }
   function readExcel(file){
     if(!file)return;
@@ -96,7 +123,7 @@
     back={id:cur&&cur.id,title:($('pageTitle')||{}).textContent||'',el:document.querySelector('#navContainer .nav-item.active')};
     if(typeof showView==='function')showView('productOrderView','제품 정렬 순서',null);
     window.scrollTo(0,0);
-    P.load().then(function(){if(!dirty){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
+    Promise.all([P.load(),loadInfo()]).then(function(){if(!dirty){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
   }
   function goBack(){
     if(dirty&&!confirm('저장하지 않은 변경이 있습니다. 그래도 나갈까요?'))return;
