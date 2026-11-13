@@ -257,3 +257,7 @@ html.role-guest #appShell .po-open{display:none!important;}
   #productOrderView .mo-mgr{flex:1 1 auto;order:5;padding-left:54px;font-size:12px;}
   #productOrderView .mo-btns{margin-left:auto;}
 }
+/* 정렬 순서 자동 저장 상태 */
+#productOrderView .mo-info.saving{color:#8a6d1f;}
+#productOrderView .mo-info.ok{color:#11795a;font-weight:700;}
+#productOrderView .mo-info.err{color:#c93838;font-weight:800;}

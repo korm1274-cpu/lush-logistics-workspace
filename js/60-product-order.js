@@ -47,7 +47,7 @@
   window.LushProductOrder=P;
 
   /* ===== 정렬 순서 화면 ===== */
-  var draft=[],dirty=false,back=null,fileName='';
+  var draft=[],back=null,fileName='';
   /* 화면 표시용 제품명·담당자: 서버의 PLU 담당자 정보(/api/team-data?part=plu-master)에서 제품코드로 찾아 붙임(저장하지 않음).
      정책 재설정(2026-11-13): 입고·품질리스트 담당자 순서의 편집 화면 표시 허용 범위 */
   var info={};
@@ -67,14 +67,38 @@
   }
   function infoOf(code){var o=info[norm(code)];return{name:o&&o.name||'',mgr:o?o.mgrs.join(' / '):''}}
   function isAdmin(){return role()==='admin'}
+  function canEditOrder(){return isAdmin()} // 저장 권한(서버도 같은 규칙)
+  /* 자동 저장: 엑셀을 올리면 바로, ↑↓✕로 바꾸면 1초 뒤(연달아 누르면 마지막 1번만). 화면을 떠나면 남은 저장을 바로 보냄 */
+  var saveTimer=null,saving=false,again=false,status={kind:'',msg:''};
+  function hhmm(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
+  function save(){
+    clearTimeout(saveTimer);saveTimer=null;
+    if(!canEditOrder())return Promise.resolve();
+    if(saving){again=true;return Promise.resolve()}
+    saving=true;status={kind:'saving',msg:'저장 중…'};renderStatus();
+    var codes=draft.slice();
+    return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',codes:codes,fileName:fileName})}).then(function(r){return r.json()}).then(function(j){
+      if(!j||!j.success)throw new Error((j&&j.error)||'서버가 저장하지 않았습니다.');
+      setCodes(codes);P.meta={codes:codes,updatedAt:new Date().toISOString(),fileName:fileName};
+      status={kind:'ok',msg:'저장됨 '+hhmm(new Date())};
+    }).catch(function(e){
+      status={kind:'err',msg:'저장 실패 — '+String((e&&e.message)||e).slice(0,80)+' · 다시 시도해 주세요.'};
+      toast('정렬 순서를 저장하지 못했습니다.');
+    }).then(function(){saving=false;renderStatus();if(again){again=false;return save()}});
+  }
+  function saveSoon(){clearTimeout(saveTimer);status={kind:'saving',msg:'변경 사항 저장 대기…'};renderStatus();saveTimer=setTimeout(save,1000)}
+  function renderStatus(){
+    var el=$('moInfo');if(!el)return;
+    var meta=P.meta&&P.meta.updatedAt?'제품 '+P.codes.length+'개 · '+String(P.meta.updatedAt).slice(0,10)+' 저장'+(P.meta.fileName?' · '+P.meta.fileName:''):'아직 저장된 순서가 없습니다.';
+    el.className='mo-info'+(status.kind?' '+status.kind:'');
+    el.textContent=(status.msg?status.msg+' · ':'')+meta+(canEditOrder()?' · 바꾸면 자동 저장됩니다.':' · 순서 변경은 관리자만 할 수 있습니다.');
+  }
   function renderView(){
     var box=$('moList');if(!box)return;
-    var admin=isAdmin();
-    $('moUpload').hidden=!admin;$('moSave').hidden=!admin;$('moReset').hidden=!admin;
-    $('moSave').disabled=!dirty;$('moReset').disabled=!dirty;
-    var meta=P.meta&&P.meta.updatedAt?'저장된 순서: 제품 '+P.codes.length+'개 · '+String(P.meta.updatedAt).slice(0,10)+' 저장'+(P.meta.fileName?' · '+P.meta.fileName:''):'아직 저장된 순서가 없습니다.';
-    $('moInfo').textContent=(dirty?'저장하지 않은 변경이 있습니다 (제품 '+draft.length+'개). · ':'')+meta+(admin?'':' · 순서 변경은 관리자만 할 수 있습니다.');
-    if(!draft.length){box.innerHTML='<p class="mo-empty">'+(admin?'[엑셀 올리기]로 순서 파일을 올려 주세요. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
+    var edit=canEditOrder();
+    $('moUpload').hidden=!edit;
+    renderStatus();
+    if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     // 담당자가 바뀌는 줄마다 '담당자 · N개' 소제목(연속된 묶음 기준)
     var rows=draft.map(function(c){return infoOf(c)}),html='',i=0;
     while(i<draft.length){
@@ -82,7 +106,7 @@
       html+='<li class="mo-group"><b>'+esc(m||'담당자 정보 없음')+'</b> <span>'+(j-i)+'개</span></li>';
       for(var k=i;k<j;k++){
         html+='<li><span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(rows[k].name?esc(rows[k].name):'<span class="mo-dash">-</span>')+'</span><span class="mo-mgr">'+(rows[k].mgr?esc(rows[k].mgr):'<span class="mo-dash">-</span>')+'</span>'+
-          (admin?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(k?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(k<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
+          (edit?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(k?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(k<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
       }
       i=j;
     }
@@ -104,17 +128,10 @@
         });
       }
       if(!out.length)throw new Error('첫 시트에서 제품코드를 찾지 못했습니다.');
-      draft=out.slice(0,10000);dirty=true;fileName=file.name;renderView();
-      toast('제품코드 '+draft.length+'개를 읽었습니다. 확인 후 [저장]을 눌러 주세요.');
+      if(P.codes.length&&!confirm('지금 저장된 순서(제품 '+P.codes.length+'개)를 새 파일 순서(제품 '+Math.min(out.length,10000)+'개)로 바꿀까요?'))return;
+      draft=out.slice(0,10000);fileName=file.name;renderView();
+      return save().then(function(){if(status.kind==='ok')toast('제품코드 '+draft.length+'개를 읽어 저장했습니다.')});
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){var inp=$('moFile');if(inp)inp.value=''});
-  }
-  function save(){
-    if(!isAdmin()){toast('정렬 순서 저장은 관리자만 할 수 있습니다.');return}
-    fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',codes:draft,fileName:fileName})}).then(function(r){return r.json()}).then(function(j){
-      if(!j||!j.success){toast((j&&j.error)||'저장하지 못했습니다.');return}
-      dirty=false;toast('정렬 순서를 저장했습니다. (제품 '+j.count+'개)');
-      return P.load().then(function(){draft=P.codes.slice();renderView()});
-    }).catch(function(){toast('저장하지 못했습니다.')});
   }
   // 입고리스트·품질리스트의 [정렬 순서] 버튼 → 이 화면, [← 돌아가기] → 보던 화면
   function openView(){
@@ -122,12 +139,11 @@
     var cur=document.querySelector('.view.active');
     back={id:cur&&cur.id,title:($('pageTitle')||{}).textContent||'',el:document.querySelector('#navContainer .nav-item.active')};
     if(typeof showView==='function')showView('productOrderView','제품 정렬 순서',null);
-    window.scrollTo(0,0);
-    Promise.all([P.load(),loadInfo()]).then(function(){if(!dirty){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
+    window.scrollTo(0,0);status={kind:'',msg:''};
+    Promise.all([P.load(),loadInfo()]).then(function(){if(!saveTimer&&!saving){draft=P.codes.slice();fileName=(P.meta&&P.meta.fileName)||''}renderView()});
   }
   function goBack(){
-    if(dirty&&!confirm('저장하지 않은 변경이 있습니다. 그래도 나갈까요?'))return;
-    if(dirty){dirty=false;draft=P.codes.slice()}
+    if(saveTimer)save(); // 남은 저장을 바로
     if(back&&back.id&&typeof showView==='function'){showView(back.id,back.title,back.el||null)}
   }
   function init(){
@@ -135,16 +151,17 @@
     var view=$('productOrderView');if(!view)return;
     $('moBack').addEventListener('click',goBack);
     $('moFile').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)readExcel(f)});
-    $('moSave').addEventListener('click',save);
-    $('moReset').addEventListener('click',function(){draft=P.codes.slice();dirty=false;renderView()});
     $('moList').addEventListener('click',function(e){
-      var b=e.target.closest('[data-mo-up],[data-mo-down],[data-mo-del]');if(!b||!isAdmin())return;
+      var b=e.target.closest('[data-mo-up],[data-mo-down],[data-mo-del]');if(!b||!canEditOrder())return;
       var up=b.getAttribute('data-mo-up'),dn=b.getAttribute('data-mo-down'),del=b.getAttribute('data-mo-del');
       if(up!=null){var i=+up;if(i>0){var t=draft[i-1];draft[i-1]=draft[i];draft[i]=t}}
       else if(dn!=null){var j=+dn;if(j<draft.length-1){var u=draft[j+1];draft[j+1]=draft[j];draft[j]=u}}
       else if(del!=null){draft.splice(+del,1)}
-      dirty=true;renderView();
+      renderView();saveSoon();
     });
+    // 메뉴로 다른 화면에 가도 남은 저장은 바로 보냄
+    new MutationObserver(function(){if(!view.classList.contains('active')&&saveTimer)save()}).observe(view,{attributes:true,attributeFilter:['class']});
+    window.addEventListener('pagehide',function(){if(saveTimer)save()});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
 })();
