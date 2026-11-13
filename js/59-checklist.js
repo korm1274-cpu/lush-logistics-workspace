@@ -119,7 +119,8 @@
     return Promise.all([
       fetch(API).then(function(r){return r.json()}),
       fetch(MASTER_API).then(function(r){return r.json()}).catch(function(){return null}),
-      fetch(QUALITY_API).then(function(r){return r.json()}).catch(function(){return null})
+      fetch(QUALITY_API).then(function(r){return r.json()}).catch(function(){return null}),
+      window.LushProductOrder?window.LushProductOrder.load().catch(function(){return null}):null // 제품 정렬 순서(js/60-product-order.js)
     ]).then(function(res){
       var j=res[0],m=res[1],q=res[2];
       if(!j||!j.success){toast((j&&j.error)||'입고리스트을 불러오지 못했습니다.');return}
@@ -222,6 +223,8 @@
     all.forEach(function(r){r.q=r.qn>0});
     // 여러 차수: 입고일 최신순(같은 날은 차수 순서 그대로) → 제품을 검색하면 언제 들어왔는지 위에서부터
     if(multi){var ord={};sel.forEach(function(x,i){ord[x.id]=i});all.sort(function(a,c){var ea=isDay(a.batch.eta)?a.batch.eta:'',ec=isDay(c.batch.eta)?c.batch.eta:'';return ec<ea?-1:ec>ea?1:ord[a.batch.id]-ord[c.batch.id]})}
+    // 제품 정렬 순서(제품코드 순서표)가 있으면 그 순서로, 순서표에 없는 제품은 맨 아래(같은 순위끼리는 위 순서 유지)
+    var PO=window.LushProductOrder;if(PO)all=PO.sortRows(all,function(r){return r.code});
     $('ckQualityNote').textContent=linked.length?'품질리스트 '+linked.join(' · ')+'와 연결됨':'같은 차수 품질리스트 없음 — 품질리스트가 올라오면 자동으로 맞춥니다';
     var match=function(r){return !q||[r.plu,r.code,r.name,r.mgr,r.sheet,(r.details||[]).map(function(d){return d.lot+' '+d.ref+' '+d.cs}).join(' ')].join(' ').toLowerCase().indexOf(q)>=0};
     var qAll=all.filter(match);
@@ -237,6 +240,7 @@
     var inSheet=qAll.filter(function(r){return (!sheetFilter||r.sheet===sheetFilter)&&(!colFilter||qtyOf(r)>0)});
     var mgrName=function(r){return r.mgr||'담당자 없음'},mc={};inSheet.forEach(function(r){var k=mgrName(r);mc[k]=(mc[k]||0)+1});
     var mk=Object.keys(mc).sort(function(a,c){return (a==='담당자 없음')-(c==='담당자 없음')||mc[c]-mc[a]||a.localeCompare(c)});
+    if(PO){var mk2=PO.sortMgrKeys(mk,inSheet,mgrName,function(r){return r.code},mc);if(mk2)mk=mk2} // 순서표에서 각 담당자 제품이 처음 나오는 순
     if(mgrFilter&&!mc[mgrFilter])mgrFilter='';
     // [전체 인쇄]는 '전체 담당'일 때만(특정 담당자 탭에서는 [인쇄]로 그 담당자만)
     if($('ckPrintAll'))$('ckPrintAll').hidden=!!mgrFilter;
@@ -544,6 +548,8 @@
     v.all.forEach(function(r){var k=name(r);if(!groups[k]){groups[k]=[];keys.push(k)}groups[k].push(r)});
     // 순서: 화면 담당자 탭과 같게(제품 많은 순, '담당자 없음'은 맨 뒤)
     keys.sort(function(a,c){return (a==='담당자 없음')-(c==='담당자 없음')||groups[c].length-groups[a].length||a.localeCompare(c)});
+    // 제품 정렬 순서가 있으면 페이지도 그 순서(담당자 탭과 같게)
+    var PO=window.LushProductOrder;if(PO){var cnt={};keys.forEach(function(k){cnt[k]=groups[k].length});var k2=PO.sortMgrKeys(keys,v.all,name,function(r){return r.code},cnt);if(k2)keys=k2}
     var order=[];(v.batches||[]).forEach(function(x){(x.cols||[]).forEach(function(k){if(order.indexOf(k)<0)order.push(k)})});
     var base=batchTitle(v),eta=v.batch&&isDay(v.batch.eta)?'입고 예정일 '+v.batch.eta+' · ':'';
     var sections=keys.map(function(k){

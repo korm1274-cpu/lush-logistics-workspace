@@ -94,7 +94,8 @@
   function load(){
     return Promise.all([
       fetch(API).then(function(r){return r.json()}),
-      fetch(MASTER_API).then(function(r){return r.json()}).catch(function(){return null})
+      fetch(MASTER_API).then(function(r){return r.json()}).catch(function(){return null}),
+      window.LushProductOrder?window.LushProductOrder.load().catch(function(){return null}):null // 제품 정렬 순서(js/60-product-order.js)
     ]).then(function(res){
       var j=res[0],m=res[1];
       if(!j||!j.success){toast((j&&j.error)||'품질리스트를 불러오지 못했습니다.');return}
@@ -132,10 +133,14 @@
     var inKind=qAll.filter(function(r){return !kindFilter||r.kind===kindFilter});
     var mgrs={};inKind.forEach(function(r){var k=mgrName(r);mgrs[k]=(mgrs[k]||0)+1});
     var mgrKeys=Object.keys(mgrs).sort(function(a,b){return (a==='담당자 없음')-(b==='담당자 없음')||mgrs[b]-mgrs[a]||a.localeCompare(b)});
+    // 제품 정렬 순서(제품코드 순서표)가 있으면 담당자 탭은 각 담당자 제품이 순서표에서 처음 나오는 순
+    var PO=window.LushProductOrder;
+    if(PO){var mk2=PO.sortMgrKeys(mgrKeys,inKind,mgrName,function(r){return r.code},mgrs);if(mk2)mgrKeys=mk2}
     if(mgrFilter&&!mgrs[mgrFilter])mgrFilter='';
     $('qlKinds').innerHTML=[['','전체'],['단품','단품'],['GIFT','GIFT']].map(function(k){return '<button type="button" class="ql-chip'+(kindFilter===k[0]?' on':'')+(kinds[k[0]]?'':' zero')+'" data-ql-kind="'+k[0]+'">'+k[1]+' <em>'+kinds[k[0]]+'</em></button>'}).join('');
     $('qlMgrs').innerHTML='<button type="button" class="ql-chip'+(mgrFilter?'':' on')+'" data-ql-mgr="">전체 담당 <em>'+inKind.length+'</em></button>'+mgrKeys.map(function(k){return '<button type="button" class="ql-chip'+(mgrFilter===k?' on':'')+(k==='담당자 없음'?' none':'')+'" data-ql-mgr="'+esc(k)+'">'+esc(k)+' <em>'+mgrs[k]+'</em></button>'}).join('');
     var list=inKind.filter(function(r){return !mgrFilter||mgrName(r)===mgrFilter});
+    if(PO)list=PO.sortRows(list,function(r){return r.code}); // 순서표에 없는 제품은 맨 아래(GIFT 구성품은 GIFT 줄 아래 그대로)
     var b=current();
     lastView={list:list,batch:b,q:q};
     var qtySum=list.reduce(function(s,r){return s+(Number(r.qty)||0)},0);

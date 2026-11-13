@@ -292,6 +292,36 @@ async function pluMaster(req, res, user) {
   }
 }
 
+// 제품 정렬 순서(입고리스트·품질리스트): { codes:[제품코드 순서], updatedAt, updatedBy, fileName }
+//   엑셀 A열 제품코드를 위에서부터 순서로(담당자 이름은 받지도 저장하지도 않음)
+//   GET: 관리자·팀원만(게스트는 빈 목록 — 정렬 미적용) / POST {action:'save', codes, fileName}: 관리자만
+const PRODUCT_ORDER_KEY = 'lush_product_order_v1';
+async function productOrder(req, res, user) {
+  const store = require('./_lib/auth').kv();
+  const clip = (v, n) => String(v == null ? '' : v).replace(/[\u0000-\u001f]/g, ' ').trim().slice(0, n);
+  try {
+    if (req.method === 'GET') {
+      if (user.role === 'guest') return res.status(200).json({ success: true, order: { codes: [] } });
+      const raw = await store.cmd(['GET', PRODUCT_ORDER_KEY]);
+      let data = null; try { data = raw ? JSON.parse(raw) : null; } catch (e) { data = null; }
+      return res.status(200).json({ success: true, order: data && Array.isArray(data.codes) ? data : { codes: [] } });
+    }
+    let body = req.body;
+    if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+    body = body || {};
+    if (body.action !== 'save') return res.status(200).json({ success: false, error: 'Unsupported action' });
+    if (user.role !== 'admin') return res.status(200).json({ success: false, error: '정렬 순서 저장은 관리자만 할 수 있습니다.' });
+    if (!Array.isArray(body.codes)) return res.status(200).json({ success: false, error: '제품코드 목록이 올바르지 않습니다.' });
+    const seen = new Set(), codes = [];
+    body.codes.slice(0, 10000).forEach(c => { const s = clip(c, 40); const k = s.toUpperCase(); if (s && !seen.has(k)) { seen.add(k); codes.push(s); } });
+    const rec = { codes, updatedAt: new Date().toISOString(), updatedBy: user.id, fileName: clip(body.fileName, 200) };
+    await store.cmd(['SET', PRODUCT_ORDER_KEY, JSON.stringify(rec)]);
+    return res.status(200).json({ success: true, count: codes.length });
+  } catch (e) {
+    return res.status(200).json({ success: false, error: failMsg('product-order', e) });
+  }
+}
+
 // 구글 드라이브 자동 반영: Apps Script가 x-sync-secret 머리글로 보낸 품질리스트 'import'만 로그인 없이 허용
 // (비밀값은 Vercel 환경변수 QUALITY_SYNC_SECRET과 Apps Script 스크립트 속성에 같은 값으로 넣음, 코드에는 두지 않음)
 function driveSyncUser(req) {
@@ -323,6 +353,8 @@ module.exports = async (req, res) => {
   if (req.query && req.query.part === 'plu-master') return pluMaster(req, res, authUser);
   // 입고리스트 샘플(수입팀 상품 입고 CHECKLIST)
   if (req.query && req.query.part === 'checklists') return checklists(req, res, authUser);
+  // 제품 정렬 순서(입고리스트·품질리스트, 제품코드 순서)
+  if (req.query && req.query.part === 'product-order') return productOrder(req, res, authUser);
   if (!KV_URL || !KV_TOKEN) {
     res.status(200).json({ success: false, error: 'KV_REST_API_URL/KV_REST_API_TOKEN 환경변수가 설정되지 않았습니다.' });
     return;

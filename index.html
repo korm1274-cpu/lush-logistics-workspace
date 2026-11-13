@@ -1247,7 +1247,7 @@ window.ensureChart=function(){
   <div class="ql-chips" id="qlKinds"></div>
   <div class="ql-chips" id="qlMgrs"></div>
   <div class="kpis data-kpis ql-kpis"><div class="kpi"><span>품목</span><b id="qlCount">0</b><small>건</small></div><div class="kpi"><span>입고수량</span><b id="qlQty">0</b><small>EA</small></div><div class="kpi"><span>담당자 없음</span><b id="qlNoMgr">0</b><small>건</small></div></div>
-  <div class="panel ql-panel"><div class="panel-head"><div><h3 id="qlTitle">품질리스트</h3><small class="ql-meta" id="qlMeta"></small></div><div class="ql-actions"><button type="button" class="btn ql-copy" id="qlCopy" title="지금 보이는 목록을 표 그대로 텍스트로 복사 (엑셀에 바로 붙여넣기)">텍스트 복사</button><button type="button" class="btn ql-export" id="qlExport" title="지금 보이는 목록을 엑셀로 저장">엑셀 내보내기</button></div></div><div class="ql-list" id="qlList"></div></div>
+  <div class="panel ql-panel"><div class="panel-head"><div><h3 id="qlTitle">품질리스트</h3><small class="ql-meta" id="qlMeta"></small></div><div class="ql-actions"><button type="button" class="btn ql-copy" id="qlCopy" title="지금 보이는 목록을 표 그대로 텍스트로 복사 (엑셀에 바로 붙여넣기)">텍스트 복사</button><button type="button" class="btn ql-export" id="qlExport" title="지금 보이는 목록을 엑셀로 저장">엑셀 내보내기</button><button type="button" class="btn po-open" data-product-order-open title="제품코드 순서표(엑셀)로 정렬 순서 정하기">정렬 순서</button></div></div><div class="ql-list" id="qlList"></div></div>
 </div></section>
 <section id="checklistView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">INBOUND LIST</div><h2>입고리스트</h2><p>수입팀 상품 입고 체크리스트(구글 드라이브 자동 반영)의 분배 표에 PLU별 제조일자·LOT·REF·케이스, 제품코드·담당자, 같은 차수 품질 대상을 붙여 보여 줍니다.</p></div></div>
@@ -1260,10 +1260,16 @@ window.ensureChart=function(){
   <div class="ck-chips" id="ckSheets"></div>
   <div class="ck-chips" id="ckMgrs"></div>
   <div class="kpis data-kpis ck-kpis"><div class="kpi"><span>품목</span><b id="ckCount">0</b><small>건</small></div><div class="kpi"><span>입고 수량</span><b id="ckQty">0</b><small>EA</small></div><div class="kpi"><span>품질 수량 (입고리스트 / 품질리스트)</span><b id="ckQuality">0</b><small>개</small></div></div>
-  <div class="panel ck-panel"><div class="panel-head"><div><h3 id="ckTitle">입고리스트</h3><small class="ck-qnote" id="ckQualityNote"></small></div><div class="ck-actions"><button type="button" class="btn ck-sum-btn" id="ckSumBtn" aria-pressed="false" title="여러 차수를 볼 때 제품 한 줄에 기간 합계 수량·입고 횟수·입고일로 묶어 보기" hidden>제품별 합계</button><button type="button" class="btn ck-print" id="ckPrintAll" title="고른 차수의 모든 제품을 담당자별로 페이지를 나눠 인쇄 (A4 가로·폭 1페이지)">전체 인쇄</button><button type="button" class="btn ck-print" id="ckPrint" title="지금 보이는 목록을 A4 가로·폭 1페이지로 인쇄 (담당자 탭을 고르면 그 담당자 제품만)">인쇄</button><button type="button" class="btn ck-copy" id="ckCopy" title="지금 보이는 목록을 표 그대로 텍스트로 복사">텍스트 복사</button><button type="button" class="btn ck-export" id="ckExport" title="지금 보이는 목록을 엑셀로 저장">엑셀 내보내기</button></div></div><div class="ck-list" id="ckList"></div></div>
+  <div class="panel ck-panel"><div class="panel-head"><div><h3 id="ckTitle">입고리스트</h3><small class="ck-qnote" id="ckQualityNote"></small></div><div class="ck-actions"><button type="button" class="btn ck-sum-btn" id="ckSumBtn" aria-pressed="false" title="여러 차수를 볼 때 제품 한 줄에 기간 합계 수량·입고 횟수·입고일로 묶어 보기" hidden>제품별 합계</button><button type="button" class="btn ck-print" id="ckPrintAll" title="고른 차수의 모든 제품을 담당자별로 페이지를 나눠 인쇄 (A4 가로·폭 1페이지)">전체 인쇄</button><button type="button" class="btn ck-print" id="ckPrint" title="지금 보이는 목록을 A4 가로·폭 1페이지로 인쇄 (담당자 탭을 고르면 그 담당자 제품만)">인쇄</button><button type="button" class="btn ck-copy" id="ckCopy" title="지금 보이는 목록을 표 그대로 텍스트로 복사">텍스트 복사</button><button type="button" class="btn ck-export" id="ckExport" title="지금 보이는 목록을 엑셀로 저장">엑셀 내보내기</button><button type="button" class="btn po-open" data-product-order-open title="제품코드 순서표(엑셀)로 정렬 순서 정하기">정렬 순서</button></div></div><div class="ck-list" id="ckList"></div></div>
   <details class="panel ck-pallet" id="ckPallet"><summary class="ck-pal-sum"><span class="ck-pal-title"><i data-lucide="package-search"></i> Pallet 조회</span><small id="ckPalSummary"></small><span class="ck-pal-hint">위에서 고른 차수·필터의 Pallet별 제품</span></summary>
     <div class="ck-pal-body"><div class="ck-pal-focus" id="ckPalFocus" hidden></div><div class="ck-pal-tools"><div class="field"><label for="ckPalRef">REF넘버</label><select id="ckPalRef"><option value="">전체 REF</option></select></div><div class="field grow"><label for="ckPalSearch">검색</label><input id="ckPalSearch" placeholder="Pallet / REF / PLU / 품명 / LOT" autocomplete="off"></div><div class="ck-actions"><button type="button" class="btn ck-copy" id="ckPalCopy">텍스트 복사</button><button type="button" class="btn ck-export" id="ckPalExport">엑셀 내보내기</button></div></div><div id="ckPalList"></div></div>
   </details>
+</div></section>
+<section id="productOrderView" class="view"><div class="data-workbench">
+  <div class="data-workbench-head"><div><div class="eyebrow">PRODUCT ORDER</div><h2>제품 정렬 순서</h2><p>입고리스트·품질리스트의 제품을 이 제품코드 순서대로 정렬합니다. 엑셀 첫 시트 A열에 제품코드를 위에서부터 순서대로 적어 올리고, 확인 후 저장하세요. 순서표에 없는 제품은 맨 아래로 갑니다.</p></div></div>
+  <div class="mo-toolbar"><button type="button" class="btn" id="moBack">← 돌아가기</button><label class="btn mo-upload" id="moUpload">엑셀 올리기<input type="file" id="moFile" accept=".xlsx,.xls,.csv" hidden></label><button type="button" class="btn primary" id="moSave">저장</button><button type="button" class="btn" id="moReset">되돌리기</button></div>
+  <p class="mo-info" id="moInfo"></p>
+  <div class="panel mo-panel"><div class="mo-list" id="moList"></div></div>
 </div></section>
 <section id="outboundBasicView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">OUTBOUND</div><h2>출고</h2><p>이번 달 기준으로 조회하며, 날짜별 인원·소요시간을 입력하면 생산성이 자동 계산됩니다.</p></div></div>
@@ -1816,6 +1822,7 @@ window.ensureChart=function(){
 <script src="js/58-quality-list.js"></script>
 <script src="js/checklist-parse.js"></script>
 <script src="js/59-checklist.js"></script>
+<script src="js/60-product-order.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">

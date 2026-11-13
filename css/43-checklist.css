@@ -221,3 +221,25 @@
 
 /* 숨김 버튼(전체 인쇄: 특정 담당자 탭, 제품별 합계: 한 차수)은 확실히 숨김 */
 #checklistView .ck-actions .btn[hidden]{display:none!important;}
+
+/* [정렬 순서] 버튼(입고리스트·품질리스트) — 게스트는 숨김 */
+#appShell .po-open{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+html.role-guest #appShell .po-open{display:none!important;}
+@media (max-width:900px){#appShell .po-open{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}}
+/* 제품 정렬 순서 화면 */
+#productOrderView .mo-toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 10px;}
+#productOrderView .mo-toolbar .btn{height:38px;padding:0 14px;font-weight:800;display:inline-flex;align-items:center;cursor:pointer;}
+#productOrderView .mo-toolbar [hidden]{display:none!important;}
+#productOrderView .mo-toolbar .btn:disabled{opacity:.45;cursor:default;}
+#productOrderView .mo-info{margin:0 0 10px;font-size:13px;color:#6b7684;}
+#productOrderView .mo-panel{padding:8px 0!important;}
+#productOrderView .mo-empty{margin:0;padding:24px 16px;text-align:center;color:#8b95a1;font-size:14px;}
+#productOrderView .mo-ol{list-style:none;margin:0;padding:0;max-height:none;}
+#productOrderView .mo-ol li{display:flex;align-items:center;gap:12px;padding:8px 16px;border-bottom:1px solid #f1ede4;}
+#productOrderView .mo-ol li:last-child{border-bottom:0;}
+#productOrderView .mo-no{min-width:42px;font-size:12px;font-weight:800;color:#8b95a1;font-variant-numeric:tabular-nums;}
+#productOrderView .mo-name{flex:1;min-width:0;font-size:14px;font-weight:700;color:#1d1d1b;overflow-wrap:anywhere;}
+#productOrderView .mo-btns{display:flex;gap:4px;flex:none;}
+#productOrderView .mo-btns button{width:32px;height:30px;border:1px solid #e4ddd0;border-radius:8px;background:#fff;font-size:14px;cursor:pointer;}
+#productOrderView .mo-btns button:disabled{opacity:.35;cursor:default;}
+#productOrderView .mo-btns .mo-del{color:#c93838;border-color:#f1d4d4;}
