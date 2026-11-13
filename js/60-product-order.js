@@ -67,35 +67,20 @@
   }
   function infoOf(code){var o=info[norm(code)];return{name:o&&o.name||'',mgr:o?o.mgrs.join(' / '):''}}
   function isAdmin(){return role()==='admin'}
-  function canEditOrder(){return isAdmin()} // 전체 변경·엑셀 올리기·빼기: 관리자만(서버도 같은 규칙)
-  /* 팀원: 자기 담당 제품만 ↑↓(정책 재설정 2026-11-13 — 계정 이름과 PLU 담당자 이름이 같을 때). 서버가 다시 대조·검증 */
-  function isMember(){return role()==='member'}
-  function myName(){var u=window.LUSH_AUTH&&window.LUSH_AUTH.user&&window.LUSH_AUTH.user();return String(u&&u.name||'').trim()}
-  function isMine(code){var o=info[norm(code)],me=myName();return !!(me&&o&&o.mgrs.indexOf(me)>=0)}
-  function canMove(k){return isAdmin()||(isMember()&&isMine(draft[k]))}
-  // 옮길 자리: 관리자는 바로 위·아래, 팀원은 위·아래의 가장 가까운 '내 담당' 제품과 자리 바꿈(남의 제품 자리는 그대로)
-  function neighbor(k,dir){
-    if(isAdmin()){var t=k+dir;return t>=0&&t<draft.length?t:-1}
-    for(var t2=k+dir;t2>=0&&t2<draft.length;t2+=dir)if(isMine(draft[t2]))return t2;
-    return -1;
-  }
-  function anyEdit(){return isAdmin()||(isMember()&&draft.some(isMine))}
+  // 관리자·팀원: 엑셀 올리기·↑↓·✕ 모두 가능(서버도 같은 규칙), 게스트는 화면 진입 불가
+  function canEditOrder(){var r=role();return r==='admin'||r==='member'}
   /* 자동 저장: 엑셀을 올리면 바로, ↑↓✕로 바꾸면 1초 뒤(연달아 누르면 마지막 1번만). 화면을 떠나면 남은 저장을 바로 보냄 */
   var saveTimer=null,saving=false,again=false,status={kind:'',msg:''};
   function hhmm(d){return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0')}
   function save(){
     clearTimeout(saveTimer);saveTimer=null;
-    if(!anyEdit())return Promise.resolve();
+    if(!canEditOrder())return Promise.resolve();
     if(saving){again=true;return Promise.resolve()}
     saving=true;status={kind:'saving',msg:'저장 중…'};renderStatus();
-    var codes=draft.slice(),admin=isAdmin();
-    // 관리자: 전체 순서 / 팀원: 내 담당 제품들의 새 순서만(서버가 전체 순서의 그 자리에만 넣음)
-    var body=admin?{action:'save',codes:codes,fileName:fileName}:{action:'saveMine',codes:codes.filter(isMine)};
-    return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).then(function(r){return r.json()}).then(function(j){
+    var codes=draft.slice();
+    return fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'save',codes:codes,fileName:fileName})}).then(function(r){return r.json()}).then(function(j){
       if(!j||!j.success)throw new Error((j&&j.error)||'서버가 저장하지 않았습니다.');
-      if(!admin&&Array.isArray(j.codes)){codes=j.codes;if(!saveTimer)draft=j.codes.slice()} // 다른 사람 변경까지 합쳐진 최신 순서
-      setCodes(codes);P.meta={codes:codes,updatedAt:new Date().toISOString(),fileName:admin?fileName:(P.meta&&P.meta.fileName)||''};
-      if(!admin&&!saveTimer)renderView();
+      setCodes(codes);P.meta={codes:codes,updatedAt:new Date().toISOString(),fileName:fileName};
       status={kind:'ok',msg:'저장됨 '+hhmm(new Date())};
     }).catch(function(e){
       status={kind:'err',msg:'저장 실패 — '+String((e&&e.message)||e).slice(0,80)+' · 다시 시도해 주세요.'};
@@ -107,24 +92,38 @@
     var el=$('moInfo');if(!el)return;
     var meta=P.meta&&P.meta.updatedAt?'제품 '+P.codes.length+'개 · '+String(P.meta.updatedAt).slice(0,10)+' 저장'+(P.meta.fileName?' · '+P.meta.fileName:''):'아직 저장된 순서가 없습니다.';
     el.className='mo-info'+(status.kind?' '+status.kind:'');
-    var mineN=isMember()?draft.filter(isMine).length:0;
-    var note=isAdmin()?' · 바꾸면 자동 저장됩니다.':isMember()?(mineN?' · 내 담당 제품 '+mineN+'개만 ↑↓로 바꿀 수 있고, 바꾸면 자동 저장됩니다.':' · 내 담당 제품이 없습니다(계정 이름이 PLU 담당자 이름과 같아야 합니다).'):' · 순서 변경 권한이 없습니다.';
-    el.textContent=(status.msg?status.msg+' · ':'')+meta+note;
+    el.textContent=(status.msg?status.msg+' · ':'')+meta+(canEditOrder()?' · 바꾸면 자동 저장됩니다.':' · 순서 변경 권한이 없습니다.');
+  }
+  // 맨 위 담당자 목록: 순서표에서 처음 나오는 순서대로 '담당자 N개', 누르면 그 담당자 첫 묶음으로 이동
+  function renderMgrs(rows){
+    var el=$('moMgrs');if(!el)return;
+    if(!draft.length){el.innerHTML='';el.hidden=true;return}
+    var order=[],cnt={},first={},g=-1,prev=null;
+    rows.forEach(function(r,k){
+      var m=r.mgr||'담당자 정보 없음';
+      if(m!==prev){g++;prev=m}
+      if(!(m in cnt)){cnt[m]=0;order.push(m);first[m]=g}
+      cnt[m]++;
+    });
+    el.hidden=false;
+    el.innerHTML='<span class="mo-mgrs-label">담당자 '+order.length+'명</span>'+order.map(function(m){return '<button type="button" class="mo-mgr-chip'+(m==='담당자 정보 없음'?' none':'')+'" data-mo-jump="'+first[m]+'">'+esc(m)+' <em>'+cnt[m]+'</em></button>'}).join('');
   }
   function renderView(){
     var box=$('moList');if(!box)return;
     var edit=canEditOrder();
     $('moUpload').hidden=!edit;
     renderStatus();
+    var rows=draft.map(function(c){return infoOf(c)});
+    renderMgrs(rows);
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     // 담당자가 바뀌는 줄마다 '담당자 · N개' 소제목(연속된 묶음 기준)
-    var rows=draft.map(function(c){return infoOf(c)}),html='',i=0;
+    var html='',i=0,g=0;
     while(i<draft.length){
       var m=rows[i].mgr,j=i;while(j<draft.length&&rows[j].mgr===m)j++;
-      html+='<li class="mo-group"><b>'+esc(m||'담당자 정보 없음')+'</b> <span>'+(j-i)+'개</span></li>';
+      html+='<li class="mo-group" data-mo-grp="'+(g++)+'"><b>'+esc(m||'담당자 정보 없음')+'</b> <span>'+(j-i)+'개</span></li>';
       for(var k=i;k<j;k++){
         html+='<li><span class="mo-no">'+(k+1)+'</span><span class="mo-code">'+esc(draft[k])+'</span><span class="mo-pname">'+(rows[k].name?esc(rows[k].name):'<span class="mo-dash">-</span>')+'</span><span class="mo-mgr">'+(rows[k].mgr?esc(rows[k].mgr):'<span class="mo-dash">-</span>')+'</span>'+
-          (canMove(k)?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(neighbor(k,-1)>=0?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(neighbor(k,1)>=0?'':' disabled')+' aria-label="아래로">↓</button>'+(edit?'<button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button>':'')+'</span>':'')+'</li>';
+          (edit?'<span class="mo-btns"><button type="button" data-mo-up="'+k+'"'+(k?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+k+'"'+(k<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+k+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
       }
       i=j;
     }
@@ -132,7 +131,7 @@
   }
   function readExcel(file){
     if(!file)return;
-    if(!canEditOrder()){toast('엑셀 올리기는 관리자만 할 수 있습니다.');return}
+    if(!canEditOrder()){toast('엑셀 올리기 권한이 없습니다.');return}
     (window.ensureXLSX?window.ensureXLSX():Promise.resolve(window.XLSX)).then(function(){return file.arrayBuffer()}).then(function(buf){
       var wb=XLSX.read(buf,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];
       var aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
@@ -171,14 +170,20 @@
     $('moBack').addEventListener('click',goBack);
     $('moFile').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)readExcel(f)});
     $('moList').addEventListener('click',function(e){
-      var b=e.target.closest('[data-mo-up],[data-mo-down],[data-mo-del]');if(!b)return;
+      var b=e.target.closest('[data-mo-up],[data-mo-down],[data-mo-del]');if(!b||!canEditOrder())return;
       var up=b.getAttribute('data-mo-up'),dn=b.getAttribute('data-mo-down'),del=b.getAttribute('data-mo-del');
       if(up!=null||dn!=null){
-        var i=+(up!=null?up:dn);if(!canMove(i))return;
-        var t=neighbor(i,up!=null?-1:1);if(t<0)return;
+        var i=+(up!=null?up:dn),t=i+(up!=null?-1:1);if(t<0||t>=draft.length)return;
         var x=draft[t];draft[t]=draft[i];draft[i]=x;
-      }else if(del!=null){if(!canEditOrder())return;draft.splice(+del,1)}
+      }else if(del!=null){draft.splice(+del,1)}
       renderView();saveSoon();
+    });
+    // 맨 위 담당자 목록: 누르면 그 담당자 묶음으로 이동
+    var mg=$('moMgrs');
+    if(mg)mg.addEventListener('click',function(e){
+      var c=e.target.closest('[data-mo-jump]');if(!c)return;
+      var g=document.querySelector('#moList [data-mo-grp="'+c.getAttribute('data-mo-jump')+'"]');
+      if(g)g.scrollIntoView({block:'start'});
     });
     // 메뉴로 다른 화면에 가도 남은 저장은 바로 보냄
     new MutationObserver(function(){if(!view.classList.contains('active')&&saveTimer)save()}).observe(view,{attributes:true,attributeFilter:['class']});

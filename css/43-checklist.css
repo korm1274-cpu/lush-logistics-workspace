@@ -261,3 +261,12 @@ html.role-guest #appShell .po-open{display:none!important;}
 #productOrderView .mo-info.saving{color:#8a6d1f;}
 #productOrderView .mo-info.ok{color:#11795a;font-weight:700;}
 #productOrderView .mo-info.err{color:#c93838;font-weight:800;}
+/* 정렬 순서 화면 맨 위 담당자 목록(누르면 그 묶음으로 이동) */
+#productOrderView .mo-mgrs{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 12px;}
+#productOrderView .mo-mgrs[hidden]{display:none!important;}
+#productOrderView .mo-mgrs-label{font-size:12px;font-weight:800;color:#8b95a1;margin-right:4px;}
+#productOrderView .mo-mgr-chip{height:32px;padding:0 12px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font-size:13px;font-weight:700;color:#1d1d1b;cursor:pointer;white-space:nowrap;}
+#productOrderView .mo-mgr-chip em{font-style:normal;font-size:12px;font-weight:800;color:#e87ba4;margin-left:2px;}
+#productOrderView .mo-mgr-chip:hover{border-color:#1d1d1b;}
+#productOrderView .mo-mgr-chip.none{color:#8b95a1;border-style:dashed;}
+#productOrderView .mo-ol li.mo-group{scroll-margin-top:72px;}
