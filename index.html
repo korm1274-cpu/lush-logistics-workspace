@@ -1267,7 +1267,7 @@ window.ensureChart=function(){
 </div></section>
 <section id="productOrderView" class="view"><div class="data-workbench">
   <div class="data-workbench-head"><div><div class="eyebrow">PRODUCT ORDER</div><h2>제품 정렬 순서</h2><p>입고리스트·품질리스트의 제품을 이 제품코드 순서대로 정렬합니다. 엑셀 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다. 올리거나 순서를 바꾸면 자동으로 저장됩니다. 순서표에 없는 제품은 맨 아래로 갑니다.</p></div></div>
-  <div class="mo-toolbar"><button type="button" class="btn" id="moBack">← 돌아가기</button><label class="btn mo-upload" id="moUpload">엑셀 올리기<input type="file" id="moFile" accept=".xlsx,.xls,.csv" hidden></label></div>
+  <div class="mo-toolbar"><button type="button" class="btn" id="moBack">← 돌아가기</button><label class="btn mo-upload" id="moUpload">정렬 순서 엑셀 올리기<input type="file" id="moFile" accept=".xlsx,.xls,.csv" hidden></label><label class="btn mo-upload" id="moXUpload" title="제품코드·PLU·제품명·담당을 엑셀로 한 번에 등록">제품코드·담당 엑셀 올리기<input type="file" id="moXFile" accept=".xlsx,.xls,.csv" hidden></label></div>
   <p class="mo-info" id="moInfo"></p>
   <div class="mo-add" id="moAdd" hidden><b class="mo-add-title">제품 추가 · 담당 지정</b><input id="moAddCode" placeholder="제품코드 *" autocomplete="off" maxlength="40"><input id="moAddPlu" placeholder="PLU (입고리스트 반영용)" autocomplete="off" inputmode="numeric" maxlength="20"><input id="moAddName" placeholder="제품명" autocomplete="off" maxlength="120"><input id="moAddMgr" list="moMgrOptions" placeholder="담당" autocomplete="off" maxlength="40"><datalist id="moMgrOptions"></datalist><button type="button" class="btn primary" id="moAddBtn">추가</button></div>
   <div class="mo-mgrs" id="moMgrs" hidden></div>

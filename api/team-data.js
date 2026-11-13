@@ -340,6 +340,28 @@ async function productExtra(req, res, user) {
     let body = req.body;
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
+    // 엑셀 일괄 반영: items [{ row, code, plu, name, mgr }] 최대 2,000줄. 잘못된 줄은 건너뛰고 몇 번째 줄인지 돌려줌
+    // 빈칸은 이전 값 유지, PLU·담당 둘 다 없으면 건너뜀. 한 번에 읽고(HGETALL) 한 번에 저장(HSET 여러 필드)
+    if (body.action === 'bulkSet') {
+      const list = Array.isArray(body.items) ? body.items.slice(0, 2000) : [];
+      if (!list.length) return res.status(200).json({ success: false, error: '반영할 줄이 없습니다.' });
+      const arr = await store.cmd(['HGETALL', PRODUCT_EXTRA_KEY]) || [];
+      const cur = {}; for (let i = 0; i < arr.length; i += 2) { try { cur[arr[i]] = JSON.parse(arr[i + 1]); } catch (e) { /* 무시 */ } }
+      const at = new Date().toISOString(), saved = {}, skipped = [];
+      list.forEach((it, i) => {
+        const row = Number(it && it.row) || i + 1;
+        const c = clip(it && it.code, 40), p = clip(it && it.plu, 20), n = clip(it && it.name, 120), m = clip(it && it.mgr, 40);
+        if (!/^[A-Za-z0-9][A-Za-z0-9\-_.]{0,39}$/.test(c)) { skipped.push({ row, reason: '제품코드 형식' }); return; }
+        if (p && !/^\d{1,20}$/.test(p)) { skipped.push({ row, reason: 'PLU는 숫자만' }); return; }
+        const f = c.toUpperCase(), old = saved[f] || cur[f] || null;
+        const plu = p || (old && old.plu) || '', mgr = m || (old && old.mgr) || '';
+        if (!plu && !mgr) { skipped.push({ row, reason: 'PLU·담당 없음' }); return; }
+        saved[f] = { code: c, plu, name: n || (old && old.name) || '', mgr, by: user.id, at };
+      });
+      const fields = Object.keys(saved);
+      if (fields.length) await store.cmd(['HSET', PRODUCT_EXTRA_KEY].concat(...fields.map(f => [f, JSON.stringify(saved[f])])));
+      return res.status(200).json({ success: true, saved: fields.length, skipped: skipped.slice(0, 200), items: fields.map(f => ({ code: saved[f].code, plu: saved[f].plu, name: saved[f].name, mgr: saved[f].mgr, at })) });
+    }
     const code = clip(body.code, 40);
     if (!/^[A-Za-z0-9][A-Za-z0-9\-_.]{0,39}$/.test(code)) return res.status(200).json({ success: false, error: '제품코드를 확인해 주세요. (영문·숫자, 40자 이내)' });
     const field = code.toUpperCase();

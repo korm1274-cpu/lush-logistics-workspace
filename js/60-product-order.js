@@ -127,7 +127,7 @@
   function renderView(){
     var box=$('moList');if(!box)return;
     var edit=canEditOrder();
-    $('moUpload').hidden=!edit;var add=$('moAdd');if(add)add.hidden=!edit;
+    $('moUpload').hidden=!edit;var add=$('moAdd');if(add)add.hidden=!edit;var xu=$('moXUpload');if(xu)xu.hidden=!edit;
     renderStatus();renderMgrs();renderDatalist();
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     if(!picked){box.innerHTML='<p class="mo-empty">위에서 담당을 고르면 그 담당 제품이 정렬 순서대로 나옵니다.</p>';return}
@@ -234,6 +234,59 @@
       return exists?null:save();
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){btn.disabled=false});
   }
+  /* 제품코드·PLU·제품명·담당 엑셀 일괄 반영
+     첫 시트 1행 제목으로 칸 찾기(제품코드|코드 · PLU · 제품명|품명 · 담당), 제목이 없으면 A=제품코드 B=PLU C=제품명 D=담당.
+     빈칸은 기존 값 유지. 미리보기(반영·새 제품·담당 변경·건너뜀) 확인 후 저장, 새 제품코드는 그 담당 제품들 맨 뒤에 정렬 순서로 추가 */
+  var CODE_RE=/^[A-Za-z0-9][A-Za-z0-9\-_.]{0,39}$/;
+  function readExtraExcel(file){
+    if(!file)return;
+    if(!canEditOrder()){toast('엑셀 올리기 권한이 없습니다.');return}
+    (window.ensureXLSX?window.ensureXLSX():Promise.resolve(window.XLSX)).then(function(){return file.arrayBuffer()}).then(function(buf){
+      var wb=XLSX.read(buf,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];
+      var aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
+      var head=(aoa[0]||[]).map(function(x){return String(x).replace(/\s+/g,'')}),col={code:-1,plu:-1,name:-1,mgr:-1};
+      head.forEach(function(h,i){
+        if(col.code<0&&/제품코드|^코드$|^CODE$/i.test(h))col.code=i;
+        else if(col.plu<0&&/^PLU/i.test(h))col.plu=i;
+        else if(col.name<0&&/제품명|품명|^NAME$/i.test(h))col.name=i;
+        else if(col.mgr<0&&/담당/.test(h))col.mgr=i;
+      });
+      var hasHead=col.code>=0,start=hasHead?1:0;
+      if(!hasHead)col={code:0,plu:1,name:2,mgr:3};
+      var cell=function(r,i){return i<0?'':String((r&&r[i])==null?'':r[i]).replace(/\s+/g,' ').trim()};
+      var items=[],skipped=[],seen={};
+      for(var ri=start;ri<aoa.length&&items.length<2000;ri++){
+        var r=aoa[ri],row=ri+1,c=cell(r,col.code),p=cell(r,col.plu).replace(/\.0+$/,''),n=cell(r,col.name).slice(0,120),m=cell(r,col.mgr).slice(0,40);
+        if(!c&&!p&&!n&&!m)continue; // 빈 줄
+        if(!CODE_RE.test(c)){skipped.push(row+'행 제품코드');continue}
+        if(p&&!/^\d{1,20}$/.test(p)){skipped.push(row+'행 PLU');continue}
+        var old=P.xCode[norm(c)];
+        if(!p&&!m&&!(old&&(old.plu||old.mgr))){skipped.push(row+'행 PLU·담당 없음');continue}
+        if(seen[norm(c)]!=null)items[seen[norm(c)]]={row:row,code:c,plu:p,name:n,mgr:m}; // 같은 코드가 또 나오면 아래 줄 기준
+        else{seen[norm(c)]=items.length;items.push({row:row,code:c,plu:p,name:n,mgr:m})}
+      }
+      if(!items.length)throw new Error('반영할 줄이 없습니다.'+(skipped.length?' (건너뜀: '+skipped.slice(0,5).join(', ')+')':''));
+      var inOrder={};draft.forEach(function(c){inOrder[norm(c)]=1});
+      var fresh=items.filter(function(x){return !inOrder[norm(x.code)]}).length;
+      var changed=items.filter(function(x){return x.mgr&&inOrder[norm(x.code)]&&infoOf(x.code).mgr!==x.mgr}).length;
+      var msg='반영 '+items.length+'줄 · 새 제품 '+fresh+'개 · 담당 변경 '+changed+'개'+(skipped.length?' · 건너뜀 '+skipped.length+'줄('+skipped.slice(0,6).join(', ')+(skipped.length>6?' …':'')+')':'')+'\n\n반영할까요?';
+      if(!confirm(msg))return;
+      return fetch(XAPI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'bulkSet',items:items})}).then(function(r){return r.json()}).then(function(j){
+        if(!j||!j.success)throw new Error((j&&j.error)||'반영하지 못했습니다.');
+        (j.items||[]).forEach(putExtra);
+        var added=0;
+        (j.items||[]).forEach(function(x){
+          if(draft.some(function(c){return norm(c)===norm(x.code)}))return;
+          var m=x.mgr||NOINFO,last=-1;draft.forEach(function(c,k){if(mgrKey(c)===m)last=k});
+          draft.splice(last<0?draft.length:last+1,0,x.code);added++;
+        });
+        renderView();
+        var sk=(j.skipped||[]).length;
+        toast('제품코드·담당 '+j.saved+'건 반영'+(added?', 정렬 순서에 새 제품 '+added+'개 추가':'')+(sk?' · 서버에서 건너뜀 '+sk+'줄':''));
+        return added?save():null;
+      });
+    }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){var inp=$('moXFile');if(inp)inp.value=''});
+  }
   function editMgr(btn){
     var code=btn.getAttribute('data-mo-setmgr'),cur=infoOf(code).mgr;
     var span=document.createElement('span');span.className='mo-mgr mo-mgr-form';
@@ -289,6 +342,7 @@
     var view=$('productOrderView');if(!view)return;
     $('moBack').addEventListener('click',goBack);
     $('moFile').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)readExcel(f)});
+    if($('moXFile'))$('moXFile').addEventListener('change',function(){var f=this.files&&this.files[0];if(f)readExtraExcel(f)});
     if($('moAddBtn'))$('moAddBtn').addEventListener('click',addProduct);
     ['moAddCode','moAddPlu','moAddName','moAddMgr'].forEach(function(id){var el=$(id);if(el)el.addEventListener('keydown',function(e){if(e.key==='Enter'){e.preventDefault();addProduct()}})});
     $('moList').addEventListener('click',function(e){
