@@ -238,6 +238,8 @@
     var mgrName=function(r){return r.mgr||'담당자 없음'},mc={};inSheet.forEach(function(r){var k=mgrName(r);mc[k]=(mc[k]||0)+1});
     var mk=Object.keys(mc).sort(function(a,c){return (a==='담당자 없음')-(c==='담당자 없음')||mc[c]-mc[a]||a.localeCompare(c)});
     if(mgrFilter&&!mc[mgrFilter])mgrFilter='';
+    // [전체 인쇄]는 '전체 담당'일 때만(특정 담당자 탭에서는 [인쇄]로 그 담당자만)
+    if($('ckPrintAll'))$('ckPrintAll').hidden=!!mgrFilter;
     var qCount=inSheet.reduce(function(s,r){return s+(r.qn||0)},0);
     $('ckMgrs').innerHTML='<button type="button" class="ck-chip'+(mgrFilter?'':' on')+'" data-ck-mgr="">전체 담당 <em>'+inSheet.length+'</em></button>'+mk.map(function(k){return '<button type="button" class="ck-chip'+(mgrFilter===k?' on':'')+(k==='담당자 없음'?' none':'')+'" data-ck-mgr="'+esc(k)+'">'+esc(k)+' <em>'+mc[k]+'</em></button>'}).join('')+
       '<button type="button" class="ck-chip ck-qchip'+(qOnly?' on':'')+(qCount?'':' zero')+'" data-ck-qonly>품질 대상만 <em>'+qCount+'</em></button>';

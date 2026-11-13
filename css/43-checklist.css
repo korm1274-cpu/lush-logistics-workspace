@@ -218,3 +218,6 @@
 @media (max-width:900px){
   #checklistView .ck-sum-btn{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
 }
+
+/* 숨김 버튼(전체 인쇄: 특정 담당자 탭, 제품별 합계: 한 차수)은 확실히 숨김 */
+#checklistView .ck-actions .btn[hidden]{display:none!important;}
