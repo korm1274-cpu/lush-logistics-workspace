@@ -1,5 +1,5 @@
 /* 제품 정렬 순서 (입고리스트·품질리스트)
-   - 엑셀 첫 시트 A열의 제품코드를 위에서부터 순서로(1행이 '제품코드' 같은 제목이면 건너뜀). 파일은 브라우저에서만 읽고 제품코드 목록만 서버로
+   - 엑셀 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로(숫자 없는 제목 칸·빈칸·중복 건너뜀). 파일은 브라우저에서만 읽고 제품코드 목록만 서버로
    - 저장: /api/team-data?part=product-order (관리자만 저장, 게스트는 빈 목록 → 정렬 미적용)
    - 정렬: 순서표에 있는 제품은 그 순서대로, 없는 제품(제품코드 없음 포함)은 맨 아래(그 안에서는 원래 순서)
    - 담당자 탭·전체 인쇄 페이지 순서: 각 담당자 제품이 순서표에서 처음 나오는 위치 순(담당자 이름은 저장하지 않고 화면에서 계산)
@@ -56,7 +56,7 @@
     $('moSave').disabled=!dirty;$('moReset').disabled=!dirty;
     var meta=P.meta&&P.meta.updatedAt?'저장된 순서: 제품 '+P.codes.length+'개 · '+String(P.meta.updatedAt).slice(0,10)+' 저장'+(P.meta.fileName?' · '+P.meta.fileName:''):'아직 저장된 순서가 없습니다.';
     $('moInfo').textContent=(dirty?'저장하지 않은 변경이 있습니다 (제품 '+draft.length+'개). · ':'')+meta+(admin?'':' · 순서 변경은 관리자만 할 수 있습니다.');
-    if(!draft.length){box.innerHTML='<p class="mo-empty">'+(admin?'[엑셀 올리기]로 순서 파일을 올려 주세요. 첫 시트 A열에 제품코드를 위에서부터 순서대로 적으면 됩니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
+    if(!draft.length){box.innerHTML='<p class="mo-empty">'+(admin?'[엑셀 올리기]로 순서 파일을 올려 주세요. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     box.innerHTML='<ol class="mo-ol">'+draft.map(function(c,i){
       return '<li><span class="mo-no">'+(i+1)+'</span><span class="mo-name">'+esc(c)+'</span>'+(admin?'<span class="mo-btns"><button type="button" data-mo-up="'+i+'"'+(i?'':' disabled')+' aria-label="위로">↑</button><button type="button" data-mo-down="'+i+'"'+(i<draft.length-1?'':' disabled')+' aria-label="아래로">↓</button><button type="button" class="mo-del" data-mo-del="'+i+'" aria-label="목록에서 빼기">✕</button></span>':'')+'</li>';
     }).join('')+'</ol>';
@@ -66,13 +66,17 @@
     (window.ensureXLSX?window.ensureXLSX():Promise.resolve(window.XLSX)).then(function(){return file.arrayBuffer()}).then(function(buf){
       var wb=XLSX.read(buf,{type:'array'}),ws=wb.Sheets[wb.SheetNames[0]];
       var aoa=XLSX.utils.sheet_to_json(ws,{header:1,defval:'',raw:false});
-      var seen={},out=[];
-      aoa.forEach(function(r,i){
-        var s=String((r&&r[0])==null?'':r[0]).replace(/\s+/g,' ').trim().slice(0,40),k=s.toUpperCase();
-        if(!s||(i===0&&/제품\s*코드|코드|CODE/i.test(s))||seen[k])return; // 1행 제목·빈칸·중복은 건너뜀
-        seen[k]=1;out.push(s);
-      });
-      if(!out.length)throw new Error('첫 시트 A열에서 제품코드를 찾지 못했습니다.');
+      // 모든 열을 왼쪽(A)부터 차례로, 각 열은 위에서 아래로(예: 담당별로 한 열씩 적은 표 → A열 전체, B열 전체, …)
+      // 숫자가 없는 칸(1행 제목 등)·빈칸·중복은 건너뜀 — 제목 칸 글자는 서버에 보내지 않음
+      var width=aoa.reduce(function(m,r){return Math.max(m,(r||[]).length)},0),seen={},out=[];
+      for(var c=0;c<width;c++){
+        aoa.forEach(function(r){
+          var s=String((r&&r[c])==null?'':r[c]).replace(/\s+/g,' ').trim().slice(0,40),k=s.toUpperCase();
+          if(!s||!/\d/.test(s)||seen[k])return;
+          seen[k]=1;out.push(s);
+        });
+      }
+      if(!out.length)throw new Error('첫 시트에서 제품코드를 찾지 못했습니다.');
       draft=out.slice(0,10000);dirty=true;fileName=file.name;renderView();
       toast('제품코드 '+draft.length+'개를 읽었습니다. 확인 후 [저장]을 눌러 주세요.');
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){var inp=$('moFile');if(inp)inp.value=''});
