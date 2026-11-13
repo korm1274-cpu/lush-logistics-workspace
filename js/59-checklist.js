@@ -466,61 +466,92 @@
       XLSX.writeFile(wb,name);toast(name+' 저장');
     }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
   }
-  /* ===== 인쇄: 지금 보이는 목록(차수·기간·검색·주문·담당자 탭·품질 대상 필터 반영) =====
-     A4 가로, 폭 1페이지에 맞춤(넓으면 자동 축소), 제목 행 회색·페이지마다 반복.
+  /* ===== 인쇄 =====
+     공통: A4 가로, 폭 1페이지에 맞춤(넓으면 자동 축소), 제목 행 회색·페이지마다 반복
      열: 제품코드 | 품명 | 품질 | 총 입고수량 | 매장별 수량 | 제조일자 (제품별 합계 화면이면 그 합계표)
-     인쇄물에는 담당자 이름을 넣지 않음(제목도 차수·기간·주문까지만) */
-  function printList(){
-    var v=lastView;if(!v||!v.list.length){toast('인쇄할 목록이 없습니다.');return}
-    var multi=(v.batches||[]).length>1,isSum=multi&&sumMode&&v.summary;
-    var head,rows;
-    if(isSum){
-      head=['제품코드','품명',colFilter?colFilter+' 합계':'합계 수량','입고 횟수','입고일'];
-      rows=v.summary.map(function(x){return [x.code,x.name,{n:x.qty},{n:x.n},x.dates.map(md).join(', ')+(x.undated?(x.dates.length?', ':'')+'입고일 미정':'')]});
-    }else{
-      head=['제품코드','품명','품질',colFilter?colFilter+' 수량':'총 입고수량'].concat(v.cols).concat(['제조일자']);
-      rows=v.list.map(function(r){
-        var dts=uniq((r.details||[]).map(function(d){return d.date})).join(', ');
-        return [r.code,{name:r.name,sub:multi?r.batch.label+' · '+(isDay(r.batch.eta)?md(r.batch.eta)+' 입고':'입고일 미정'):''},r.qn?{n:r.qn}:'',{n:qtyOf(r)}]
-          .concat(v.cols.map(function(k){var x=r.values&&r.values[k];return x?{n:x}:''})).concat([dts]);
-      });
-    }
-    var total=isSum?v.summary.reduce(function(s,x){return s+x.qty},0):v.list.reduce(function(s,r){return s+qtyOf(r)},0);
-    var title=(v.batch?v.batch.label+' 입고리스트':rangeText()+'전체 차수 입고리스트')+(isSum?' · 제품별 합계':'')+(sheetFilter?' · '+sheetFilter:'')+(colFilter?' · '+colFilter:'')+(qOnly?' · 품질 대상':'')+(v.q?' · 검색 "'+v.q+'"':'');
-    var info=(v.batch&&isDay(v.batch.eta)?'입고 예정일 '+v.batch.eta+' · ':'')+'품목 '+fmt(rows.length)+'건 · 총 입고수량 '+fmt(total)+' · 출력 '+new Date().toLocaleDateString('ko-KR');
+     - [인쇄]: 지금 보이는 목록(차수·기간·검색·주문·담당자 탭·품질 대상 필터 반영)
+     - [전체 인쇄]: 고른 차수(기간이면 그 안의 전체 차수)의 모든 제품을 담당자별로 페이지를 나눠서
+     담당자 이름: 정보보안팀 승인에 따른 정책 재설정(2026-11-13)으로 '입고리스트 사내 인쇄물'에 한해
+     페이지 나눔·페이지 제목 표시만 허용. 텍스트 복사·엑셀 등 다른 출력에는 넣지 않음 */
+  function printSection(list,multi,cols,useCol){
+    var q=function(r){return useCol?qtyOf(r):(Number(r.qty)||0)};
+    var head=['제품코드','품명','품질',useCol&&colFilter?colFilter+' 수량':'총 입고수량'].concat(cols).concat(['제조일자']);
+    var rows=list.map(function(r){
+      var dts=uniq((r.details||[]).map(function(d){return d.date})).join(', ');
+      return [r.code,{name:r.name,sub:multi?r.batch.label+' · '+(isDay(r.batch.eta)?md(r.batch.eta)+' 입고':'입고일 미정'):''},r.qn?{n:r.qn}:'',{n:q(r)}]
+        .concat(cols.map(function(k){var x=r.values&&r.values[k];return x?{n:x}:''})).concat([dts]);
+    });
+    return{head:head,rows:rows,total:list.reduce(function(s,r){return s+q(r)},0)};
+  }
+  function printDoc(docTitle,sections){
     var cell=function(x,i){
       if(x&&typeof x==='object'&&'n' in x)return '<td class="n">'+fmt(x.n)+'</td>';
       if(x&&typeof x==='object'&&'name' in x)return '<td class="nm">'+esc(x.name)+(x.sub?'<small>'+esc(x.sub)+'</small>':'')+'</td>';
       return '<td'+(i===1?' class="nm"':'')+'>'+esc(x==null?'':x)+'</td>';
     };
-    var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+
+    var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(docTitle)+'</title><style>'+
       '@page{size:A4 landscape;margin:8mm}'+
       '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
       'html,body{margin:0;background:#fff;color:#111;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif}'+
-      '#page{width:1060px}'+
+      '.page{width:1060px}.page+.page{break-before:page;page-break-before:always}'+
       'h1{font-size:16px;margin:0 0 4px}p.info{font-size:11px;color:#444;margin:0 0 8px}'+
       'table{width:100%;border-collapse:collapse;font-size:11px}'+
       'thead{display:table-header-group}tr{page-break-inside:avoid;break-inside:avoid}'+
       'th,td{border:1px solid #9a9a9a;padding:4px 6px;vertical-align:middle}'+
       'thead th{background:#d9d9d9;font-weight:700;text-align:center;white-space:nowrap}'+
       'td.n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}td.nm small{display:block;color:#555;font-size:9.5px}'+
-      'tfoot td{font-weight:700;background:#f2f2f2}'+
-      '</style></head><body><div id="page"><h1>'+esc(title)+'</h1><p class="info">'+esc(info)+'</p><table><thead><tr>'+head.map(function(h){return '<th>'+esc(h)+'</th>'}).join('')+'</tr></thead><tbody>'+
-      rows.map(function(r){return '<tr>'+r.map(cell).join('')+'</tr>'}).join('')+
-      '</tbody></table></div></body></html>';
+      '</style></head><body>'+
+      sections.map(function(s){
+        return '<div class="page"><h1>'+esc(s.title)+'</h1><p class="info">'+esc(s.info)+'</p><table><thead><tr>'+s.head.map(function(h){return '<th>'+esc(h)+'</th>'}).join('')+'</tr></thead><tbody>'+
+          s.rows.map(function(r){return '<tr>'+r.map(cell).join('')+'</tr>'}).join('')+'</tbody></table></div>';
+      }).join('')+'</body></html>';
     var old=document.getElementById('ckPrintFrame');if(old)old.remove();
     var fr=document.createElement('iframe');fr.id='ckPrintFrame';fr.setAttribute('aria-hidden','true');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
     document.body.appendChild(fr);
     var doc=fr.contentWindow.document;doc.open();doc.write(html);doc.close();
     var go=function(){
       try{
-        // 폭 1페이지: A4 가로 인쇄 폭(약 1060px)보다 표가 넓으면 그만큼 축소
-        var pg=doc.getElementById('page'),tb=pg.querySelector('table'),w=Math.max(tb.getBoundingClientRect().width,tb.scrollWidth,pg.scrollWidth);
+        // 폭 1페이지: A4 가로 인쇄 폭(약 1060px)보다 가장 넓은 표가 넓으면 그만큼 축소(모든 페이지 같은 배율)
+        var w=0;doc.querySelectorAll('.page').forEach(function(pg){var tb=pg.querySelector('table');w=Math.max(w,tb.getBoundingClientRect().width,tb.scrollWidth,pg.scrollWidth)});
         if(w>1060)doc.body.style.zoom=String(Math.floor(1060/w*0.98*1000)/1000); // 테두리 몫으로 2% 여유
         fr.contentWindow.focus();fr.contentWindow.print();
       }catch(e){toast('인쇄 창을 열지 못했습니다.')}
     };
     setTimeout(go,150);
+  }
+  function printDate(){return '출력 '+new Date().toLocaleDateString('ko-KR')}
+  function batchTitle(v){return v.batch?v.batch.label+' 입고리스트':rangeText()+'전체 차수 입고리스트'}
+  function printList(){
+    var v=lastView;if(!v||!v.list.length){toast('인쇄할 목록이 없습니다.');return}
+    var multi=(v.batches||[]).length>1,isSum=multi&&sumMode&&v.summary,s;
+    if(isSum){
+      s={head:['제품코드','품명',colFilter?colFilter+' 합계':'합계 수량','입고 횟수','입고일'],
+        rows:v.summary.map(function(x){return [x.code,x.name,{n:x.qty},{n:x.n},x.dates.map(md).join(', ')+(x.undated?(x.dates.length?', ':'')+'입고일 미정':'')]}),
+        total:v.summary.reduce(function(a,x){return a+x.qty},0)};
+    }else s=printSection(v.list,multi,v.cols,true);
+    // 담당자 탭을 고른 상태면 페이지 제목에 담당자 표시(사내 인쇄물 허용 범위)
+    s.title=batchTitle(v)+(isSum?' · 제품별 합계':'')+(mgrFilter?' · '+(mgrFilter==='담당자 없음'?mgrFilter:'담당 '+mgrFilter):'')+(sheetFilter?' · '+sheetFilter:'')+(colFilter?' · '+colFilter:'')+(qOnly?' · 품질 대상':'')+(v.q?' · 검색 "'+v.q+'"':'');
+    s.info=(v.batch&&isDay(v.batch.eta)?'입고 예정일 '+v.batch.eta+' · ':'')+'품목 '+fmt(s.rows.length)+'건 · 총 입고수량 '+fmt(s.total)+' · '+printDate();
+    printDoc(s.title,[s]);
+  }
+  // [전체 인쇄]: 필터(담당자 탭·검색·주문·품질 대상·매장 선택)와 상관없이 고른 차수의 모든 제품 → 담당자별 페이지
+  function printAllByMgr(){
+    var v=lastView;if(!v||!(v.all||[]).length){toast('인쇄할 목록이 없습니다.');return}
+    var multi=(v.batches||[]).length>1,name=function(r){return r.mgr||'담당자 없음'};
+    var groups={},keys=[];
+    v.all.forEach(function(r){var k=name(r);if(!groups[k]){groups[k]=[];keys.push(k)}groups[k].push(r)});
+    // 순서: 화면 담당자 탭과 같게(제품 많은 순, '담당자 없음'은 맨 뒤)
+    keys.sort(function(a,c){return (a==='담당자 없음')-(c==='담당자 없음')||groups[c].length-groups[a].length||a.localeCompare(c)});
+    var order=[];(v.batches||[]).forEach(function(x){(x.cols||[]).forEach(function(k){if(order.indexOf(k)<0)order.push(k)})});
+    var base=batchTitle(v),eta=v.batch&&isDay(v.batch.eta)?'입고 예정일 '+v.batch.eta+' · ':'';
+    var sections=keys.map(function(k){
+      var list=groups[k],cols=order.filter(function(c){return list.some(function(r){return r.values&&r.values[c]})});
+      var s=printSection(list,multi,cols,false);
+      s.title=base+' · '+(k==='담당자 없음'?k:'담당 '+k)+' ('+fmt(list.length)+'건)';
+      s.info=eta+'품목 '+fmt(list.length)+'건 · 총 입고수량 '+fmt(s.total)+' · '+printDate();
+      return s;
+    });
+    printDoc(base+' · 담당자별 전체 인쇄',sections);
   }
   // 품질 불일치 목록 → 엑셀(수입팀 리스트 수정 요청용): 차수 · 구분 · PLU · 품명 · 품질 LOT/제조일자 · 사유 · 입고리스트 LOT/제조일자
   function exportMismatch(){
@@ -570,6 +601,7 @@
     $('ckDelete').addEventListener('click',remove);
     $('ckCopy').addEventListener('click',copyText);
     if($('ckPrint'))$('ckPrint').addEventListener('click',printList);
+    if($('ckPrintAll'))$('ckPrintAll').addEventListener('click',printAllByMgr);
     if($('ckSumBtn'))$('ckSumBtn').addEventListener('click',function(){sumMode=!sumMode;render()});
     $('ckExport').addEventListener('click',exportExcel);
     $('ckSheets').addEventListener('click',function(e){var c=e.target.closest('[data-ck-sheet]');if(!c)return;sheetFilter=c.getAttribute('data-ck-sheet');render()});
