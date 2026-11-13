@@ -309,8 +309,42 @@ async function productOrder(req, res, user) {
     let body = req.body;
     if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
     body = body || {};
+    // 팀원: 자기 담당 제품의 순서만(정책 재설정 2026-11-13 — 계정 이름과 PLU 담당자 이름을 서버에서 대조, 이름은 저장하지 않음)
+    //   body.codes = 자기 담당 제품코드들의 새 순서. 저장된 전체 순서에서 그 제품들의 자리에만 새 순서로 바꿔 넣음(다른 담당자 자리는 그대로)
+    if (body.action === 'saveMine') {
+      if (user.role !== 'admin' && user.role !== 'member') return res.status(200).json({ success: false, error: '정렬 순서를 바꿀 권한이 없습니다.' });
+      const me = String(user.name || '').trim();
+      const norm = c => String(c == null ? '' : c).trim().toUpperCase();
+      const mraw = await store.cmd(['GET', 'lush_plu_master_v1']);
+      let master = null; try { master = mraw ? JSON.parse(mraw) : null; } catch (e) { master = null; }
+      const oarr = await store.cmd(['HGETALL', 'lush_plu_override_v1']) || [];
+      const ov = {}; for (let i = 0; i < oarr.length; i += 2) { try { ov[oarr[i]] = JSON.parse(oarr[i + 1]); } catch (e) { /* 무시 */ } }
+      const mine = new Set();
+      if (me && master && master.map) Object.keys(master.map).forEach(plu => {
+        (master.map[plu] || []).forEach(x => {
+          const mgr = String((x && x[1]) || '').trim() || String((ov[plu] && ov[plu].mgr) || '').trim();
+          if (mgr === me && x && x[0]) mine.add(norm(x[0]));
+        });
+      });
+      const raw = await store.cmd(['GET', PRODUCT_ORDER_KEY]);
+      let cur = null; try { cur = raw ? JSON.parse(raw) : null; } catch (e) { cur = null; }
+      const codes = cur && Array.isArray(cur.codes) ? cur.codes.slice() : [];
+      const slots = []; codes.forEach((c, i) => { if (mine.has(norm(c))) slots.push(i); });
+      if (!slots.length) return res.status(200).json({ success: false, error: '정렬 순서에 내 담당 제품이 없습니다. (계정 이름이 PLU 담당자 이름과 같아야 합니다)' });
+      const sent = Array.isArray(body.codes) ? body.codes.slice(0, 10000).map(norm) : [];
+      const have = slots.map(i => norm(codes[i]));
+      // 보낸 목록이 정확히 '내 담당 제품들'(같은 개수·같은 제품)인지 확인 — 남의 제품이 섞이거나 빠지면 거부
+      if (sent.length !== have.length || new Set(sent).size !== sent.length || [...have].sort().join('\n') !== [...sent].sort().join('\n')) {
+        return res.status(200).json({ success: false, error: '내 담당 제품만 순서를 바꿀 수 있습니다. 화면을 새로 열고 다시 시도해 주세요.' });
+      }
+      const spell = {}; slots.forEach(i => { spell[norm(codes[i])] = codes[i]; });
+      slots.forEach((pos, k) => { codes[pos] = spell[sent[k]]; });
+      const rec = { codes, updatedAt: new Date().toISOString(), updatedBy: user.id, fileName: cur && cur.fileName || '' };
+      await store.cmd(['SET', PRODUCT_ORDER_KEY, JSON.stringify(rec)]);
+      return res.status(200).json({ success: true, count: codes.length, codes });
+    }
     if (body.action !== 'save') return res.status(200).json({ success: false, error: 'Unsupported action' });
-    if (user.role !== 'admin') return res.status(200).json({ success: false, error: '정렬 순서 저장은 관리자만 할 수 있습니다.' });
+    if (user.role !== 'admin') return res.status(200).json({ success: false, error: '정렬 순서 전체 변경·엑셀 올리기는 관리자만 할 수 있습니다.' });
     if (!Array.isArray(body.codes)) return res.status(200).json({ success: false, error: '제품코드 목록이 올바르지 않습니다.' });
     const seen = new Set(), codes = [];
     body.codes.slice(0, 10000).forEach(c => { const s = clip(c, 40); const k = s.toUpperCase(); if (s && !seen.has(k)) { seen.add(k); codes.push(s); } });
