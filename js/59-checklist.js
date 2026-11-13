@@ -424,15 +424,22 @@
   }
 
   /* ===== 복사 · 엑셀 · 삭제 ===== */
-  function flat(v){
+  /* 텍스트 복사·엑셀 공통 표
+     - 텍스트 복사: 제품코드 | 제품명 | 매장별 수량
+     - 엑셀(withTotal): 제품코드 | 제품명 | TOTAL | 매장별 수량
+     - 매장을 하나 고르면(TOTAL ▾) 그 매장 수량 한 칸만. 여러 차수면 맨 앞에 차수
+     - 담당자·품질·PLU·제조일자·LOT·REF·Pallet은 넣지 않음 */
+  function flat(v,withTotal){
     var multi=(v.batches||[]).length>1;
     // 제품별 합계 화면이면 합계표 그대로(담당자 열 없음)
     if(multi&&sumMode&&v.summary){
       return [['PLU','제품코드','품명',colFilter?colFilter+' 합계':'합계 수량','입고 횟수','입고일']].concat(v.summary.map(function(x){return [x.plu,x.code,x.name,x.qty,x.n,x.dates.join(', ')+(x.undated?(x.dates.length?', ':'')+'입고일 미정':'')]}));
     }
-    var head=(multi?['차수']:[]).concat(['PLU','제품코드','품명','담당자',colFilter?colFilter+' 수량':'수량','품질']).concat(v.cols).concat(['제조일자','LOT넘버','REF넘버','Pallet']),out=[head];
-    v.list.forEach(function(r){var d=r.details||[];var j=function(k){return uniq(d.map(function(x){return x[k]})).join(', ')};
-      out.push((multi?[r.batch.label]:[]).concat([r.plu,r.code,r.name,r.mgr,qtyOf(r),r.qn||'']).concat(v.cols.map(function(k){return (r.values&&r.values[k])||''})).concat([j('date'),j('lot'),j('ref'),j('cs')]))});
+    var stores=colFilter?[colFilter]:v.cols,total=withTotal&&!colFilter;
+    var head=(multi?['차수']:[]).concat(['제품코드','제품명']).concat(total?['TOTAL']:[]).concat(stores),out=[head];
+    v.list.forEach(function(r){
+      out.push((multi?[r.batch.label]:[]).concat([r.code,r.name]).concat(total?[qtyOf(r)]:[]).concat(stores.map(function(k){return (r.values&&r.values[k])||''})));
+    });
     return out;
   }
   function copyText(){
@@ -448,10 +455,11 @@
     xlsx().then(function(){
       var isSum=(v.batches||[]).length>1&&sumMode&&v.summary;
       var name0=v.batch?v.batch.label+' 입고리스트 · 입고 예정일 '+v.batch.eta:rangeText(true)+'전체 차수 입고리스트'+(isSum?' · 제품별 합계':'');
-      var rows=flat(v),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(qOnly?' · 품질 대상':'')+(v.q?' · 검색 "'+v.q+'"':'');
+      // 제목·파일 이름에는 담당자 이름을 넣지 않음
+      var rows=flat(v,true),title=name0+(colFilter?' · '+colFilter:'')+(sheetFilter?' · '+sheetFilter:'')+(qOnly?' · 품질 대상':'')+(v.q?' · 검색 "'+v.q+'"':'');
       var ws=XLSX.utils.aoa_to_sheet([[title]].concat(rows));
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:rows[0].length-1}}];
-      ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'?42:/LOT|REF|제조일자|Pallet/.test(h)?16:h==='제품코드'?12:10}});
+      ws['!cols']=rows[0].map(function(h){return{wch:h==='품명'||h==='제품명'?42:/LOT|REF|제조일자|Pallet|입고일/.test(h)?16:h==='제품코드'?12:10}});
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:rows.length,c:rows[0].length-1}})};
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'입고리스트');
       var d=new Date(),name='입고리스트샘플_'+(v.batch?v.batch.label.replace(/\s+/g,''):'전체차수'+(dateRange()?'_'+rangeText(true).trim().replace(/-/g,''):'')+(isSum?'_제품별합계':''))+(colFilter?'_'+colFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
