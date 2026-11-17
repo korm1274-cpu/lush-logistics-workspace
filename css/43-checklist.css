@@ -317,3 +317,11 @@ body.mo-drag-on,body.mo-drag-on *{cursor:grabbing!important;}
 #productOrderView .mo-goto{width:auto!important;padding:0 10px!important;font-size:12px;font-weight:800;white-space:nowrap;}
 #productOrderView .mo-ol li.mo-flash{animation:moFlash 1.6s ease-out;}
 @keyframes moFlash{0%,40%{background:#fff3c4;}100%{background:transparent;}}
+/* 정렬 순서: 입고 이력 기간 기준 */
+#productOrderView .mo-seen{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:0 0 10px;font-size:12.5px;color:#6b7684;}
+#productOrderView .mo-seen:empty{display:none;}
+#productOrderView .mo-seen>span{font-weight:800;color:#4e5968;margin-right:2px;}
+#productOrderView .mo-seen button{height:28px;padding:0 10px;border:1px solid #e4ddd0;border-radius:999px;background:#fff;font-size:12px;font-weight:700;color:#4e5968;cursor:pointer;}
+#productOrderView .mo-seen button.on{background:#1d1d1b;border-color:#1d1d1b;color:#fff;}
+#productOrderView .mo-seen small{margin-left:4px;color:#8b95a1;}
+#productOrderView .mo-seen.warn{color:#c93838;font-weight:800;}

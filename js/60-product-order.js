@@ -90,12 +90,31 @@
       lists={ck:res[0].batches||[],ql:res[1].batches||[]};
     }).catch(function(){lists=null});
   }
+  /* 기간 기준: 최근 3·6·12개월(입고리스트는 입고 예정일, 품질리스트는 올린 날) 또는 전체. 기본 6개월, 이 기기에 기억
+     PLU 하나에 제품코드가 여러 개면: 엑셀·[추가]로 그 PLU에 이은 제품코드가 있으면 그 코드만, 없으면 모두 */
+  var PERIOD_KEY='lush_order_period_v1',period='6',seenInfo=null;
+  try{period=localStorage.getItem(PERIOD_KEY)||'6'}catch(e){}
+  function cutoff(){if(period==='all')return '';var d=new Date();d.setMonth(d.getMonth()-(+period||6));return d.toISOString().slice(0,10)}
   function buildSeen(){
-    if(!lists){seen=null;return}
-    seen={};
-    var addPlu=function(plu){plu=String(plu==null?'':plu).trim();if(!plu)return;(pluCodes[plu]||[]).forEach(function(k){seen[k]=1});var x=P.xPlu[plu];if(x)seen[norm(x.code)]=1};
-    lists.ck.forEach(function(b){(b.rows||[]).forEach(function(r){addPlu(r.plu)})});
-    lists.ql.forEach(function(b){(b.rows||[]).forEach(function(r){addPlu(r.plu);if(r.code)seen[norm(r.code)]=1;(r.items||[]).forEach(function(it){addPlu(it.plu)})})});
+    if(!lists){seen=null;seenInfo=null;return}
+    seen={};var cut=cutoff(),nCk=0,nQl=0;
+    var addPlu=function(plu){
+      plu=String(plu==null?'':plu).trim();if(!plu)return;
+      var x=P.xPlu[plu];
+      if(x){seen[norm(x.code)]=1;return}
+      (pluCodes[plu]||[]).forEach(function(k){seen[k]=1});
+    };
+    var recent=function(d){d=String(d||'').slice(0,10);return !cut||(d&&d>=cut)};
+    lists.ck.forEach(function(b){if(!recent(b.eta||b.uploadedAt))return;nCk++;(b.rows||[]).forEach(function(r){addPlu(r.plu)})});
+    lists.ql.forEach(function(b){if(!recent(b.uploadedAt))return;nQl++;(b.rows||[]).forEach(function(r){addPlu(r.plu);if(r.code)seen[norm(r.code)]=1;(r.items||[]).forEach(function(it){addPlu(it.plu)})})});
+    seenInfo={ck:nCk,ql:nQl};
+  }
+  function renderSeenInfo(){
+    var el=$('moSeen');if(!el)return;
+    if(!lists){el.className='mo-seen warn';el.textContent='입고·품질 데이터를 불러오지 못해 모든 제품을 보여 줍니다.';return}
+    el.className='mo-seen';
+    el.innerHTML='<span>입고 이력 기준</span>'+[['3','최근 3개월'],['6','6개월'],['12','12개월'],['all','전체']].map(function(p){return '<button type="button" data-mo-period="'+p[0]+'"'+(period===p[0]?' class="on"':'')+'>'+p[1]+'</button>'}).join('')+
+      '<small>입고리스트 '+(seenInfo?seenInfo.ck:0)+'차수 · 품질리스트 '+(seenInfo?seenInfo.ql:0)+'차수</small>';
   }
   function isSeen(code){return !seen||!!seen[norm(code)]||!!addedNow[norm(code)]}
   function visible(code){return showHidden||isSeen(code)}
@@ -153,7 +172,7 @@
     var edit=canEditOrder();
     if($('productOrderView').classList.contains('active'))remember(); // 고른 담당까지 새로고침 대비 기억
     $('moUpload').hidden=!edit;var add=$('moAdd');if(add)add.hidden=!edit;var xu=$('moXUpload');if(xu)xu.hidden=!edit;
-    renderStatus();renderMgrs();renderDatalist();
+    renderStatus();renderSeenInfo();renderMgrs();renderDatalist();
     if(!draft.length){box.innerHTML='<p class="mo-empty">'+(edit?'[엑셀 올리기]로 순서 파일을 올려 주세요. 올리면 바로 저장됩니다. 첫 시트의 제품코드를 왼쪽 열부터(A열 전체 → B열 전체 → …), 각 열은 위에서부터 순서로 읽습니다.':'저장된 정렬 순서가 없습니다.')+'</p>';return}
     // 검색 중: 담당과 상관없이 맞는 제품 모두(숨긴 제품 포함, 회색). ↑↓·끌기는 끄고, 담당 바꾸기·✕·[이 담당에서 보기]만
     var q=(($('moSearch')||{}).value||'').trim().toLowerCase();
@@ -307,24 +326,15 @@
         else{seen[norm(c)]=items.length;items.push({row:row,code:c,plu:p,name:n,mgr:m})}
       }
       if(!items.length)throw new Error('반영할 줄이 없습니다.'+(skipped.length?' (건너뜀: '+skipped.slice(0,5).join(', ')+')':''));
-      var inOrder={};draft.forEach(function(c){inOrder[norm(c)]=1});
-      var fresh=items.filter(function(x){return !inOrder[norm(x.code)]}).length;
-      var changed=items.filter(function(x){return x.mgr&&inOrder[norm(x.code)]&&infoOf(x.code).mgr!==x.mgr}).length;
-      var msg='반영 '+items.length+'줄 · 새 제품 '+fresh+'개 · 담당 변경 '+changed+'개'+(skipped.length?' · 건너뜀 '+skipped.length+'줄('+skipped.slice(0,6).join(', ')+(skipped.length>6?' …':'')+')':'')+'\n\n반영할까요?';
+      // PLU·제품코드·담당만 저장하고 정렬 순서는 건드리지 않음(순서표에 넣거나 옮기지 않음)
+      var withPlu=items.filter(function(x){return x.plu}).length,withMgr=items.filter(function(x){return x.mgr}).length;
+      var msg='반영 '+items.length+'줄 (PLU 연결 '+withPlu+' · 담당 지정 '+withMgr+')'+(skipped.length?' · 건너뜀 '+skipped.length+'줄('+skipped.slice(0,6).join(', ')+(skipped.length>6?' …':'')+')':'')+'\n정렬 순서는 바뀌지 않습니다.\n\n반영할까요?';
       if(!confirm(msg))return;
       return fetch(XAPI,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'bulkSet',items:items})}).then(function(r){return r.json()}).then(function(j){
         if(!j||!j.success)throw new Error((j&&j.error)||'반영하지 못했습니다.');
-        (j.items||[]).forEach(putExtra);buildSeen(); // 새로 이은 PLU가 입고리스트에 있으면 바로 보이게
-        var added=0;
-        (j.items||[]).forEach(function(x){
-          if(draft.some(function(c){return norm(c)===norm(x.code)}))return;
-          var m=x.mgr||NOINFO,last=-1;draft.forEach(function(c,k){if(mgrKey(c)===m)last=k});
-          draft.splice(last<0?draft.length:last+1,0,x.code);added++;
-        });
-        renderView();
+        (j.items||[]).forEach(putExtra);buildSeen();renderView();
         var sk=(j.skipped||[]).length;
-        toast('제품코드·담당 '+j.saved+'건 반영'+(added?', 정렬 순서에 새 제품 '+added+'개 추가':'')+(sk?' · 서버에서 건너뜀 '+sk+'줄':''));
-        return added?save():null;
+        toast('PLU·제품코드·담당 '+j.saved+'건 반영 (정렬 순서는 그대로)'+(sk?' · 서버에서 건너뜀 '+sk+'줄':''));
       });
     }).catch(function(e){toast(String((e&&e.message)||e))}).then(function(){var inp=$('moXFile');if(inp)inp.value=''});
   }
@@ -421,6 +431,9 @@
       var c=e.target.closest('[data-mo-pick]');if(!c)return;
       var m=c.getAttribute('data-mo-pick');picked=picked===m?null:m;if($('moSearch'))$('moSearch').value='';remember();renderView();
     });
+    // 입고 이력 기간 바꾸기(이 기기에 기억)
+    var se=$('moSeen');
+    if(se)se.addEventListener('click',function(e){var b=e.target.closest('[data-mo-period]');if(!b)return;period=b.getAttribute('data-mo-period');try{localStorage.setItem(PERIOD_KEY,period)}catch(err){}buildSeen();renderView()});
     // 검색: 입력할 때마다(0.2초 쉬면) 다시 그림
     var st=null;if($('moSearch'))$('moSearch').addEventListener('input',function(){clearTimeout(st);st=setTimeout(renderView,200)});
     // 메뉴로 다른 화면에 가도 남은 저장은 바로 보냄

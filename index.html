@@ -1270,6 +1270,7 @@ window.ensureChart=function(){
   <div class="mo-toolbar"><button type="button" class="btn" id="moBack">← 돌아가기</button><label class="btn mo-upload" id="moUpload">정렬 순서 엑셀 올리기<input type="file" id="moFile" accept=".xlsx,.xls,.csv" hidden></label><label class="btn mo-upload" id="moXUpload" title="제품코드·PLU·제품명·담당을 엑셀로 한 번에 등록">제품코드·담당 엑셀 올리기<input type="file" id="moXFile" accept=".xlsx,.xls,.csv" hidden></label></div>
   <p class="mo-info" id="moInfo"></p>
   <div class="mo-add" id="moAdd" hidden><b class="mo-add-title">제품 추가 · 담당 지정</b><input id="moAddCode" placeholder="제품코드 *" autocomplete="off" maxlength="40"><input id="moAddPlu" placeholder="PLU (입고리스트 반영용)" autocomplete="off" inputmode="numeric" maxlength="20"><input id="moAddName" placeholder="제품명" autocomplete="off" maxlength="120"><input id="moAddMgr" list="moMgrOptions" placeholder="담당" autocomplete="off" maxlength="40"><datalist id="moMgrOptions"></datalist><button type="button" class="btn primary" id="moAddBtn">추가</button></div>
+  <div class="mo-seen" id="moSeen"></div>
   <div class="mo-mgrs" id="moMgrs" hidden></div>
   <div class="mo-search"><input id="moSearch" type="search" placeholder="제품코드 / 제품명 / 담당 검색" autocomplete="off" aria-label="정렬 순서에서 제품 검색"></div>
   <div class="panel mo-panel"><div class="mo-list" id="moList"></div></div>
