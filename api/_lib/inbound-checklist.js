@@ -78,8 +78,13 @@ function rowsFromChecklists(batches, master, extraByPlu) {
       const x = xp[String(r.plu || '').trim()];
       const code = String((x && x.code) || m[0] || '');
       const mUnit = String(m[4] || '').trim().toUpperCase();
-      const unit = mUnit === 'G' || (!mUnit && PRODUCT_EA_CONVERSION[code]) ? 'G' : 'EA';
-      out.push([b.eta, batch, pallets, code, String(m[3] || ''), String(r.name || ''), unit, num(r.qty)]);
+      // 입고리스트(체크리스트) 수량은 G 제품도 '개수'. G 제품은 개수 × 개당 g(환산표)으로 바꿔 G로 저장(예전 입고량 시트와 같은 기준),
+      // 환산값이 없는 G 제품은 g으로 바꿀 수 없어 EA로 표시
+      const isG = mUnit === 'G' || (!mUnit && PRODUCT_EA_CONVERSION[code]);
+      const factor = PRODUCT_EA_CONVERSION[code];
+      const unit = isG && factor ? 'G' : 'EA';
+      const qty = isG && factor ? num(r.qty) * factor : num(r.qty);
+      out.push([b.eta, batch, pallets, code, String(m[3] || ''), String(r.name || ''), unit, qty]);
     });
   });
   return out;
