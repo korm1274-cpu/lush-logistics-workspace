@@ -71,17 +71,34 @@
     var hi=-1;for(var i=0;i<Math.min(10,aoa.length);i++){var g0=groups(aoa[i]||[]);if(g0.length>=2&&/^(plu|item number|item code)$/.test(low((aoa[i]||[])[g0[1][0]])))(hi=i);if(hi>=0)break}
     if(hi<0)return null;
     var h=aoa[hi].map(txt),gs=groups(h),B=gs[1];
-    var bPlu=B[0],bDesc=-1,bQty=-1;
-    for(var k=B[0]+1;k<=B[1];k++){var l=low(h[k]);if(bDesc<0&&/^(description|description 1|item|product)$/.test(l))bDesc=k;else if(bQty<0&&/^(qty|quantity|quantity shipped)$/.test(l))bQty=k}
-    if(bQty<0)return null;
-    var dist=[];for(var d=bQty+1;d<=B[1];d++)dist.push({i:d,name:h[d]});
+    var bPlu=B[0],bDesc=-1,bQty=-1,dist=[];
+    /* B(한국 분배) 머리글 읽기: 품명·수량 칸과 그 뒤 분배처(매장) 칸들.
+       표 중간에 머리글이 다시 나오면(예: 147행 'Item Number | Description 1 | Quantity Shipped | 리테일 | 디지털 | 러쉬_CP …')
+       그 줄부터 칸 위치·매장 이름을 새 머리글 기준으로 다시 정함(1행에 없던 매장은 열로 추가) */
+    function readB(row,end){
+      var d=-1,q=-1;
+      for(var k=bPlu+1;k<=end;k++){var l=low(row[k]);if(d<0&&/^(description|description 1|item|product)$/.test(l))d=k;else if(q<0&&/^(qty|quantity|quantity shipped)$/.test(l))q=k}
+      if(q<0)return false;
+      bDesc=d;bQty=q;dist=[];for(var x=q+1;x<=end;x++)if(txt(row[x]))dist.push({i:x,name:txt(row[x])});
+      return true;
+    }
+    if(!readB(h,B[1]))return null;
+    var allCols=[];function addCols(){dist.forEach(function(x){if(allCols.indexOf(x.name)<0)allCols.push(x.name)})}
+    addCols();
+    // 중간 머리글 줄인지: PLU 칸에 PLU·Item Number·Item Code, 그 오른쪽 이어진 칸(빈칸 전까지) 안에 수량 칸 이름
+    function subHeader(r){
+      if(!/^(plu|item number|item code)$/.test(low(r[bPlu])))return false;
+      var end=bPlu;while(end+1<r.length&&txt(r[end+1]))end++;
+      return readB(r.map(txt),end);
+    }
     // C: B 뒤의 묶음 전부
     var C=gs.length>2?[gs[2][0],gs[gs.length-1][1]]:null,c={};
     if(C){c.plu=findIn(h,C,C_PLU);c.lot=findIn(h,C,C_LOT);if(c.lot<0)c.lot=findLike(h,C,/lot|serial|batch/);c.date=findIn(h,C,C_DATE);if(c.date<0)c.date=findLike(h,C,/manu|made|mfg|manufactur|production|제조/,/gift/);c.gdate=findIn(h,C,C_GDATE);c.ref=findIn(h,C,C_REF);c.cs=findIn(h,C,C_CASE);c.qty=findIn(h,C,C_QTY)}
     var rows=[],details={};
     aoa.slice(hi+1).forEach(function(r){
       r=r||[];
-      var plu=normPlu(r[bPlu]);
+      var isHead=subHeader(r);if(isHead)addCols();
+      var plu=isHead?'':normPlu(r[bPlu]);
       if(plu){
         var qty=num(r[bQty]),values={};
         dist.forEach(function(x){var v=num(r[x.i]);if(v)values[x.name]=v});
@@ -93,7 +110,7 @@
         (details[cp]=details[cp]||[]).push({lot:txt(c.lot>=0?r[c.lot]:''),date:date,ref:txt(c.ref>=0?r[c.ref]:''),cs:txt(c.cs>=0?r[c.cs]:'').replace(/\.0+$/,''),qty:c.qty>=0?num(r[c.qty]):0});
       }
     });
-    return{name:name,cols:dist.map(function(x){return x.name}),rows:rows,details:details};
+    return{name:name,cols:allCols,rows:rows,details:details};
   }
   function parseSheets(sheets,fileName){
     var meta=parseName(fileName),info={eta:'',orders:'',pallets:'',products:'',changes:''},rows=[],cols=[],sheetNames=[],details={},bySheet={};

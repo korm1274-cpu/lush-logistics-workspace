@@ -214,7 +214,7 @@ async function checklists(req, res, user) {
     const num = v => Number(v) || 0;
     const rows = p.rows.slice(0, 5000).map(r => ({
       sheet: clip(r.sheet, 60), plu: clip(r.plu, 20), name: clip(r.name, 200), qty: num(r.qty),
-      values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 20).map(([k, v]) => [clip(k, 40), num(v)])),
+      values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 40).map(([k, v]) => [clip(k, 40), num(v)])), // 표 중간 머리글로 매장 칸이 늘어날 수 있어 40개까지
       details: (Array.isArray(r.details) ? r.details : []).slice(0, 60).map(d => ({ lot: clip(d.lot, 40), date: clip(d.date, 10), ref: clip(d.ref, 40), cs: clip(d.cs, 20), qty: num(d.qty) })),
     }));
     const info = p.info || {};
@@ -222,7 +222,7 @@ async function checklists(req, res, user) {
       id, batchNo: clip(p.batchNo, 4), label: clip(p.batchNo, 4) + '차' + (p.country ? ' ' + clip(p.country, 3) : ''), country: clip(p.country, 3), orders: clip(p.orders, 200),
       eta, fileDate: clip(p.fileDate, 10), etaHistory,
       info: { orders: clip(info.orders, 300), pallets: clip(info.pallets, 40), products: clip(info.products, 300), changes: clip(info.changes, 1000) },
-      sheets: (Array.isArray(p.sheets) ? p.sheets : []).slice(0, 30).map(s => clip(s, 60)), cols: (Array.isArray(p.cols) ? p.cols : []).slice(0, 20).map(s => clip(s, 40)), rows,
+      sheets: (Array.isArray(p.sheets) ? p.sheets : []).slice(0, 30).map(s => clip(s, 60)), cols: (Array.isArray(p.cols) ? p.cols : []).slice(0, 40).map(s => clip(s, 40)), rows,
       fileName: clip(body.fileName, 300), modified: user.drive || !old || !old.modified || modified > old.modified ? modified : old.modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
     };
     await store.cmd(['HSET', CHECKLIST_KEY, id, JSON.stringify(rec)]);
