@@ -237,8 +237,21 @@
         const strip=r=>{const o=Object.assign({},r);delete o.updatedAt;return JSON.stringify(o)};
         let arr=null;try{const a=JSON.parse(v||'[]');arr=Array.isArray(a)?a:null}catch(e){}
         if(arr){
-          const now=new Date().toISOString();let touched=false;
-          arr.forEach(r=>{if(!r||!r.id)return;const p=beforeMap.get(r.id);if((!p||strip(p)!==strip(r))&&(!p||r.updatedAt===p.updatedAt||!r.updatedAt)){r.updatedAt=now;touched=true}});
+          const nowMs=Date.now(),now=new Date(nowMs).toISOString();let touched=false;
+          /* 기기 시계 차이 보정: 다른 기기(시계가 빠른 PC 등)가 찍은 수정 시각보다 이 기기 '지금'이 이르면
+             방금 한 완료 처리가 서버 병합에서 져서 미완료로 되살아남 → 이 기기에서 방금 바꾼 건은
+             '지금'과 '바꾸기 전 수정 시각 + 1ms' 중 늦은 값으로 찍음.
+             예전 화면에 남은 오래된 목록을 다시 저장하는 경우(수정 시각이 바꾸기 전보다 오래되고 지금과도 먼 건)는 그대로 둠 */
+          const ms=s=>{const t=Date.parse(s||'');return isNaN(t)?0:t};
+          arr.forEach(r=>{if(!r||!r.id)return;const p=beforeMap.get(r.id);
+            if(!p){r.updatedAt=now;touched=true;return}
+            if(strip(p)===strip(r))return;
+            const fresh=!r.updatedAt||r.updatedAt===p.updatedAt||Math.abs(ms(r.updatedAt)-nowMs)<120000;
+            if(!fresh)return;
+            const base=Math.max(ms(p.updatedAt),ms(p.createdAt));
+            const stamp=base>=nowMs?new Date(base+1).toISOString():now;
+            if(r.updatedAt!==stamp){r.updatedAt=stamp;touched=true}
+          });
           if(touched)v=JSON.stringify(arr);
           const keep=new Set(arr.map(r=>r&&r.id).filter(Boolean)),removed=[...beforeMap.keys()].filter(id=>!keep.has(id));
           if(removed.length){const del=readLocal(dk);removed.forEach(id=>{if(!del.includes(id))del.push(id)});origSetItem(dk,JSON.stringify(del.slice(-2000)))}
