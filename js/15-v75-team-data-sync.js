@@ -89,7 +89,12 @@
       return t&&(Date.now()-t<6000);
     }catch(e){return false}
   }
+  /* 받아오기 도중 덮어쓰기 방지: 이 기기에서 바뀔 때마다 localSeq를 올리고, 서버로 올리는 중이면 pushing>0.
+     받아온 내용을 적용하기 직전에 둘을 다시 보고, 그사이 바뀌었거나 올리는 중이면 덮어쓰지 않고 잠시 뒤 다시 받음
+     (예전엔 받아오는 도중 완료 처리하면 이전 서버 내용이 덮어써 '미완료'로 되살아나고 그대로 서버에 올라감) */
+  let localSeq=0,pushing=0;
   function pushTeamData(){
+    localSeq++;
     clearTimeout(pushTimer);
     markLocalSave();
     markPending();
@@ -102,7 +107,7 @@
     clearTimeout(pushTimer);pushTimer=null;
     const body=JSON.stringify(snapshot()),since=pendingSince();
     if(body.length<60000){
-      try{fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body,keepalive:true}).then(r=>r.json()).then(j=>{if(j&&j.success){markLocalSave();window.__teamPushFailed=false;clearPending(since)}}).catch(()=>attemptPush(1));return}catch(e){}
+      try{pushing++;fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body,keepalive:true}).then(r=>r.json()).then(j=>{if(j&&j.success){markLocalSave();window.__teamPushFailed=false;clearPending(since)}}).catch(()=>attemptPush(1)).then(()=>{pushing=Math.max(0,pushing-1)});return}catch(e){pushing=Math.max(0,pushing-1)}
     }
     attemptPush(0);
   }
@@ -111,8 +116,11 @@
   // after: 성공(또는 권한 없음으로 포기)한 뒤 할 일(새로고침 후 먼저 올리기 → 끝나면 서버 내용 다시 받기)
   function attemptPush(attempt,after){
     const since=pendingSince();
+    pushing++;
+    const done=()=>{pushing=Math.max(0,pushing-1)};
     fetch(TEAM_API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot())})
       .then(r=>r.json()).then(j=>{
+        done();
         if(!j||!j.success){
           console.error('team-data 저장 실패:',j&&j.error);
           if(noPermission(j)){
@@ -130,6 +138,7 @@
         }
       })
       .catch(err=>{
+        done();
         console.error('team-data 저장 실패:',err);
         retryPush(attempt,after);
       });
@@ -152,10 +161,13 @@
     if(recentlySavedLocally()){setTimeout(()=>pullTeamData(silent),2000);return}
     if(window.__teamPushFailed){return}
     pulling=true;
+    const seq0=localSeq;
     try{
       const res=await fetch(TEAM_API);
       const j=await res.json();
       if(!j||!j.success||!j.data){pulling=false;return}
+      // 받아오는 사이 이 기기에서 바뀌었거나(완료 처리 등) 아직 올리는 중이면 덮어쓰지 않고 2.5초 뒤 다시 받음
+      if(localSeq!==seq0||pushTimer||pushing>0){pulling=false;setTimeout(()=>pullTeamData(silent),2500);return}
       const localProd=normalizeProd(readLocalObj(KEYS.productivity,{people:[],entries:{}}));
       const serverProd=normalizeProd(j.data.productivity);
       const localProdEmpty=localProd.people.length===0&&Object.keys(localProd.entries).length===0;
