@@ -208,7 +208,8 @@ async function checklists(req, res, user) {
     // 드라이브 자동 반영만: 더 오래된 파일이 늦게 와도 덮어쓰지 않음. 화면에서 직접 올린 파일은 항상 반영
     // (같은 파일명을 다시 보낸 경우는 해석 규칙이 바뀌었을 수 있으니 항상 반영)
     if (user.drive && old && old.modified && modified && modified < old.modified && old.fileName !== clip(body.fileName, 300)) return res.status(200).json({ success: true, skipped: true, reason: '이미 더 최근 파일이 반영되어 있습니다.', batch: { id, label: old.label } });
-    const eta = clip(p.eta, 10);
+    // 새 파일에서 입고일을 찾지 못하면(Checklist 시트 없음·파일명에 날짜 없음) 이미 저장된 입고일을 유지
+    const eta = clip(p.eta, 10) || (old && old.eta) || '';
     const etaHistory = (old && Array.isArray(old.etaHistory) ? old.etaHistory : []).slice(-20);
     if (old && old.eta && eta && old.eta !== eta) etaHistory.push({ from: old.eta, to: eta, at: new Date().toISOString(), file: clip(body.fileName, 200) });
     const num = v => Number(v) || 0;
@@ -217,11 +218,14 @@ async function checklists(req, res, user) {
       values: Object.fromEntries(Object.entries(r.values || {}).slice(0, 40).map(([k, v]) => [clip(k, 40), num(v)])), // 표 중간 머리글로 매장 칸이 늘어날 수 있어 40개까지
       details: (Array.isArray(r.details) ? r.details : []).slice(0, 60).map(d => ({ lot: clip(d.lot, 40), date: clip(d.date, 10), ref: clip(d.ref, 40), cs: clip(d.cs, 20), qty: num(d.qty) })),
     }));
-    const info = p.info || {};
+    // 입고 정보(Order Number·Pallet 수·주요 입고 제품·수정내역)·제조국·주문 구분도 새 파일에 없으면 기존 값 유지
+    const info = p.info || {}, oi = (old && old.info) || {};
+    const keep = (v, o, n) => clip(v, n) || clip(o, n);
+    const country = keep(p.country, old && old.country, 3);
     const rec = {
-      id, batchNo: clip(p.batchNo, 4), label: clip(p.batchNo, 4) + '차' + (p.country ? ' ' + clip(p.country, 3) : ''), country: clip(p.country, 3), orders: clip(p.orders, 200),
-      eta, fileDate: clip(p.fileDate, 10), etaHistory,
-      info: { orders: clip(info.orders, 300), pallets: clip(info.pallets, 40), products: clip(info.products, 300), changes: clip(info.changes, 1000) },
+      id, batchNo: clip(p.batchNo, 4), label: clip(p.batchNo, 4) + '차' + (country ? ' ' + country : ''), country, orders: keep(p.orders, old && old.orders, 200),
+      eta, fileDate: keep(p.fileDate, old && old.fileDate, 10), etaHistory,
+      info: { orders: keep(info.orders, oi.orders, 300), pallets: keep(info.pallets, oi.pallets, 40), products: keep(info.products, oi.products, 300), changes: keep(info.changes, oi.changes, 1000) },
       sheets: (Array.isArray(p.sheets) ? p.sheets : []).slice(0, 30).map(s => clip(s, 60)), cols: (Array.isArray(p.cols) ? p.cols : []).slice(0, 40).map(s => clip(s, 40)), rows,
       fileName: clip(body.fileName, 300), modified: user.drive || !old || !old.modified || modified > old.modified ? modified : old.modified, source: user.drive ? 'drive' : 'upload', uploadedAt: new Date().toISOString(), uploadedBy: user.id,
     };
