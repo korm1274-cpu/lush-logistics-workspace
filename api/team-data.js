@@ -364,12 +364,14 @@ async function productExtra(req, res, user) {
       });
       const fields = Object.keys(saved);
       if (fields.length) await store.cmd(['HSET', PRODUCT_EXTRA_KEY].concat(...fields.map(f => [f, JSON.stringify(saved[f])])));
+      // PLU ↔ 제품코드 연결이 있으면 입고·월별 입고현황 데이터도 바로 다시 만듦(실패해도 저장은 그대로, 새벽 자동·동기화 버튼으로 보정)
+      if (fields.some(f => saved[f].plu)) await syncInbound(store);
       return res.status(200).json({ success: true, saved: fields.length, skipped: skipped.slice(0, 200), items: fields.map(f => ({ code: saved[f].code, plu: saved[f].plu, name: saved[f].name, mgr: saved[f].mgr, at })) });
     }
     const code = clip(body.code, 40);
     if (!/^[A-Za-z0-9][A-Za-z0-9\-_.]{0,39}$/.test(code)) return res.status(200).json({ success: false, error: '제품코드를 확인해 주세요. (영문·숫자, 40자 이내)' });
     const field = code.toUpperCase();
-    if (body.action === 'delete') { await store.cmd(['HDEL', PRODUCT_EXTRA_KEY, field]); return res.status(200).json({ success: true }); }
+    if (body.action === 'delete') { await store.cmd(['HDEL', PRODUCT_EXTRA_KEY, field]); await syncInbound(store); return res.status(200).json({ success: true }); }
     if (body.action !== 'set') return res.status(200).json({ success: false, error: 'Unsupported action' });
     const plu = clip(body.plu, 20), name = clip(body.name, 120), mgr = clip(body.mgr, 40);
     if (plu && !/^\d{1,20}$/.test(plu)) return res.status(200).json({ success: false, error: 'PLU는 숫자만 넣어 주세요.' });
@@ -381,6 +383,8 @@ async function productExtra(req, res, user) {
     // 비워 보낸 PLU·제품명·담당은 이전 값 유지
     const rec = { code, plu: keepPlu, name: name || (old && old.name) || '', mgr: keepMgr, by: user.id, at: new Date().toISOString() };
     await store.cmd(['HSET', PRODUCT_EXTRA_KEY, field, JSON.stringify(rec)]);
+    // PLU 연결이 새로 생기거나 바뀌면 입고 데이터도 바로 다시 만듦(담당만 바꾼 경우는 입고 데이터와 무관)
+    if (rec.plu && rec.plu !== ((old && old.plu) || '')) await syncInbound(store);
     return res.status(200).json({ success: true, item: { code: rec.code, plu: rec.plu, name: rec.name, mgr: rec.mgr, at: rec.at } });
   } catch (e) {
     return res.status(200).json({ success: false, error: failMsg('product-extra', e) });

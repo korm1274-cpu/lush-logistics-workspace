@@ -63,8 +63,11 @@ function computeMonthlySummary(rows, priceMap) {
 
 
 // 체크리스트 전체 → 입고 행
-function rowsFromChecklists(batches, master) {
+//   제품코드: ① 정렬 순서 화면·[제품코드·담당 엑셀]로 PLU에 이어 둔 제품코드(extraByPlu) ② PLU 담당자 정보
+//   단위: PLU 담당자 정보에 있으면 그 값, 없으면 이어 둔 코드가 G→EA 환산표에 있으면 G, 아니면 EA / 제품군: PLU 담당자 정보에만 있음
+function rowsFromChecklists(batches, master, extraByPlu) {
   const map = (master && master.map) || {};
+  const xp = extraByPlu || {};
   const out = [];
   batches.forEach(b => {
     if (!/^\d{4}-\d{2}-\d{2}$/.test(String(b.eta || ''))) return; // 입고일(실시간 입고 예정일)이 날짜가 아니면 제외
@@ -72,10 +75,23 @@ function rowsFromChecklists(batches, master) {
     const batch = String(b.batchNo || '') + '차';
     (b.rows || []).forEach(r => {
       const m = (map[r.plu] || [])[0] || [];
-      const unit = String(m[4] || '').trim().toUpperCase() === 'G' ? 'G' : 'EA';
-      out.push([b.eta, batch, pallets, String(m[0] || ''), String(m[3] || ''), String(r.name || ''), unit, num(r.qty)]);
+      const x = xp[String(r.plu || '').trim()];
+      const code = String((x && x.code) || m[0] || '');
+      const mUnit = String(m[4] || '').trim().toUpperCase();
+      const unit = mUnit === 'G' || (!mUnit && PRODUCT_EA_CONVERSION[code]) ? 'G' : 'EA';
+      out.push([b.eta, batch, pallets, code, String(m[3] || ''), String(r.name || ''), unit, num(r.qty)]);
     });
   });
+  return out;
+}
+// 제품코드별 담당 지정 저장소(api/team-data.js product-extra)에서 PLU → { code } 표
+const EXTRA_KEY = 'lush_product_extra_v1';
+async function readExtraByPlu(store) {
+  const out = {};
+  try {
+    const arr = await store.cmd(['HGETALL', EXTRA_KEY]) || [];
+    for (let i = 0; i < arr.length; i += 2) { try { const x = JSON.parse(arr[i + 1]); if (x && x.plu && x.code) out[String(x.plu).trim()] = { code: String(x.code) }; } catch (e) { /* 무시 */ } }
+  } catch (e) { /* 못 읽으면 PLU 담당자 정보만 사용 */ }
   return out;
 }
 
@@ -86,7 +102,8 @@ async function rebuild(store) {
   let master = null; try { master = JSON.parse(await store.cmd(['GET', PLU_KEY]) || 'null'); } catch (e) { master = null; }
   let data = {}; try { data = JSON.parse(await store.cmd(['GET', SHARED_KEY]) || '{}') || {}; } catch (e) { data = {}; }
   // 체크리스트에서 만든 행은 9번째 칸에 'ck' 표시(화면은 8칸만 씀)
-  const fresh = rowsFromChecklists(batches, master).map(r => r.concat('ck'));
+  const extraByPlu = await readExtraByPlu(store);
+  const fresh = rowsFromChecklists(batches, master, extraByPlu).map(r => r.concat('ck'));
   const etas = fresh.map(r => r[0]).sort();
   const first = etas[0] || '';
   // 체크리스트가 있는 달만 교체: 그 달의 기존 행(예전 입고량 시트 실적)은 체크리스트 행으로 바꾸고,
