@@ -224,8 +224,14 @@
     }catch(e){console.error('team-data pull failed',e)}
     pulling=false;
   }
-  const origSetItem=localStorage.setItem.bind(localStorage);
-  localStorage.setItem=function(k,v){
+  /* 저장 감지는 Storage.prototype.setItem에서(localStorage만):
+     예전엔 localStorage.setItem=…로 바꿨는데, 아이폰 사파리 계열은 웹 표준대로 이 대입을 'setItem'이라는 저장 항목으로 처리해
+     바꾼 함수가 실행되지 않음 → 휴대폰에서 완료 처리 등이 서버로 올라가지 않고 다음 받아오기 때 미완료로 되살아났음 */
+  const protoSetItem=Storage.prototype.setItem;
+  const origSetItem=(k,v)=>protoSetItem.call(localStorage,k,v);
+  try{if(localStorage.getItem('setItem')!==null)localStorage.removeItem('setItem')}catch(e){}
+  Storage.prototype.setItem=function(k,v){
+    if(this!==localStorage)return protoSetItem.call(this,k,v);
     /* 출고 요청·공지·제품 확보를 이 기기에서 저장할 때(서버에서 받은 내용으로 바꾸는 경우 제외)
        - 지운 건: id를 따로 기록해 서버에 알려 줌 → 서버가 건별로 합칠 때 다시 살아나지 않음
        - 새로 생기거나 내용이 바뀐 건: updatedAt을 지금 시각으로 → 서버가 더 최근 수정본을 고를 수 있음 */
