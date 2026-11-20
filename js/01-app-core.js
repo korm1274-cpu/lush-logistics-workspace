@@ -43,6 +43,7 @@ const DEFAULT_MENUS=[
  {id:"status-boxcount",group:"statusboard",label:"출고 박스",kind:"statusTab",target:"statusBoardView",statusTab:"boxcount",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"status-products",group:"statusboard",label:"제품별 출고현황",kind:"statusTab",target:"statusBoardView",statusTab:"products",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"status-outbound-analysis",group:"statusboard",label:"출고 분석",kind:"statusTab",target:"statusBoardView",statusTab:"outboundanalysis",visible:true,roles:["admin","leader","editor","restricted"]},
+ {id:"status-shipping-sample",group:"statusboard",label:"출고 현황 샘플",kind:"statusTab",target:"statusBoardView",statusTab:"shippingsample",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"inv-total",group:"inventory",label:"총 재고파일",kind:"inventoryTotal",visible:true,roles:["admin","leader","editor"]},
  {id:"inv-stock",group:"inventory",label:"재고",kind:"view",target:"stockView",visible:true,roles:["admin","leader","editor"]},
  {id:"inv-oos",group:"inventory",label:"품절 재고 분석",kind:"view",target:"inventoryOosView",visible:true,roles:["admin","leader","editor","restricted"]},
