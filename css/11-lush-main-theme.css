@@ -378,6 +378,9 @@
 .floor-tile{position:relative;background:#272725;border:1.5px solid rgba(255,255,255,.14);border-radius:18px;padding:22px 24px 20px;overflow:hidden;}
 .floor-tile::before{content:"";position:absolute;left:0;top:0;bottom:0;width:8px;background:var(--accent);}
 .floor-tile small{display:block;font-size:18px;font-weight:700;color:#e6e1d8;margin-bottom:10px;}
+/* 현황판 타일 이름(오늘 입고 팔렛·제품 확보 요청·대량 주문 등): 모니터에서 잘 보이도록 왼쪽 색 띠(--accent)의 밝은 색으로, 조금 크게
+   (02-theme-nav.css의 #appShell … small 회색 !important보다 우선) */
+#appShell #floorDashView .floor-tile small{font-size:20px!important;color:#e6e1d8!important;color:color-mix(in srgb,var(--accent) 50%,#fff)!important;}
 .floor-tile b{font-size:72px;font-weight:800;line-height:1;color:#fff;font-variant-numeric:tabular-nums;}
 .floor-tile span{font-size:20px;color:#cfcac0;margin-left:6px;}
 .floor-tile em{display:block;margin-top:12px;font-style:normal;font-size:17px;font-weight:700;color:#cfcac0;}
