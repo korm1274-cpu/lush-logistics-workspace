@@ -1,0 +1,23 @@
+/* 크리스마스 장식(js/50-season-truck.js): 트럭 짐칸 위 선물 더미 · 현장 대시보드 아래 구석 트리/눈사람/선물 */
+.hero-truck .st-gifts{position:absolute;left:4%;top:-52%;width:52%;line-height:0;pointer-events:none;filter:drop-shadow(0 2px 2px rgba(0,0,0,.35));animation:stCargo 1.2s ease-in-out infinite;}
+.hero-truck .st-gifts svg{display:block;width:100%;height:auto;}
+/* 현장 대시보드 트럭 길은 넘치는 부분을 잘라 내서(overflow:hidden) 짐칸 위 선물이 안 보였음 → 크리스마스엔 길 높이를 늘려 위 공간 확보 */
+html[data-season="xmas"] .floor-truck-lane{height:96px;margin-top:0;}
+/* 아래 구석 장식: .floor-season 층(타일 뒤, 클릭 막지 않음) 안에서 아래쪽에 붙임 */
+#appShell .floor-board .floor-season .xd-corner{position:absolute;bottom:14px;display:flex;align-items:flex-end;gap:6px;opacity:.95;}
+#appShell .floor-board .floor-season .xd-left{left:22px;}
+#appShell .floor-board .floor-season .xd-right{right:22px;}
+.floor-season .xd-corner svg{display:block;height:auto;overflow:visible;}
+.floor-season .xd-tree svg{width:120px;}
+.floor-season .xd-snowman svg{width:104px;}
+.floor-season .xd-gifts{display:flex;align-items:flex-end;gap:4px;}
+.floor-season .xd-gifts svg{width:auto;}
+@media (prefers-reduced-motion:no-preference){.floor-season .xd-lights circle{animation:xdTwinkle 1.8s ease-in-out infinite;}.floor-season .xd-lights circle:nth-child(2n){animation-delay:.9s;}}
+@keyframes xdTwinkle{0%,100%{opacity:1}50%{opacity:.35}}
+/* 전체화면(큰 모니터)에서는 조금 더 크게 */
+.floor-board:fullscreen .floor-season .xd-tree svg{width:160px;}
+.floor-board:fullscreen .floor-season .xd-snowman svg{width:136px;}
+/* 좁은 화면: 작게, 휴대폰은 선물만 빼고 트리·눈사람만 */
+@media (max-width:1100px){.floor-season .xd-tree svg{width:84px;}.floor-season .xd-snowman svg{width:72px;}.floor-season .xd-gifts svg{transform:scale(.8);transform-origin:bottom;}}
+@media (max-width:700px){.floor-season .xd-gifts{display:none;}.floor-season .xd-tree svg{width:56px;}.floor-season .xd-snowman svg{width:50px;}#appShell .floor-board .floor-season .xd-corner{bottom:8px;}#appShell .floor-board .floor-season .xd-left{left:10px;}#appShell .floor-board .floor-season .xd-right{right:10px;}}
+@media (max-width:760px){.lush-hero .hero-truck .st-gifts{top:-50%;}}
