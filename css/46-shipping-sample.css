@@ -8,45 +8,53 @@
 #statusBoardView .ss-date{font-size:18px;color:#e6e1d8;}
 #statusBoardView .ss-time{font-size:52px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
 #statusBoardView .ss-full-btn{border:1.5px solid rgba(255,255,255,.3);background:transparent;color:#fff;border-radius:10px;padding:10px 14px;font-size:15px;font-weight:700;cursor:pointer;}
-#statusBoardView .ss-split{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(280px,1fr);gap:24px;}
+/* 매장 목록 : 오른쪽(진행률·남은 수량·예상 완료) = 1.55 : 1 */
+#statusBoardView .ss-split{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(340px,1fr);gap:24px;}
 #statusBoardView .ss-stores{background:#272725;border:1.5px solid rgba(255,255,255,.12);border-radius:18px;padding:20px 22px;}
-#statusBoardView .ss-stores-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap;}
-#statusBoardView .ss-stores-head h4{margin:0;font-size:24px;font-weight:800;color:#fff!important;}
-#statusBoardView .ss-stores-head h4 b{font-size:30px;margin-left:8px;color:#fff;}
-#statusBoardView .ss-stores-head h4 small{font-size:18px;color:#cfcac0;margin-left:4px;font-weight:700;}
+#statusBoardView .ss-stores-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;}
+#statusBoardView .ss-stores-head h4{margin:0;font-size:20px;font-weight:800;color:#fff!important;}
+#statusBoardView .ss-stores-head h4 b{font-size:24px;margin-left:8px;color:#fff;}
+#statusBoardView .ss-stores-head h4 small{font-size:16px;color:#cfcac0;margin-left:4px;font-weight:700;}
 #statusBoardView .ss-legend{display:flex;gap:8px;}
-#statusBoardView .ss-legend span{font-size:16px;font-weight:800;padding:5px 12px;border-radius:999px;}
+#statusBoardView .ss-legend span{font-size:14px;font-weight:800;padding:4px 11px;border-radius:999px;}
 #statusBoardView .ss-legend .run{background:rgba(139,124,240,.25);color:#cfc8ff;}
 #statusBoardView .ss-legend .wait{background:rgba(255,255,255,.1);color:#d6d1c8;}
 #statusBoardView .ss-legend .done{background:rgba(63,174,106,.25);color:#9be3b5;}
-#statusBoardView .ss-store-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px 14px;}
-#statusBoardView .ss-row{position:relative;display:flex;align-items:center;gap:12px;height:54px;padding:0 16px;border-radius:10px;background:#3a3a37;overflow:hidden;}
+#statusBoardView .ss-store-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 12px;}
+#statusBoardView .ss-row{position:relative;display:flex;align-items:center;gap:10px;height:44px;padding:0 14px;border-radius:9px;background:#3a3a37;overflow:hidden;}
 #statusBoardView .ss-fill{position:absolute;left:0;top:0;bottom:0;background:#6d5fd6;transition:width .6s ease;}
 #statusBoardView .ss-row>span:not(.ss-fill){position:relative;}
-#statusBoardView .ss-name{flex:1;min-width:0;font-size:22px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-#statusBoardView .ss-qty{font-size:15px;font-weight:700;color:rgba(255,255,255,.78);font-variant-numeric:tabular-nums;white-space:nowrap;}
-#statusBoardView .ss-pct{min-width:78px;text-align:right;font-size:24px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;}
-#statusBoardView .ss-row.done{background:#2f8a52;}
-#statusBoardView .ss-row.done .ss-fill{background:#2f8a52;}
+#statusBoardView .ss-name{flex:1;min-width:0;font-size:18px;font-weight:800;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+#statusBoardView .ss-qty{font-size:13px;font-weight:700;color:rgba(255,255,255,.78);font-variant-numeric:tabular-nums;white-space:nowrap;}
+#statusBoardView .ss-pct{min-width:68px;text-align:right;font-size:20px;font-weight:800;color:#fff;font-variant-numeric:tabular-nums;white-space:nowrap;}
+/* 완료: 진한 초록 대신 은은한 초록(바탕 회색에 초록 35%) + 연초록 글씨 */
+#statusBoardView .ss-row.done{background:#3a3a37;}
+#statusBoardView .ss-row.done .ss-fill{background:rgba(63,174,106,.35);}
+#statusBoardView .ss-row.done .ss-name,#statusBoardView .ss-row.done .ss-pct{color:#c8f0d6;}
+#statusBoardView .ss-row.done .ss-qty{color:rgba(200,240,214,.75);}
 #statusBoardView .ss-row.wait .ss-name,#statusBoardView .ss-row.wait .ss-pct{color:#c9c4ba;}
 #statusBoardView .ss-row.wait .ss-qty{color:#a9a49a;}
 #statusBoardView .ss-side{display:grid;grid-template-rows:auto auto auto;gap:16px;align-content:start;}
 #statusBoardView .ss-ring-card,#statusBoardView .ss-metric{background:#272725;border:1.5px solid rgba(255,255,255,.12);border-radius:18px;padding:20px 22px;}
 #statusBoardView .ss-side-label,#statusBoardView .ss-metric>span{display:block;font-size:20px;font-weight:800;color:#e6e1d8;margin-bottom:12px;}
-#statusBoardView .ss-ring{--p:0;width:220px;height:220px;margin:0 auto;border-radius:50%;background:conic-gradient(#8b7cf0 calc(var(--p)*1%),#3a3a37 0);display:grid;place-items:center;}
-#statusBoardView .ss-ring-inner{width:172px;height:172px;border-radius:50%;background:#272725;display:flex;flex-direction:column;align-items:center;justify-content:center;}
-#statusBoardView .ss-ring-inner b{font-size:52px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
-#statusBoardView .ss-ring-inner small{font-size:16px;color:#cfcac0;margin-top:6px;}
+/* 금일 출고 진행률 원: 크게 */
+#statusBoardView .ss-ring{--p:0;width:320px;height:320px;margin:6px auto 4px;border-radius:50%;background:conic-gradient(#8b7cf0 calc(var(--p)*1%),#3a3a37 0);display:grid;place-items:center;}
+#statusBoardView .ss-ring-inner{width:252px;height:252px;border-radius:50%;background:#272725;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+#statusBoardView .ss-ring-inner b{font-size:80px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;}
+#statusBoardView .ss-ring-inner small{font-size:20px;color:#cfcac0;margin-top:8px;}
 #statusBoardView .ss-metric strong{display:block;}
 #statusBoardView .ss-metric strong b{font-size:52px;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;color:#fff;}
 #statusBoardView .ss-metric strong small{font-size:20px;color:#cfcac0;margin-left:6px;}
 #statusBoardView .ss-metric em{display:block;margin-top:10px;font-style:normal;font-size:15px;color:#bdb8ae;}
 #statusBoardView .ss-metric em b{color:#e6e1d8;}
-/* 전체화면: 화면 높이에 맞춰 조금 더 크게 */
+/* 전체화면: 화면 높이에 맞춰 */
 #ssBoard:fullscreen{overflow:auto;border-radius:0;padding:3vh 3vw;}
-#ssBoard:fullscreen .ss-row{height:6vh;}
-#ssBoard:fullscreen .ss-name{font-size:2.6vh;}
-#ssBoard:fullscreen .ss-pct{font-size:2.8vh;}
+#ssBoard:fullscreen .ss-row{height:4.8vh;}
+#ssBoard:fullscreen .ss-name{font-size:2.2vh;}
+#ssBoard:fullscreen .ss-pct{font-size:2.4vh;}
+#ssBoard:fullscreen .ss-ring{width:38vh;height:38vh;}
+#ssBoard:fullscreen .ss-ring-inner{width:30vh;height:30vh;}
+#ssBoard:fullscreen .ss-ring-inner b{font-size:9vh;}
 /* 좁은 화면(태블릿·휴대폰) */
 @media (max-width:1100px){#statusBoardView .ss-split{grid-template-columns:1fr;}#statusBoardView .ss-side{grid-template-columns:repeat(auto-fit,minmax(240px,1fr));grid-template-rows:none;}}
-@media (max-width:700px){#statusBoardView .ss-board{padding:18px 14px;border-radius:16px;}#statusBoardView .ss-store-list{grid-template-columns:1fr;}#statusBoardView .ss-head{flex-direction:column;}#statusBoardView .ss-head h3{font-size:26px;}#statusBoardView .ss-time{font-size:38px;}#statusBoardView .ss-name{font-size:18px;}#statusBoardView .ss-pct{font-size:19px;min-width:60px;}#statusBoardView .ss-qty{display:none;}}
+@media (max-width:700px){#statusBoardView .ss-board{padding:18px 14px;border-radius:16px;}#statusBoardView .ss-store-list{grid-template-columns:1fr;}#statusBoardView .ss-head{flex-direction:column;}#statusBoardView .ss-head h3{font-size:26px;}#statusBoardView .ss-time{font-size:38px;}#statusBoardView .ss-name{font-size:17px;}#statusBoardView .ss-pct{font-size:18px;min-width:60px;}#statusBoardView .ss-qty{display:none;}#statusBoardView .ss-ring{width:240px;height:240px;}#statusBoardView .ss-ring-inner{width:188px;height:188px;}#statusBoardView .ss-ring-inner b{font-size:58px;}}
