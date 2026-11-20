@@ -221,6 +221,7 @@ window.ensureChart=function(){
           <button type="button" class="status-board-tab" data-status-tab="boxcount">출고 박스</button>
           <button type="button" class="status-board-tab" data-status-tab="products">제품별 출고현황</button>
           <button type="button" class="status-board-tab" data-status-tab="outboundanalysis">출고 분석</button>
+          <button type="button" class="status-board-tab" data-status-tab="shippingsample">출고 현황 샘플</button>
         </div>
 
         <div class="status-panel active" data-status-panel="shipping">
@@ -1087,6 +1088,39 @@ window.ensureChart=function(){
             </div>
           </div>
         </div>
+
+        <!-- 출고 현황 샘플: 가로 모니터용 디자인 확인 화면(데모 데이터만 사용, 기존 출고 현황은 그대로) -->
+        <div class="status-panel" data-status-panel="shippingsample">
+          <div class="ss-board" id="ssBoard">
+            <div class="ss-head">
+              <div>
+                <span class="ss-kicker">TODAY OUTBOUND · SAMPLE</span>
+                <h3>금일 출고 현황</h3>
+              </div>
+              <div class="ss-head-right">
+                <div class="ss-datetime"><div class="ss-date" id="ssDate">-</div><div class="ss-time" id="ssTime">--:--</div></div>
+                <button type="button" class="ss-full-btn" id="ssFullBtn">⛶ 전체화면</button>
+              </div>
+            </div>
+            <div class="ss-split">
+              <div class="ss-stores">
+                <div class="ss-stores-head">
+                  <h4>오늘 주문 매장 <b id="ssStoreCount">0</b><small>개 매장</small></h4>
+                  <div class="ss-legend" id="ssLegend"></div>
+                </div>
+                <div class="ss-store-list" id="ssStoreList"></div>
+              </div>
+              <div class="ss-side">
+                <div class="ss-ring-card">
+                  <div class="ss-side-label">금일 출고 진행률</div>
+                  <div class="ss-ring" id="ssRing"><div class="ss-ring-inner"><b id="ssPct">0%</b><small>EA 기준</small></div></div>
+                </div>
+                <div class="ss-metric"><span>남은 수량</span><strong><b id="ssRemain">0</b><small>EA</small></strong><em>총 출고량 <b id="ssGoal">0</b> EA 기준</em></div>
+                <div class="ss-metric"><span>예상 완료 시간</span><strong><b id="ssEta">--:--</b></strong><em>데모 처리 속도 기준</em></div>
+              </div>
+            </div>
+          </div>
+        </div>
 </section>
 
 
@@ -1827,6 +1861,7 @@ window.ensureChart=function(){
 <script src="js/checklist-parse.js"></script>
 <script src="js/59-checklist.js"></script>
 <script src="js/60-product-order.js"></script>
+<script src="js/61-shipping-sample.js"></script>
 <link rel="stylesheet" href="css/34-analysis-drill.css">
 <link rel="stylesheet" href="css/35-dash-monthly.css">
 <link rel="stylesheet" href="css/36-todo-notice-list.css">
@@ -1839,6 +1874,7 @@ window.ensureChart=function(){
 <link rel="stylesheet" href="css/43-checklist.css">
 <link rel="stylesheet" href="css/44-bento-dashboard.css">
 <link rel="stylesheet" href="css/45-bento-all-views.css">
+<link rel="stylesheet" href="css/46-shipping-sample.css">
 <script src="js/60-bento-hero-decor.js"></script>
 </body>
 </html>
