@@ -17,7 +17,7 @@
     var md=d.slice(5);
     if(HOLIDAYS.some(function(r){return d>=r[0]&&d<=r[1]}))return'hanbok';
     if(md>='10-20'&&md<='10-31')return'halloween';
-    if(md>='12-01'&&md<='12-26')return'xmas';
+    if(md>='11-20'&&md<='12-26')return'xmas'; /* 크리스마스 시즌: 11/20부터(예전 12/1) */
     if(md>='12-27'||md<='01-03')return'newyear';
     return'';
   }
