@@ -207,6 +207,38 @@
     out.push([r.plu,r.code,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.mgr,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
     if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([x.plu,inf.code,'└ '+x.name,inf.mgr,x.lot,x.date,'',r.batch.label])});
   });return out}
+  /* [인쇄]: 지금 보이는 목록(차수·단품/GIFT·검색·정렬 순서)을 A4 가로로. 열은 제품코드 | 제품명 | LOT번호 | 제조일자만
+     담당자 이름은 넣지 않음(제목에도 X) — 담당자 이름 인쇄 예외는 '입고리스트 사내 인쇄물'에 한정(정책 재설정 2026-11-13) */
+  function printList(){
+    var v=lastView;if(!v||!v.list.length){toast('인쇄할 품질리스트가 없습니다.');return}
+    var rows=[];v.list.forEach(function(r){
+      rows.push({code:r.code,name:r.kind==='GIFT'?r.name+' (GIFT)':r.name,lot:r.lot,date:r.date,gift:r.kind==='GIFT'});
+      if(r.kind==='GIFT')(r.items||[]).forEach(function(x){rows.push({code:infoOf(x).code,name:'└ '+x.name,lot:x.lot,date:x.date,sub:true})});
+    });
+    var title='품질리스트'+(v.batch?' · '+v.batch.label:batches.length>1?' · 전체 차수':'')+(kindFilter?' · '+kindFilter:'');
+    var info=fmt(v.list.length)+'개 제품'+(v.q?' · 검색 "'+v.q+'"':'')+' · 인쇄 '+new Date().toLocaleString('ko-KR',{hour12:false});
+    var td=function(x,c){return '<td'+(c?' class="'+c+'"':'')+'>'+esc(x==null?'':x)+'</td>'};
+    var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+
+      '@page{size:A4 landscape;margin:8mm}'+
+      '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
+      'html,body{margin:0;background:#fff;color:#111;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif}'+
+      '.page{width:1060px}h1{font-size:16px;margin:0 0 4px}p.info{font-size:11px;color:#444;margin:0 0 8px}'+
+      'table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}'+
+      'thead{display:table-header-group}tr{page-break-inside:avoid;break-inside:avoid}'+
+      'th,td{border:1px solid #9a9a9a;padding:5px 7px;vertical-align:middle;word-break:break-all}'+
+      'thead th{background:#d9d9d9;font-weight:700;text-align:center;white-space:nowrap}'+
+      'td.c,td.d{text-align:center;white-space:nowrap}tr.g td{font-weight:700}tr.s td.nm{padding-left:18px;color:#333}'+
+      '</style></head><body><div class="page"><h1>'+esc(title)+'</h1><p class="info">'+esc(info)+'</p>'+
+      '<table><colgroup><col style="width:15%"><col style="width:51%"><col style="width:20%"><col style="width:14%"></colgroup>'+
+      '<thead><tr><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr'+(r.gift?' class="g"':r.sub?' class="s"':'')+'>'+td(r.code,'c')+td(r.name,'nm')+td(r.lot,'c')+td(r.date,'d')+'</tr>'}).join('')+
+      '</tbody></table></div></body></html>';
+    var old=document.getElementById('qlPrintFrame');if(old)old.remove();
+    var fr=document.createElement('iframe');fr.id='qlPrintFrame';fr.setAttribute('aria-hidden','true');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
+    document.body.appendChild(fr);
+    var doc=fr.contentWindow.document;doc.open();doc.write(html);doc.close();
+    setTimeout(function(){try{fr.contentWindow.focus();fr.contentWindow.print()}catch(e){toast('인쇄 창을 열지 못했습니다.')}},150);
+  }
   function copyText(){
     var v=lastView;if(!v||!v.list.length){toast('복사할 품질리스트가 없습니다.');return}
     var clean=function(x){return String(x==null?'':x).replace(/[\t\r\n]+/g,' ').trim()};
@@ -249,6 +281,7 @@
     $('qlDelete').addEventListener('click',remove);
     $('qlCopy').addEventListener('click',copyText);
     $('qlExport').addEventListener('click',exportExcel);
+    if($('qlPrint'))$('qlPrint').addEventListener('click',printList);
     $('qlKinds').addEventListener('click',function(e){var c=e.target.closest('[data-ql-kind]');if(!c)return;kindFilter=c.getAttribute('data-ql-kind');mgrFilter='';render()});
     $('qlMgrs').addEventListener('click',function(e){var c=e.target.closest('[data-ql-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ql-mgr');render()});
     $('qlList').addEventListener('click',function(e){var ed=e.target.closest('[data-ql-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ql-open]');if(!t)return;var k=t.getAttribute('data-ql-open');open[k]=!open[k];render()});

@@ -21,7 +21,7 @@
 #qualityListView .ql-meta{display:block;margin-top:3px;font-size:12px;color:#8b95a1;overflow-wrap:anywhere;}
 #qualityListView .ql-meta[hidden]{display:none;}
 #qualityListView .ql-actions{display:flex;gap:6px;flex:none;align-items:center;}
-#qualityListView .ql-copy,#qualityListView .ql-export{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
+#qualityListView .ql-copy,#qualityListView .ql-export,#qualityListView .ql-print{flex:none;height:38px;padding:0 14px;font-weight:800;white-space:nowrap;}
 #qualityListView .ql-empty{margin:0;padding:26px 12px;text-align:center;color:#8b95a1;font-size:13px;border:1.5px dashed #ece6db;border-radius:14px;}
 #qualityListView .ql-table-wrap{overflow:auto;max-height:72vh;border:1.5px solid #ece6db;border-radius:12px;background:#fff;}
 #appShell #qualityListView table.ql-table{width:100%;min-width:900px!important;border-collapse:separate;border-spacing:0;font-size:13px;}
@@ -51,7 +51,7 @@
   #qualityListView .ql-chip{flex:none;}
   #qualityListView .ql-panel .panel-head{flex-wrap:wrap;}
   #qualityListView .ql-actions{width:100%;}
-  #qualityListView .ql-copy,#qualityListView .ql-export{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
+  #qualityListView .ql-copy,#qualityListView .ql-export,#qualityListView .ql-print{height:36px;padding:0 12px;font-size:13px;flex:1 1 auto;}
   #appShell #qualityListView table.ql-table{font-size:12px;min-width:760px!important;}
   #appShell #qualityListView .ql-table th,#appShell #qualityListView .ql-table td{padding:8px 9px;}
   #qualityListView .ql-table .ql-name{min-width:170px;}
