@@ -78,12 +78,15 @@ function rowsFromChecklists(batches, master, extraByPlu) {
       const x = xp[String(r.plu || '').trim()];
       const code = String((x && x.code) || m[0] || '');
       const mUnit = String(m[4] || '').trim().toUpperCase();
-      // 입고리스트(체크리스트) 수량은 G 제품도 '개수'. G 제품은 개수 × 개당 g(환산표)으로 바꿔 G로 저장(예전 입고량 시트와 같은 기준),
-      // 환산값이 없는 G 제품은 g으로 바꿀 수 없어 EA로 표시
+      // G 제품 수량은 입고리스트(체크리스트)마다 '개수'이기도 하고 이미 'g'이기도 함 → 자동 판별해 G(g)로 저장(예전 입고량 시트와 같은 기준)
+      //   수량이 개당 g 이상이고 개당 g으로 나누어떨어지면 이미 g → 그대로 / 그 외는 개수 → × 개당 g
+      //   (개당 g이 작은 제품은 개수가 우연히 배수면 g으로 볼 수 있음) / 환산값이 없는 G 제품은 g으로 바꿀 수 없어 EA로 표시
       const isG = mUnit === 'G' || (!mUnit && PRODUCT_EA_CONVERSION[code]);
       const factor = PRODUCT_EA_CONVERSION[code];
       const unit = isG && factor ? 'G' : 'EA';
-      const qty = isG && factor ? num(r.qty) * factor : num(r.qty);
+      const q = num(r.qty);
+      const alreadyG = isG && factor && q >= factor && Math.abs(q / factor - Math.round(q / factor)) < 1e-9;
+      const qty = isG && factor ? (alreadyG ? q : q * factor) : q;
       out.push([b.eta, batch, pallets, code, String(m[3] || ''), String(r.name || ''), unit, qty]);
     });
   });
