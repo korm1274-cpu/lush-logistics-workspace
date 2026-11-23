@@ -146,6 +146,7 @@
     if(PO)list=PO.sortRows(list,function(r){return r.code}); // 순서표에 없는 제품은 맨 아래(GIFT 구성품은 GIFT 줄 아래 그대로)
     var b=current();
     lastView={list:list,batch:b,q:q};
+    if($('qlPrintAll'))$('qlPrintAll').hidden=!!mgrFilter; // [전체 인쇄]는 '전체 담당'일 때만
     var qtySum=list.reduce(function(s,r){return s+(Number(r.qty)||0)},0);
     $('qlCount').textContent=fmt(list.length);$('qlQty').textContent=fmt(qtySum);
     $('qlNoMgr').textContent=fmt(list.filter(function(r){return !r.mgr}).length);
@@ -207,16 +208,24 @@
     out.push([r.plu,r.code,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.mgr,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
     if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([x.plu,inf.code,'└ '+x.name,inf.mgr,x.lot,x.date,'',r.batch.label])});
   });return out}
-  /* [인쇄]: 지금 보이는 목록(차수·단품/GIFT·검색·정렬 순서)을 A4 가로로. 열은 제품코드 | 제품명 | LOT번호 | 제조일자만
-     담당자 이름은 넣지 않음(제목에도 X) — 담당자 이름 인쇄 예외는 '입고리스트 사내 인쇄물'에 한정(정책 재설정 2026-11-13) */
+  /* 인쇄(A4 가로): 열은 제품코드 | 제품명 | LOT번호 | 제조일자 | 확인(빈칸, 뺐는지 손으로 체크). GIFT는 GIFT 한 줄만(구성품 줄은 인쇄하지 않음)
+     - [인쇄]: 지금 보이는 목록(차수·단품/GIFT·검색·담당자 탭·정렬 순서)
+     - [전체 인쇄]: '전체 담당'일 때만 보임. 고른 차수의 모든 제품(검색·단품/GIFT 무시, 정렬 순서만) 한 문서
+     담당자 이름은 넣지 않고 담당자별 페이지 나눔도 하지 않음 — 담당자 이름 인쇄 예외는 '입고리스트 사내 인쇄물'에 한정(정책 재설정 2026-11-13) */
   function printList(){
     var v=lastView;if(!v||!v.list.length){toast('인쇄할 품질리스트가 없습니다.');return}
-    var rows=[];v.list.forEach(function(r){
-      rows.push({code:r.code,name:r.kind==='GIFT'?r.name+' (GIFT)':r.name,lot:r.lot,date:r.date,gift:r.kind==='GIFT'});
-      if(r.kind==='GIFT')(r.items||[]).forEach(function(x){rows.push({code:infoOf(x).code,name:'└ '+x.name,lot:x.lot,date:x.date,sub:true})});
-    });
-    var title='품질리스트'+(v.batch?' · '+v.batch.label:batches.length>1?' · 전체 차수':'')+(kindFilter?' · '+kindFilter:'');
-    var info=fmt(v.list.length)+'개 제품'+(v.q?' · 검색 "'+v.q+'"':'')+' · 인쇄 '+new Date().toLocaleString('ko-KR',{hour12:false});
+    var info=fmt(v.list.length)+'개 제품'+(v.q?' · 검색 "'+v.q+'"':'');
+    printDoc('품질리스트'+(v.batch?' · '+v.batch.label:batches.length>1?' · 전체 차수':'')+(kindFilter?' · '+kindFilter:''),info,v.list);
+  }
+  function printAll(){
+    var b=current(),all=rowsOf(),PO=window.LushProductOrder;
+    if(!all.length){toast('인쇄할 품질리스트가 없습니다.');return}
+    if(PO)all=PO.sortRows(all,function(r){return r.code});
+    printDoc('품질리스트'+(b?' · '+b.label:batches.length>1?' · 전체 차수':'')+' · 전체',fmt(all.length)+'개 제품 전체',all);
+  }
+  function printDoc(title,info,list){
+    var rows=list.map(function(r){return{code:r.code,name:r.kind==='GIFT'?r.name+' (GIFT)':r.name,lot:r.lot,date:r.date,gift:r.kind==='GIFT'}});
+    info+=' · 인쇄 '+new Date().toLocaleString('ko-KR',{hour12:false});
     var td=function(x,c){return '<td'+(c?' class="'+c+'"':'')+'>'+esc(x==null?'':x)+'</td>'};
     var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+
       '@page{size:A4 landscape;margin:8mm}'+
@@ -229,9 +238,9 @@
       'thead th{background:#d9d9d9;font-weight:700;text-align:center;white-space:nowrap}'+
       'td.c,td.d{text-align:center;white-space:nowrap}tr.g td{font-weight:700}tr.s td.nm{padding-left:18px;color:#333}'+
       '</style></head><body><div class="page"><h1>'+esc(title)+'</h1><p class="info">'+esc(info)+'</p>'+
-      '<table><colgroup><col style="width:15%"><col style="width:51%"><col style="width:20%"><col style="width:14%"></colgroup>'+
-      '<thead><tr><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th></tr></thead><tbody>'+
-      rows.map(function(r){return '<tr'+(r.gift?' class="g"':r.sub?' class="s"':'')+'>'+td(r.code,'c')+td(r.name,'nm')+td(r.lot,'c')+td(r.date,'d')+'</tr>'}).join('')+
+      '<table><colgroup><col style="width:14%"><col style="width:46%"><col style="width:18%"><col style="width:12%"><col style="width:10%"></colgroup>'+
+      '<thead><tr><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th>확인</th></tr></thead><tbody>'+
+      rows.map(function(r){return '<tr'+(r.gift?' class="g"':'')+'>'+td(r.code,'c')+td(r.name,'nm')+td(r.lot,'c')+td(r.date,'d')+'<td class="ck"></td></tr>'}).join('')+
       '</tbody></table></div></body></html>';
     var old=document.getElementById('qlPrintFrame');if(old)old.remove();
     var fr=document.createElement('iframe');fr.id='qlPrintFrame';fr.setAttribute('aria-hidden','true');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
@@ -282,6 +291,7 @@
     $('qlCopy').addEventListener('click',copyText);
     $('qlExport').addEventListener('click',exportExcel);
     if($('qlPrint'))$('qlPrint').addEventListener('click',printList);
+    if($('qlPrintAll'))$('qlPrintAll').addEventListener('click',printAll);
     $('qlKinds').addEventListener('click',function(e){var c=e.target.closest('[data-ql-kind]');if(!c)return;kindFilter=c.getAttribute('data-ql-kind');mgrFilter='';render()});
     $('qlMgrs').addEventListener('click',function(e){var c=e.target.closest('[data-ql-mgr]');if(!c)return;mgrFilter=c.getAttribute('data-ql-mgr');render()});
     $('qlList').addEventListener('click',function(e){var ed=e.target.closest('[data-ql-mgr-edit]');if(ed){editMgr(ed);return}var t=e.target.closest('[data-ql-open]');if(!t)return;var k=t.getAttribute('data-ql-open');open[k]=!open[k];render()});

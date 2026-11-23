@@ -69,3 +69,4 @@
 #appShell #qualityListView .ql-mgr-input{width:110px!important;height:28px!important;min-height:0!important;padding:0 8px!important;border:1.5px solid #1d1d1b!important;border-radius:8px!important;font:inherit;font-size:12.5px!important;background:#fff!important;}
 #qualityListView .ql-mgr-save,#qualityListView .ql-mgr-cancel{height:28px;padding:0 9px;border:1px solid #1d1d1b;border-radius:8px;background:#1d1d1b;color:#fff;font:inherit;font-size:12px;font-weight:800;cursor:pointer;}
 #qualityListView .ql-mgr-cancel{background:#fff;color:#4e5968;border-color:#e4ddd0;padding:0 7px;}
+#qualityListView .ql-print[hidden]{display:none!important;}
