@@ -510,3 +510,10 @@
   #sideSubNav .side-subnav-item.active::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:2px;background:#e87ba4;}
 }
 
+/* 메인 제품 확보 현황: 잘린 항목 전체 보기(js/62-todo-fulltext.js) — 마우스 말풍선 / 휴대폰은 눌러서 펼침 */
+.todo-full-tip{position:fixed;z-index:9999;display:none;max-width:min(420px,calc(100vw - 16px));padding:10px 12px;border-radius:10px;background:#1d1d1b;color:#fff;font-size:13px;line-height:1.5;box-shadow:0 6px 20px rgba(0,0,0,.22);pointer-events:none;white-space:pre-line;word-break:break-word;}
+.todo-full-tip b{display:block;font-weight:800;}
+.todo-full-tip span{display:block;margin-top:4px;color:#d6d1c8;font-size:12px;}
+#appShell #dashboard .ops-todo-item.todo-expanded .todo-content{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;overflow-wrap:anywhere!important;}
+#appShell #dashboard .ops-todo-item.todo-expanded .todo-note{display:block!important;-webkit-line-clamp:unset!important;line-clamp:none!important;white-space:pre-line!important;overflow:visible!important;text-overflow:clip!important;}
+@media (hover:none){#appShell #dashboard #dashTodoList .todo-content{cursor:pointer;}}
