@@ -1637,6 +1637,14 @@ window.ensureChart=function(){
 
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
+    <!-- DAS 시뮬레이션 6개 모듈(내용은 js/64~69-das-sim-*.js가 그림) -->
+    <section id="dsWaveView" class="view ds-view"></section>
+    <section id="dsPdaView" class="view ds-view"></section>
+    <section id="dsLocView" class="view ds-view"></section>
+    <section id="dsDasView" class="view ds-view"></section>
+    <section id="dsPackView" class="view ds-view"></section>
+    <section id="dsBoardView" class="view ds-view"></section>
+
     <section id="settings" class="view">
       <div class="admin-tabs"><button class="admin-tab active" data-admin="users">사용자 관리</button><button class="admin-tab" data-admin="menus">메뉴 관리</button><button class="admin-tab" data-admin="conversion">단위 환산 관리</button><button class="admin-tab" data-admin="push">푸시알림</button></div>
       <div id="admin-users" class="admin-section active">
@@ -1878,5 +1886,14 @@ window.ensureChart=function(){
 <link rel="stylesheet" href="css/46-shipping-sample.css">
 <link rel="stylesheet" href="css/47-xmas-decor.css">
 <script src="js/60-bento-hero-decor.js"></script>
+<!-- DAS 시뮬레이션(가상 데이터 전용 · 운영 API/데이터 미사용): 엔진 → 6개 모듈 -->
+<link rel="stylesheet" href="css/48-das-sim.css">
+<script src="js/63-das-sim-core.js"></script>
+<script src="js/64-das-sim-wave.js"></script>
+<script src="js/65-das-sim-pda.js"></script>
+<script src="js/66-das-sim-location.js"></script>
+<script src="js/67-das-sim-sorter.js"></script>
+<script src="js/68-das-sim-pack.js"></script>
+<script src="js/69-das-sim-board.js"></script>
 </body>
 </html>

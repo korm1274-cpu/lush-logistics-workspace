@@ -8,7 +8,7 @@ const HIST_KEY="lush-logistics-upload-history";
 /* 로그인 역할과 맞춤: 메뉴 권한 칸 leader=관리자, editor=팀원, restricted=게스트 (admin은 Admin 메뉴 전용 내부값) */
 const ROLE_LABEL={admin:"관리자",leader:"관리자",editor:"팀원",restricted:"게스트"};
 const DEFAULT_GROUPS=[
- {id:"dashboard",label:"메인",icon:"layout-dashboard",visible:true,protected:true},{id:"statusboard",label:"현황판",icon:"monitor-up",visible:true},{id:"inventory",label:"재고",icon:"package-search",visible:true},{id:"inbound",label:"입고",icon:"package-plus",visible:true},{id:"outbound",label:"출고",icon:"truck",visible:true},{id:"traffic",label:"트래픽",icon:"signpost",visible:true},{id:"schedule",label:"일정",icon:"calendar-days",visible:true},{id:"issues",label:"이슈",icon:"triangle-alert",visible:true},{id:"productivity",label:"생산성",icon:"gauge",visible:true},{id:"floorboard",label:"대시보드",icon:"monitor",visible:true},{id:"upload",label:"데이터",icon:"file-up",visible:true},{id:"admin",label:"Admin",icon:"settings-2",visible:true,protected:true}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard",visible:true,protected:true},{id:"statusboard",label:"현황판",icon:"monitor-up",visible:true},{id:"inventory",label:"재고",icon:"package-search",visible:true},{id:"inbound",label:"입고",icon:"package-plus",visible:true},{id:"outbound",label:"출고",icon:"truck",visible:true},{id:"traffic",label:"트래픽",icon:"signpost",visible:true},{id:"schedule",label:"일정",icon:"calendar-days",visible:true},{id:"issues",label:"이슈",icon:"triangle-alert",visible:true},{id:"productivity",label:"생산성",icon:"gauge",visible:true},{id:"floorboard",label:"대시보드",icon:"monitor",visible:true},{id:"simulation",label:"시뮬레이션",icon:"boxes",visible:true},{id:"upload",label:"데이터",icon:"file-up",visible:true},{id:"admin",label:"Admin",icon:"settings-2",visible:true,protected:true}
 ];
 let GROUPS=JSON.parse(localStorage.getItem(GROUP_KEY)||"null")||structuredClone(DEFAULT_GROUPS);
 GROUPS=GROUPS.map(g=>({...g,visible:g.visible!==false,protected:g.id==="dashboard"||g.id==="admin"||!!g.protected,icon:g.icon||"folder"}));
@@ -68,6 +68,13 @@ const DEFAULT_MENUS=[
  {id:"issue-defect",group:"issues",label:"제품 불량",kind:"view",target:"defectView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"floor-dash",group:"floorboard",label:"현장 대시보드",kind:"view",target:"floorDashView",visible:true,roles:["admin","leader","editor","restricted"]},
+ /* DAS 시뮬레이션(가상 데이터 전용, js/63~69-das-sim-*.js) — 6개 모듈은 서로 독립된 화면 */
+ {id:"sim-wave",group:"simulation",label:"출고 작업 생성",kind:"view",target:"dsWaveView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-pda",group:"simulation",label:"PDA 피킹",kind:"view",target:"dsPdaView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-location",group:"simulation",label:"로케이션·재고",kind:"view",target:"dsLocView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-das",group:"simulation",label:"DAS 분류",kind:"view",target:"dsDasView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-pack",group:"simulation",label:"박스·출고",kind:"view",target:"dsPackView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-board",group:"simulation",label:"작업 현황판",kind:"view",target:"dsBoardView",visible:true,roles:["admin","leader","editor"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
  {id:"data-archive",group:"upload",label:"지난 데이터 보관함",kind:"view",target:"dataArchiveView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"admin-main",group:"admin",label:"사용자 / 메뉴 / 권한 설정",kind:"view",target:"settings",visible:true,roles:["admin"],protected:true}
@@ -309,6 +316,20 @@ function normalizeMenus(){
   if(deletedMenuIds.size)cleaned=cleaned.filter(m=>!deletedMenuIds.has(m.id));
   menus=cleaned;
   localStorage.setItem(MENU_KEY,JSON.stringify(menus));
+  ensureDefaultGroups();
+}
+/* 팀 공유 메뉴 설정(GROUPS 통째 교체)을 받은 뒤에도 새 기본 대분류(예: 시뮬레이션)가 빠지지 않게,
+   새로고침 때(파일 맨 위)와 같은 규칙으로 없는 기본 대분류만 이 기기에 추가(서버로 올리지 않음) */
+function ensureDefaultGroups(){
+  let added=false;
+  for(const def of DEFAULT_GROUPS){
+    if(GROUPS.some(g=>g.id===def.id))continue;
+    const prevDefaults=DEFAULT_GROUPS.slice(0,DEFAULT_GROUPS.findIndex(x=>x.id===def.id)).map(x=>x.id);
+    let insertAt=-1;
+    GROUPS.forEach((g,i)=>{if(prevDefaults.includes(g.id))insertAt=i});
+    GROUPS.splice(insertAt+1,0,structuredClone(def));added=true;
+  }
+  if(added)localStorage.setItem(GROUP_KEY,JSON.stringify(GROUPS));
 }
 normalizeMenus();
 let users=JSON.parse(localStorage.getItem(USER_KEY)||"null")||structuredClone(DEFAULT_USERS);
