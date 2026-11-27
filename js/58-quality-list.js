@@ -210,38 +210,52 @@
   });return out}
   /* 인쇄(A4 가로): 열은 제품코드 | 제품명 | LOT번호 | 제조일자 | 확인(빈칸, 뺐는지 손으로 체크). GIFT는 GIFT 한 줄만(구성품 줄은 인쇄하지 않음)
      - [인쇄]: 지금 보이는 목록(차수·단품/GIFT·검색·담당자 탭·정렬 순서)
-     - [전체 인쇄]: '전체 담당'일 때만 보임. 고른 차수의 모든 제품(검색·단품/GIFT 무시, 정렬 순서만) 한 문서
-     담당자 이름은 넣지 않고 담당자별 페이지 나눔도 하지 않음 — 담당자 이름 인쇄 예외는 '입고리스트 사내 인쇄물'에 한정(정책 재설정 2026-11-13) */
+     - [전체 인쇄]: '전체 담당'일 때만 보임. 고른 차수의 모든 제품(검색·단품/GIFT 무시)을 담당자별로 페이지를 나눠서(담당자 탭 순서, '담당자 없음'은 맨 뒤)
+     담당자 이름: 정보보안팀 승인에 따른 정책 재설정(2026-11-27)으로 '품질리스트 사내 인쇄물'에 한해 페이지 나눔·페이지 제목 표시만 허용.
+     텍스트 복사·엑셀 등 다른 출력에는 넣지 않음 */
+  var NO_MGR='담당자 없음';
+  function mgrOf(r){return r.mgr||NO_MGR}
+  function baseTitle(b){return '품질리스트'+(b?' · '+b.label:batches.length>1?' · 전체 차수':'')}
   function printList(){
     var v=lastView;if(!v||!v.list.length){toast('인쇄할 품질리스트가 없습니다.');return}
     var info=fmt(v.list.length)+'개 제품'+(v.q?' · 검색 "'+v.q+'"':'');
-    printDoc('품질리스트'+(v.batch?' · '+v.batch.label:batches.length>1?' · 전체 차수':'')+(kindFilter?' · '+kindFilter:''),info,v.list);
+    printDoc([{title:baseTitle(v.batch)+(kindFilter?' · '+kindFilter:'')+(mgrFilter?' · '+mgrFilter:''),info:info,list:v.list}]);
   }
   function printAll(){
     var b=current(),all=rowsOf(),PO=window.LushProductOrder;
     if(!all.length){toast('인쇄할 품질리스트가 없습니다.');return}
     if(PO)all=PO.sortRows(all,function(r){return r.code});
-    printDoc('품질리스트'+(b?' · '+b.label:batches.length>1?' · 전체 차수':'')+' · 전체',fmt(all.length)+'개 제품 전체',all);
+    // 담당자 순서: 화면 담당자 탭과 같게(정렬 순서표가 있으면 각 담당자 제품이 처음 나오는 순), '담당자 없음'은 맨 뒤
+    var groups={};all.forEach(function(r){var k=mgrOf(r);(groups[k]=groups[k]||[]).push(r)});
+    var counts={};Object.keys(groups).forEach(function(k){counts[k]=groups[k].length});
+    var keys=Object.keys(groups).sort(function(a,c){return (a===NO_MGR)-(c===NO_MGR)||counts[c]-counts[a]||a.localeCompare(c)});
+    if(PO){var k2=PO.sortMgrKeys(keys,all,mgrOf,function(r){return r.code},counts);if(k2)keys=k2}
+    keys=keys.filter(function(k){return k!==NO_MGR}).concat(groups[NO_MGR]?[NO_MGR]:[]);
+    printDoc(keys.map(function(k){return{title:baseTitle(b)+' · '+k,info:fmt(groups[k].length)+'개 제품',list:groups[k]}}));
   }
-  function printDoc(title,info,list){
-    var rows=list.map(function(r){return{code:r.code,name:r.kind==='GIFT'?r.name+' (GIFT)':r.name,lot:r.lot,date:r.date,gift:r.kind==='GIFT'}});
-    info+=' · 인쇄 '+new Date().toLocaleString('ko-KR',{hour12:false});
+  function printDoc(sections){
+    var when=' · 인쇄 '+new Date().toLocaleString('ko-KR',{hour12:false});
+    var title=sections.length===1?sections[0].title:baseTitle(current())+' · 담당자별';
     var td=function(x,c){return '<td'+(c?' class="'+c+'"':'')+'>'+esc(x==null?'':x)+'</td>'};
+    var page=function(s){
+      var rows=s.list.map(function(r){return{code:r.code,name:r.kind==='GIFT'?r.name+' (GIFT)':r.name,lot:r.lot,date:r.date,gift:r.kind==='GIFT'}});
+      return '<div class="page"><h1>'+esc(s.title)+'</h1><p class="info">'+esc(s.info+when)+'</p>'+
+        '<table><colgroup><col style="width:14%"><col style="width:46%"><col style="width:18%"><col style="width:12%"><col style="width:10%"></colgroup>'+
+        '<thead><tr><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th>확인</th></tr></thead><tbody>'+
+        rows.map(function(r){return '<tr'+(r.gift?' class="g"':'')+'>'+td(r.code,'c')+td(r.name,'nm')+td(r.lot,'c')+td(r.date,'d')+'<td class="ck"></td></tr>'}).join('')+
+        '</tbody></table></div>';
+    };
     var html='<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>'+esc(title)+'</title><style>'+
       '@page{size:A4 landscape;margin:8mm}'+
       '*{box-sizing:border-box;-webkit-print-color-adjust:exact;print-color-adjust:exact}'+
       'html,body{margin:0;background:#fff;color:#111;font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif}'+
-      '.page{width:1060px}h1{font-size:16px;margin:0 0 4px}p.info{font-size:11px;color:#444;margin:0 0 8px}'+
+      '.page{width:1060px}.page+.page{break-before:page;page-break-before:always}h1{font-size:16px;margin:0 0 4px}p.info{font-size:11px;color:#444;margin:0 0 8px}'+
       'table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed}'+
       'thead{display:table-header-group}tr{page-break-inside:avoid;break-inside:avoid}'+
       'th,td{border:1px solid #9a9a9a;padding:5px 7px;vertical-align:middle;word-break:break-all}'+
       'thead th{background:#d9d9d9;font-weight:700;text-align:center;white-space:nowrap}'+
       'td.c,td.d{text-align:center;white-space:nowrap}tr.g td{font-weight:700}tr.s td.nm{padding-left:18px;color:#333}'+
-      '</style></head><body><div class="page"><h1>'+esc(title)+'</h1><p class="info">'+esc(info)+'</p>'+
-      '<table><colgroup><col style="width:14%"><col style="width:46%"><col style="width:18%"><col style="width:12%"><col style="width:10%"></colgroup>'+
-      '<thead><tr><th>제품코드</th><th>제품명</th><th>LOT번호</th><th>제조일자</th><th>확인</th></tr></thead><tbody>'+
-      rows.map(function(r){return '<tr'+(r.gift?' class="g"':'')+'>'+td(r.code,'c')+td(r.name,'nm')+td(r.lot,'c')+td(r.date,'d')+'<td class="ck"></td></tr>'}).join('')+
-      '</tbody></table></div></body></html>';
+      '</style></head><body>'+sections.map(page).join('')+'</body></html>';
     var old=document.getElementById('qlPrintFrame');if(old)old.remove();
     var fr=document.createElement('iframe');fr.id='qlPrintFrame';fr.setAttribute('aria-hidden','true');fr.style.cssText='position:fixed;right:0;bottom:0;width:0;height:0;border:0;visibility:hidden';
     document.body.appendChild(fr);
