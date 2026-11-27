@@ -1637,12 +1637,12 @@ window.ensureChart=function(){
 
     <section id="blankPage" class="view"><div class="panel"><div class="panel-head"><div><small>CUSTOM PAGE</small><h3 id="blankTitle">새 메뉴</h3></div></div><div class="hint">Admin에서 추가한 기본 페이지입니다. 정식 데이터 연결 단계에서 페이지 유형에 맞는 기능을 연결할 수 있습니다.</div></div></section>
 
-    <!-- DAS 시뮬레이션 6개 모듈(내용은 js/64~69-das-sim-*.js가 그림) -->
+    <!-- DAS 운영 시스템 시제품 업무 화면 6개(내용은 js/64~69-das-ops-*.js가 그림) -->
     <section id="dsWaveView" class="view ds-view"></section>
     <section id="dsPdaView" class="view ds-view"></section>
-    <section id="dsLocView" class="view ds-view"></section>
     <section id="dsDasView" class="view ds-view"></section>
     <section id="dsPackView" class="view ds-view"></section>
+    <section id="dsReceiveView" class="view ds-view"></section>
     <section id="dsBoardView" class="view ds-view"></section>
 
     <section id="settings" class="view">
@@ -1886,14 +1886,14 @@ window.ensureChart=function(){
 <link rel="stylesheet" href="css/46-shipping-sample.css">
 <link rel="stylesheet" href="css/47-xmas-decor.css">
 <script src="js/60-bento-hero-decor.js"></script>
-<!-- DAS 시뮬레이션(가상 데이터 전용 · 운영 API/데이터 미사용): 엔진 → 6개 모듈 -->
-<link rel="stylesheet" href="css/48-das-sim.css">
-<script src="js/63-das-sim-core.js"></script>
-<script src="js/64-das-sim-wave.js"></script>
-<script src="js/65-das-sim-pda.js"></script>
-<script src="js/66-das-sim-location.js"></script>
-<script src="js/67-das-sim-sorter.js"></script>
-<script src="js/68-das-sim-pack.js"></script>
-<script src="js/69-das-sim-board.js"></script>
+<!-- DAS 운영 시스템 시제품(예시 데이터 · 서버 저장 api/das-proto.js): 공통 → 출고 작업 → PDA → DAS → 박스·출고 → 매장 입고 → 통합 현황판 -->
+<link rel="stylesheet" href="css/48-das-ops.css">
+<script src="js/63-das-ops-core.js"></script>
+<script src="js/64-das-ops-wave.js"></script>
+<script src="js/65-das-ops-pda.js"></script>
+<script src="js/66-das-ops-sorter.js"></script>
+<script src="js/67-das-ops-pack.js"></script>
+<script src="js/68-das-ops-receive.js"></script>
+<script src="js/69-das-ops-board.js"></script>
 </body>
 </html>
