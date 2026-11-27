@@ -203,10 +203,12 @@
   }
 
   /* ===== 복사 · 엑셀 · 삭제 ===== */
-  var HEAD=['PLU','제품코드','제품명','담당자','LOT넘버','제조일자','입고수량','차수'];
+  // 텍스트 복사·엑셀: 담당자 이름은 넣지 않음(담당자 이름 출력 예외는 사내 인쇄물에 한정 — 정책 재설정 2026-11-13·11-27)
+  var HEAD=['PLU','제품코드','제품명','LOT넘버','제조일자','입고수량','차수'];
+  var QTY_COL=5;
   function flat(v){var out=[];v.list.forEach(function(r){
-    out.push([r.plu,r.code,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.mgr,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
-    if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([x.plu,inf.code,'└ '+x.name,inf.mgr,x.lot,x.date,'',r.batch.label])});
+    out.push([r.plu,r.code,r.kind==='GIFT'?r.name+' (GIFT)':r.name,r.lot,r.date,r.qty==null?'':r.qty,r.batch.label]);
+    if(r.kind==='GIFT')(r.items||[]).forEach(function(x){var inf=infoOf(x);out.push([x.plu,inf.code,'└ '+x.name,x.lot,x.date,'',r.batch.label])});
   });return out}
   /* 인쇄(A4 가로): 열은 제품코드 | 제품명 | LOT번호 | 제조일자 | 확인(빈칸, 뺐는지 손으로 체크). GIFT는 GIFT 한 줄만(구성품 줄은 인쇄하지 않음)
      - [인쇄]: 지금 보이는 목록(차수·단품/GIFT·검색·담당자 탭·정렬 순서)
@@ -273,14 +275,14 @@
   function exportExcel(){
     var v=lastView;if(!v||!v.list.length){toast('내보낼 품질리스트가 없습니다.');return}
     xlsx().then(function(){
-      var title=(v.batch?v.batch.label:'전체 차수')+' 품질리스트'+(kindFilter?' · '+kindFilter:'')+(mgrFilter?' · '+mgrFilter:'')+(v.q?' · 검색 "'+v.q+'"':'');
-      var aoa=[[title],HEAD].concat(flat(v).map(function(r){return r.map(function(x,i){return i===6&&x!==''?Number(x):x})}));
+      var title=(v.batch?v.batch.label:'전체 차수')+' 품질리스트'+(kindFilter?' · '+kindFilter:'')+(v.q?' · 검색 "'+v.q+'"':'');
+      var aoa=[[title],HEAD].concat(flat(v).map(function(r){return r.map(function(x,i){return i===QTY_COL&&x!==''?Number(x):x})}));
       var ws=XLSX.utils.aoa_to_sheet(aoa);
       ws['!merges']=[{s:{r:0,c:0},e:{r:0,c:HEAD.length-1}}];
-      ws['!cols']=[{wch:9},{wch:12},{wch:44},{wch:12},{wch:18},{wch:12},{wch:10},{wch:8}];
+      ws['!cols']=[{wch:9},{wch:12},{wch:44},{wch:18},{wch:12},{wch:10},{wch:8}];
       ws['!autofilter']={ref:XLSX.utils.encode_range({s:{r:1,c:0},e:{r:aoa.length-1,c:HEAD.length-1}})};
       var wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,'품질리스트');
-      var d=new Date(),name='품질리스트_'+(v.batch?v.batch.label:'전체차수')+(mgrFilter?'_'+mgrFilter:'')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
+      var d=new Date(),name='품질리스트_'+(v.batch?v.batch.label:'전체차수')+'_'+d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+'.xlsx';
       XLSX.writeFile(wb,name);toast(name+' 저장');
     }).catch(function(e){toast('엑셀 내보내기에 실패했습니다. '+((e&&e.message)||''))});
   }
