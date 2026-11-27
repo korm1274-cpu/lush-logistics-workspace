@@ -8,7 +8,7 @@ const HIST_KEY="lush-logistics-upload-history";
 /* 로그인 역할과 맞춤: 메뉴 권한 칸 leader=관리자, editor=팀원, restricted=게스트 (admin은 Admin 메뉴 전용 내부값) */
 const ROLE_LABEL={admin:"관리자",leader:"관리자",editor:"팀원",restricted:"게스트"};
 const DEFAULT_GROUPS=[
- {id:"dashboard",label:"메인",icon:"layout-dashboard",visible:true,protected:true},{id:"statusboard",label:"현황판",icon:"monitor-up",visible:true},{id:"inventory",label:"재고",icon:"package-search",visible:true},{id:"inbound",label:"입고",icon:"package-plus",visible:true},{id:"outbound",label:"출고",icon:"truck",visible:true},{id:"traffic",label:"트래픽",icon:"signpost",visible:true},{id:"schedule",label:"일정",icon:"calendar-days",visible:true},{id:"issues",label:"이슈",icon:"triangle-alert",visible:true},{id:"productivity",label:"생산성",icon:"gauge",visible:true},{id:"floorboard",label:"대시보드",icon:"monitor",visible:true},{id:"simulation",label:"시뮬레이션",icon:"boxes",visible:true},{id:"upload",label:"데이터",icon:"file-up",visible:true},{id:"admin",label:"Admin",icon:"settings-2",visible:true,protected:true}
+ {id:"dashboard",label:"메인",icon:"layout-dashboard",visible:true,protected:true},{id:"statusboard",label:"현황판",icon:"monitor-up",visible:true},{id:"inventory",label:"재고",icon:"package-search",visible:true},{id:"inbound",label:"입고",icon:"package-plus",visible:true},{id:"outbound",label:"출고",icon:"truck",visible:true},{id:"traffic",label:"트래픽",icon:"signpost",visible:true},{id:"schedule",label:"일정",icon:"calendar-days",visible:true},{id:"issues",label:"이슈",icon:"triangle-alert",visible:true},{id:"productivity",label:"생산성",icon:"gauge",visible:true},{id:"floorboard",label:"대시보드",icon:"monitor",visible:true},{id:"simulation",label:"DAS 운영",icon:"boxes",visible:true},{id:"upload",label:"데이터",icon:"file-up",visible:true},{id:"admin",label:"Admin",icon:"settings-2",visible:true,protected:true}
 ];
 let GROUPS=JSON.parse(localStorage.getItem(GROUP_KEY)||"null")||structuredClone(DEFAULT_GROUPS);
 GROUPS=GROUPS.map(g=>({...g,visible:g.visible!==false,protected:g.id==="dashboard"||g.id==="admin"||!!g.protected,icon:g.icon||"folder"}));
@@ -68,13 +68,13 @@ const DEFAULT_MENUS=[
  {id:"issue-defect",group:"issues",label:"제품 불량",kind:"view",target:"defectView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"prod-time",group:"productivity",label:"근무시간 입력",kind:"view",target:"productivityView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"floor-dash",group:"floorboard",label:"현장 대시보드",kind:"view",target:"floorDashView",visible:true,roles:["admin","leader","editor","restricted"]},
- /* DAS 시뮬레이션(가상 데이터 전용, js/63~69-das-sim-*.js) — 6개 모듈은 서로 독립된 화면 */
- {id:"sim-wave",group:"simulation",label:"출고 작업 생성",kind:"view",target:"dsWaveView",visible:true,roles:["admin","leader","editor"]},
+ /* DAS 운영 시스템 시제품(업무 화면, 예시 데이터 · 서버 저장 api/das-proto.js, js/63~69-das-ops-*.js) */
+ {id:"sim-wave",group:"simulation",label:"출고 작업",kind:"view",target:"dsWaveView",visible:true,roles:["admin","leader","editor"]},
  {id:"sim-pda",group:"simulation",label:"PDA 피킹",kind:"view",target:"dsPdaView",visible:true,roles:["admin","leader","editor"]},
- {id:"sim-location",group:"simulation",label:"로케이션·재고",kind:"view",target:"dsLocView",visible:true,roles:["admin","leader","editor"]},
  {id:"sim-das",group:"simulation",label:"DAS 분류",kind:"view",target:"dsDasView",visible:true,roles:["admin","leader","editor"]},
  {id:"sim-pack",group:"simulation",label:"박스·출고",kind:"view",target:"dsPackView",visible:true,roles:["admin","leader","editor"]},
- {id:"sim-board",group:"simulation",label:"작업 현황판",kind:"view",target:"dsBoardView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-receive",group:"simulation",label:"매장 입고",kind:"view",target:"dsReceiveView",visible:true,roles:["admin","leader","editor"]},
+ {id:"sim-board",group:"simulation",label:"통합 현황판",kind:"view",target:"dsBoardView",visible:true,roles:["admin","leader","editor"]},
  {id:"upload-main",group:"upload",label:"Excel / CSV 업로드",kind:"view",target:"upload",visible:true,roles:["admin","leader","editor"]},
  {id:"data-archive",group:"upload",label:"지난 데이터 보관함",kind:"view",target:"dataArchiveView",visible:true,roles:["admin","leader","editor","restricted"]},
  {id:"admin-main",group:"admin",label:"사용자 / 메뉴 / 권한 설정",kind:"view",target:"settings",visible:true,roles:["admin"],protected:true}
@@ -174,6 +174,17 @@ function normalizeMenus(){
 
   /* V52: 제거 대상 메뉴는 기존 localStorage에서도 정리 */
   cleaned = cleaned.filter(m=>m.id!=="inv-sand" && m.group!=="attendance" && m.id!=="att-team" && m.id!=="issue-damage-analysis" && m.id!=="statusboard-main");
+
+  /* DAS 운영 시제품: 이전 시뮬레이션 메뉴를 업무 화면으로 교체(로케이션·재고 메뉴 제거, 화면·기본 이름 갱신 — 관리자가 바꾼 이름은 유지) */
+  cleaned = cleaned.filter(m=>m.id!=="sim-location");
+  const SIM_OLD_LABELS={"sim-wave":"출고 작업 생성","sim-board":"작업 현황판"};
+  for(const m of cleaned){
+    if(!/^sim-/.test(m.id))continue;
+    const d=DEFAULT_MENUS.find(x=>x.id===m.id); if(!d)continue;
+    m.kind="view"; m.target=d.target; m.group="simulation";
+    if(!Array.isArray(m.roles)||!m.roles.length)m.roles=d.roles.slice();
+    if(!m.adminManaged||m.label===SIM_OLD_LABELS[m.id])m.label=d.label;
+  }
 
   /* V71: 기존 사용자에게도 '파손' 메뉴를 분석 화면으로 전환 */
   const damageMenu=cleaned.find(m=>m.id==="issue-damage");
@@ -329,6 +340,8 @@ function ensureDefaultGroups(){
     GROUPS.forEach((g,i)=>{if(prevDefaults.includes(g.id))insertAt=i});
     GROUPS.splice(insertAt+1,0,structuredClone(def));added=true;
   }
+  const simGroup=GROUPS.find(g=>g.id==="simulation");
+  if(simGroup&&simGroup.label==="시뮬레이션"){simGroup.label="DAS 운영";added=true;}
   if(added)localStorage.setItem(GROUP_KEY,JSON.stringify(GROUPS));
 }
 normalizeMenus();
